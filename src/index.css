@@ -175,3 +175,21 @@ input[type="range"]::-webkit-slider-thumb {
 /* ── Live waveform bars ──────────────────────────────────────────────────── */
 .wk-eqbar { height: 25%; transform-origin: bottom; animation-name: wk-eqbar; animation-iteration-count: infinite; animation-direction: alternate; animation-timing-function: ease-in-out; }
 @keyframes wk-eqbar { from { height: 12%; opacity: .45; } to { height: 100%; opacity: 1; } }
+
+/* ── Footer constellation ────────────────────────────────────────────────── */
+.wk-stars {
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, #ffffff, transparent),
+    radial-gradient(1px 1px at 70% 62%, #ffffff, transparent),
+    radial-gradient(1.6px 1.6px at 40% 80%, #9D4EDD, transparent),
+    radial-gradient(1px 1px at 85% 22%, #00D9FF, transparent),
+    radial-gradient(1px 1px at 55% 45%, #ffffff, transparent),
+    radial-gradient(1px 1px at 12% 70%, #ffffff, transparent),
+    radial-gradient(1.6px 1.6px at 90% 78%, #9D4EDD, transparent),
+    radial-gradient(1px 1px at 33% 18%, #00D9FF, transparent);
+  background-size: 420px 320px;
+  background-repeat: repeat;
+  opacity: .4;
+  animation: wk-twinkle 6s ease-in-out infinite alternate;
+}
+@keyframes wk-twinkle { from { opacity: .22; } to { opacity: .5; } }
