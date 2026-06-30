@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600" font-family="Georgia, 'Times New Roman', serif">
+<defs>
+  <linearGradient id="g" x1="0" y1="0" x2="0.4" y2="1">
+    <stop offset="0" stop-color="#7D3C98"/><stop offset="1" stop-color="#2A0E3F"/>
+  </linearGradient>
+  <radialGradient id="glow" cx="0.5" cy="0.28" r="0.7">
+    <stop offset="0" stop-color="#D2A8E8" stop-opacity="0.35"/><stop offset="1" stop-color="#D2A8E8" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<rect width="600" height="600" fill="url(#g)"/>
+<rect width="600" height="600" fill="url(#glow)"/>
+<circle cx="300.0" cy="190" r="74" fill="none" stroke="#D2A8E8" stroke-width="2" opacity="0.5"/>
+        <circle cx="300.0" cy="190" r="46" fill="#D2A8E8" opacity="0.14"/>
+        <circle cx="300.0" cy="190" r="11" fill="#D2A8E8" opacity="0.85"/>
+<text x="300.0" y="90" fill="#D2A8E8" font-size="16" letter-spacing="4" text-anchor="middle" font-family="Arial, sans-serif" opacity="0.85">RNB</text>
+<text x="300.0" y="300" fill="#ffffff" font-size="46" font-weight="bold" text-anchor="middle" style="paint-order:stroke"><tspan x="300.0" dy="0">Lagos Nights</tspan></text>
+<text x="300.0" y="354" fill="#ffffff" font-size="22" text-anchor="middle" opacity="0.75" font-family="Arial, sans-serif">Funmi Adeyemi</text>
+<text x="300.0" y="554" fill="#ffffff" font-size="15" letter-spacing="5" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" opacity="0.65">WANKONG MUSIC</text>
+</svg>

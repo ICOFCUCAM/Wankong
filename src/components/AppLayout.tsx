@@ -48,36 +48,36 @@ const STATS = [
 // ── Mock fallbacks — shown until real content is uploaded so sections never sit empty.
 // (ProductCard renders a styled placeholder when `image` is missing.)
 const MOCK_NEW_RELEASES = [
-  { id: 'nr1', handle: 'heaven-gates',   title: 'Heaven Gates',   vendor: 'Prophet Elijah', product_type: 'Music', price: 0,    genre: 'Gospel' },
-  { id: 'nr2', handle: 'afro-vibration', title: 'Afro Vibration', vendor: 'Kojo Mensah',    product_type: 'Music', price: 199,  genre: 'Afrobeats' },
-  { id: 'nr3', handle: 'midnight-jazz',  title: 'Midnight Jazz',  vendor: 'Adaeze Obi',     product_type: 'Music', price: 299,  genre: 'Jazz' },
-  { id: 'nr4', handle: 'street-gospel',  title: 'Street Gospel',  vendor: 'MC Zion',        product_type: 'Music', price: 0,    genre: 'Hip-Hop' },
-  { id: 'nr5', handle: 'lagos-nights',   title: 'Lagos Nights',   vendor: 'Funmi Adeyemi',  product_type: 'Music', price: 149,  genre: 'RnB' },
-  { id: 'nr6', handle: 'electric-soul',  title: 'Electric Soul',  vendor: 'DJ Beacon',      product_type: 'Music', price: 249,  genre: 'EDM' },
-  { id: 'nr7', handle: 'yoruba-praise',  title: 'Yoruba Praise',  vendor: 'Sis. Busayo',    product_type: 'Music', price: 0,    genre: 'Gospel' },
-  { id: 'nr8', handle: 'highlife-remix', title: 'Highlife Remix', vendor: 'Kwame Asante',   product_type: 'Music', price: 0,    genre: 'Highlife' },
+  { id: 'nr1', image: '/covers/nr1.svg', handle: 'heaven-gates',   title: 'Heaven Gates',   vendor: 'Prophet Elijah', product_type: 'Music', price: 0,    genre: 'Gospel' },
+  { id: 'nr2', image: '/covers/nr2.svg', handle: 'afro-vibration', title: 'Afro Vibration', vendor: 'Kojo Mensah',    product_type: 'Music', price: 199,  genre: 'Afrobeats' },
+  { id: 'nr3', image: '/covers/nr3.svg', handle: 'midnight-jazz',  title: 'Midnight Jazz',  vendor: 'Adaeze Obi',     product_type: 'Music', price: 299,  genre: 'Jazz' },
+  { id: 'nr4', image: '/covers/nr4.svg', handle: 'street-gospel',  title: 'Street Gospel',  vendor: 'MC Zion',        product_type: 'Music', price: 0,    genre: 'Hip-Hop' },
+  { id: 'nr5', image: '/covers/nr5.svg', handle: 'lagos-nights',   title: 'Lagos Nights',   vendor: 'Funmi Adeyemi',  product_type: 'Music', price: 149,  genre: 'RnB' },
+  { id: 'nr6', image: '/covers/nr6.svg', handle: 'electric-soul',  title: 'Electric Soul',  vendor: 'DJ Beacon',      product_type: 'Music', price: 249,  genre: 'EDM' },
+  { id: 'nr7', image: '/covers/nr7.svg', handle: 'yoruba-praise',  title: 'Yoruba Praise',  vendor: 'Sis. Busayo',    product_type: 'Music', price: 0,    genre: 'Gospel' },
+  { id: 'nr8', image: '/covers/nr8.svg', handle: 'highlife-remix', title: 'Highlife Remix', vendor: 'Kwame Asante',   product_type: 'Music', price: 0,    genre: 'Highlife' },
 ];
 
 const MOCK_BOOKS = [
-  { id: 'bk1', handle: 'gospel-of-grace',      title: 'The Gospel of Grace',       author: 'Pastor E. Ofori',     product_type: 'Book', price: 1299, genre: 'Christian Living' },
-  { id: 'bk2', handle: 'kingdom-business',     title: 'Kingdom Business Secrets',  author: 'Dr. Faith Mensah',    product_type: 'Book', price: 1899, genre: 'Business' },
-  { id: 'bk3', handle: 'midnight-prayers',     title: 'Midnight Prayers',          author: 'Rev. Samuel Asante',  product_type: 'Book', price: 999,  genre: 'Devotional' },
-  { id: 'bk4', handle: 'praise-anthology',     title: 'African Praise Anthology',  author: 'Various Authors',     product_type: 'Book', price: 2499, genre: 'Worship' },
-  { id: 'bk5', handle: 'prophetic-voice',      title: 'The Prophetic Voice',       author: 'Apostle Grace Oduya', product_type: 'Book', price: 1599, genre: 'Prophecy' },
-  { id: 'bk6', handle: 'healing-wings',        title: 'Healing in His Wings',      author: 'Dr. Emmanuel Yaw',    product_type: 'Book', price: 1399, genre: 'Healing' },
-  { id: 'bk7', handle: 'digital-christian',    title: 'The Digital Christian',     author: 'Tech Pastor Kwame',   product_type: 'Book', price: 1199, genre: 'Christian Living' },
-  { id: 'bk8', handle: 'songs-of-ascent',      title: 'Songs of Ascent',          author: 'Choir Master David',  product_type: 'Book', price: 899,  genre: 'Worship' },
-  { id: 'bk9', handle: 'raising-kingdom-kids', title: 'Raising Kingdom Kids',      author: 'Pastor Mary Adofo',   product_type: 'Book', price: 1699, genre: 'Parenting' },
-  { id: 'bk10', handle: 'fast-breaks-chains',  title: 'The Fast That Breaks Chains', author: 'Bishop John Asare', product_type: 'Book', price: 1099, genre: 'Devotional' },
+  { id: 'bk1', image: '/covers/bk1.svg', handle: 'gospel-of-grace',      title: 'The Gospel of Grace',       author: 'Pastor E. Ofori',     product_type: 'Book', price: 1299, genre: 'Christian Living' },
+  { id: 'bk2', image: '/covers/bk2.svg', handle: 'kingdom-business',     title: 'Kingdom Business Secrets',  author: 'Dr. Faith Mensah',    product_type: 'Book', price: 1899, genre: 'Business' },
+  { id: 'bk3', image: '/covers/bk3.svg', handle: 'midnight-prayers',     title: 'Midnight Prayers',          author: 'Rev. Samuel Asante',  product_type: 'Book', price: 999,  genre: 'Devotional' },
+  { id: 'bk4', image: '/covers/bk4.svg', handle: 'praise-anthology',     title: 'African Praise Anthology',  author: 'Various Authors',     product_type: 'Book', price: 2499, genre: 'Worship' },
+  { id: 'bk5', image: '/covers/bk5.svg', handle: 'prophetic-voice',      title: 'The Prophetic Voice',       author: 'Apostle Grace Oduya', product_type: 'Book', price: 1599, genre: 'Prophecy' },
+  { id: 'bk6', image: '/covers/bk6.svg', handle: 'healing-wings',        title: 'Healing in His Wings',      author: 'Dr. Emmanuel Yaw',    product_type: 'Book', price: 1399, genre: 'Healing' },
+  { id: 'bk7', image: '/covers/bk7.svg', handle: 'digital-christian',    title: 'The Digital Christian',     author: 'Tech Pastor Kwame',   product_type: 'Book', price: 1199, genre: 'Christian Living' },
+  { id: 'bk8', image: '/covers/bk8.svg', handle: 'songs-of-ascent',      title: 'Songs of Ascent',          author: 'Choir Master David',  product_type: 'Book', price: 899,  genre: 'Worship' },
+  { id: 'bk9', image: '/covers/bk9.svg', handle: 'raising-kingdom-kids', title: 'Raising Kingdom Kids',      author: 'Pastor Mary Adofo',   product_type: 'Book', price: 1699, genre: 'Parenting' },
+  { id: 'bk10', image: '/covers/bk10.svg', handle: 'fast-breaks-chains',  title: 'The Fast That Breaks Chains', author: 'Bishop John Asare', product_type: 'Book', price: 1099, genre: 'Devotional' },
 ];
 
 const MOCK_AUDIOBOOKS = [
-  { id: 'ab1', handle: 'grace-audio',     title: 'The Gospel of Grace (Audio)', author: 'Pastor E. Ofori',    product_type: 'Audiobook', price: 1499, genre: 'Christian Living' },
-  { id: 'ab2', handle: 'prayers-audio',   title: 'Midnight Prayers (Audio)',    author: 'Rev. Samuel Asante', product_type: 'Audiobook', price: 1199, genre: 'Devotional' },
-  { id: 'ab3', handle: 'prophetic-audio', title: 'The Prophetic Voice (Audio)', author: 'Apostle Grace Oduya', product_type: 'Audiobook', price: 1799, genre: 'Prophecy' },
-  { id: 'ab4', handle: 'kingdom-audio',   title: 'Kingdom Business (Audio)',    author: 'Dr. Faith Mensah',   product_type: 'Audiobook', price: 1999, genre: 'Business' },
-  { id: 'ab5', handle: 'healing-audio',   title: 'Healing in His Wings (Audio)', author: 'Dr. Emmanuel Yaw',  product_type: 'Audiobook', price: 1599, genre: 'Healing' },
-  { id: 'ab6', handle: 'ascent-audio',    title: 'Songs of Ascent (Audio)',     author: 'Choir Master David', product_type: 'Audiobook', price: 1299, genre: 'Worship' },
+  { id: 'ab1', image: '/covers/ab1.svg', handle: 'grace-audio',     title: 'The Gospel of Grace (Audio)', author: 'Pastor E. Ofori',    product_type: 'Audiobook', price: 1499, genre: 'Christian Living' },
+  { id: 'ab2', image: '/covers/ab2.svg', handle: 'prayers-audio',   title: 'Midnight Prayers (Audio)',    author: 'Rev. Samuel Asante', product_type: 'Audiobook', price: 1199, genre: 'Devotional' },
+  { id: 'ab3', image: '/covers/ab3.svg', handle: 'prophetic-audio', title: 'The Prophetic Voice (Audio)', author: 'Apostle Grace Oduya', product_type: 'Audiobook', price: 1799, genre: 'Prophecy' },
+  { id: 'ab4', image: '/covers/ab4.svg', handle: 'kingdom-audio',   title: 'Kingdom Business (Audio)',    author: 'Dr. Faith Mensah',   product_type: 'Audiobook', price: 1999, genre: 'Business' },
+  { id: 'ab5', image: '/covers/ab5.svg', handle: 'healing-audio',   title: 'Healing in His Wings (Audio)', author: 'Dr. Emmanuel Yaw',  product_type: 'Audiobook', price: 1599, genre: 'Healing' },
+  { id: 'ab6', image: '/covers/ab6.svg', handle: 'ascent-audio',    title: 'Songs of Ascent (Audio)',     author: 'Choir Master David', product_type: 'Audiobook', price: 1299, genre: 'Worship' },
 ];
 
 const MOCK_ARTISTS = [
