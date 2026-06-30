@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { formatNumber, formatCurrency } from '@/lib/constants';
+import CompetitionApprovalQueue from './CompetitionApprovalQueue';
 
 interface Profile {
   id: string;
@@ -346,17 +347,7 @@ export default function AdminPanel() {
         </div>
       )}
 
-      {activeTab === 'competitions' && (
-        <div className="space-y-4">
-          <button className="bg-[#9D4EDD] hover:bg-[#7C3AED] text-white font-medium px-5 py-2.5 rounded-xl transition-colors flex items-center gap-2">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-            Create Competition
-          </button>
-          <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
-            <p className="text-gray-400 text-sm">Competition management tools — create, edit, and manage competitions from here.</p>
-          </div>
-        </div>
-      )}
+      {activeTab === 'competitions' && <CompetitionApprovalQueue />}
     </div>
   );
 }

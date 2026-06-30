@@ -5,6 +5,7 @@ import { useApp } from '@/store/AppContext';
 import { supabase } from '@/lib/supabase';
 import { getAllCountries } from '@/lib/countries';
 import { SUPPORTED_LANGUAGES, applyLangDir } from '@/lib/i18n';
+import SocialConnectionsPanel from '@/components/social/SocialConnectionsPanel';
 
 // Lazy-compute country list (runs once)
 const COUNTRY_LIST = getAllCountries();
@@ -13,7 +14,7 @@ export default function SettingsView() {
   const { t, i18n } = useTranslation();
   const { user } = useApp();
 
-  const [activeTab,    setActiveTab]    = useState<'profile' | 'payments' | 'security' | 'notifications'>('profile');
+  const [activeTab,    setActiveTab]    = useState<'profile' | 'connections' | 'payments' | 'security' | 'notifications'>('profile');
   const [displayName,  setDisplayName]  = useState(user?.displayName ?? '');
   const [bio,          setBio]          = useState('');
   const [country,      setCountry]      = useState(user?.country ?? 'NG');
@@ -55,6 +56,7 @@ export default function SettingsView() {
 
   const tabs = [
     { id: 'profile'       as const, label: t('settings.profile') },
+    { id: 'connections'   as const, label: 'Connections' },
     { id: 'payments'      as const, label: t('settings.payments') },
     { id: 'security'      as const, label: t('settings.security') },
     { id: 'notifications' as const, label: t('settings.notifications') },
@@ -78,6 +80,9 @@ export default function SettingsView() {
           </button>
         ))}
       </div>
+
+      {/* ── Connections tab ──────────────────────────────────────────────────── */}
+      {activeTab === 'connections' && <SocialConnectionsPanel />}
 
       {/* ── Profile tab ──────────────────────────────────────────────────────── */}
       {activeTab === 'profile' && (

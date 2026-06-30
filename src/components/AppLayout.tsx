@@ -397,6 +397,42 @@ export default function AppLayout() {
   const [votedEntry, setVotedEntry] = useState<string | null>(null);
   const [playingEntry, setPlayingEntry] = useState<string | null>(null); // which entry's YouTube is playing inline
   const [battleCountdown, setBattleCountdown] = useState(8073); // seconds remaining
+
+  // Real published competition entries — only those that have gone live on the
+  // home page (admin-approved → published to WANKONG channels first). Falls back
+  // to the showcase mock until real entries exist.
+  const [liveArena, setLiveArena] = useState<ArenaEntry[] | null>(null);
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await supabase
+          .from('competition_entries_v2')
+          .select('id, performer_name, category, song_title, language, wankong_social_urls, creator_social_urls')
+          .eq('visible_on_home', true)
+          .order('wankong_published_at', { ascending: false })
+          .limit(6);
+        const ytId = (url?: string) => url?.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/)?.[1];
+        const mapped = asArray<any>(data)
+          .map((e): ArenaEntry | null => {
+            const urls = { ...(e.wankong_social_urls || {}), ...(e.creator_social_urls || {}) };
+            const id = ytId(urls.youtube);
+            if (!id) return null; // home cards embed YouTube; skip entries without one
+            return {
+              id: e.id,
+              name: e.performer_name || 'Creator',
+              flag: '🌍',
+              take: e.category || e.song_title || 'Performance',
+              votes: 0,
+              youtubeId: id,
+              platforms: Object.keys(urls),
+            };
+          })
+          .filter((x): x is ArenaEntry => x !== null);
+        if (mapped.length) setLiveArena(mapped);
+      } catch { /* keep mock */ }
+    })();
+  }, []);
+  const arenaEntries = liveArena && liveArena.length ? liveArena : ARENA_ENTRIES;
   useEffect(() => {
     const id = setInterval(() => {
       setEntryVotes(prev => {
@@ -1533,7 +1569,7 @@ export default function AppLayout() {
                 <div className="w-px h-10 bg-white/10 hidden md:block" />
                 <div className="text-left md:text-right">
                   <p className="text-white/40 text-[10px] uppercase tracking-widest">Competing</p>
-                  <p className="text-2xl md:text-3xl font-black text-white tabular-nums">{ARENA_ENTRIES.length}</p>
+                  <p className="text-2xl md:text-3xl font-black text-white tabular-nums">{arenaEntries.length}</p>
                 </div>
                 <Link to="/collections/talent-arena" className="ml-1 px-5 py-2.5 rounded-xl bg-white text-[#0B0814] font-bold text-sm hover:bg-white/90 transition-colors whitespace-nowrap flex items-center gap-1.5 shadow-lg">Enter Arena <ArrowRight className="w-4 h-4" /></Link>
               </div>
@@ -1542,7 +1578,7 @@ export default function AppLayout() {
           </Reveal>
 
           {(() => {
-            const ranked = ARENA_ENTRIES
+            const ranked = arenaEntries
               .map(e => ({ ...e, v: entryVotes[e.id] ?? e.votes }))
               .sort((a, b) => b.v - a.v);
             const total = ranked.reduce((s, e) => s + e.v, 0) || 1;
@@ -1563,7 +1599,7 @@ export default function AppLayout() {
                   <div>
                     <span className="text-[#FFB800] text-[11px] font-bold uppercase tracking-widest">The Challenge</span>
                     <p className="text-white font-black text-lg leading-tight">{ARENA_CHALLENGE.title}</p>
-                    <p className="text-white/45 text-sm">{ARENA_CHALLENGE.artist} · {ARENA_ENTRIES.length} creators competing</p>
+                    <p className="text-white/45 text-sm">{ARENA_CHALLENGE.artist} · {arenaEntries.length} creators competing</p>
                   </div>
                 </div>
                 <div className="flex flex-col items-start md:items-end">

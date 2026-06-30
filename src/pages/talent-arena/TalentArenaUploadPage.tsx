@@ -132,9 +132,13 @@ export default function TalentArenaUploadPage() {
           <CheckCircle className="w-10 h-10 text-[#FFB800]" />
         </div>
         <h2 className="text-2xl font-bold text-white mb-2">Entry Submitted!</h2>
-        <p className="text-gray-400 text-sm mb-6">
-          Your performance is under review. You'll be notified once it goes live for public voting.
+        <p className="text-gray-400 text-sm mb-4">
+          Your performance is under review. Once approved, it's auto-published to WANKONG's official social
+          channels first, then to your own connected accounts, and then it goes live on the home page for voting.
         </p>
+        <Link to="/dashboard?view=settings" className="inline-flex items-center gap-1.5 text-[#FFB800] text-sm font-semibold hover:underline mb-6">
+          Connect your social accounts →
+        </Link>
         <div className="flex gap-3 justify-center">
           <Link to="/talent-arena" className="px-5 py-2.5 bg-[#FFB800] text-black font-bold rounded-xl hover:opacity-90 transition-opacity">Talent Arena</Link>
           <button onClick={() => { setDone(false); setVideoFile(null); setThumbFile(null); setThumbPreview(''); setDurationInfo(''); setAgreed(false); setForm({ title: '', performer_name: '', category: '', language: 'English', song_title: '', source_type: 'independent', is_original: false, room_id: '' }); }}
