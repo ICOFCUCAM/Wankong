@@ -126,3 +126,13 @@ input[type="range"]::-webkit-slider-thumb {
   margin-top: -4px;
   cursor: pointer;
 }
+
+/* ── Aurora background drift ─────────────────────────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  .wk-aurora   { animation: wk-drift-a 26s ease-in-out infinite alternate; }
+  .wk-aurora-2 { animation: wk-drift-b 32s ease-in-out infinite alternate; }
+  .wk-aurora-3 { animation: wk-drift-c 38s ease-in-out infinite alternate; }
+}
+@keyframes wk-drift-a { from { transform: translate(0,0) scale(1); }   to { transform: translate(8vw,6vh) scale(1.15); } }
+@keyframes wk-drift-b { from { transform: translate(0,0) scale(1.1); } to { transform: translate(-7vw,4vh) scale(1); } }
+@keyframes wk-drift-c { from { transform: translate(0,0) scale(1); }   to { transform: translate(5vw,-6vh) scale(1.2); } }

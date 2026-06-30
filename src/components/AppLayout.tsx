@@ -172,6 +172,55 @@ function Equalizer({ color, bars = 20, className = '' }: { color: string; bars?:
   );
 }
 
+// ── Scroll-reveal + count-up ──────────────────────────────────────────────────
+function Reveal({ children, className = '', delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === 'undefined') { setShown(true); return; }
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setShown(true); obs.disconnect(); } }, { threshold: 0.12 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return (
+    <div
+      ref={ref}
+      style={{ transitionDelay: `${delay}ms` }}
+      className={`transition-all duration-700 ease-out ${shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
+
+function CountUp({ to, prefix = '', suffix = '', decimals = 0, className = '' }: { to: number; prefix?: string; suffix?: string; decimals?: number; className?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [val, setVal] = useState(0);
+  const started = useRef(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === 'undefined') { setVal(to); return; }
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !started.current) {
+        started.current = true;
+        const dur = 1600, t0 = performance.now();
+        const tick = (t: number) => {
+          const p = Math.min(1, (t - t0) / dur);
+          setVal(to * (1 - Math.pow(1 - p, 3)));
+          if (p < 1) requestAnimationFrame(tick); else setVal(to);
+        };
+        requestAnimationFrame(tick);
+      }
+    }, { threshold: 0.5 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [to]);
+  const shown = val.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  return <span ref={ref} className={className}>{prefix}{shown}{suffix}</span>;
+}
+
 const AVATAR_GRADS = ['from-[#9D4EDD] to-[#00D9FF]', 'from-[#FF6B00] to-[#FFB800]', 'from-[#00F5A0] to-[#00D9FF]', 'from-[#FF3B6B] to-[#9D4EDD]'];
 function AvatarStack({ count = 3 }: { count?: number }) {
   return (
@@ -461,7 +510,14 @@ export default function AppLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0814] pb-20">
+    <div className="relative min-h-screen bg-[#0B0814] pb-20">
+      {/* Aurora / mesh background */}
+      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden>
+        <div className="absolute -top-1/4 -left-1/4 w-[60vw] h-[60vw] rounded-full blur-[120px] opacity-25 wk-aurora" style={{ background: 'radial-gradient(circle, #9D4EDD, transparent 60%)' }} />
+        <div className="absolute top-1/3 -right-1/4 w-[55vw] h-[55vw] rounded-full blur-[120px] opacity-20 wk-aurora-2" style={{ background: 'radial-gradient(circle, #00D9FF, transparent 60%)' }} />
+        <div className="absolute bottom-0 left-1/4 w-[50vw] h-[50vw] rounded-full blur-[120px] opacity-15 wk-aurora-3" style={{ background: 'radial-gradient(circle, #FF3B6B, transparent 60%)' }} />
+      </div>
+      <div className="relative z-10">
       <Header />
 
       {/* ── 1. HERO ──────────────────────────────────────────────────────────── */}
@@ -533,21 +589,27 @@ export default function AppLayout() {
           </div>
         </div>
 
-        {/* Stats — single bordered card, icon-left */}
+        {/* Stats — animated count-up, icon-left, with live glow */}
         <div className="relative max-w-7xl mx-auto px-4 pb-14">
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm grid grid-cols-2 md:grid-cols-4 divide-y divide-white/10 md:divide-y-0 md:divide-x">
+          <div className="relative rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm grid grid-cols-2 md:grid-cols-4 divide-y divide-white/10 md:divide-y-0 md:divide-x overflow-hidden">
+            <span className="absolute top-3 right-4 z-10 inline-flex items-center gap-1.5 text-[10px] font-bold text-[#00F5A0] uppercase tracking-wider">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#00F5A0] animate-pulse shadow-[0_0_8px_#00F5A0]" /> Live
+            </span>
             {[
-              { icon: Users, label: 'Active Creators', value: '12,500+', color: '#00D9FF' },
-              { icon: Globe, label: 'Countries', value: '140+', color: '#9D4EDD' },
-              { icon: DollarSign, label: 'Creator Payouts', value: '$2.8M+', color: '#00F5A0' },
-              { icon: TrendingUp, label: 'Monthly Streams', value: '45M+', color: '#FFB800' },
+              { icon: Users,       label: 'Active Creators', to: 12500, suffix: '+',  color: '#00D9FF' },
+              { icon: Globe,       label: 'Countries',       to: 140,   suffix: '+',  color: '#9D4EDD' },
+              { icon: DollarSign,  label: 'Creator Payouts', to: 2.8,   prefix: '$', suffix: 'M+', decimals: 1, color: '#00F5A0' },
+              { icon: TrendingUp,  label: 'Monthly Streams', to: 45,    suffix: 'M+', color: '#FFB800' },
             ].map((stat, i) => (
-              <div key={i} className="flex items-center gap-4 p-5 md:p-6">
-                <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${stat.color}1A` }}>
+              <div key={i} className="group relative flex items-center gap-4 p-5 md:p-6 transition-colors hover:bg-white/[0.04]">
+                <div className="absolute -left-6 -top-6 w-24 h-24 rounded-full opacity-0 group-hover:opacity-100 blur-2xl transition-opacity duration-500" style={{ backgroundColor: `${stat.color}26` }} />
+                <div className="relative w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110" style={{ backgroundColor: `${stat.color}1A` }}>
                   <stat.icon className="w-5 h-5" style={{ color: stat.color }} />
                 </div>
-                <div className="min-w-0">
-                  <p className="text-2xl md:text-3xl font-black text-white leading-none mb-1">{stat.value}</p>
+                <div className="relative min-w-0">
+                  <p className="text-2xl md:text-3xl font-black text-white leading-none mb-1">
+                    <CountUp to={stat.to} prefix={stat.prefix} suffix={stat.suffix} decimals={stat.decimals ?? 0} />
+                  </p>
                   <p className="text-white/40 text-sm truncate">{stat.label}</p>
                 </div>
               </div>
@@ -873,7 +935,7 @@ export default function AppLayout() {
           </div>
           <div className="flex gap-4 overflow-x-auto pb-3 -mx-4 px-4" style={{ scrollbarWidth: 'none' }}>
             {(newReleases.length ? newReleases : MOCK_NEW_RELEASES).map((product: any) => (
-              <div key={product.id} className="shrink-0 w-[200px]">
+              <div key={product.id} className="shrink-0 w-[200px] transition-transform duration-300 hover:-translate-y-1.5">
                 <ProductCard product={product} variant="square" />
               </div>
             ))}
@@ -929,6 +991,7 @@ export default function AppLayout() {
       {/* ── 7. TRENDING BOOKS ─────────────────────────────────────────── */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4">
+          <Reveal>
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-amber-500/15 rounded-xl flex items-center justify-center">
@@ -943,6 +1006,7 @@ export default function AppLayout() {
               See All <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
+          </Reveal>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 mb-8">
             {(trendingBooks.length ? trendingBooks : MOCK_BOOKS).slice(0, 10).map((product: any) => (
               <ProductCard key={product.id} product={product} variant="portrait" />
@@ -979,7 +1043,7 @@ export default function AppLayout() {
           </div>
           <div className="flex gap-4 overflow-x-auto pb-3" style={{ scrollbarWidth: 'none' }}>
             {(audiobooks.length ? audiobooks : MOCK_AUDIOBOOKS).map((product: any) => (
-              <div key={product.id} className="shrink-0 w-[200px]">
+              <div key={product.id} className="shrink-0 w-[200px] transition-transform duration-300 hover:-translate-y-1.5">
                 <ProductCard product={product} variant="square" />
               </div>
             ))}
@@ -1148,6 +1212,7 @@ export default function AppLayout() {
       )}
 
       <Footer />
+      </div>
     </div>
   );
 }
