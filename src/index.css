@@ -159,6 +159,25 @@ input[type="range"]::-webkit-slider-thumb {
   transform: rotateY(0deg) translateY(-12px) scale(1.06);
   box-shadow: 0 26px 50px rgba(0,0,0,.6);
 }
+/* page-catching-light sheen sweeps across the cover as the book turns */
+.wk-book::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 32%, rgba(255,255,255,0.28) 48%, transparent 62%);
+  transform: translateX(-130%);
+  transition: transform .8s cubic-bezier(.2,.7,.2,1);
+  pointer-events: none;
+  z-index: 5;
+}
+.group:hover .wk-book::after { transform: translateX(130%); }
+
+/* breathing live indicator — pulsing glow ring */
+.wk-live { animation: wk-live 2s ease-in-out infinite; }
+@keyframes wk-live {
+  0%,100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.55); }
+  70%     { box-shadow: 0 0 0 7px rgba(239,68,68,0); }
+}
 
 /* ── Animated gradient border spin ───────────────────────────────────────── */
 .wk-spin { animation: wk-spin 3s linear infinite; }
@@ -258,5 +277,5 @@ input[type="range"]::-webkit-slider-thumb {
 .wk-nav-scrolled { backdrop-filter: blur(18px) saturate(1.4); background: rgba(11,8,20,0.72) !important; border-bottom-color: rgba(255,255,255,0.10) !important; }
 
 @media (prefers-reduced-motion: reduce) {
-  .wk-page-in, .wk-shimmer::after, .wk-spin-strip, .wk-aurora, .wk-aurora-2, .wk-aurora-3, .wk-aurora-4, .wk-float, .wk-ping, .wk-eqbar, .wk-spin, .wk-stars, .wk-breathe, .wk-coverfloat, .wk-ticker, .wk-spotlight { animation: none !important; }
+  .wk-page-in, .wk-shimmer::after, .wk-spin-strip, .wk-aurora, .wk-aurora-2, .wk-aurora-3, .wk-aurora-4, .wk-float, .wk-ping, .wk-eqbar, .wk-spin, .wk-stars, .wk-breathe, .wk-coverfloat, .wk-ticker, .wk-spotlight, .wk-live { animation: none !important; }
 }

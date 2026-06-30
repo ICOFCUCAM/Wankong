@@ -957,7 +957,7 @@ export default function AppLayout() {
               <div className="relative aspect-[16/11] bg-gradient-to-br from-[#3a2033] to-[#0B0814]">
                 <img src={ARTIST_IMAGES[2]} alt="" className="absolute inset-0 w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0D1635] via-transparent to-transparent" />
-                <span className="absolute top-2.5 left-2.5 inline-flex items-center gap-1 px-2 py-0.5 bg-red-500 text-white text-[10px] font-black rounded-full">
+                <span className="absolute top-2.5 left-2.5 inline-flex items-center gap-1 px-2 py-0.5 bg-red-500 text-white text-[10px] font-black rounded-full wk-live">
                   <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE
                 </span>
                 <button className="absolute left-3 bottom-3 w-10 h-10 rounded-full bg-black/40 backdrop-blur border border-white/30 flex items-center justify-center text-white hover:bg-black/60 transition-colors">
@@ -1009,11 +1009,11 @@ export default function AppLayout() {
                 <SlidersHorizontal className="w-3 h-3" /> NOW PLAYING
               </span>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#9D4EDD] to-[#3a1d6e] flex items-center justify-center shrink-0 shadow-lg">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#9D4EDD] to-[#3a1d6e] flex items-center justify-center shrink-0 shadow-lg wk-coverfloat">
                   <Music className="w-5 h-5 text-white/80" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-white font-black text-base leading-tight truncate">Holy Ground</p>
+                  <p className="text-white font-black text-base leading-tight truncate">Golden Hour</p>
                   <p className="text-white/60 text-sm truncate">Grace Adele</p>
                 </div>
                 <button className="text-white/40 hover:text-[#FF3B6B] transition-colors"><Heart className="w-5 h-5" /></button>
@@ -1239,7 +1239,7 @@ export default function AppLayout() {
                       <div className={`relative h-24 bg-gradient-to-br ${GRADIENTS[i % GRADIENTS.length]}`}>
                         <div className="absolute inset-0 opacity-25" style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.5) 1px, transparent 1.5px)', backgroundSize: '13px 13px' }} />
                         {live && (
-                          <span className="absolute top-2.5 left-2.5 inline-flex items-center gap-1 px-2 py-0.5 bg-red-500 text-white text-[10px] font-black rounded-full">
+                          <span className="absolute top-2.5 left-2.5 inline-flex items-center gap-1 px-2 py-0.5 bg-red-500 text-white text-[10px] font-black rounded-full wk-live">
                             <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE
                           </span>
                         )}
@@ -1439,7 +1439,7 @@ export default function AppLayout() {
             <Reveal>
             <div className="relative rounded-3xl border border-white/10 bg-gradient-to-br from-[#2a0e2e] via-[#1a0e2e] to-[#0F0A1E] p-7 md:p-9 overflow-hidden">
               <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, rgba(255,0,110,0.4) 1px, transparent 1.5px)', backgroundSize: '18px 18px' }} />
-              <span className="relative inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-500 text-white text-[10px] font-black rounded-full">
+              <span className="relative inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-500 text-white text-[10px] font-black rounded-full wk-live">
                 <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> ON AIR
               </span>
               <div className="relative flex items-center gap-5 mt-5 mb-7">
@@ -1507,7 +1507,7 @@ export default function AppLayout() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-500 text-white text-[10px] font-black rounded-full"><span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE NOW</span>
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-500 text-white text-[10px] font-black rounded-full wk-live"><span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE NOW</span>
                     <span className="text-[#FFB800] text-[11px] font-bold uppercase tracking-[0.25em]">Global Stage</span>
                   </div>
                   <h2 className="text-3xl md:text-4xl font-black text-white leading-none tracking-tight">Talent Arena</h2>
