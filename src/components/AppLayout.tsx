@@ -1138,13 +1138,60 @@ export default function AppLayout() {
               View All <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          <div className="flex gap-4 overflow-x-auto pb-3 -mx-4 px-4" style={{ scrollbarWidth: 'none' }}>
-            {(newReleases.length ? newReleases : MOCK_NEW_RELEASES).map((product: any) => (
-              <div key={product.id} className="shrink-0 w-[200px] transition-transform duration-300 hover:-translate-y-1.5">
-                <ProductCard product={product} variant="square" />
+          {(() => {
+            const items = (newReleases.length ? newReleases : MOCK_NEW_RELEASES) as any[];
+            const feat = items[0];
+            const rail = items.slice(1, 7);
+            const img = (p: any) => p?.image || p?.cover_url || p?.cover_art || '';
+            const by  = (p: any) => p?.vendor || p?.artist || p?.author || 'WANKONG';
+            const price = (p: any) => { const c = typeof p?.price === 'number' ? p.price : 0; return c === 0 ? 'Free' : `$${(c / 100).toFixed(2)}`; };
+            if (!feat) return null;
+            return (
+            <div className="grid lg:grid-cols-[1.05fr_1fr] gap-5">
+              {/* Large feature */}
+              <Reveal>
+              <Link to={`/product/${feat.handle ?? ''}`} className="group relative block rounded-3xl overflow-hidden border border-white/10 min-h-[320px] md:min-h-[380px]">
+                {img(feat)
+                  ? <img src={img(feat)} alt={feat.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  : <div className="absolute inset-0 bg-gradient-to-br from-[#9D4EDD] to-[#00D9FF]" />}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+                <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-[#00F5A0]/15 border border-[#00F5A0]/30 text-[#00F5A0] text-[11px] font-bold uppercase tracking-wider">● Fresh Drop</span>
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  {feat.genre && <span className="inline-block mb-2 px-2.5 py-0.5 rounded-full bg-white/10 backdrop-blur text-white/80 text-[11px] font-semibold">{feat.genre}</span>}
+                  <h3 className="text-white font-black text-2xl md:text-3xl leading-tight mb-1">{feat.title}</h3>
+                  <p className="text-white/60 text-sm mb-4">{by(feat)}</p>
+                  <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-[#0B0814] font-bold text-sm group-hover:opacity-90 transition-opacity"><Play className="w-4 h-4 fill-[#0B0814]" /> Play now</span>
+                </div>
+              </Link>
+              </Reveal>
+              {/* Scrolling rail */}
+              <Reveal delay={120}>
+              <div className="rounded-3xl border border-white/10 bg-white/[0.02] backdrop-blur-sm p-3 flex flex-col">
+                <div className="flex items-center justify-between px-2 py-2">
+                  <p className="text-white font-bold text-sm">Just landed</p>
+                  <span className="text-white/35 text-xs">{rail.length} more</span>
+                </div>
+                <div className="flex flex-col gap-1 overflow-y-auto pr-1" style={{ maxHeight: 340 }}>
+                  {rail.map((p: any, i: number) => (
+                    <Link key={p.id ?? i} to={`/product/${p.handle ?? ''}`} className="group flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 transition-colors">
+                      <span className="text-white/30 text-sm font-bold w-5 text-center tabular-nums">{i + 2}</span>
+                      <div className="w-12 h-12 rounded-lg overflow-hidden bg-white/5 shrink-0">
+                        {img(p) && <img src={img(p)} alt={p.title} className="w-full h-full object-cover" loading="lazy" />}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-white text-sm font-semibold truncate">{p.title}</p>
+                        <p className="text-white/40 text-xs truncate">{by(p)}</p>
+                      </div>
+                      <span className="text-white/50 text-xs font-medium shrink-0">{price(p)}</span>
+                      <span className="w-8 h-8 rounded-full bg-white/5 group-hover:bg-[#9D4EDD] flex items-center justify-center transition-colors shrink-0"><Play className="w-3.5 h-3.5 text-white fill-white ml-0.5" /></span>
+                    </Link>
+                  ))}
+                </div>
               </div>
-            ))}
-          </div>
+              </Reveal>
+            </div>
+            );
+          })()}
         </div>
       </section>
 
@@ -1270,7 +1317,7 @@ export default function AppLayout() {
             <div className="mx-6 h-2 rounded-b-lg bg-black/40 blur-[2px]" />
           </div>
           <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
-            {['All', 'Devotional', 'Christian Living', 'Worship', 'Business', 'Prophecy', 'Parenting', 'Healing'].map(genre => (
+            {['All', 'Fiction', 'Business', 'Self-Help', 'Poetry', 'Sci-Fi', 'Romance', 'Biography'].map(genre => (
               <Link
                 key={genre}
                 to={genre === 'All' ? '/collections/books' : `/collections/books?genre=${genre.toLowerCase().replace(/ /g, '-')}`}
@@ -1302,32 +1349,34 @@ export default function AppLayout() {
           </div>
           </Reveal>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {/* Floating service bubbles — a constellation of creative talent */}
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-7 md:gap-x-9 py-2">
             {[
-              { icon: Music,            label: 'Producers',  count: '1,240 pros', color: '#00D9FF' },
-              { icon: Mic,              label: 'Studios',    count: '480 spaces', color: '#9D4EDD' },
-              { icon: SlidersHorizontal,label: 'Mixing',     count: '860 pros',   color: '#00F5A0' },
-              { icon: Headphones,       label: 'Mastering',  count: '520 pros',   color: '#FFB800' },
-              { icon: Scissors,         label: 'Editors',    count: '930 pros',   color: '#FF6B00' },
-              { icon: Palette,          label: 'Artwork',    count: '1,510 pros', color: '#FF006E' },
-              { icon: Megaphone,        label: 'Marketing',  count: '670 pros',   color: '#00D9FF' },
-              { icon: Globe,            label: 'Distribution', count: '30+ stores', color: '#9D4EDD' },
+              { icon: Music,            label: 'Producers',    count: '1,240 pros',  color: '#00D9FF', big: true  },
+              { icon: Mic,              label: 'Studios',      count: '480 spaces',  color: '#9D4EDD', big: false },
+              { icon: SlidersHorizontal,label: 'Mixing',       count: '860 pros',    color: '#00F5A0', big: false },
+              { icon: Headphones,       label: 'Mastering',    count: '520 pros',    color: '#FFB800', big: true  },
+              { icon: Scissors,         label: 'Editors',      count: '930 pros',    color: '#FF6B00', big: false },
+              { icon: Palette,          label: 'Artwork',      count: '1,510 pros',  color: '#FF006E', big: true  },
+              { icon: Megaphone,        label: 'Marketing',    count: '670 pros',    color: '#00D9FF', big: false },
+              { icon: Globe,            label: 'Distribution', count: '30+ stores',  color: '#9D4EDD', big: false },
             ].map((s, i) => (
               <Reveal key={s.label} delay={i * 50}>
-              <Link
-                to="/collections/marketplace"
-                className="group relative block rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-5 overflow-hidden hover:-translate-y-1.5 hover:border-white/25 transition-all duration-300"
-              >
-                <div className="absolute -right-8 -top-8 w-28 h-28 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ backgroundColor: `${s.color}26` }} />
-                <div className="relative w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110" style={{ backgroundColor: `${s.color}1A` }}>
-                  <s.icon className="w-6 h-6" style={{ color: s.color }} />
-                </div>
-                <p className="relative text-white font-bold text-base mb-0.5">{s.label}</p>
-                <p className="relative text-white/40 text-xs mb-4">{s.count}</p>
-                <span className="relative inline-flex items-center gap-1 text-xs font-semibold transition-colors" style={{ color: s.color }}>
-                  Explore <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                </span>
-              </Link>
+                <Link to="/collections/marketplace" className="group block" aria-label={`${s.label} — ${s.count}`}>
+                  <div className="wk-coverfloat" style={{ animationDelay: `${(i % 4) * 0.7}s` }}>
+                    <div
+                      className={`relative rounded-full border border-white/12 bg-white/[0.04] backdrop-blur-md flex flex-col items-center justify-center gap-1 overflow-hidden transition-all duration-300 group-hover:scale-105 group-hover:border-white/30 ${s.big ? 'w-32 h-32 md:w-36 md:h-36' : 'w-28 h-28 md:w-32 md:h-32'}`}
+                      style={{ boxShadow: `0 8px 30px -8px ${s.color}33` }}
+                    >
+                      <div className="absolute inset-0 rounded-full opacity-70 transition-opacity group-hover:opacity-100" style={{ background: `radial-gradient(circle at 50% 28%, ${s.color}22, transparent 72%)` }} />
+                      <div className="relative w-11 h-11 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110" style={{ backgroundColor: `${s.color}24` }}>
+                        <s.icon className="w-5 h-5" style={{ color: s.color }} />
+                      </div>
+                      <p className="relative text-white text-[13px] font-bold leading-none mt-0.5">{s.label}</p>
+                      <p className="relative text-white/45 text-[10px]">{s.count}</p>
+                    </div>
+                  </div>
+                </Link>
               </Reveal>
             ))}
           </div>

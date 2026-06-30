@@ -32,20 +32,20 @@ const LANGUAGE_META: Record<string, { name: string; flag: string }> = {
 };
 
 const GENRES = [
-  'All', 'Gospel', 'Afrobeats', 'Hip-Hop', 'Classical',
-  'Jazz', 'R&B', 'Praise', 'Worship', 'Contemporary',
+  'All', 'Pop', 'Afrobeats', 'Hip-Hop', 'Classical',
+  'Jazz', 'R&B', 'Electronic', 'K-Pop', 'Latin',
 ];
 
 const GENRE_GRADIENTS: Record<string, string> = {
-  Gospel:       'from-[#9D4EDD]/40 to-[#00D9FF]/20',
+  Pop:          'from-[#9D4EDD]/40 to-[#00D9FF]/20',
   Afrobeats:    'from-[#FF6B00]/40 to-[#FFB800]/20',
   'Hip-Hop':    'from-gray-700/60 to-gray-900/40',
   Classical:    'from-[#FFB800]/30 to-amber-900/20',
   Jazz:         'from-[#00D9FF]/30 to-blue-900/20',
   'R&B':        'from-pink-900/40 to-[#9D4EDD]/20',
-  Praise:       'from-[#00F5A0]/20 to-[#9D4EDD]/20',
-  Worship:      'from-[#00D9FF]/20 to-[#1E1235]/20',
-  Contemporary: 'from-[#9D4EDD]/30 to-[#FF6B00]/20',
+  Electronic:   'from-[#00F5A0]/20 to-[#9D4EDD]/20',
+  'K-Pop':      'from-[#FF006E]/30 to-[#00D9FF]/20',
+  Latin:        'from-[#9D4EDD]/30 to-[#FF6B00]/20',
 };
 
 // ── Types ─────────────────────────────────────────────────────────────────────

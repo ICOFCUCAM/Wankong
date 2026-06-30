@@ -85,7 +85,7 @@ const PARTNER_TYPES: Record<string, PartnerType> = {
     title: 'WANKONG for Publishers',
     subtitle: 'Book distribution, translation pipeline, and audiobook conversion',
     color: '#00F5A0',
-    description: 'WANKONG is the leading platform for African and diaspora literary content. We partner with publishers to distribute eBooks and audiobooks globally, offering translation pipeline services and AI-assisted audiobook conversion to help publishers scale their multilingual catalogue.',
+    description: 'WANKONG is a leading global platform for literary content across every language and region. We partner with publishers to distribute eBooks and audiobooks worldwide, offering translation pipeline services and AI-assisted audiobook conversion to help publishers scale their multilingual catalogue.',
     benefits: [
       'Global eBook and audiobook distribution via WANKONG marketplace',
       'Translation pipeline — human-verified translation into supported languages',

@@ -215,7 +215,7 @@ export default function DistributePage() {
                           <label className="text-xs text-gray-400 mb-1.5 block">Genre *</label>
                           <select value={releaseForm.genre} onChange={e => setReleaseForm(f => ({...f, genre: e.target.value}))} className="w-full bg-[#0B0814] border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#00D9FF]/50">
                             <option value="">Select genre</option>
-                            {['Gospel', 'Christian Hip-Hop', 'Worship', 'Praise', 'Contemporary Christian', 'Afrobeats', 'R&B', 'Soul', 'Jazz', 'Classical'].map(g => <option key={g} value={g}>{g}</option>)}
+                            {['Pop', 'Hip-Hop', 'Afrobeats', 'K-Pop', 'Latin', 'Electronic', 'R&B', 'Soul', 'Jazz', 'Classical'].map(g => <option key={g} value={g}>{g}</option>)}
                           </select>
                         </div>
                         <div>

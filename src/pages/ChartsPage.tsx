@@ -23,19 +23,19 @@ interface ChartTrack {
   price:        number | null;
 }
 
-type ChartFilter = 'all' | 'gospel' | 'afrobeats' | 'hiphop' | 'worship' | 'rnb' | 'reggae' | 'highlife' | 'pop';
+type ChartFilter = 'all' | 'pop' | 'afrobeats' | 'hiphop' | 'electronic' | 'rnb' | 'reggae' | 'kpop' | 'latin';
 type LangFilter  = 'all' | 'en' | 'fr' | 'yo' | 'ig' | 'ha' | 'sw';
 
 const GENRE_TABS: { id: ChartFilter; label: string }[] = [
   { id: 'all',       label: 'All Genres'  },
-  { id: 'gospel',    label: 'Gospel'      },
+  { id: 'pop',       label: 'Pop'         },
   { id: 'afrobeats', label: 'Afrobeats'   },
-  { id: 'worship',   label: 'Worship'     },
+  { id: 'kpop',      label: 'K-Pop'       },
   { id: 'hiphop',    label: 'Hip-Hop'     },
   { id: 'rnb',       label: 'R&B'         },
   { id: 'reggae',    label: 'Reggae'      },
-  { id: 'highlife',  label: 'Highlife'    },
-  { id: 'pop',       label: 'Pop'         },
+  { id: 'electronic',label: 'Electronic'  },
+  { id: 'latin',     label: 'Latin'       },
 ];
 
 const LANG_TABS: { id: LangFilter; label: string }[] = [
