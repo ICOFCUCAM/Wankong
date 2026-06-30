@@ -101,6 +101,7 @@ const ARENA_CHALLENGE = {
   artist: 'Adaeze Obi',
   genre: 'Jazz',
   cover: 'from-[#0E7C9E] to-[#06222F]',
+  prize: '$5,000',
 };
 
 interface ArenaEntry {
@@ -1482,21 +1483,45 @@ export default function AppLayout() {
       <section className="py-14 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(255,107,0,0.10),transparent_70%)]" />
         <div className="relative max-w-7xl mx-auto px-4">
+          {/* Cinematic stage banner */}
           <Reveal>
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#FF6B00] to-[#FFB800] flex items-center justify-center shadow-lg shadow-[#FF6B00]/25">
-                <Trophy className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-2xl md:text-3xl font-black text-white">Talent Arena</h2>
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-500 text-white text-[10px] font-black rounded-full"><span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE NOW</span>
+          <div className="relative mb-6 rounded-3xl overflow-hidden border border-white/10 bg-gradient-to-b from-[#1a0f04] via-[#0F0A1E] to-[#0B0814]">
+            {/* spotlight beams sweeping the stage */}
+            <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+              <div className="absolute -top-1/2 left-[18%] w-40 h-[180%] rotate-[18deg] blur-2xl opacity-[0.35] wk-spotlight bg-[linear-gradient(to_bottom,rgba(255,184,0,0.55),transparent_72%)]" />
+              <div className="absolute -top-1/2 left-[46%] w-48 h-[180%] -rotate-[10deg] blur-2xl opacity-30 wk-spotlight bg-[linear-gradient(to_bottom,rgba(255,107,0,0.5),transparent_72%)]" style={{ animationDelay: '1.4s' }} />
+              <div className="absolute -top-1/2 left-[72%] w-40 h-[180%] rotate-[12deg] blur-2xl opacity-[0.28] wk-spotlight bg-[linear-gradient(to_bottom,rgba(157,78,221,0.5),transparent_72%)]" style={{ animationDelay: '2.6s' }} />
+              <div className="absolute inset-0 wk-stars opacity-40" />
+              {/* stage floor glow */}
+              <div className="absolute inset-x-0 bottom-0 h-24 bg-[radial-gradient(ellipse_at_50%_120%,rgba(255,184,0,0.22),transparent_70%)]" />
+            </div>
+            <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-5 px-6 md:px-9 py-8 md:py-10">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#FF6B00] to-[#FFB800] flex items-center justify-center shadow-xl shadow-[#FF6B00]/30 shrink-0 wk-breathe">
+                  <Trophy className="w-7 h-7 text-white" />
                 </div>
-                <p className="text-white/40 text-sm">This week's challenge — watch the performances and vote for the best</p>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-500 text-white text-[10px] font-black rounded-full"><span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE NOW</span>
+                    <span className="text-[#FFB800] text-[11px] font-bold uppercase tracking-[0.25em]">Global Stage</span>
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-black text-white leading-none tracking-tight">Talent Arena</h2>
+                  <p className="text-white/45 text-sm mt-1.5 max-w-md">One song. Creators worldwide film their take — watch the performances and vote for the best.</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-5 md:gap-6 md:pr-2">
+                <div className="text-left md:text-right">
+                  <p className="text-white/40 text-[10px] uppercase tracking-widest">Prize pool</p>
+                  <p className="text-2xl md:text-3xl font-black bg-gradient-to-r from-[#FFB800] to-[#FF6B00] bg-clip-text text-transparent tabular-nums">{ARENA_CHALLENGE.prize}</p>
+                </div>
+                <div className="w-px h-10 bg-white/10 hidden md:block" />
+                <div className="text-left md:text-right">
+                  <p className="text-white/40 text-[10px] uppercase tracking-widest">Competing</p>
+                  <p className="text-2xl md:text-3xl font-black text-white tabular-nums">{ARENA_ENTRIES.length}</p>
+                </div>
+                <Link to="/collections/talent-arena" className="ml-1 px-5 py-2.5 rounded-xl bg-white text-[#0B0814] font-bold text-sm hover:bg-white/90 transition-colors whitespace-nowrap flex items-center gap-1.5 shadow-lg">Enter Arena <ArrowRight className="w-4 h-4" /></Link>
               </div>
             </div>
-            <Link to="/collections/talent-arena" className="text-[#FFB800] hover:text-[#FFB800]/80 text-sm font-semibold flex items-center gap-1">Enter Arena <ArrowRight className="w-4 h-4" /></Link>
           </div>
           </Reveal>
 
