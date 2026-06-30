@@ -193,3 +193,7 @@ input[type="range"]::-webkit-slider-thumb {
   animation: wk-twinkle 6s ease-in-out infinite alternate;
 }
 @keyframes wk-twinkle { from { opacity: .22; } to { opacity: .5; } }
+
+/* ── Dotted world globe spin ─────────────────────────────────────────────── */
+.wk-worldspin { animation: wk-worldspin 26s linear infinite; }
+@keyframes wk-worldspin { from { background-position-x: 0; } to { background-position-x: -416px; } }

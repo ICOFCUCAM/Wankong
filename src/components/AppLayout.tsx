@@ -690,29 +690,25 @@ export default function AppLayout() {
             <div className="flex flex-col items-center gap-7">
               <div className="relative">
                 <div className="absolute -inset-8 rounded-full bg-[#9D4EDD]/25 blur-3xl wk-aurora" />
-                <div className="relative w-52 h-52">
-                  {/* rotating dotted surface (continents) */}
-                  <div className="absolute inset-0 rounded-full overflow-hidden bg-gradient-to-br from-[#1a2c5e] via-[#0E1635] to-[#070b16] border border-white/10 shadow-2xl">
-                    <div className="absolute inset-0 wk-globe" style={{ backgroundImage: 'radial-gradient(circle, rgba(0,217,255,0.55) 1.5px, transparent 1.8px)', backgroundSize: '13px 13px' }} />
-                    <div className="absolute inset-0 wk-globe" style={{ backgroundImage: 'radial-gradient(circle, rgba(157,78,221,0.4) 1.4px, transparent 1.6px)', backgroundSize: '23px 23px', animationDuration: '22s' }} />
-                    <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_32%_26%,rgba(255,255,255,0.25),transparent_46%)]" />
-                  </div>
-                  {/* wireframe sphere grid */}
+                <div className="relative w-52 h-52 rounded-full overflow-hidden border border-white/10 shadow-2xl" style={{ background: 'radial-gradient(circle at 34% 28%, #1b2c5e, #0c1430 55%, #060912 100%)' }}>
+                  {/* rotating dotted world map */}
+                  <div
+                    className="absolute inset-y-0 -inset-x-[2%] wk-worldspin"
+                    style={{ backgroundImage: 'url(/world-dots.svg)', backgroundSize: 'auto 70%', backgroundPosition: 'center', backgroundRepeat: 'repeat-x' }}
+                  />
+                  {/* meridian lines for sphere structure */}
                   <svg viewBox="0 0 208 208" className="absolute inset-0 w-full h-full pointer-events-none">
-                    <g fill="none" strokeWidth="1">
-                      <g stroke="#00D9FF" strokeOpacity="0.3">
-                        <line x1="14" y1="104" x2="194" y2="104" />
-                        <ellipse cx="104" cy="104" rx="90" ry="31" />
-                        <ellipse cx="104" cy="104" rx="90" ry="63" />
-                      </g>
-                      <g stroke="#9D4EDD" strokeOpacity="0.32">
-                        <line x1="104" y1="14" x2="104" y2="194" />
-                        <ellipse cx="104" cy="104" rx="31" ry="90" />
-                        <ellipse cx="104" cy="104" rx="63" ry="90" />
-                      </g>
+                    <g fill="none" strokeWidth="0.8" stroke="#ffffff" strokeOpacity="0.08">
+                      <ellipse cx="104" cy="104" rx="34" ry="92" />
+                      <ellipse cx="104" cy="104" rx="68" ry="92" />
+                      <ellipse cx="104" cy="104" rx="92" ry="40" />
+                      <ellipse cx="104" cy="104" rx="92" ry="74" />
                     </g>
-                    <circle cx="104" cy="104" r="90" fill="none" stroke="#ffffff" strokeOpacity="0.14" />
                   </svg>
+                  {/* sphere shading: highlight + darkened rim for curvature */}
+                  <div className="absolute inset-0 rounded-full" style={{ background: 'radial-gradient(circle at 32% 26%, rgba(255,255,255,0.28), transparent 42%)' }} />
+                  <div className="absolute inset-0 rounded-full" style={{ boxShadow: 'inset -18px -22px 44px rgba(0,0,0,0.75), inset 12px 12px 30px rgba(124,77,255,0.18)' }} />
+                  <div className="absolute inset-0 rounded-full ring-1 ring-inset ring-[#00D9FF]/20" />
                 </div>
                 <span className="absolute top-1/2 left-1/2 w-2.5 h-2.5 -ml-1 -mt-1 rounded-full bg-[#00D9FF] shadow-[0_0_12px_#00D9FF] wk-orbit" />
               </div>
