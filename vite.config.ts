@@ -16,6 +16,7 @@ export default defineConfig({
           "react-vendor": ["react", "react-dom", "react-router-dom"],
           "ui-vendor": ["lucide-react", "sonner", "@tanstack/react-query"],
           "supabase": ["@supabase/supabase-js"],
+          "charts": ["recharts"],
         },
       },
     },
