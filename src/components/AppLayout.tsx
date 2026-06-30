@@ -5,7 +5,7 @@ import Header from './Header';
 import Footer from './Footer';
 import ProductCard from './ProductCard';
 import TiltCard from './TiltCard';
-import { Play, Pause, Zap, Music, BookOpen, Video, Mic, Trophy, Globe, Users, DollarSign, TrendingUp, ArrowRight, Headphones, Radio, Star, ChevronRight, ChevronLeft, Clock, ShieldCheck, BarChart3, CreditCard, MoreVertical, Heart, Shuffle, SkipBack, SkipForward, Repeat, SlidersHorizontal, Megaphone, Palette, Scissors, Wand2, Quote, Check, ChevronDown, UploadCloud, Rocket, Youtube, Facebook, Disc } from 'lucide-react';
+import { Play, Pause, Zap, Music, BookOpen, Video, Mic, Trophy, Globe, Users, DollarSign, TrendingUp, ArrowRight, Headphones, Radio, Star, ChevronRight, ChevronLeft, Clock, ShieldCheck, BarChart3, CreditCard, MoreVertical, Heart, Shuffle, SkipBack, SkipForward, Repeat, SlidersHorizontal, Megaphone, Palette, Scissors, Wand2, Quote, Check, ChevronDown, UploadCloud, Rocket, Youtube, Facebook, Disc, Sparkles, Languages } from 'lucide-react';
 import { usePlayer } from './GlobalPlayer';
 import { asArray } from '@/lib/utils';
 import FeaturedPerformancesGrid from './home/FeaturedPerformancesGrid';
@@ -739,6 +739,7 @@ export default function AppLayout() {
               {/* Feature row */}
               <div className="flex flex-wrap gap-x-7 gap-y-3 mb-9">
                 {[
+                  { icon: Sparkles, label: 'AI Creator Tools', color: '#00F5A0' },
                   { icon: Globe, label: '30+ Platforms', color: '#00D9FF' },
                   { icon: ShieldCheck, label: '100% Ownership', color: '#00F5A0' },
                   { icon: BarChart3, label: 'Real-time Analytics', color: '#9D4EDD' },
@@ -1287,7 +1288,12 @@ export default function AppLayout() {
               </div>
               <div>
                 <h2 className="text-3xl md:text-4xl font-black tracking-tight text-white">Trending Books</h2>
-                <p className="text-white/40 text-sm">Top reads in the community this week</p>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <p className="text-white/40 text-sm">Top reads in the community this week</p>
+                  <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00F5A0]/10 border border-[#00F5A0]/25 text-[#00F5A0] text-[10px] font-bold">
+                    <Languages className="w-2.5 h-2.5" /> AI translation · 16 languages
+                  </span>
+                </div>
               </div>
             </div>
             <Link to="/collections/books" className="text-amber-400 hover:text-amber-300 text-sm font-medium flex items-center gap-1 transition-colors">
@@ -1358,14 +1364,14 @@ export default function AppLayout() {
           {/* Floating service bubbles — a constellation of creative talent */}
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-7 md:gap-x-9 py-2">
             {[
-              { icon: Music,            label: 'Producers',    count: '1,240 pros',  color: '#00D9FF', big: true  },
-              { icon: Mic,              label: 'Studios',      count: '480 spaces',  color: '#9D4EDD', big: false },
-              { icon: SlidersHorizontal,label: 'Mixing',       count: '860 pros',    color: '#00F5A0', big: false },
-              { icon: Headphones,       label: 'Mastering',    count: '520 pros',    color: '#FFB800', big: true  },
-              { icon: Scissors,         label: 'Editors',      count: '930 pros',    color: '#FF6B00', big: false },
-              { icon: Palette,          label: 'Artwork',      count: '1,510 pros',  color: '#FF006E', big: true  },
-              { icon: Megaphone,        label: 'Marketing',    count: '670 pros',    color: '#00D9FF', big: false },
-              { icon: Globe,            label: 'Distribution', count: '30+ stores',  color: '#9D4EDD', big: false },
+              { icon: Music,            label: 'Producers',    count: '1,240 pros',  color: '#00D9FF', big: true,  ai: false },
+              { icon: Mic,              label: 'Studios',      count: '480 spaces',  color: '#9D4EDD', big: false, ai: false },
+              { icon: SlidersHorizontal,label: 'Mixing',       count: '860 pros',    color: '#00F5A0', big: false, ai: true  },
+              { icon: Headphones,       label: 'Mastering',    count: 'AI + 520 pros',color: '#FFB800', big: true,  ai: true  },
+              { icon: Scissors,         label: 'Editors',      count: '930 pros',    color: '#FF6B00', big: false, ai: false },
+              { icon: Palette,          label: 'Artwork',      count: 'AI + 1,510',  color: '#FF006E', big: true,  ai: true  },
+              { icon: Megaphone,        label: 'Marketing',    count: '670 pros',    color: '#00D9FF', big: false, ai: false },
+              { icon: Globe,            label: 'Distribution', count: '30+ stores',  color: '#9D4EDD', big: false, ai: false },
             ].map((s, i) => (
               <Reveal key={s.label} delay={i * 50}>
                 <Link to="/collections/marketplace" className="group block" aria-label={`${s.label} — ${s.count}`}>
@@ -1375,6 +1381,11 @@ export default function AppLayout() {
                       style={{ boxShadow: `0 8px 30px -8px ${s.color}33` }}
                     >
                       <div className="absolute inset-0 rounded-full opacity-70 transition-opacity group-hover:opacity-100" style={{ background: `radial-gradient(circle at 50% 28%, ${s.color}22, transparent 72%)` }} />
+                      {s.ai && (
+                        <span className="absolute top-3 right-3 z-10 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-white/10 border border-white/15 backdrop-blur text-[8px] font-black tracking-wider text-white/90">
+                          <Sparkles className="w-2.5 h-2.5 text-[#00F5A0]" /> AI
+                        </span>
+                      )}
                       <div className="relative w-11 h-11 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110" style={{ backgroundColor: `${s.color}24` }}>
                         <s.icon className="w-5 h-5" style={{ color: s.color }} />
                       </div>
