@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Play, Upload, Trophy, Zap } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { asArray } from '@/lib/utils';
+import Seo from '@/components/Seo';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PerformanceCard, { type PerformanceCardData } from '@/components/media/PerformanceCard';
@@ -281,6 +282,7 @@ export default function TalentArenaCollectionPage() {
 
   return (
     <div className="min-h-screen bg-[#0B0814] text-white">
+      <Seo title="Talent Arena" description="Live head-to-head creator battles — vote for your favorites and watch global talent compete for prizes and exposure." />
       <Header />
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}

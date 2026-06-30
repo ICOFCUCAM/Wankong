@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/lib/supabase';
 import { asArray } from '@/lib/utils';
+import Seo from '@/components/Seo';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { usePlayer } from '@/components/GlobalPlayer';
@@ -207,6 +208,7 @@ export default function PodcastsCollectionPage() {
 
   return (
     <div className="min-h-screen bg-[#0B0814] text-white">
+      <Seo title="Podcasts" description="Discover and stream podcasts from creators worldwide." />
       <Header />
 
       {/* Hero */}

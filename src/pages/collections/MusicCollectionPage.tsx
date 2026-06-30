@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { asArray } from '@/lib/utils';
+import Seo from '@/components/Seo';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { SUPPORTED_LANGUAGES } from '@/pipelines/translation/LanguageMapping';
@@ -173,6 +174,7 @@ export default function MusicCollectionPage() {
 
   return (
     <div className="min-h-screen bg-[#0B0814] text-white">
+      <Seo title="Music" description="Stream and download music across every language and genre — gospel, afrobeats, hip-hop, worship and more from creators worldwide." />
       <Header />
 
       {/* Hero */}

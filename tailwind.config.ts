@@ -24,6 +24,19 @@ export default {
         accent: { DEFAULT: "hsl(var(--accent))", foreground: "hsl(var(--accent-foreground))" },
         popover: { DEFAULT: "hsl(var(--popover))", foreground: "hsl(var(--popover-foreground))" },
         card: { DEFAULT: "hsl(var(--card))", foreground: "hsl(var(--card-foreground))" },
+        // ── WANKONG brand palette (single source of truth) ──────────────
+        brand: {
+          cyan:   "#00D9FF",
+          purple: "#9D4EDD",
+          gold:   "#FFB800",
+          mint:   "#00F5A0",
+          orange: "#FF6B00",
+          pink:   "#FF006E",
+        },
+        // Surface tokens — near-black base + elevated layers
+        ink:      "#0B0814", // page background
+        surface:  "#120C22", // elevated cards/panels
+        "surface-2": "#0F0A1E", // deeper inset
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -35,12 +48,16 @@ export default {
         "accordion-up": { from: { height: "var(--radix-accordion-content-height)" }, to: { height: "0" } },
         "marquee": { "0%": { transform: "translateX(0)" }, "100%": { transform: "translateX(-50%)" } },
         "count-up": { from: { opacity: "0", transform: "translateY(8px)" }, to: { opacity: "1", transform: "translateY(0)" } },
+        "shimmer": { "100%": { transform: "translateX(100%)" } },
+        "fade-up": { from: { opacity: "0", transform: "translateY(16px)" }, to: { opacity: "1", transform: "translateY(0)" } },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "marquee": "marquee 28s linear infinite",
         "count-up": "count-up 0.4s ease-out forwards",
+        "shimmer": "shimmer 1.6s infinite",
+        "fade-up": "fade-up 0.6s cubic-bezier(0.16,1,0.3,1) forwards",
       },
     },
   },

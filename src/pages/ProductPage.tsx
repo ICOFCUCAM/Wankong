@@ -8,6 +8,7 @@ import { usePlaylist } from '@/hooks/usePlaylist';
 import { usePlaylistContext } from '@/contexts/PlaylistContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import Seo from '@/components/Seo';
 import CommentsSection from '@/components/CommentsSection';
 import RelatedProducts from '@/components/RelatedProducts';
 import ShareClipModal from '@/components/ShareClipModal';
@@ -206,6 +207,12 @@ export default function ProductPage() {
 
   return (
     <div className="min-h-screen bg-[#0B0814]">
+      <Seo
+        title={product.title}
+        description={(product.body_html ? String(product.body_html).replace(/<[^>]+>/g, '').slice(0, 155) : '') || `${product.title}${creator ? ` by ${creator}` : ''} — available now on WANKONG.`}
+        image={image || undefined}
+        type="article"
+      />
       <Header />
       <div className="max-w-6xl mx-auto px-4 lg:px-8 py-12">
 

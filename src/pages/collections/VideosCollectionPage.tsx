@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { asArray } from '@/lib/utils';
+import Seo from '@/components/Seo';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -171,6 +172,7 @@ export default function VideosCollectionPage() {
 
   return (
     <div className="min-h-screen bg-[#0B0814] text-white">
+      <Seo title="Videos" description="Watch and support original videos and music videos from global creators." type="video.other" />
       <Header />
 
       {/* Hero */}
