@@ -725,7 +725,7 @@ export default function AppLayout() {
                 <div className="w-2 h-2 bg-[#9D4EDD] rounded-full animate-pulse shadow-[0_0_8px_#9D4EDD]" />
                 <span className="text-white/80 text-sm font-medium">The Global Creator Economy</span>
               </div>
-              <h1 className="text-5xl md:text-7xl font-black text-white leading-[1.04] mb-6">
+              <h1 className="text-6xl md:text-8xl font-black text-white leading-[0.98] tracking-[-0.03em] mb-6">
                 Create. Distribute.
                 <br />
                 <span className="bg-gradient-to-r from-[#00D9FF] via-[#9D4EDD] to-[#FF4D9D] bg-clip-text text-transparent">
@@ -817,7 +817,7 @@ export default function AppLayout() {
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#9D4EDD]/10 border border-[#9D4EDD]/20 rounded-full text-[#9D4EDD] text-xs font-semibold mb-3">
               <Globe className="w-3 h-3" /> Music by Language
             </div>
-            <h2 className="text-3xl md:text-4xl font-black text-white mb-2">Explore Music Across the Globe</h2>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight text-white mb-2">Explore Music Across the Globe</h2>
             <p className="text-white/40 text-sm">Tap a continent — discover music in every language 🌍</p>
           </div>
           </Reveal>
@@ -935,7 +935,7 @@ export default function AppLayout() {
                 <Zap className="w-5 h-5 text-white fill-white" />
               </div>
               <div>
-                <h2 className="text-2xl md:text-3xl font-black text-white">Trending Now</h2>
+                <h2 className="text-3xl md:text-4xl font-black tracking-tight text-white">Trending Now</h2>
                 <p className="text-white/40 text-sm">What's hot on WANKONG this week</p>
               </div>
             </div>
@@ -1132,7 +1132,7 @@ export default function AppLayout() {
                 <Radio className="w-5 h-5 text-emerald-400" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-white">New Releases</h2>
+                <h2 className="text-3xl md:text-4xl font-black tracking-tight text-white">New Releases</h2>
                 <p className="text-white/40 text-sm">Fresh content just dropped</p>
               </div>
             </div>
@@ -1208,7 +1208,7 @@ export default function AppLayout() {
                 <span className="text-violet-400 text-lg">★</span>
               </div>
               <div>
-                <h2 className="text-xl font-bold text-white">Featured Creators</h2>
+                <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white">Featured Creators</h2>
                 <p className="text-white/40 text-xs">Verified artists on WANKONG</p>
               </div>
             </div>
@@ -1286,7 +1286,7 @@ export default function AppLayout() {
                 <BookOpen className="w-5 h-5 text-amber-400" />
               </div>
               <div>
-                <h2 className="text-3xl font-bold text-white">Trending Books</h2>
+                <h2 className="text-3xl md:text-4xl font-black tracking-tight text-white">Trending Books</h2>
                 <p className="text-white/40 text-sm">Top reads in the community this week</p>
               </div>
             </div>
@@ -1347,7 +1347,7 @@ export default function AppLayout() {
                 <Wand2 className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl md:text-3xl font-black text-white">Creator Marketplace</h2>
+                <h2 className="text-3xl md:text-4xl font-black tracking-tight text-white">Creator Marketplace</h2>
                 <p className="text-white/40 text-sm">Hire top creative talent — producers, studios, mixing & more</p>
               </div>
             </div>
@@ -1399,7 +1399,7 @@ export default function AppLayout() {
                 <Headphones className="w-5 h-5 text-orange-400" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-white">Audiobooks</h2>
+                <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white">Audiobooks</h2>
                 <p className="text-white/40 text-xs">Listen while you move</p>
               </div>
             </div>
@@ -1426,7 +1426,7 @@ export default function AppLayout() {
                 <Mic className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl md:text-3xl font-black text-white">Podcast Studio</h2>
+                <h2 className="text-3xl md:text-4xl font-black tracking-tight text-white">Podcast Studio</h2>
                 <p className="text-white/40 text-sm">Live shows, talk &amp; stories from the community</p>
               </div>
             </div>
@@ -1659,7 +1659,7 @@ export default function AppLayout() {
                 <Trophy className="w-5 h-5 text-[#FFB800]" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-white">Top Creators This Week</h2>
+                <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white">Top Creators This Week</h2>
                 <p className="text-white/40 text-xs">Ranked by earnings &amp; engagement</p>
               </div>
             </div>
@@ -1711,7 +1711,7 @@ export default function AppLayout() {
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#9D4EDD]/10 border border-[#9D4EDD]/20 rounded-full text-[#9D4EDD] text-xs font-semibold mb-3">
               <Heart className="w-3 h-3 fill-current" /> Loved by Creators
             </div>
-            <h2 className="text-3xl md:text-4xl font-black text-white mb-2">Stories from the community</h2>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight text-white mb-2">Stories from the community</h2>
             <p className="text-white/40 text-sm">Real creators · real earnings · real reach</p>
           </div>
           </Reveal>
@@ -1786,7 +1786,7 @@ export default function AppLayout() {
           <Reveal>
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#00D9FF]/10 border border-[#00D9FF]/20 rounded-full text-[#00D9FF] text-xs font-semibold mb-3">How it works</div>
-            <h2 className="text-3xl md:text-4xl font-black text-white mb-2">From upload to payout in 3 steps</h2>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight text-white mb-2">From upload to payout in 3 steps</h2>
             <p className="text-white/40 text-sm">Go global — without the gatekeepers.</p>
           </div>
           </Reveal>
@@ -1819,7 +1819,7 @@ export default function AppLayout() {
           <Reveal>
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#FFB800]/10 border border-[#FFB800]/20 rounded-full text-[#FFB800] text-xs font-semibold mb-3">Pricing</div>
-            <h2 className="text-3xl md:text-4xl font-black text-white mb-2">Simple, creator-first pricing</h2>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight text-white mb-2">Simple, creator-first pricing</h2>
             <p className="text-white/40 text-sm">Keep 100% of your royalties — always.</p>
           </div>
           </Reveal>
@@ -1860,7 +1860,7 @@ export default function AppLayout() {
           <Reveal>
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#00F5A0]/10 border border-[#00F5A0]/20 rounded-full text-[#00F5A0] text-xs font-semibold mb-3">FAQ</div>
-            <h2 className="text-3xl md:text-4xl font-black text-white mb-2">Questions? Answered.</h2>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight text-white mb-2">Questions? Answered.</h2>
             <p className="text-white/40 text-sm">Everything you need to know before you start.</p>
           </div>
           </Reveal>
