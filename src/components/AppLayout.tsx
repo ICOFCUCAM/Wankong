@@ -705,29 +705,33 @@ export default function AppLayout() {
                 ].map((p, i) => (
                   <span key={i} className="absolute w-1 h-1 rounded-full wk-float" style={{ top: p.t, left: p.l, backgroundColor: p.c, boxShadow: `0 0 6px ${p.c}`, animationDelay: p.d }} />
                 ))}
-                {/* dotted Earth sphere (static, centered) */}
+                {/* dotted Earth sphere — spins, with hotspots glued to their cities */}
                 <div className="absolute inset-[5%] rounded-full overflow-hidden border border-white/10 shadow-2xl" style={{ background: 'radial-gradient(circle at 34% 28%, #25407e, #0d1530 58%, #060912 100%)' }}>
-                  <div className="absolute inset-0" style={{ backgroundImage: 'url(/world-dots.svg)', backgroundSize: '150% auto', backgroundPosition: '38% 52%', backgroundRepeat: 'no-repeat' }} />
-                  <div className="absolute inset-0 rounded-full" style={{ background: 'radial-gradient(circle at 32% 26%, rgba(255,255,255,0.24), transparent 44%)' }} />
+                  {/* two seamless world copies that scroll together (map + pins) */}
+                  <div className="absolute inset-0 flex wk-spin-strip" style={{ width: '200%' }}>
+                    {[0, 1].map(copy => (
+                      <div key={copy} className="relative h-full shrink-0" style={{ width: '50%' }}>
+                        <div className="absolute inset-0" style={{ backgroundImage: 'url(/world-dots.svg)', backgroundSize: '100% auto', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }} />
+                        {[
+                          { x: 29.4, y: 38.7, c: '#34E1FF' }, // New York
+                          { x: 37.1, y: 56.5, c: '#9D6BFF' }, // São Paulo
+                          { x: 49.9, y: 35.7, c: '#34E1FF' }, // London
+                          { x: 50.9, y: 48.2, c: '#00F5A0' }, // Lagos
+                          { x: 60.2, y: 50.4, c: '#FF3B9A' }, // Nairobi
+                          { x: 70.2, y: 44.7, c: '#9D6BFF' }, // Mumbai
+                          { x: 85.3, y: 39.6, c: '#34E1FF' }, // Seoul
+                          { x: 88.8, y: 40.2, c: '#00F5A0' }, // Tokyo
+                        ].map((p, i) => (
+                          <span key={i} className="wk-pin" style={{ left: `${p.x}%`, top: `${p.y}%`, ['--c' as never]: p.c, animationDelay: `${i * 0.4}s` }} />
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                  {/* fixed sphere shading on top → spin happens underneath */}
+                  <div className="absolute inset-0 rounded-full" style={{ background: 'radial-gradient(circle at 32% 26%, rgba(255,255,255,0.22), transparent 44%)' }} />
                   <div className="absolute inset-0 rounded-full" style={{ boxShadow: 'inset -16px -20px 42px rgba(0,0,0,0.72), inset 10px 10px 26px rgba(124,77,255,0.16)' }} />
                   <div className="absolute inset-0 rounded-full ring-1 ring-inset ring-[#00D9FF]/20" />
                 </div>
-                {/* clean glowing music hotspots (pin + subtle radar ping) */}
-                <svg viewBox="0 0 300 300" className="absolute inset-0 w-full h-full pointer-events-none">
-                  {[
-                    { x: 78, y: 106, c: '#34E1FF' },  // North America
-                    { x: 110, y: 172, c: '#9D6BFF' }, // South America
-                    { x: 176, y: 106, c: '#34E1FF' }, // Europe
-                    { x: 170, y: 140, c: '#00F5A0' }, // West Africa
-                    { x: 190, y: 158, c: '#FF3B9A' }, // Central Africa
-                    { x: 250, y: 116, c: '#9D6BFF' }, // Asia
-                  ].map((h, i) => (
-                    <g key={i}>
-                      <circle cx={h.x} cy={h.y} r="4" fill="none" stroke={h.c} strokeWidth="1.4" className="wk-ping" style={{ animationDelay: `${i * 0.5}s` }} />
-                      <circle cx={h.x} cy={h.y} r="2.4" fill={h.c} style={{ filter: `drop-shadow(0 0 5px ${h.c})` }} />
-                    </g>
-                  ))}
-                </svg>
               </div>
 
               {/* continent selector */}

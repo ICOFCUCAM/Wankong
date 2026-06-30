@@ -211,3 +211,9 @@ input[type="range"]::-webkit-slider-thumb {
 /* ── Globe hotspot ping ──────────────────────────────────────────────────── */
 .wk-ping { transform-box: fill-box; transform-origin: center; animation: wk-ping 2.6s ease-out infinite; }
 @keyframes wk-ping { 0% { transform: scale(0.5); opacity: .85; } 80%, 100% { transform: scale(3.4); opacity: 0; } }
+
+/* ── Spinning globe strip + city pins ────────────────────────────────────── */
+.wk-spin-strip { animation: wk-spin-strip 36s linear infinite; will-change: transform; }
+@keyframes wk-spin-strip { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.wk-pin { position: absolute; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: var(--c); box-shadow: 0 0 6px var(--c); }
+.wk-pin::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; border: 1.5px solid var(--c); transform-origin: center; animation: wk-ping 2.6s ease-out infinite; animation-delay: inherit; }
