@@ -279,7 +279,7 @@ export default function AppLayout() {
   const [featuredArtists, setFeaturedArtists] = useState<any[]>([]);
   const [topCreators, setTopCreators] = useState<any[]>([]);
   const [langMode, setLangMode] = useState<'region' | 'global'>('region');
-  const [continent, setContinent] = useState<string>('Africa');
+  const [continent, setContinent] = useState<string>('Global');
   const continentLangs = langsForContinent(continent);
 
   // Talent Arena live battle (mock real-time)
@@ -690,11 +690,29 @@ export default function AppLayout() {
             <div className="flex flex-col items-center gap-7">
               <div className="relative">
                 <div className="absolute -inset-8 rounded-full bg-[#9D4EDD]/25 blur-3xl wk-aurora" />
-                <div className="relative w-52 h-52 rounded-full overflow-hidden bg-gradient-to-br from-[#16224a] via-[#0E1635] to-[#070b16] border border-white/10 shadow-2xl">
-                  <div className="absolute inset-0 wk-globe" style={{ backgroundImage: 'radial-gradient(circle, rgba(157,78,221,0.55) 1.6px, transparent 1.7px)', backgroundSize: '15px 15px' }} />
-                  <div className="absolute inset-0 wk-globe" style={{ backgroundImage: 'radial-gradient(circle, rgba(0,217,255,0.35) 1.3px, transparent 1.4px)', backgroundSize: '26px 26px', animationDuration: '20s' }} />
-                  <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.22),transparent_45%)]" />
-                  <div className="absolute inset-0 rounded-full ring-1 ring-inset ring-white/10" />
+                <div className="relative w-52 h-52">
+                  {/* rotating dotted surface (continents) */}
+                  <div className="absolute inset-0 rounded-full overflow-hidden bg-gradient-to-br from-[#1a2c5e] via-[#0E1635] to-[#070b16] border border-white/10 shadow-2xl">
+                    <div className="absolute inset-0 wk-globe" style={{ backgroundImage: 'radial-gradient(circle, rgba(0,217,255,0.55) 1.5px, transparent 1.8px)', backgroundSize: '13px 13px' }} />
+                    <div className="absolute inset-0 wk-globe" style={{ backgroundImage: 'radial-gradient(circle, rgba(157,78,221,0.4) 1.4px, transparent 1.6px)', backgroundSize: '23px 23px', animationDuration: '22s' }} />
+                    <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_32%_26%,rgba(255,255,255,0.25),transparent_46%)]" />
+                  </div>
+                  {/* wireframe sphere grid */}
+                  <svg viewBox="0 0 208 208" className="absolute inset-0 w-full h-full pointer-events-none">
+                    <g fill="none" strokeWidth="1">
+                      <g stroke="#00D9FF" strokeOpacity="0.3">
+                        <line x1="14" y1="104" x2="194" y2="104" />
+                        <ellipse cx="104" cy="104" rx="90" ry="31" />
+                        <ellipse cx="104" cy="104" rx="90" ry="63" />
+                      </g>
+                      <g stroke="#9D4EDD" strokeOpacity="0.32">
+                        <line x1="104" y1="14" x2="104" y2="194" />
+                        <ellipse cx="104" cy="104" rx="31" ry="90" />
+                        <ellipse cx="104" cy="104" rx="63" ry="90" />
+                      </g>
+                    </g>
+                    <circle cx="104" cy="104" r="90" fill="none" stroke="#ffffff" strokeOpacity="0.14" />
+                  </svg>
                 </div>
                 <span className="absolute top-1/2 left-1/2 w-2.5 h-2.5 -ml-1 -mt-1 rounded-full bg-[#00D9FF] shadow-[0_0_12px_#00D9FF] wk-orbit" />
               </div>
@@ -950,17 +968,17 @@ export default function AppLayout() {
 
               <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 md:gap-8">
                 <div className="text-center">
-                  <div className={`w-24 h-24 md:w-28 md:h-28 mx-auto rounded-full bg-gradient-to-br from-[#00D9FF] to-[#0E7C9E] flex items-center justify-center text-5xl mb-3 border-2 transition-all ${leadA ? 'border-[#FFB800] shadow-lg shadow-[#FFB800]/30' : 'border-white/10'}`}>🇨🇲</div>
-                  <p className="text-white font-bold text-base md:text-lg">Cameroon</p>
-                  <p className="text-white/40 text-xs mb-2">Bantu Collective</p>
+                  <div className={`w-24 h-24 md:w-28 md:h-28 mx-auto rounded-full bg-gradient-to-br from-[#00D9FF] to-[#0E7C9E] flex items-center justify-center text-5xl mb-3 border-2 transition-all ${leadA ? 'border-[#FFB800] shadow-lg shadow-[#FFB800]/30' : 'border-white/10'}`}>🇧🇷</div>
+                  <p className="text-white font-bold text-base md:text-lg">Brazil</p>
+                  <p className="text-white/40 text-xs mb-2">Samba Collective</p>
                   <p className="text-[#00D9FF] font-black text-lg md:text-xl tabular-nums">{battleVotes.a.toLocaleString()}</p>
                   <p className="text-white/30 text-[11px]">votes</p>
                 </div>
                 <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-br from-[#FF6B00] to-[#FF006E] flex items-center justify-center text-white font-black text-base md:text-lg shadow-lg shadow-[#FF006E]/30">VS</div>
                 <div className="text-center">
-                  <div className={`w-24 h-24 md:w-28 md:h-28 mx-auto rounded-full bg-gradient-to-br from-[#00F5A0] to-[#0E9E6E] flex items-center justify-center text-5xl mb-3 border-2 transition-all ${!leadA ? 'border-[#FFB800] shadow-lg shadow-[#FFB800]/30' : 'border-white/10'}`}>🇳🇬</div>
-                  <p className="text-white font-bold text-base md:text-lg">Nigeria</p>
-                  <p className="text-white/40 text-xs mb-2">Naija Allstars</p>
+                  <div className={`w-24 h-24 md:w-28 md:h-28 mx-auto rounded-full bg-gradient-to-br from-[#00F5A0] to-[#0E9E6E] flex items-center justify-center text-5xl mb-3 border-2 transition-all ${!leadA ? 'border-[#FFB800] shadow-lg shadow-[#FFB800]/30' : 'border-white/10'}`}>🇰🇷</div>
+                  <p className="text-white font-bold text-base md:text-lg">South Korea</p>
+                  <p className="text-white/40 text-xs mb-2">Seoul Wave</p>
                   <p className="text-[#00F5A0] font-black text-lg md:text-xl tabular-nums">{battleVotes.b.toLocaleString()}</p>
                   <p className="text-white/30 text-[11px]">votes</p>
                 </div>
@@ -979,8 +997,8 @@ export default function AppLayout() {
               </div>
 
               <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
-                <button onClick={() => setBattleVotes(v => ({ ...v, a: v.a + 1 }))} className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#00D9FF] to-[#0E7C9E] text-white font-bold hover:opacity-90 hover:scale-[1.02] transition-all flex items-center justify-center gap-2"><span className="text-lg">🇨🇲</span> Vote Cameroon</button>
-                <button onClick={() => setBattleVotes(v => ({ ...v, b: v.b + 1 }))} className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#0E9E6E] to-[#00F5A0] text-white font-bold hover:opacity-90 hover:scale-[1.02] transition-all flex items-center justify-center gap-2"><span className="text-lg">🇳🇬</span> Vote Nigeria</button>
+                <button onClick={() => setBattleVotes(v => ({ ...v, a: v.a + 1 }))} className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#00D9FF] to-[#0E7C9E] text-white font-bold hover:opacity-90 hover:scale-[1.02] transition-all flex items-center justify-center gap-2"><span className="text-lg">🇧🇷</span> Vote Brazil</button>
+                <button onClick={() => setBattleVotes(v => ({ ...v, b: v.b + 1 }))} className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#0E9E6E] to-[#00F5A0] text-white font-bold hover:opacity-90 hover:scale-[1.02] transition-all flex items-center justify-center gap-2"><span className="text-lg">🇰🇷</span> Vote Korea</button>
               </div>
             </div>
             </Reveal>
@@ -990,9 +1008,9 @@ export default function AppLayout() {
           <Reveal className="mt-5">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
-              { rank: 1, name: 'Bantu Collective', country: '🇨🇲', votes: '64.2K', accent: '#FFB800' },
-              { rank: 2, name: 'Naija Allstars',   country: '🇳🇬', votes: '62.2K', accent: '#C0C0C0' },
-              { rank: 3, name: 'Accra Royals',     country: '🇬🇭', votes: '48.9K', accent: '#CD7F32' },
+              { rank: 1, name: 'Samba Collective', country: '🇧🇷', votes: '64.2K', accent: '#FFB800' },
+              { rank: 2, name: 'Seoul Wave',       country: '🇰🇷', votes: '62.2K', accent: '#C0C0C0' },
+              { rank: 3, name: 'Naija Allstars',   country: '🇳🇬', votes: '48.9K', accent: '#CD7F32' },
             ].map(c => (
               <div key={c.rank} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-3.5 hover:bg-white/[0.06] transition-colors">
                 <span className="text-xl font-black w-7" style={{ color: c.accent }}>#{c.rank}</span>
