@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase';
 import Header from './Header';
 import Footer from './Footer';
 import ProductCard from './ProductCard';
-import { Play, Pause, Zap, Music, BookOpen, Video, Mic, Trophy, Globe, Users, DollarSign, TrendingUp, ArrowRight, Headphones, Radio, Star, ChevronRight, ChevronLeft, Clock, ShieldCheck, BarChart3, CreditCard, MoreVertical, Heart, Shuffle, SkipBack, SkipForward, Repeat, SlidersHorizontal, Megaphone, Palette, Scissors, Wand2, Quote, Check, ChevronDown, UploadCloud, Rocket } from 'lucide-react';
+import { Play, Pause, Zap, Music, BookOpen, Video, Mic, Trophy, Globe, Users, DollarSign, TrendingUp, ArrowRight, Headphones, Radio, Star, ChevronRight, ChevronLeft, Clock, ShieldCheck, BarChart3, CreditCard, MoreVertical, Heart, Shuffle, SkipBack, SkipForward, Repeat, SlidersHorizontal, Megaphone, Palette, Scissors, Wand2, Quote, Check, ChevronDown, UploadCloud, Rocket, Youtube, Facebook, Disc } from 'lucide-react';
 import { usePlayer } from './GlobalPlayer';
 import { asArray } from '@/lib/utils';
 import FeaturedPerformancesGrid from './home/FeaturedPerformancesGrid';
@@ -94,6 +94,61 @@ const MOCK_TOP_CREATORS = [
   { user_id: 'tc2', name: 'HARU',           level: 'Platinum', xp: 39100 },
   { user_id: 'tc3', name: 'Kojo Mensah',    level: 'Gold',     xp: 31500 },
 ];
+
+// ── Talent Arena: one challenge song, many individual video entries ───────────
+const ARENA_CHALLENGE = {
+  title: 'Midnight Jazz',
+  artist: 'Adaeze Obi',
+  genre: 'Jazz',
+  cover: 'from-[#0E7C9E] to-[#06222F]',
+};
+
+interface ArenaEntry {
+  id: string; name: string; flag: string; take: string;
+  votes: number; thumb: string; platforms: string[];
+}
+const ARENA_ENTRIES: ArenaEntry[] = [
+  { id: 'e1', name: 'Liam Carter',   flag: '🇺🇸', take: 'Vocal Cover',  votes: 64218, thumb: 'from-[#9D4EDD] to-[#00D9FF]', platforms: ['youtube', 'tiktok', 'spotify'] },
+  { id: 'e2', name: 'Min-ji Park',   flag: '🇰🇷', take: 'Dance Cover',  votes: 62224, thumb: 'from-[#FF6B00] to-[#FF006E]', platforms: ['youtube', 'tiktok'] },
+  { id: 'e3', name: 'Sofia Almeida', flag: '🇧🇷', take: 'Acoustic',     votes: 48910, thumb: 'from-[#00F5A0] to-[#0E9E6E]', platforms: ['youtube', 'facebook', 'spotify'] },
+  { id: 'e4', name: 'Kwame Boateng', flag: '🇬🇭', take: 'Afro Remix',   votes: 39145, thumb: 'from-[#FFB800] to-[#FF6B00]', platforms: ['tiktok', 'youtube'] },
+  { id: 'e5', name: 'Aiko Tanaka',   flag: '🇯🇵', take: 'Lo-fi Flip',   votes: 31502, thumb: 'from-[#00D9FF] to-[#9D4EDD]', platforms: ['youtube', 'spotify'] },
+  { id: 'e6', name: 'Diego Morales', flag: '🇲🇽', take: 'Latin Version', votes: 27488, thumb: 'from-[#FF006E] to-[#9D4EDD]', platforms: ['tiktok', 'facebook'] },
+];
+
+const PLATFORMS: Record<string, { label: string; bg: string; href: string; Icon: typeof Youtube }> = {
+  youtube:  { label: 'YouTube',  bg: '#FF0000', href: 'https://youtube.com',       Icon: Youtube },
+  tiktok:   { label: 'TikTok',   bg: '#111827', href: 'https://tiktok.com',        Icon: Music },
+  facebook: { label: 'Facebook', bg: '#1877F2', href: 'https://facebook.com',      Icon: Facebook },
+  spotify:  { label: 'Spotify',  bg: '#1DB954', href: 'https://open.spotify.com',  Icon: Disc },
+};
+
+function WatchLinks({ platforms }: { platforms: string[] }) {
+  return (
+    <div className="flex items-center gap-1.5">
+      {platforms.map(p => {
+        const m = PLATFORMS[p];
+        if (!m) return null;
+        const Icon = m.Icon;
+        return (
+          <a
+            key={p}
+            href={m.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={`Watch on ${m.label}`}
+            aria-label={`Watch on ${m.label}`}
+            onClick={e => e.stopPropagation()}
+            className="w-6 h-6 rounded-md flex items-center justify-center hover:scale-110 transition-transform"
+            style={{ background: m.bg }}
+          >
+            <Icon className="w-3.5 h-3.5 text-white" />
+          </a>
+        );
+      })}
+    </div>
+  );
+}
 
 // ── Language discovery data ───────────────────────────────────────────────────
 
@@ -290,16 +345,31 @@ export default function AppLayout() {
   const continentLangs = langsForContinent(continent);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
-  // Talent Arena live battle (mock real-time)
-  const [battleVotes, setBattleVotes] = useState({ a: 64218, b: 62224 });
+  // Talent Arena — live individual competition (mock real-time)
+  const [entryVotes, setEntryVotes] = useState<Record<string, number>>(
+    () => Object.fromEntries(ARENA_ENTRIES.map(e => [e.id, e.votes])),
+  );
+  const [votedEntry, setVotedEntry] = useState<string | null>(null);
   const [battleCountdown, setBattleCountdown] = useState(8073); // seconds remaining
   useEffect(() => {
     const id = setInterval(() => {
-      setBattleVotes(v => ({ a: v.a + (Math.random() > 0.45 ? 1 : 0), b: v.b + (Math.random() > 0.5 ? 1 : 0) }));
+      setEntryVotes(prev => {
+        const next = { ...prev };
+        // a couple of random entries tick up to feel live
+        const ids = ARENA_ENTRIES.map(e => e.id);
+        const pick = ids[Math.floor(Math.random() * ids.length)];
+        if (Math.random() > 0.4) next[pick] = (next[pick] ?? 0) + 1;
+        return next;
+      });
       setBattleCountdown(c => (c > 0 ? c - 1 : 0));
     }, 1000);
     return () => clearInterval(id);
   }, []);
+  const voteFor = (id: string) => {
+    if (votedEntry) return;
+    setVotedEntry(id);
+    setEntryVotes(prev => ({ ...prev, [id]: (prev[id] ?? 0) + 1 }));
+  };
 
   // Detect user country from browser locale for language priority
   const userCountry = (() => {
@@ -979,7 +1049,7 @@ export default function AppLayout() {
                   <h2 className="text-2xl md:text-3xl font-black text-white">Talent Arena</h2>
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-500 text-white text-[10px] font-black rounded-full"><span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE NOW</span>
                 </div>
-                <p className="text-white/40 text-sm">Global Battle of the Week — vote for your champion</p>
+                <p className="text-white/40 text-sm">This week's challenge — watch the performances and vote for the best</p>
               </div>
             </div>
             <Link to="/collections/talent-arena" className="text-[#FFB800] hover:text-[#FFB800]/80 text-sm font-semibold flex items-center gap-1">Enter Arena <ArrowRight className="w-4 h-4" /></Link>
@@ -987,83 +1057,97 @@ export default function AppLayout() {
           </Reveal>
 
           {(() => {
-            const total = battleVotes.a + battleVotes.b;
-            const pctA = Math.round((battleVotes.a / total) * 100);
-            const pctB = 100 - pctA;
+            const ranked = ARENA_ENTRIES
+              .map(e => ({ ...e, v: entryVotes[e.id] ?? e.votes }))
+              .sort((a, b) => b.v - a.v);
+            const total = ranked.reduce((s, e) => s + e.v, 0) || 1;
             const hh = String(Math.floor(battleCountdown / 3600)).padStart(2, '0');
             const mm = String(Math.floor((battleCountdown % 3600) / 60)).padStart(2, '0');
             const ss = String(battleCountdown % 60).padStart(2, '0');
-            const leadA = battleVotes.a >= battleVotes.b;
+            const RANK = ['#FFB800', '#C0C0C0', '#CD7F32'];
             return (
             <Reveal>
-            <div className="rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-sm p-6 md:p-8">
-              <div className="flex flex-col items-center mb-7">
-                <span className="text-white/40 text-xs uppercase tracking-widest mb-2">Voting closes in</span>
-                <div className="flex items-center gap-2 font-black text-white text-2xl md:text-3xl tabular-nums">
-                  <span className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">{hh}</span><span className="text-white/30">:</span>
-                  <span className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">{mm}</span><span className="text-white/30">:</span>
-                  <span className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">{ss}</span>
+            <div className="rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-sm p-5 md:p-7">
+
+              {/* Challenge song + countdown */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-white/8">
+                <div className="flex items-center gap-4">
+                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${ARENA_CHALLENGE.cover} flex items-center justify-center shrink-0 shadow-lg`}>
+                    <Music className="w-7 h-7 text-white/80" />
+                  </div>
+                  <div>
+                    <span className="text-[#FFB800] text-[11px] font-bold uppercase tracking-widest">The Challenge</span>
+                    <p className="text-white font-black text-lg leading-tight">{ARENA_CHALLENGE.title}</p>
+                    <p className="text-white/45 text-sm">{ARENA_CHALLENGE.artist} · {ARENA_ENTRIES.length} creators competing</p>
+                  </div>
+                </div>
+                <div className="flex flex-col items-start md:items-end">
+                  <span className="text-white/40 text-[11px] uppercase tracking-widest mb-1.5">Voting closes in</span>
+                  <div className="flex items-center gap-1.5 font-black text-white text-xl tabular-nums">
+                    <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10">{hh}</span><span className="text-white/30">:</span>
+                    <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10">{mm}</span><span className="text-white/30">:</span>
+                    <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10">{ss}</span>
+                  </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 md:gap-8">
-                <div className="text-center">
-                  <div className={`w-24 h-24 md:w-28 md:h-28 mx-auto rounded-full bg-gradient-to-br from-[#00D9FF] to-[#0E7C9E] flex items-center justify-center text-5xl mb-3 border-2 transition-all ${leadA ? 'border-[#FFB800] shadow-lg shadow-[#FFB800]/30' : 'border-white/10'}`}>🇧🇷</div>
-                  <p className="text-white font-bold text-base md:text-lg">Brazil</p>
-                  <p className="text-white/40 text-xs mb-2">Samba Collective</p>
-                  <p className="text-[#00D9FF] font-black text-lg md:text-xl tabular-nums">{battleVotes.a.toLocaleString()}</p>
-                  <p className="text-white/30 text-[11px]">votes</p>
-                </div>
-                <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-br from-[#FF6B00] to-[#FF006E] flex items-center justify-center text-white font-black text-base md:text-lg shadow-lg shadow-[#FF006E]/30">VS</div>
-                <div className="text-center">
-                  <div className={`w-24 h-24 md:w-28 md:h-28 mx-auto rounded-full bg-gradient-to-br from-[#00F5A0] to-[#0E9E6E] flex items-center justify-center text-5xl mb-3 border-2 transition-all ${!leadA ? 'border-[#FFB800] shadow-lg shadow-[#FFB800]/30' : 'border-white/10'}`}>🇰🇷</div>
-                  <p className="text-white font-bold text-base md:text-lg">South Korea</p>
-                  <p className="text-white/40 text-xs mb-2">Seoul Wave</p>
-                  <p className="text-[#00F5A0] font-black text-lg md:text-xl tabular-nums">{battleVotes.b.toLocaleString()}</p>
-                  <p className="text-white/30 text-[11px]">votes</p>
-                </div>
+              {/* Competitor entries */}
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {ranked.map((e, i) => {
+                  const pct = Math.round((e.v / total) * 100);
+                  const voted = votedEntry === e.id;
+                  const initials = e.name.split(' ').map(w => w[0]).join('').slice(0, 2);
+                  return (
+                    <div key={e.id} className="group rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden hover:border-white/20 transition-colors">
+                      {/* video thumbnail + watch links */}
+                      <div className={`relative aspect-video bg-gradient-to-br ${e.thumb} flex items-center justify-center`}>
+                        <div className="w-12 h-12 rounded-full bg-black/30 backdrop-blur flex items-center justify-center border border-white/30 group-hover:scale-110 transition-transform">
+                          <Play className="w-5 h-5 text-white fill-white ml-0.5" />
+                        </div>
+                        <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/50 backdrop-blur text-[12px] font-black" style={{ color: i < 3 ? RANK[i] : '#fff' }}>#{i + 1}</span>
+                        <span className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-black/50 backdrop-blur text-white/90 text-[10px] font-semibold">{e.take}</span>
+                        <div className="absolute bottom-2 right-2"><WatchLinks platforms={e.platforms} /></div>
+                      </div>
+                      {/* meta + vote */}
+                      <div className="p-3.5">
+                        <div className="flex items-center gap-2 mb-2.5">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#9D4EDD] to-[#00D9FF] flex items-center justify-center text-white text-[11px] font-bold shrink-0">{initials}</div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-white text-sm font-semibold truncate">{e.name} <span className="ml-0.5">{e.flag}</span></p>
+                            <p className="text-white/40 text-[11px] tabular-nums">{e.v.toLocaleString()} votes · {pct}%</p>
+                          </div>
+                        </div>
+                        <div className="h-1.5 rounded-full bg-white/5 overflow-hidden mb-3">
+                          <div className="h-full bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] transition-all duration-500" style={{ width: `${pct}%` }} />
+                        </div>
+                        <button
+                          onClick={() => voteFor(e.id)}
+                          disabled={votedEntry !== null}
+                          className={`w-full py-2 rounded-lg text-sm font-bold transition-all ${voted ? 'bg-[#00F5A0]/15 text-[#00F5A0] border border-[#00F5A0]/30' : votedEntry ? 'bg-white/5 text-white/30 cursor-not-allowed' : 'bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] text-white hover:opacity-90'}`}
+                        >
+                          {voted ? '✓ Voted' : votedEntry ? 'Voting closed' : 'Vote'}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
 
-              <div className="mt-7">
-                <div className="flex justify-between text-xs font-bold mb-1.5">
-                  <span className="text-[#00D9FF]">{pctA}%</span>
-                  <span className="text-white/40 tabular-nums">{total.toLocaleString()} total votes</span>
-                  <span className="text-[#00F5A0]">{pctB}%</span>
+              {/* Submit entry CTA */}
+              <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 rounded-2xl border border-white/10 bg-gradient-to-r from-[#9D4EDD]/10 to-[#00D9FF]/5 p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF6B00] to-[#FFB800] flex items-center justify-center shrink-0"><Mic className="w-5 h-5 text-white" /></div>
+                  <div>
+                    <p className="text-white font-bold text-sm">Think you can top this?</p>
+                    <p className="text-white/45 text-xs">Record your take on “{ARENA_CHALLENGE.title}” and enter the arena.</p>
+                  </div>
                 </div>
-                <div className="h-3 rounded-full overflow-hidden flex bg-white/5">
-                  <div className="h-full bg-gradient-to-r from-[#00D9FF] to-[#0E7C9E] transition-all duration-500" style={{ width: `${pctA}%` }} />
-                  <div className="h-full bg-gradient-to-r from-[#0E9E6E] to-[#00F5A0] transition-all duration-500" style={{ width: `${pctB}%` }} />
-                </div>
-              </div>
-
-              <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
-                <button onClick={() => setBattleVotes(v => ({ ...v, a: v.a + 1 }))} className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#00D9FF] to-[#0E7C9E] text-white font-bold hover:opacity-90 hover:scale-[1.02] transition-all flex items-center justify-center gap-2"><span className="text-lg">🇧🇷</span> Vote Brazil</button>
-                <button onClick={() => setBattleVotes(v => ({ ...v, b: v.b + 1 }))} className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#0E9E6E] to-[#00F5A0] text-white font-bold hover:opacity-90 hover:scale-[1.02] transition-all flex items-center justify-center gap-2"><span className="text-lg">🇰🇷</span> Vote Korea</button>
+                <Link to="/talent-arena/upload" className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#FF6B00] to-[#FFB800] text-white font-bold text-sm hover:opacity-90 transition-opacity whitespace-nowrap flex items-center gap-2"><UploadCloud className="w-4 h-4" /> Submit your entry</Link>
               </div>
             </div>
             </Reveal>
             );
           })()}
-
-          <Reveal className="mt-5">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {[
-              { rank: 1, name: 'Samba Collective', country: '🇧🇷', votes: '64.2K', accent: '#FFB800' },
-              { rank: 2, name: 'Seoul Wave',       country: '🇰🇷', votes: '62.2K', accent: '#C0C0C0' },
-              { rank: 3, name: 'Naija Allstars',   country: '🇳🇬', votes: '48.9K', accent: '#CD7F32' },
-            ].map(c => (
-              <div key={c.rank} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-3.5 hover:bg-white/[0.06] transition-colors">
-                <span className="text-xl font-black w-7" style={{ color: c.accent }}>#{c.rank}</span>
-                <span className="text-2xl">{c.country}</span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-white text-sm font-semibold truncate">{c.name}</p>
-                  <p className="text-white/40 text-xs">{c.votes} votes</p>
-                </div>
-                <Trophy className="w-4 h-4" style={{ color: c.accent }} />
-              </div>
-            ))}
-          </div>
-          </Reveal>
         </div>
       </section>
 
