@@ -5,6 +5,8 @@ import { asArray } from '@/lib/utils';
 import Seo from '@/components/Seo';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import PremiumBackground from '@/components/PremiumBackground';
+import { Reveal } from '@/components/ui/premium';
 import { usePlayer } from '@/components/GlobalPlayer';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -207,28 +209,32 @@ export default function PodcastsCollectionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0814] text-white">
+    <div className="relative min-h-screen bg-[#0B0814] text-white">
       <Seo title="Podcasts" description="Discover and stream podcasts from creators worldwide." />
+      <PremiumBackground />
       <Header />
 
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#0B0814] via-[#100D2E] to-[#0B0814] border-b border-white/5 py-12">
+      <div className="relative z-10 border-b border-white/5 py-16 overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-[360px] -z-10 pointer-events-none bg-[radial-gradient(ellipse_at_30%_0%,rgba(157,78,221,0.15),transparent_65%)]" />
         <div className="max-w-5xl mx-auto px-4 lg:px-8">
+          <Reveal>
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#9D4EDD] to-[#00F5A0] flex items-center justify-center text-xl">🎙️</div>
             <span className="text-[#9D4EDD] text-sm font-medium uppercase tracking-widest">{t('nav.podcasts')}</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black text-white mb-3">
+          <h1 className="text-5xl sm:text-6xl font-black tracking-tight text-white mb-3">
             {t('podcasts.title').split('&')[0]}&amp;{' '}
             <span className="bg-gradient-to-r from-[#9D4EDD] to-[#00F5A0] bg-clip-text text-transparent">
               {t('podcasts.title').split('&')[1] ?? 'Teaching'}
             </span>
           </h1>
           <p className="text-gray-400 text-lg max-w-xl">{t('podcasts.subtitle')}</p>
+          </Reveal>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 lg:px-8 py-8">
+      <div className="relative z-10 max-w-5xl mx-auto px-4 lg:px-8 py-8">
 
         {/* Coming Soon Banner */}
         <div className="bg-gradient-to-r from-[#9D4EDD]/10 to-[#00F5A0]/10 border border-[#9D4EDD]/20 rounded-2xl p-5 mb-8 flex items-center gap-4">

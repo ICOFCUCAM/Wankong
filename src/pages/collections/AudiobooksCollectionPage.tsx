@@ -5,6 +5,9 @@ import { asArray } from '@/lib/utils';
 import Seo from '@/components/Seo';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import PremiumBackground from '@/components/PremiumBackground';
+import TiltCard from '@/components/TiltCard';
+import { Reveal } from '@/components/ui/premium';
 import { Headphones, Play, Clock, Star } from 'lucide-react';
 
 interface Audiobook {
@@ -30,7 +33,7 @@ function AudiobookCard({ ab, onClick }: { ab: Audiobook; onClick: () => void }) 
   return (
     <div
       onClick={onClick}
-      className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all group flex flex-col cursor-pointer"
+      className="h-full bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all group flex flex-col cursor-pointer"
     >
       {/* Cover */}
       <div className="aspect-square relative overflow-hidden bg-white/5">
@@ -148,27 +151,31 @@ export default function AudiobooksCollectionPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0B0814] text-white">
+    <div className="relative min-h-screen bg-[#0B0814] text-white">
       <Seo title="Audiobooks" description="Listen to audiobooks narrated by creators and authors around the world." />
+      <PremiumBackground />
       <Header />
 
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#0B0814] via-[#100D2E] to-[#0B0814] border-b border-white/5 py-12">
+      <div className="relative z-10 border-b border-white/5 py-16 overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-[360px] -z-10 pointer-events-none bg-[radial-gradient(ellipse_at_30%_0%,rgba(157,78,221,0.15),transparent_65%)]" />
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <Reveal>
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#9D4EDD] to-[#00D9FF] flex items-center justify-center">
               <Headphones className="w-5 h-5 text-white" />
             </div>
             <span className="text-[#9D4EDD] text-sm font-medium uppercase tracking-widest">Audiobooks</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black text-white mb-3">
+          <h1 className="text-5xl sm:text-6xl font-black tracking-tight text-white mb-3">
             Listen to <span className="bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] bg-clip-text text-transparent">Audiobooks</span>
           </h1>
           <p className="text-white/55 text-lg max-w-xl">Stories, non-fiction and bestsellers from creators worldwide — narrated and ready to play.</p>
+          </Reveal>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 lg:px-8 py-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 lg:px-8 py-8">
         {/* Search */}
         <div className="relative mb-6">
           <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -261,7 +268,9 @@ export default function AudiobooksCollectionPage() {
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5">
               {books.map(ab => (
-                <AudiobookCard key={ab.id} ab={ab} onClick={() => navigate(`/products/${ab.id}`)} />
+                <TiltCard key={ab.id} className="rounded-2xl" max={6} glow="rgba(157,78,221,0.30)">
+                  <AudiobookCard ab={ab} onClick={() => navigate(`/products/${ab.id}`)} />
+                </TiltCard>
               ))}
             </div>
             {hasMore && (
