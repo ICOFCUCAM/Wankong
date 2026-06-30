@@ -1331,12 +1331,47 @@ export default function AppLayout() {
               Upload once, distribute everywhere. Your music on Spotify, Apple Music, TikTok, and 27+ more platforms. Track royalties in real-time.
             </p>
           </div>
-          <div className="flex flex-wrap justify-center gap-3 mb-8">
-            {DISTRIBUTION_PLATFORMS.map((platform, i) => (
-              <div key={i} className="px-4 py-2 bg-white/5 border border-white/8 rounded-full text-white/40 text-sm hover:bg-white/10 hover:text-white hover:border-[#00D9FF]/30 transition-all cursor-default">
-                {platform}
-              </div>
-            ))}
+          {/* Distribution network visualization */}
+          <div className="relative max-w-xl mx-auto mb-8">
+            {(() => {
+              const platforms = [
+                { short: 'Spotify',  color: '#1DB954' },
+                { short: 'Apple',    color: '#FA57C1' },
+                { short: 'YouTube',  color: '#FF3B3B' },
+                { short: 'TikTok',   color: '#25F4EE' },
+                { short: 'Amazon',   color: '#FF9900' },
+                { short: 'Deezer',   color: '#A238FF' },
+                { short: 'Tidal',    color: '#33D1FF' },
+                { short: 'Boomplay', color: '#FF6B00' },
+              ];
+              const cx = 300, cy = 300, R = 222;
+              return (
+                <svg viewBox="0 0 600 600" className="w-full">
+                  <defs>
+                    <radialGradient id="wkEngine" cx="0.5" cy="0.38" r="0.65">
+                      <stop offset="0" stopColor="#00D9FF" /><stop offset="1" stopColor="#9D4EDD" />
+                    </radialGradient>
+                  </defs>
+                  {platforms.map((p, i) => {
+                    const a = (i / platforms.length) * Math.PI * 2 - Math.PI / 2;
+                    const x = cx + R * Math.cos(a), y = cy + R * Math.sin(a);
+                    return (
+                      <g key={p.short}>
+                        <line x1={cx} y1={cy} x2={x} y2={y} stroke={p.color} strokeWidth="2.5" strokeOpacity="0.5" strokeDasharray="5 9" strokeLinecap="round" className="wk-flow" style={{ animationDelay: `${i * 0.14}s` }} />
+                        <circle cx={x} cy={y} r="40" fill="#0F0A1E" stroke={p.color} strokeWidth="2" />
+                        <text x={x} y={y} textAnchor="middle" dominantBaseline="central" fontSize="13" fontWeight="700" fill="#ffffff">{p.short}</text>
+                      </g>
+                    );
+                  })}
+                  <circle cx={cx} cy={cy} r="66" className="wk-sonar" fill="none" stroke="#00D9FF" strokeWidth="2" />
+                  <circle cx={cx} cy={cy} r="66" fill="url(#wkEngine)" className="wk-engine-pulse" />
+                  <circle cx={cx} cy={cy} r="66" fill="none" stroke="#ffffff" strokeOpacity="0.3" strokeWidth="1" />
+                  <text x={cx} y={cy - 7} textAnchor="middle" fontSize="16" fontWeight="800" fill="#ffffff">WANKONG</text>
+                  <text x={cx} y={cy + 13} textAnchor="middle" fontSize="11" fontWeight="600" fill="#ffffffcc">AI Engine</text>
+                </svg>
+              );
+            })()}
+            <p className="text-center text-white/40 text-xs mt-1">Upload once → our AI engine delivers to every platform in real time</p>
           </div>
           <div className="text-center">
             <Link to="/upload/distribute" className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#00D9FF] to-[#9D4EDD] text-white font-bold rounded-xl hover:opacity-90 transition-all hover:scale-105">
