@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, ReactNode } from 'react';
 import { supabase } from '@/lib/supabase';
 import { ViewPage, Notification } from '@/lib/constants';
-import type { User as SupabaseUser } from '@supabase/supabase-js';
+import { useAuth } from '@/contexts/AuthContext';
+import { asArray } from '@/lib/utils';
 
 interface WalletState {
   available: number;
@@ -49,7 +50,9 @@ const EMPTY_WALLET: WalletState = {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null);
+  // Single source of truth for auth — reuse AuthProvider's session listener
+  // instead of opening a second getSession()/onAuthStateChange subscription.
+  const { user: supabaseUser } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [currentPage, setCurrentPage] = useState<ViewPage>('dashboard');
@@ -57,17 +60,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [wallet, setWallet] = useState<WalletState>(EMPTY_WALLET);
   const [searchQuery, setSearchQuery] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  // ── Auth listener ────────────────────────────────────────────────────────────
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSupabaseUser(session?.user ?? null);
-    });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
-      setSupabaseUser(session?.user ?? null);
-    });
-    return () => subscription.unsubscribe();
-  }, []);
 
   // ── Per-user data: notifications + wallet ────────────────────────────────────
   useEffect(() => {
@@ -87,16 +79,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
       .order('created_at', { ascending: false })
       .limit(20)
       .then(({ data }) => {
-        if (data) {
-          setNotifications(data.map((n: any) => ({
-            id: n.id,
-            type: n.type ?? 'system',
-            title: n.title ?? '',
-            message: n.body ?? '',
-            read: n.read ?? false,
-            date: n.created_at,
-          })));
-        }
+        setNotifications(asArray<any>(data).map((n: any) => ({
+          id: n.id,
+          type: n.type ?? 'system',
+          title: n.title ?? '',
+          message: n.body ?? '',
+          read: n.read ?? false,
+          date: n.created_at,
+        })));
       });
 
     // Wallet from creator_balances
@@ -139,7 +129,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return () => { supabase.removeChannel(channel); };
   }, [supabaseUser]);
 
-  const user: AppUser | null = supabaseUser ? {
+  const user = useMemo<AppUser | null>(() => supabaseUser ? {
     id: supabaseUser.id,
     email: supabaseUser.email ?? '',
     displayName: supabaseUser.user_metadata?.display_name ?? supabaseUser.user_metadata?.full_name ?? supabaseUser.email?.split('@')?.[0] ?? 'Creator',
@@ -147,31 +137,38 @@ export function AppProvider({ children }: { children: ReactNode }) {
     avatar: supabaseUser.user_metadata?.avatar_url ?? `https://api.dicebear.com/7.x/initials/svg?seed=${supabaseUser.email}`,
     country: supabaseUser.user_metadata?.country ?? 'US',
     role: supabaseUser.user_metadata?.role ?? 'creator',
-  } : null;
+  } : null, [supabaseUser]);
 
-  const markNotificationRead = (id: string) => {
+  const markNotificationRead = useCallback((id: string) => {
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
     supabase.from('user_notifications').update({ read: true }).eq('id', id).then(() => {});
-  };
+  }, []);
+
+  const toggleSidebar = useCallback(() => setSidebarOpen(p => !p), []);
+
+  const value = useMemo<AppContextType>(() => ({
+    user,
+    wallet,
+    isAuthenticated: !!supabaseUser,
+    showAuthModal,
+    setShowAuthModal,
+    authMode,
+    setAuthMode,
+    currentPage,
+    setCurrentPage,
+    notifications,
+    markNotificationRead,
+    searchQuery,
+    setSearchQuery,
+    sidebarOpen,
+    toggleSidebar,
+  }), [
+    user, wallet, supabaseUser, showAuthModal, authMode, currentPage,
+    notifications, markNotificationRead, searchQuery, sidebarOpen, toggleSidebar,
+  ]);
 
   return (
-    <AppContext.Provider value={{
-      user,
-      wallet,
-      isAuthenticated: !!supabaseUser,
-      showAuthModal,
-      setShowAuthModal,
-      authMode,
-      setAuthMode,
-      currentPage,
-      setCurrentPage,
-      notifications,
-      markNotificationRead,
-      searchQuery,
-      setSearchQuery,
-      sidebarOpen,
-      toggleSidebar: () => setSidebarOpen(p => !p),
-    }}>
+    <AppContext.Provider value={value}>
       {children}
     </AppContext.Provider>
   );

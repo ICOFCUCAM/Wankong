@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, useMemo, ReactNode } from 'react';
 import { usePlaylist, Playlist, PlaylistItemInput } from '@/hooks/usePlaylist';
 
 // ── Item shape passed to openAddToPlaylist ────────────────────────────────────
@@ -34,16 +34,21 @@ export function PlaylistProvider({ children }: { children: ReactNode }) {
   const openAddToPlaylist  = useCallback((item: AddToPlaylistItem) => setPendingItem(item), []);
   const closeAddToPlaylist = useCallback(() => setPendingItem(null), []);
 
+  const value = useMemo<PlaylistContextValue>(() => ({
+    myPlaylists:        playlist.myPlaylists,
+    editorialPlaylists: playlist.editorialPlaylists,
+    loading:            playlist.loading,
+    openAddToPlaylist,
+    closeAddToPlaylist,
+    pendingItem,
+    refreshPlaylists:   playlist.loadAll,
+  }), [
+    playlist.myPlaylists, playlist.editorialPlaylists, playlist.loading, playlist.loadAll,
+    openAddToPlaylist, closeAddToPlaylist, pendingItem,
+  ]);
+
   return (
-    <PlaylistContext.Provider value={{
-      myPlaylists:        playlist.myPlaylists,
-      editorialPlaylists: playlist.editorialPlaylists,
-      loading:            playlist.loading,
-      openAddToPlaylist,
-      closeAddToPlaylist,
-      pendingItem,
-      refreshPlaylists:   playlist.loadAll,
-    }}>
+    <PlaylistContext.Provider value={value}>
       {children}
     </PlaylistContext.Provider>
   );

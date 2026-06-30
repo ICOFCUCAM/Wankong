@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, ReactNode } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { User, Session } from '@supabase/supabase-js';
 
@@ -60,11 +60,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [userRole,  setUserRole]  = useState<UserRole | null>(null);
   const [adminRole, setAdminRole] = useState<AdminRole | null>(null);
 
-  const loadRoles = async (uid: string) => {
+  const loadRoles = useCallback(async (uid: string) => {
     const [role, admin] = await Promise.all([fetchUserRole(uid), fetchAdminRole(uid)]);
     setUserRole(role);
     setAdminRole(admin);
-  };
+  }, []);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -87,16 +87,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [loadRoles]);
 
   // ── Auth actions ────────────────────────────────────────────
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = useCallback(async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     return { error };
-  };
+  }, []);
 
-  const signUp = async (
+  const signUp = useCallback(async (
     email: string,
     password: string,
     role: UserRole = 'fan',
@@ -112,13 +112,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await supabase.from('user_roles').upsert({ user_id: data.user.id, role });
     }
     return { error };
-  };
+  }, []);
 
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     await supabase.auth.signOut();
-  };
+  }, []);
 
-  const signInWithGoogle = async () => {
+  const signInWithGoogle = useCallback(async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -127,38 +127,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       },
     });
     return { error };
-  };
+  }, []);
 
-  const signInWithApple = async () => {
+  const signInWithApple = useCallback(async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'apple',
       options: { redirectTo: `${window.location.origin}/auth/callback` },
     });
     return { error };
-  };
+  }, []);
 
-  const saveRole = async (role: UserRole) => {
+  const saveRole = useCallback(async (role: UserRole) => {
     if (!user) return { error: new Error('Not authenticated') };
     const { error } = await supabase
       .from('user_roles')
       .upsert({ user_id: user.id, role });
     if (!error) setUserRole(role);
     return { error };
-  };
+  }, [user]);
 
-  const refreshRole = async () => {
+  const refreshRole = useCallback(async () => {
     if (user) await loadRoles(user.id);
-  };
+  }, [user, loadRoles]);
+
+  const value = useMemo<AuthContextType>(() => ({
+    user, session, loading,
+    userRole, adminRole,
+    isAdmin: adminRole !== null,
+    signIn, signUp, signOut,
+    signInWithGoogle, signInWithApple,
+    saveRole, refreshRole,
+  }), [
+    user, session, loading, userRole, adminRole,
+    signIn, signUp, signOut, signInWithGoogle, signInWithApple, saveRole, refreshRole,
+  ]);
 
   return (
-    <AuthContext.Provider value={{
-      user, session, loading,
-      userRole, adminRole,
-      isAdmin: adminRole !== null,
-      signIn, signUp, signOut,
-      signInWithGoogle, signInWithApple,
-      saveRole, refreshRole,
-    }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
