@@ -105,15 +105,17 @@ const ARENA_CHALLENGE = {
 
 interface ArenaEntry {
   id: string; name: string; flag: string; take: string;
-  votes: number; thumb: string; platforms: string[];
+  votes: number; youtubeId: string; platforms: string[];
 }
+// Entries are creator videos auto-published to social channels (YouTube, TikTok,
+// etc.) and embedded here to play directly on WANKONG.
 const ARENA_ENTRIES: ArenaEntry[] = [
-  { id: 'e1', name: 'Liam Carter',   flag: '🇺🇸', take: 'Vocal Cover',  votes: 64218, thumb: 'from-[#9D4EDD] to-[#00D9FF]', platforms: ['youtube', 'tiktok', 'spotify'] },
-  { id: 'e2', name: 'Min-ji Park',   flag: '🇰🇷', take: 'Dance Cover',  votes: 62224, thumb: 'from-[#FF6B00] to-[#FF006E]', platforms: ['youtube', 'tiktok'] },
-  { id: 'e3', name: 'Sofia Almeida', flag: '🇧🇷', take: 'Acoustic',     votes: 48910, thumb: 'from-[#00F5A0] to-[#0E9E6E]', platforms: ['youtube', 'facebook', 'spotify'] },
-  { id: 'e4', name: 'Kwame Boateng', flag: '🇬🇭', take: 'Afro Remix',   votes: 39145, thumb: 'from-[#FFB800] to-[#FF6B00]', platforms: ['tiktok', 'youtube'] },
-  { id: 'e5', name: 'Aiko Tanaka',   flag: '🇯🇵', take: 'Lo-fi Flip',   votes: 31502, thumb: 'from-[#00D9FF] to-[#9D4EDD]', platforms: ['youtube', 'spotify'] },
-  { id: 'e6', name: 'Diego Morales', flag: '🇲🇽', take: 'Latin Version', votes: 27488, thumb: 'from-[#FF006E] to-[#9D4EDD]', platforms: ['tiktok', 'facebook'] },
+  { id: 'e1', name: 'Liam Carter',   flag: '🇺🇸', take: 'Vocal Cover',   votes: 64218, youtubeId: 'JGwWNGJdvx8', platforms: ['youtube', 'tiktok', 'spotify'] },
+  { id: 'e2', name: 'Min-ji Park',   flag: '🇰🇷', take: 'Dance Cover',   votes: 62224, youtubeId: 'gdZLi9oWNZg', platforms: ['youtube', 'tiktok'] },
+  { id: 'e3', name: 'Sofia Almeida', flag: '🇧🇷', take: 'Acoustic',      votes: 48910, youtubeId: 'kJQP7kiw5Fk', platforms: ['youtube', 'facebook', 'spotify'] },
+  { id: 'e4', name: 'Kwame Boateng', flag: '🇬🇭', take: 'Afro Remix',    votes: 39145, youtubeId: '60ItHLz5WEA', platforms: ['tiktok', 'youtube'] },
+  { id: 'e5', name: 'Aiko Tanaka',   flag: '🇯🇵', take: 'Lo-fi Flip',    votes: 31502, youtubeId: 'OPf0YbXqDm0', platforms: ['youtube', 'spotify'] },
+  { id: 'e6', name: 'Diego Morales', flag: '🇲🇽', take: 'Latin Version', votes: 27488, youtubeId: 'kffacxfA7G4', platforms: ['tiktok', 'facebook'] },
 ];
 
 const PLATFORMS: Record<string, { label: string; bg: string; href: string; Icon: typeof Youtube }> = {
@@ -350,6 +352,7 @@ export default function AppLayout() {
     () => Object.fromEntries(ARENA_ENTRIES.map(e => [e.id, e.votes])),
   );
   const [votedEntry, setVotedEntry] = useState<string | null>(null);
+  const [playingEntry, setPlayingEntry] = useState<string | null>(null); // which entry's YouTube is playing inline
   const [battleCountdown, setBattleCountdown] = useState(8073); // seconds remaining
   useEffect(() => {
     const id = setInterval(() => {
@@ -1034,122 +1037,7 @@ export default function AppLayout() {
         </div>
       </section>
 
-      {/* ── TALENT ARENA — LIVE BATTLE ─────────────────────────────────────── */}
-      <section className="py-14 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(255,107,0,0.10),transparent_70%)]" />
-        <div className="relative max-w-7xl mx-auto px-4">
-          <Reveal>
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#FF6B00] to-[#FFB800] flex items-center justify-center shadow-lg shadow-[#FF6B00]/25">
-                <Trophy className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-2xl md:text-3xl font-black text-white">Talent Arena</h2>
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-500 text-white text-[10px] font-black rounded-full"><span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE NOW</span>
-                </div>
-                <p className="text-white/40 text-sm">This week's challenge — watch the performances and vote for the best</p>
-              </div>
-            </div>
-            <Link to="/collections/talent-arena" className="text-[#FFB800] hover:text-[#FFB800]/80 text-sm font-semibold flex items-center gap-1">Enter Arena <ArrowRight className="w-4 h-4" /></Link>
-          </div>
-          </Reveal>
-
-          {(() => {
-            const ranked = ARENA_ENTRIES
-              .map(e => ({ ...e, v: entryVotes[e.id] ?? e.votes }))
-              .sort((a, b) => b.v - a.v);
-            const total = ranked.reduce((s, e) => s + e.v, 0) || 1;
-            const hh = String(Math.floor(battleCountdown / 3600)).padStart(2, '0');
-            const mm = String(Math.floor((battleCountdown % 3600) / 60)).padStart(2, '0');
-            const ss = String(battleCountdown % 60).padStart(2, '0');
-            const RANK = ['#FFB800', '#C0C0C0', '#CD7F32'];
-            return (
-            <Reveal>
-            <div className="rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-sm p-5 md:p-7">
-
-              {/* Challenge song + countdown */}
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-white/8">
-                <div className="flex items-center gap-4">
-                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${ARENA_CHALLENGE.cover} flex items-center justify-center shrink-0 shadow-lg`}>
-                    <Music className="w-7 h-7 text-white/80" />
-                  </div>
-                  <div>
-                    <span className="text-[#FFB800] text-[11px] font-bold uppercase tracking-widest">The Challenge</span>
-                    <p className="text-white font-black text-lg leading-tight">{ARENA_CHALLENGE.title}</p>
-                    <p className="text-white/45 text-sm">{ARENA_CHALLENGE.artist} · {ARENA_ENTRIES.length} creators competing</p>
-                  </div>
-                </div>
-                <div className="flex flex-col items-start md:items-end">
-                  <span className="text-white/40 text-[11px] uppercase tracking-widest mb-1.5">Voting closes in</span>
-                  <div className="flex items-center gap-1.5 font-black text-white text-xl tabular-nums">
-                    <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10">{hh}</span><span className="text-white/30">:</span>
-                    <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10">{mm}</span><span className="text-white/30">:</span>
-                    <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10">{ss}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Competitor entries */}
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {ranked.map((e, i) => {
-                  const pct = Math.round((e.v / total) * 100);
-                  const voted = votedEntry === e.id;
-                  const initials = e.name.split(' ').map(w => w[0]).join('').slice(0, 2);
-                  return (
-                    <div key={e.id} className="group rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden hover:border-white/20 transition-colors">
-                      {/* video thumbnail + watch links */}
-                      <div className={`relative aspect-video bg-gradient-to-br ${e.thumb} flex items-center justify-center`}>
-                        <div className="w-12 h-12 rounded-full bg-black/30 backdrop-blur flex items-center justify-center border border-white/30 group-hover:scale-110 transition-transform">
-                          <Play className="w-5 h-5 text-white fill-white ml-0.5" />
-                        </div>
-                        <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/50 backdrop-blur text-[12px] font-black" style={{ color: i < 3 ? RANK[i] : '#fff' }}>#{i + 1}</span>
-                        <span className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-black/50 backdrop-blur text-white/90 text-[10px] font-semibold">{e.take}</span>
-                        <div className="absolute bottom-2 right-2"><WatchLinks platforms={e.platforms} /></div>
-                      </div>
-                      {/* meta + vote */}
-                      <div className="p-3.5">
-                        <div className="flex items-center gap-2 mb-2.5">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#9D4EDD] to-[#00D9FF] flex items-center justify-center text-white text-[11px] font-bold shrink-0">{initials}</div>
-                          <div className="min-w-0 flex-1">
-                            <p className="text-white text-sm font-semibold truncate">{e.name} <span className="ml-0.5">{e.flag}</span></p>
-                            <p className="text-white/40 text-[11px] tabular-nums">{e.v.toLocaleString()} votes · {pct}%</p>
-                          </div>
-                        </div>
-                        <div className="h-1.5 rounded-full bg-white/5 overflow-hidden mb-3">
-                          <div className="h-full bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] transition-all duration-500" style={{ width: `${pct}%` }} />
-                        </div>
-                        <button
-                          onClick={() => voteFor(e.id)}
-                          disabled={votedEntry !== null}
-                          className={`w-full py-2 rounded-lg text-sm font-bold transition-all ${voted ? 'bg-[#00F5A0]/15 text-[#00F5A0] border border-[#00F5A0]/30' : votedEntry ? 'bg-white/5 text-white/30 cursor-not-allowed' : 'bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] text-white hover:opacity-90'}`}
-                        >
-                          {voted ? '✓ Voted' : votedEntry ? 'Voting closed' : 'Vote'}
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Submit entry CTA */}
-              <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 rounded-2xl border border-white/10 bg-gradient-to-r from-[#9D4EDD]/10 to-[#00D9FF]/5 p-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF6B00] to-[#FFB800] flex items-center justify-center shrink-0"><Mic className="w-5 h-5 text-white" /></div>
-                  <div>
-                    <p className="text-white font-bold text-sm">Think you can top this?</p>
-                    <p className="text-white/45 text-xs">Record your take on “{ARENA_CHALLENGE.title}” and enter the arena.</p>
-                  </div>
-                </div>
-                <Link to="/talent-arena/upload" className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#FF6B00] to-[#FFB800] text-white font-bold text-sm hover:opacity-90 transition-opacity whitespace-nowrap flex items-center gap-2"><UploadCloud className="w-4 h-4" /> Submit your entry</Link>
-              </div>
-            </div>
-            </Reveal>
-            );
-          })()}
-        </div>
-      </section>
+      {/* Talent Arena relocated lower (just above Competition Leaderboard) */}
 
       {/* Video Modal */}
       {videoModalOpen && (
@@ -1486,6 +1374,148 @@ export default function AppLayout() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── TALENT ARENA — LIVE COMPETITION (YouTube-embedded entries) ─────── */}
+      <section className="py-14 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(255,107,0,0.10),transparent_70%)]" />
+        <div className="relative max-w-7xl mx-auto px-4">
+          <Reveal>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#FF6B00] to-[#FFB800] flex items-center justify-center shadow-lg shadow-[#FF6B00]/25">
+                <Trophy className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-2xl md:text-3xl font-black text-white">Talent Arena</h2>
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-500 text-white text-[10px] font-black rounded-full"><span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE NOW</span>
+                </div>
+                <p className="text-white/40 text-sm">This week's challenge — watch the performances and vote for the best</p>
+              </div>
+            </div>
+            <Link to="/collections/talent-arena" className="text-[#FFB800] hover:text-[#FFB800]/80 text-sm font-semibold flex items-center gap-1">Enter Arena <ArrowRight className="w-4 h-4" /></Link>
+          </div>
+          </Reveal>
+
+          {(() => {
+            const ranked = ARENA_ENTRIES
+              .map(e => ({ ...e, v: entryVotes[e.id] ?? e.votes }))
+              .sort((a, b) => b.v - a.v);
+            const total = ranked.reduce((s, e) => s + e.v, 0) || 1;
+            const hh = String(Math.floor(battleCountdown / 3600)).padStart(2, '0');
+            const mm = String(Math.floor((battleCountdown % 3600) / 60)).padStart(2, '0');
+            const ss = String(battleCountdown % 60).padStart(2, '0');
+            const RANK = ['#FFB800', '#C0C0C0', '#CD7F32'];
+            return (
+            <Reveal>
+            <div className="rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-sm p-5 md:p-7">
+
+              {/* Challenge song + countdown */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-white/8">
+                <div className="flex items-center gap-4">
+                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${ARENA_CHALLENGE.cover} flex items-center justify-center shrink-0 shadow-lg`}>
+                    <Music className="w-7 h-7 text-white/80" />
+                  </div>
+                  <div>
+                    <span className="text-[#FFB800] text-[11px] font-bold uppercase tracking-widest">The Challenge</span>
+                    <p className="text-white font-black text-lg leading-tight">{ARENA_CHALLENGE.title}</p>
+                    <p className="text-white/45 text-sm">{ARENA_CHALLENGE.artist} · {ARENA_ENTRIES.length} creators competing</p>
+                  </div>
+                </div>
+                <div className="flex flex-col items-start md:items-end">
+                  <span className="text-white/40 text-[11px] uppercase tracking-widest mb-1.5">Voting closes in</span>
+                  <div className="flex items-center gap-1.5 font-black text-white text-xl tabular-nums">
+                    <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10">{hh}</span><span className="text-white/30">:</span>
+                    <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10">{mm}</span><span className="text-white/30">:</span>
+                    <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10">{ss}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Competitor entries — YouTube videos embedded to play inline */}
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {ranked.map((e, i) => {
+                  const pct = Math.round((e.v / total) * 100);
+                  const voted = votedEntry === e.id;
+                  const playing = playingEntry === e.id;
+                  const initials = e.name.split(' ').map(w => w[0]).join('').slice(0, 2);
+                  return (
+                    <div key={e.id} className="group rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden hover:border-white/20 transition-colors">
+                      {/* YouTube embed (click poster to play on the homepage) */}
+                      <div className="relative aspect-video bg-black overflow-hidden">
+                        {playing ? (
+                          <iframe
+                            className="absolute inset-0 w-full h-full"
+                            src={`https://www.youtube.com/embed/${e.youtubeId}?autoplay=1&rel=0&modestbranding=1`}
+                            title={`${e.name} — ${e.take}`}
+                            loading="lazy"
+                            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                            allowFullScreen
+                          />
+                        ) : (
+                          <button
+                            onClick={() => setPlayingEntry(e.id)}
+                            className="absolute inset-0 w-full h-full group/yt"
+                            aria-label={`Play ${e.name}'s performance`}
+                          >
+                            <img
+                              src={`https://img.youtube.com/vi/${e.youtubeId}/hqdefault.jpg`}
+                              alt={`${e.name} performance`}
+                              loading="lazy"
+                              className="w-full h-full object-cover"
+                            />
+                            <span className="absolute inset-0 bg-black/30 group-hover/yt:bg-black/15 transition-colors" />
+                            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-2xl bg-[#FF0000] flex items-center justify-center shadow-lg group-hover/yt:scale-110 transition-transform">
+                              <Play className="w-5 h-5 text-white fill-white ml-0.5" />
+                            </span>
+                          </button>
+                        )}
+                        <span className="absolute top-2 left-2 z-10 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur text-[12px] font-black pointer-events-none" style={{ color: i < 3 ? RANK[i] : '#fff' }}>#{i + 1}</span>
+                        <span className="absolute top-2 right-2 z-10 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur text-white/90 text-[10px] font-semibold pointer-events-none">{e.take}</span>
+                        {!playing && <div className="absolute bottom-2 right-2 z-10"><WatchLinks platforms={e.platforms} /></div>}
+                      </div>
+                      {/* meta + vote */}
+                      <div className="p-3.5">
+                        <div className="flex items-center gap-2 mb-2.5">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#9D4EDD] to-[#00D9FF] flex items-center justify-center text-white text-[11px] font-bold shrink-0">{initials}</div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-white text-sm font-semibold truncate">{e.name} <span className="ml-0.5">{e.flag}</span></p>
+                            <p className="text-white/40 text-[11px] tabular-nums">{e.v.toLocaleString()} votes · {pct}%</p>
+                          </div>
+                        </div>
+                        <div className="h-1.5 rounded-full bg-white/5 overflow-hidden mb-3">
+                          <div className="h-full bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] transition-all duration-500" style={{ width: `${pct}%` }} />
+                        </div>
+                        <button
+                          onClick={() => voteFor(e.id)}
+                          disabled={votedEntry !== null}
+                          className={`w-full py-2 rounded-lg text-sm font-bold transition-all ${voted ? 'bg-[#00F5A0]/15 text-[#00F5A0] border border-[#00F5A0]/30' : votedEntry ? 'bg-white/5 text-white/30 cursor-not-allowed' : 'bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] text-white hover:opacity-90'}`}
+                        >
+                          {voted ? '✓ Voted' : votedEntry ? 'Voting closed' : 'Vote'}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Submit entry CTA — uploads auto-publish to social channels, then appear here */}
+              <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 rounded-2xl border border-white/10 bg-gradient-to-r from-[#9D4EDD]/10 to-[#00D9FF]/5 p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF6B00] to-[#FFB800] flex items-center justify-center shrink-0"><Mic className="w-5 h-5 text-white" /></div>
+                  <div>
+                    <p className="text-white font-bold text-sm">Think you can top this?</p>
+                    <p className="text-white/45 text-xs">Record your take on “{ARENA_CHALLENGE.title}” — we auto-publish it to YouTube, TikTok &amp; more, then it shows up right here.</p>
+                  </div>
+                </div>
+                <Link to="/talent-arena/upload" className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#FF6B00] to-[#FFB800] text-white font-bold text-sm hover:opacity-90 transition-opacity whitespace-nowrap flex items-center gap-2"><UploadCloud className="w-4 h-4" /> Submit your entry</Link>
+              </div>
+            </div>
+            </Reveal>
+            );
+          })()}
         </div>
       </section>
 
