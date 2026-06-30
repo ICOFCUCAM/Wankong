@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
+import { asArray } from '@/lib/utils';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { SUPPORTED_LANGUAGES } from '@/pipelines/translation/LanguageMapping';
@@ -120,13 +121,14 @@ export default function MusicCollectionPage() {
     if (search.trim()) query = query.ilike('title', `%${search.trim()}%`);
 
     const { data, error } = await query;
-    if (!error && data) {
+    if (!error) {
+      const rows = asArray<Track>(data);
       if (reset) {
-        setTracks(data as Track[]);
+        setTracks(rows);
       } else {
-        setTracks(prev => [...prev, ...(data as Track[])]);
+        setTracks(prev => [...prev, ...rows]);
       }
-      setHasMore(data.length === PAGE_SIZE);
+      setHasMore(rows.length === PAGE_SIZE);
       if (!reset) setPage(p => p + 1);
     }
     setLoading(false);

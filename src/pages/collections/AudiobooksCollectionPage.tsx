@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
+import { asArray } from '@/lib/utils';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Headphones, Play, Clock, Star } from 'lucide-react';
@@ -122,10 +123,11 @@ export default function AudiobooksCollectionPage() {
     if (search.trim()) query = query.ilike('title', `%${search.trim()}%`);
 
     const { data } = await query;
-    if (data) {
-      if (reset) setBooks(data as Audiobook[]);
-      else setBooks(prev => [...prev, ...(data as Audiobook[])]);
-      setHasMore(data.length === PAGE_SIZE);
+    {
+      const rows = asArray<Audiobook>(data);
+      if (reset) setBooks(rows);
+      else setBooks(prev => [...prev, ...rows]);
+      setHasMore(rows.length === PAGE_SIZE);
       if (!reset) setPage(p => p + 1);
     }
     setLoading(false);

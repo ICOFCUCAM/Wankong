@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
+import { asArray } from '@/lib/utils';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { usePlayer } from '@/components/GlobalPlayer';
@@ -380,7 +381,7 @@ export default function LanguageMusicPage() {
     buildQuery(0).then(({ data, error, count }) => {
       if (cancelled) return;
 
-      const rows: Release[] = (!error && data) ? (data as unknown as Release[]) : [];
+      const rows: Release[] = error ? [] : asArray<Release>(data);
 
       setReleases(rows);
       setTotalCount(count ?? rows.length);
@@ -410,8 +411,8 @@ export default function LanguageMusicPage() {
       .order('created_at', { ascending: false })
       .limit(3)
       .then(({ data, error }) => {
-        if (!error && data) {
-          setTrending(data as unknown as Release[]);
+        if (!error) {
+          setTrending(asArray<Release>(data));
         }
       });
   }, [langKey]);
@@ -422,9 +423,10 @@ export default function LanguageMusicPage() {
     setLoadingMore(true);
     const nextPage = page + 1;
     const { data, error } = await buildQuery(nextPage * PAGE_SIZE);
-    if (!error && data && data.length > 0) {
-      setReleases(prev => [...prev, ...(data as unknown as Release[])]);
-      setHasMore(data.length === PAGE_SIZE);
+    const moreRows = error ? [] : asArray<Release>(data);
+    if (moreRows.length > 0) {
+      setReleases(prev => [...prev, ...moreRows]);
+      setHasMore(moreRows.length === PAGE_SIZE);
       setPage(nextPage);
     } else {
       setHasMore(false);

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Play, Upload, Trophy, Zap } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { asArray } from '@/lib/utils';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PerformanceCard, { type PerformanceCardData } from '@/components/media/PerformanceCard';
@@ -241,7 +242,7 @@ export default function TalentArenaCollectionPage() {
           .limit(10),
       ]);
 
-      setRooms((roomsRes.data ?? []) as CompetitionRoom[]);
+      setRooms(asArray<CompetitionRoom>(roomsRes.data));
 
       const mapEntry = (w: any): RecentWinner => ({
         id: w.id,
@@ -255,8 +256,8 @@ export default function TalentArenaCollectionPage() {
         prize_pool: w.competition_rooms?.prize_pool ?? '',
       });
 
-      setRecentWinners((winnersRes.data ?? []).map(mapEntry));
-      setFeaturedStrip((stripRes.data ?? []).map(mapEntry));
+      setRecentWinners(asArray(winnersRes.data).map(mapEntry));
+      setFeaturedStrip(asArray(stripRes.data).map(mapEntry));
       setLoading(false);
     };
 

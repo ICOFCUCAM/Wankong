@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
+import { asArray } from '@/lib/utils';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { SUPPORTED_LANGUAGES } from '@/pipelines/translation/LanguageMapping';
@@ -236,10 +237,11 @@ export default function BooksCollectionPage() {
     if (formatFilter === 'hardcover') query = query.eq('has_hardcover', true);
 
     const { data, error } = await query;
-    if (!error && data) {
-      if (reset) setBooks(data as Book[]);
-      else setBooks(prev => [...prev, ...(data as Book[])]);
-      setHasMore(data.length === PAGE_SIZE);
+    if (!error) {
+      const rows = asArray<Book>(data);
+      if (reset) setBooks(rows);
+      else setBooks(prev => [...prev, ...rows]);
+      setHasMore(rows.length === PAGE_SIZE);
       if (!reset) setPage(p => p + 1);
     }
     setLoading(false);
