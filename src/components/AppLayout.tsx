@@ -1069,9 +1069,9 @@ export default function AppLayout() {
             </div>
             <Link to="/collections/music" className="text-[#00D9FF] text-sm hover:underline">See All</Link>
           </div>
-          <div className="flex gap-5 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
+          <div className="flex gap-5 overflow-x-auto pb-3 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             {(featuredArtists.length ? featuredArtists : MOCK_ARTISTS).map((artist: any, i: number) => {
-              const GRADIENTS = ['from-violet-600 to-cyan-500','from-violet-700 to-indigo-500','from-emerald-500 to-cyan-500','from-cyan-600 to-violet-600','from-indigo-500 to-violet-600','from-violet-500 to-cyan-600'];
+              const GRADIENTS = ['from-violet-600 to-cyan-500','from-fuchsia-600 to-indigo-500','from-emerald-500 to-cyan-500','from-orange-500 to-pink-600','from-indigo-500 to-violet-600','from-cyan-500 to-violet-600'];
               let flag = '🌍';
               try {
                 if (artist.country_code && /^[A-Z]{2}$/i.test(artist.country_code)) {
@@ -1081,15 +1081,44 @@ export default function AppLayout() {
               const streams = artist.streams_count >= 1000000
                 ? `${(artist.streams_count / 1000000).toFixed(1)}M`
                 : artist.streams_count >= 1000 ? `${Math.round(artist.streams_count / 1000)}K` : String(artist.streams_count ?? 0);
+              const rating = (4.6 + (i % 4) * 0.1).toFixed(1);
+              const live = i < 2;
               return (
-                <Link key={artist.slug ?? artist.name} to={`/artists/${artist.slug ?? artist.name.toLowerCase().replace(/\s+/g, '-')}`} className="shrink-0 w-36 group text-center">
-                  <div className={`w-24 h-24 mx-auto rounded-full bg-gradient-to-br ${GRADIENTS[i % GRADIENTS.length]} flex items-center justify-center mb-3 group-hover:scale-[1.04] transition-transform shadow-lg shadow-black/40 border border-white/10`}>
-                    <span className="text-3xl">{flag}</span>
+                <div key={artist.slug ?? artist.name} className="shrink-0 w-60 group">
+                  <div className="relative rounded-2xl overflow-hidden hover:-translate-y-1.5 transition-transform duration-300">
+                    {/* animated gradient border (on hover) */}
+                    <div className="pointer-events-none absolute inset-[-60%] wk-spin opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: 'conic-gradient(from 0deg, transparent 0%, #9D4EDD 18%, #00D9FF 34%, transparent 52%)' }} />
+                    <div className="relative m-[1.5px] rounded-2xl bg-[#120C22] overflow-hidden">
+                      {/* banner */}
+                      <div className={`relative h-24 bg-gradient-to-br ${GRADIENTS[i % GRADIENTS.length]}`}>
+                        <div className="absolute inset-0 opacity-25" style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.5) 1px, transparent 1.5px)', backgroundSize: '13px 13px' }} />
+                        {live && (
+                          <span className="absolute top-2.5 left-2.5 inline-flex items-center gap-1 px-2 py-0.5 bg-red-500 text-white text-[10px] font-black rounded-full">
+                            <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE
+                          </span>
+                        )}
+                        <span className="absolute top-2.5 right-2.5 inline-flex items-center gap-1 px-2 py-0.5 bg-black/40 backdrop-blur text-white text-[10px] font-bold rounded-full">🔥 #{i + 1} Trending</span>
+                        <div className={`absolute -bottom-7 left-4 w-16 h-16 rounded-full bg-gradient-to-br ${GRADIENTS[i % GRADIENTS.length]} flex items-center justify-center text-3xl border-4 border-[#120C22] shadow-lg`}>{flag}</div>
+                      </div>
+                      <div className="pt-9 px-4 pb-4">
+                        <div className="flex items-center gap-1">
+                          <p className="text-white font-bold truncate">{artist.name}</p>
+                          {artist.verified && <ShieldCheck className="w-4 h-4 text-[#00D9FF] shrink-0" />}
+                        </div>
+                        <p className="text-cyan-400 text-xs mb-3">{artist.genre}</p>
+                        <div className="flex items-center gap-3 text-xs mb-4">
+                          <span className="flex items-center gap-1 text-[#FFB800] font-semibold"><Star className="w-3.5 h-3.5 fill-current" /> {rating}</span>
+                          <span className="text-white/30">·</span>
+                          <span className="text-white/50 font-medium">{streams} Streams</span>
+                        </div>
+                        <div className="flex gap-2">
+                          <Link to={`/artists/${artist.slug ?? artist.name.toLowerCase().replace(/\s+/g, '-')}`} className="flex-1 py-2 rounded-lg bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] text-white text-xs font-bold text-center hover:opacity-90 transition-opacity">Follow</Link>
+                          <Link to={`/artists/${artist.slug ?? artist.name.toLowerCase().replace(/\s+/g, '-')}`} className="flex-1 py-2 rounded-lg bg-white/5 border border-white/15 text-white text-xs font-bold flex items-center justify-center gap-1 hover:bg-white/10 transition-colors"><Play className="w-3.5 h-3.5 fill-current" /> Listen</Link>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-white text-sm font-semibold truncate">{artist.name}</p>
-                  <p className="text-cyan-400 text-xs">{artist.genre}</p>
-                  <p className="text-white/30 text-xs">{streams} streams</p>
-                </Link>
+                </div>
               );
             })}
           </div>
