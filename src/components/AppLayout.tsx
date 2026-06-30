@@ -153,6 +153,27 @@ function getPriorityLanguages(country: string) {
   return [...head, ...tail].slice(0, 11);
 }
 
+// ── Globe explorer: continents → languages ────────────────────────────────────
+const CONTINENTS = [
+  { key: 'Africa',   label: 'Africa',   emoji: '🌍' },
+  { key: 'Europe',   label: 'Europe',   emoji: '🇪🇺' },
+  { key: 'Asia',     label: 'Asia',     emoji: '🌏' },
+  { key: 'Americas', label: 'Americas', emoji: '🌎' },
+  { key: 'Global',   label: 'Global',   emoji: '🌐' },
+] as const;
+const CONTINENT_LANGS: Record<string, string[]> = {
+  Africa:   ['Pidgin', 'Yoruba', 'Igbo', 'Hausa', 'Swahili', 'Zulu', 'Twi', 'Luganda', 'Bamumbu', 'Bamileke'],
+  Europe:   ['English', 'French', 'Spanish', 'German', 'Norwegian', 'Swedish', 'Russian', 'Portuguese'],
+  Asia:     ['Arabic', 'Chinese', 'Japanese'],
+  Americas: ['English', 'Spanish', 'Portuguese'],
+  Global:   ['English', 'French', 'Spanish', 'Arabic', 'Swahili', 'Yoruba', 'Portuguese', 'Chinese'],
+};
+function langsForContinent(key: string) {
+  return (CONTINENT_LANGS[key] ?? CONTINENT_LANGS.Global)
+    .map(n => ALL_LANGUAGES.find(l => l.lang === n))
+    .filter(Boolean) as typeof ALL_LANGUAGES;
+}
+
 // ── Equalizer (decorative waveform) ───────────────────────────────────────────
 const EQ_PATTERN = [30, 55, 40, 78, 52, 88, 44, 66, 34, 72, 50, 90, 40, 60, 28, 82, 56, 46, 70, 38, 62, 36, 76, 48];
 function Equalizer({ color, bars = 20, className = '' }: { color: string; bars?: number; className?: string }) {
@@ -244,6 +265,8 @@ export default function AppLayout() {
   const [featuredArtists, setFeaturedArtists] = useState<any[]>([]);
   const [topCreators, setTopCreators] = useState<any[]>([]);
   const [langMode, setLangMode] = useState<'region' | 'global'>('region');
+  const [continent, setContinent] = useState<string>('Africa');
+  const continentLangs = langsForContinent(continent);
 
   // Talent Arena live battle (mock real-time)
   const [battleVotes, setBattleVotes] = useState({ a: 64218, b: 62224 });
@@ -634,95 +657,69 @@ export default function AppLayout() {
         <PersonalizedSections />
       </SectionErrorBoundary>
 
-      {/* ── 2. MUSIC BY LANGUAGE — FLAGSHIP DISCOVERY ──────────────────────── */}
-      <section className="py-12 relative overflow-hidden border-t border-white/5">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(157,78,221,0.07),transparent_70%)]" />
+      {/* ── 2. MUSIC BY LANGUAGE — GLOBE EXPLORER ─────────────────────────── */}
+      <section className="py-14 relative overflow-hidden border-t border-white/5">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(157,78,221,0.08),transparent_70%)]" />
         <div className="relative max-w-7xl mx-auto px-4">
-
-          {/* Header + toggle */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-7">
-            <div>
-              <div className="flex items-center gap-3 mb-3">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#9D4EDD]/10 border border-[#9D4EDD]/20 rounded-full text-[#9D4EDD] text-xs font-semibold">
-                  <Globe className="w-3 h-3" /> Music by Language
-                </div>
-                <Equalizer color="#9D4EDD" bars={26} className="w-28 hidden sm:flex opacity-60 h-5" />
-              </div>
-              <h2 className="text-2xl md:text-3xl font-black text-white mb-1">
-                {langMode === 'region' ? 'Music Near You' : 'Global Music Discovery'}
-              </h2>
-              <p className="text-white/40 text-sm">
-                {langMode === 'region'
-                  ? 'Prioritised for your region — tap any language to explore'
-                  : 'Browse music from every culture worldwide 🌍'}
-              </p>
+          <Reveal>
+          <div className="text-center mb-9">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#9D4EDD]/10 border border-[#9D4EDD]/20 rounded-full text-[#9D4EDD] text-xs font-semibold mb-3">
+              <Globe className="w-3 h-3" /> Music by Language
             </div>
-            <div className="flex items-center gap-3 shrink-0">
-              {/* Region / Global toggle pill */}
-              <div className="flex items-center gap-1 bg-white/5 border border-white/10 rounded-full p-1">
-                <button
-                  onClick={() => setLangMode('region')}
-                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${langMode === 'region' ? 'bg-white text-[#0B0814] shadow-lg' : 'text-white/40 hover:text-white/70'}`}
-                >
-                  My Region
-                </button>
-                <button
-                  onClick={() => setLangMode('global')}
-                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${langMode === 'global' ? 'bg-white text-[#0B0814] shadow-lg' : 'text-white/40 hover:text-white/70'}`}
-                >
-                  Global
-                </button>
+            <h2 className="text-3xl md:text-4xl font-black text-white mb-2">Explore Music Across the Globe</h2>
+            <p className="text-white/40 text-sm">Tap a continent — discover music in every language 🌍</p>
+          </div>
+          </Reveal>
+
+          <div className="grid lg:grid-cols-[260px_1fr] gap-10 lg:gap-12 items-center">
+            {/* Globe + continent selector */}
+            <div className="flex flex-col items-center gap-7">
+              <div className="relative">
+                <div className="absolute -inset-8 rounded-full bg-[#9D4EDD]/25 blur-3xl wk-aurora" />
+                <div className="relative w-52 h-52 rounded-full overflow-hidden bg-gradient-to-br from-[#16224a] via-[#0E1635] to-[#070b16] border border-white/10 shadow-2xl">
+                  <div className="absolute inset-0 wk-globe" style={{ backgroundImage: 'radial-gradient(circle, rgba(157,78,221,0.55) 1.6px, transparent 1.7px)', backgroundSize: '15px 15px' }} />
+                  <div className="absolute inset-0 wk-globe" style={{ backgroundImage: 'radial-gradient(circle, rgba(0,217,255,0.35) 1.3px, transparent 1.4px)', backgroundSize: '26px 26px', animationDuration: '20s' }} />
+                  <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.22),transparent_45%)]" />
+                  <div className="absolute inset-0 rounded-full ring-1 ring-inset ring-white/10" />
+                </div>
+                <span className="absolute top-1/2 left-1/2 w-2.5 h-2.5 -ml-1 -mt-1 rounded-full bg-[#00D9FF] shadow-[0_0_12px_#00D9FF] wk-orbit" />
               </div>
-              {/* Carousel arrows */}
-              <div className="hidden sm:flex items-center gap-1.5">
-                <button onClick={() => scrollRow(langScrollRef, 'left')} aria-label="Scroll left" className="w-9 h-9 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/70 transition-colors">
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
-                <button onClick={() => scrollRow(langScrollRef, 'right')} aria-label="Scroll right" className="w-9 h-9 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/70 transition-colors">
-                  <ChevronRight className="w-4 h-4" />
-                </button>
+              <div className="flex flex-wrap justify-center gap-2 max-w-[260px]">
+                {CONTINENTS.map(c => (
+                  <button
+                    key={c.key}
+                    onClick={() => setContinent(c.key)}
+                    className={`px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 ${continent === c.key ? 'bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] text-white shadow-lg shadow-[#9D4EDD]/30 scale-105' : 'bg-white/5 border border-white/10 text-white/60 hover:text-white hover:border-white/25'}`}
+                  >
+                    {c.emoji} {c.label}
+                  </button>
+                ))}
               </div>
+            </div>
+
+            {/* Language cards for the selected continent — animate in on change */}
+            <div key={continent} className="grid grid-cols-2 sm:grid-cols-3 gap-3 self-start">
+              {continentLangs.map((l, i) => (
+                <Link
+                  key={l.lang}
+                  to={`/music/language/${l.lang.toLowerCase()}`}
+                  style={{ animationDelay: `${i * 55}ms` }}
+                  className="wk-fade-up group bg-[#0D1635] border border-white/8 hover:border-[#9D4EDD]/50 hover:bg-[#9D4EDD]/8 rounded-2xl p-4 transition-colors duration-300"
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-11 h-11 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-2xl leading-none shrink-0">{l.flag}</div>
+                    <div className="min-w-0">
+                      <p className="text-white font-bold text-sm leading-tight truncate">{l.lang}</p>
+                      <p className="text-white/40 text-xs truncate">{l.desc || 'Worldwide'}</p>
+                    </div>
+                  </div>
+                  <Equalizer color={i % 2 === 0 ? '#00F5A0' : '#00D9FF'} bars={16} className="opacity-80 group-hover:opacity-100 transition-opacity" />
+                </Link>
+              ))}
             </div>
           </div>
 
-          {/* Language cards — horizontal scroll */}
-          <div
-            ref={langScrollRef}
-            className="flex gap-3 overflow-x-auto pb-3 snap-x [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-          >
-            {(langMode === 'region' ? priorityLanguages : ALL_LANGUAGES.slice(0, 11)).map(({ lang, flag, desc }, i) => (
-              <Link
-                key={lang}
-                to={`/music/language/${lang.toLowerCase()}`}
-                className="group shrink-0 w-44 snap-start bg-[#0D1635] border border-white/8 hover:border-[#9D4EDD]/50 hover:bg-[#9D4EDD]/8 rounded-2xl p-4 transition-all duration-200"
-              >
-                <div className="flex items-center gap-3 mb-3.5">
-                  <div className="w-11 h-11 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-2xl leading-none shrink-0">
-                    {flag}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-white font-bold text-sm leading-tight truncate">{lang}</p>
-                    <p className="text-white/40 text-xs truncate">{desc || 'Worldwide'}</p>
-                  </div>
-                </div>
-                <Equalizer color={i % 2 === 0 ? '#00F5A0' : '#00D9FF'} bars={16} className="opacity-80 group-hover:opacity-100 transition-opacity" />
-              </Link>
-            ))}
-            {/* All Languages card */}
-            <Link
-              to="/collections/music"
-              className="shrink-0 w-44 snap-start flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-[#9D4EDD]/25 to-[#00D9FF]/15 border border-[#9D4EDD]/40 hover:border-[#9D4EDD]/70 rounded-2xl p-4 transition-all"
-            >
-              <div className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center">
-                <Globe className="w-6 h-6 text-white" />
-              </div>
-              <p className="text-white font-bold text-sm">All Languages</p>
-              <p className="text-white/60 text-xs">Explore All</p>
-            </Link>
-          </div>
-
-          {/* Browse CTA */}
-          <div className="text-center mt-7">
+          <div className="text-center mt-10">
             <Link
               to="/collections/music"
               className="inline-flex items-center gap-2 px-7 py-3 bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] text-white text-sm font-bold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-[#9D4EDD]/20"
