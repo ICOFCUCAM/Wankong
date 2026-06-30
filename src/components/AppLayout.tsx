@@ -103,6 +103,25 @@ function getPriorityLanguages(country: string) {
   return [...head, ...tail].slice(0, 11);
 }
 
+// ── Equalizer (decorative waveform) ───────────────────────────────────────────
+const EQ_PATTERN = [30, 55, 40, 78, 52, 88, 44, 66, 34, 72, 50, 90, 40, 60, 28, 82, 56, 46, 70, 38, 62, 36, 76, 48];
+function Equalizer({ color, bars = 20, className = '' }: { color: string; bars?: number; className?: string }) {
+  return (
+    <div className={`flex items-end gap-[2px] h-7 ${className}`} aria-hidden>
+      {Array.from({ length: bars }).map((_, i) => {
+        const h = EQ_PATTERN[i % EQ_PATTERN.length];
+        return (
+          <span
+            key={i}
+            className="flex-1 rounded-full"
+            style={{ height: `${h}%`, backgroundColor: color, opacity: 0.35 + h / 160 }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
 
 export default function AppLayout() {
   const [trendingProducts, setTrendingProducts] = useState<any[]>([]);
@@ -171,6 +190,12 @@ export default function AppLayout() {
   const scrollBooks = (dir: 'left' | 'right') => {
     if (!booksScrollRef.current) return;
     booksScrollRef.current.scrollBy({ left: dir === 'right' ? 600 : -600, behavior: 'smooth' });
+  };
+
+  const langScrollRef = useRef<HTMLDivElement>(null);
+  const trendScrollRef = useRef<HTMLDivElement>(null);
+  const scrollRow = (ref: { current: HTMLDivElement | null }, dir: 'left' | 'right') => {
+    ref.current?.scrollBy({ left: dir === 'right' ? 560 : -560, behavior: 'smooth' });
   };
 
   const toggleAudio = () => {
@@ -481,10 +506,13 @@ export default function AppLayout() {
         <div className="relative max-w-7xl mx-auto px-4">
 
           {/* Header + toggle */}
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-7">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-7">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#9D4EDD]/10 border border-[#9D4EDD]/20 rounded-full text-[#9D4EDD] text-xs font-semibold mb-3">
-                <Globe className="w-3 h-3" /> Music by Language
+              <div className="flex items-center gap-3 mb-3">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#9D4EDD]/10 border border-[#9D4EDD]/20 rounded-full text-[#9D4EDD] text-xs font-semibold">
+                  <Globe className="w-3 h-3" /> Music by Language
+                </div>
+                <Equalizer color="#9D4EDD" bars={26} className="w-28 hidden sm:flex opacity-60 h-5" />
               </div>
               <h2 className="text-2xl md:text-3xl font-black text-white mb-1">
                 {langMode === 'region' ? 'Music Near You' : 'Global Music Discovery'}
@@ -495,57 +523,75 @@ export default function AppLayout() {
                   : 'Browse music from every culture worldwide 🌍'}
               </p>
             </div>
-            {/* Region / Global toggle pill */}
-            <div className="flex items-center gap-1 bg-white/5 border border-white/10 rounded-full p-1 shrink-0 self-start sm:self-auto">
-              <button
-                onClick={() => setLangMode('region')}
-                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${langMode === 'region' ? 'bg-[#9D4EDD] text-white shadow-lg' : 'text-white/40 hover:text-white/70'}`}
-              >
-                My Region
-              </button>
-              <button
-                onClick={() => setLangMode('global')}
-                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${langMode === 'global' ? 'bg-[#9D4EDD] text-white shadow-lg' : 'text-white/40 hover:text-white/70'}`}
-              >
-                Global
-              </button>
+            <div className="flex items-center gap-3 shrink-0">
+              {/* Region / Global toggle pill */}
+              <div className="flex items-center gap-1 bg-white/5 border border-white/10 rounded-full p-1">
+                <button
+                  onClick={() => setLangMode('region')}
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${langMode === 'region' ? 'bg-white text-[#0B0814] shadow-lg' : 'text-white/40 hover:text-white/70'}`}
+                >
+                  My Region
+                </button>
+                <button
+                  onClick={() => setLangMode('global')}
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${langMode === 'global' ? 'bg-white text-[#0B0814] shadow-lg' : 'text-white/40 hover:text-white/70'}`}
+                >
+                  Global
+                </button>
+              </div>
+              {/* Carousel arrows */}
+              <div className="hidden sm:flex items-center gap-1.5">
+                <button onClick={() => scrollRow(langScrollRef, 'left')} aria-label="Scroll left" className="w-9 h-9 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/70 transition-colors">
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button onClick={() => scrollRow(langScrollRef, 'right')} aria-label="Scroll right" className="w-9 h-9 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/70 transition-colors">
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Language cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5 mb-6">
-            {(langMode === 'region' ? priorityLanguages : ALL_LANGUAGES.slice(0, 11)).map(({ lang, flag, desc }) => (
+          {/* Language cards — horizontal scroll */}
+          <div
+            ref={langScrollRef}
+            className="flex gap-3 overflow-x-auto pb-3 snap-x [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {(langMode === 'region' ? priorityLanguages : ALL_LANGUAGES.slice(0, 11)).map(({ lang, flag, desc }, i) => (
               <Link
                 key={lang}
                 to={`/music/language/${lang.toLowerCase()}`}
-                className="group relative flex flex-col items-center gap-2 bg-[#0D1635] border border-white/8 hover:border-[#9D4EDD]/50 hover:bg-[#9D4EDD]/8 rounded-xl p-3.5 transition-all duration-200"
+                className="group shrink-0 w-44 snap-start bg-[#0D1635] border border-white/8 hover:border-[#9D4EDD]/50 hover:bg-[#9D4EDD]/8 rounded-2xl p-4 transition-all duration-200"
               >
-                <span className="text-3xl leading-none">{flag}</span>
-                <span className="text-white text-xs font-bold text-center leading-tight">{lang}</span>
-                {desc && <span className="text-white/30 text-[9px] text-center leading-tight">{desc}</span>}
-                {/* Hover CTA */}
-                <div className="absolute inset-x-0 bottom-0 flex justify-center gap-1 pb-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span className="text-[8px] font-bold text-[#9D4EDD] bg-[#9D4EDD]/20 px-1.5 py-0.5 rounded-full">▶ Play</span>
-                  <span className="text-[8px] font-bold text-[#00D9FF] bg-[#00D9FF]/10 px-1.5 py-0.5 rounded-full">Albums</span>
+                <div className="flex items-center gap-3 mb-3.5">
+                  <div className="w-11 h-11 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-2xl leading-none shrink-0">
+                    {flag}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-white font-bold text-sm leading-tight truncate">{lang}</p>
+                    <p className="text-white/40 text-xs truncate">{desc || 'Worldwide'}</p>
+                  </div>
                 </div>
+                <Equalizer color={i % 2 === 0 ? '#00F5A0' : '#00D9FF'} bars={16} className="opacity-80 group-hover:opacity-100 transition-opacity" />
               </Link>
             ))}
             {/* All Languages card */}
             <Link
               to="/collections/music"
-              className="flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-[#9D4EDD]/15 to-[#00D9FF]/10 border border-[#9D4EDD]/25 hover:border-[#9D4EDD]/50 rounded-xl p-3.5 transition-all"
+              className="shrink-0 w-44 snap-start flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-[#9D4EDD]/25 to-[#00D9FF]/15 border border-[#9D4EDD]/40 hover:border-[#9D4EDD]/70 rounded-2xl p-4 transition-all"
             >
-              <span className="text-3xl leading-none">🌐</span>
-              <span className="text-white text-xs font-bold text-center leading-tight">All Languages</span>
-              <ChevronRight className="w-3.5 h-3.5 text-[#9D4EDD]" />
+              <div className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center">
+                <Globe className="w-6 h-6 text-white" />
+              </div>
+              <p className="text-white font-bold text-sm">All Languages</p>
+              <p className="text-white/60 text-xs">Explore All</p>
             </Link>
           </div>
 
           {/* Browse CTA */}
-          <div className="text-center">
+          <div className="text-center mt-7">
             <Link
               to="/collections/music"
-              className="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] text-white text-sm font-bold rounded-xl hover:opacity-90 transition-all"
+              className="inline-flex items-center gap-2 px-7 py-3 bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] text-white text-sm font-bold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-[#9D4EDD]/20"
             >
               Browse Free Music <ArrowRight className="w-4 h-4" />
             </Link>
@@ -553,158 +599,127 @@ export default function AppLayout() {
         </div>
       </section>
 
-      {/* ── Trending Now — Compact Creator Dashboard ─────────────────────── */}
+      {/* ── Trending Now — Creator Dashboard ─────────────────────────────── */}
       <section className="py-12">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#FFB800]/20 rounded-xl flex items-center justify-center">
+              <div className="w-11 h-11 bg-[#FFB800]/15 border border-[#FFB800]/20 rounded-xl flex items-center justify-center">
                 <Zap className="w-5 h-5 text-[#FFB800]" />
               </div>
               <div>
-                <h2 className="text-3xl font-bold text-white">Trending Now</h2>
+                <h2 className="text-2xl md:text-3xl font-black text-white">Trending Now</h2>
                 <p className="text-white/40 text-sm">What's hot on WANKONG this week</p>
               </div>
             </div>
-            <Link to="/collections/featured" className="text-[#00D9FF] hover:text-[#00D9FF]/80 text-sm font-medium flex items-center gap-1">
-              View All <ArrowRight className="w-4 h-4" />
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link to="/collections/featured" className="text-[#00D9FF] hover:text-[#00D9FF]/80 text-sm font-semibold flex items-center gap-1">
+                View All <ArrowRight className="w-4 h-4" />
+              </Link>
+              <div className="hidden sm:flex items-center gap-1.5">
+                <button onClick={() => scrollRow(trendScrollRef, 'left')} aria-label="Scroll left" className="w-9 h-9 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/70 transition-colors"><ChevronLeft className="w-4 h-4" /></button>
+                <button onClick={() => scrollRow(trendScrollRef, 'right')} aria-label="Scroll right" className="w-9 h-9 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/70 transition-colors"><ChevronRight className="w-4 h-4" /></button>
+              </div>
+            </div>
           </div>
 
-          {/* Compact 4-card grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-
-            {/* CARD 1 — Featured Release */}
-            <div className="bg-[#0D1635] border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-colors">
-              <div className="flex items-center gap-2 px-4 pt-3 pb-2 border-b border-white/5">
-                <Play className="w-4 h-4 text-[#FF6B00]" />
-                <span className="text-white text-xs font-semibold">Featured Global Release</span>
-              </div>
-              <div ref={videoWrapRef} className="relative bg-black cursor-pointer aspect-video max-h-[160px]" onClick={toggleVideo}>
-                <video ref={videoRef} className="w-full h-full object-cover" poster={ARTIST_IMAGES[1]} muted loop playsInline
-                  onTimeUpdate={e => { const v = e.currentTarget; if (v.duration) setVideoProgress((v.currentTime / v.duration) * 100); }}
-                />
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                  <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
-                    {videoPlaying
-                      ? <div className="flex gap-0.5"><div className="w-1 h-3 bg-white rounded-full"/><div className="w-1 h-3 bg-white rounded-full"/></div>
-                      : <Play className="w-4 h-4 text-white fill-white ml-0.5" />}
-                  </div>
-                </div>
-                {videoPlaying && <div className="absolute top-2 left-2 flex items-center gap-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full"><span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse inline-block"/>LIVE</div>}
-              </div>
-              <div className="px-4 py-3">
-                <p className="text-white/30 text-[10px] uppercase">Meta Dreams</p>
-                <p className="text-[#00D9FF] text-lg font-black">{viewCount.toLocaleString()}</p>
-                <p className="text-white/30 text-[10px]">total streams</p>
-              </div>
-            </div>
-
-            {/* CARD 2 — Audio Player / Talent Arena CTA */}
-            <div className="bg-[#0D1635] border border-white/10 rounded-2xl p-4 hover:border-white/20 transition-colors flex flex-col justify-between">
-              <div className="flex items-center gap-2 mb-3">
-                <Music className="w-4 h-4 text-[#1DB954]" />
-                <span className="text-white text-xs font-semibold">Now Playing</span>
-              </div>
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#1DB954] to-[#00D9FF] flex items-center justify-center shrink-0">
-                  <Music className="w-5 h-5 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-white text-sm font-semibold truncate">Holy Ground</p>
-                  <p className="text-white/40 text-xs truncate">Grace Adele</p>
-                </div>
-                <button onClick={toggleAudio} className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1DB954] to-[#00D9FF] flex items-center justify-center shrink-0">
-                  {audioPlaying
-                    ? <div className="flex gap-0.5"><div className="w-1 h-3 bg-white rounded-full"/><div className="w-1 h-3 bg-white rounded-full"/></div>
-                    : <Play className="w-3 h-3 text-white fill-white ml-0.5" />}
-                </button>
-              </div>
-              <div className="h-1 bg-white/10 rounded-full overflow-hidden cursor-pointer mb-2"
-                onClick={e => { const r = e.currentTarget.getBoundingClientRect(); setAudioProgress(((e.clientX - r.left) / r.width) * 100); }}>
-                <div className="h-full bg-gradient-to-r from-[#1DB954] to-[#00D9FF]" style={{ width: `${audioProgress}%` }} />
-              </div>
-              {audioPlaying && (
-                <div className="flex items-end justify-center gap-0.5 h-4 mb-2">
-                  {[3,5,4,7,5,6,3,5].map((h, i) => (
-                    <div key={i} className="w-1 rounded-full bg-gradient-to-t from-[#1DB954] to-[#00D9FF] animate-pulse" style={{ height: `${h * 2}px`, animationDelay: `${i * 80}ms` }} />
-                  ))}
-                </div>
-              )}
-              <div className="flex flex-col gap-1.5 mt-auto">
-                <Link to="/dashboard/artist/upload-performance"
-                  className="text-center py-1.5 bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] text-white text-[10px] font-bold rounded-xl hover:opacity-90 transition-opacity">
-                  Get Performance
-                </Link>
-                <div className="flex gap-1.5">
-                  <Link to="/talent-arena"
-                    className="flex-1 text-center py-1.5 bg-white/5 border border-white/10 text-white/60 text-[10px] font-semibold rounded-xl hover:bg-white/10 transition-colors">
-                    Vote Next Comp
-                  </Link>
-                  <Link to="/talent-arena"
-                    className="flex-1 text-center py-1.5 bg-white/5 border border-white/10 text-white/60 text-[10px] font-semibold rounded-xl hover:bg-white/10 transition-colors">
-                    Join Arena
-                  </Link>
+          {/* 5-card carousel */}
+          <div
+            ref={trendScrollRef}
+            className="flex gap-4 overflow-x-auto pb-3 snap-x [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {/* 1. LIVE */}
+            <div className="group relative shrink-0 w-64 snap-start rounded-2xl overflow-hidden border border-white/10 h-80 flex flex-col bg-gradient-to-br from-[#3a2033] to-[#0B0814]">
+              <img src={ARTIST_IMAGES[2]} alt="" className="absolute inset-0 w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0B0814] via-[#0B0814]/30 to-transparent" />
+              <span className="relative z-10 m-3 self-start inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-500 text-white text-[10px] font-black rounded-full">
+                <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE
+              </span>
+              <button className="absolute inset-0 z-10 m-auto w-12 h-12 rounded-full bg-white/90 text-[#0B0814] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-xl">
+                <Play className="w-5 h-5 fill-current ml-0.5" />
+              </button>
+              <div className="relative z-10 mt-auto p-4">
+                <p className="text-white font-bold text-sm">Live Performance</p>
+                <p className="text-white/60 text-xs mb-2.5">Afro Soul Session</p>
+                <div className="flex items-center justify-between text-xs text-white/60">
+                  <span className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5" /> 12.4K watching</span>
+                  <BarChart3 className="w-4 h-4 text-[#00F5A0]" />
                 </div>
               </div>
             </div>
 
-            {/* CARD 3 — Talent Arena Winner */}
-            <div className="bg-[#0D1635] border border-white/10 rounded-2xl overflow-hidden hover:border-[#FFB800]/30 transition-colors flex flex-col">
-              <div className="relative h-28 shrink-0 overflow-hidden">
-                <img src={ARTIST_IMAGES[0]} alt="Winner" className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0D1635] to-transparent" />
-                <div className="absolute top-2 left-2 flex items-center gap-1 bg-[#FFB800]/90 text-black text-[9px] font-black px-2 py-0.5 rounded-full">
-                  <Trophy className="w-2.5 h-2.5" /> WINNER
+            {/* 2. NEW RELEASE */}
+            <div className="group shrink-0 w-64 snap-start rounded-2xl overflow-hidden border border-white/10 bg-[#0D1635] h-80 flex flex-col">
+              <div className="relative h-40 bg-gradient-to-br from-[#1a2a4a] to-[#070b16] flex items-center justify-center">
+                <span className="absolute top-3 left-3 px-2.5 py-1 bg-[#00D9FF] text-[#0B0814] text-[10px] font-black rounded-full">NEW RELEASE</span>
+                <div className="text-center">
+                  <p className="text-white/90 font-black text-2xl tracking-widest leading-none">ECHOES</p>
+                  <p className="text-[#00D9FF] font-bold text-xs tracking-[0.3em] mt-1.5">THE JOURNEY</p>
                 </div>
-                {confetti && (
-                  <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                    {[...Array(8)].map((_, i) => (
-                      <div key={i} className="absolute w-1.5 h-1.5 rounded-full opacity-80 animate-bounce"
-                        style={{ left: `${10 + i * 12}%`, top: `${20 + (i % 3) * 20}%`, background: ['#FFB800','#00D9FF','#FF6B00','#00F5A0','#9D4EDD','#FF006E','#FFB800','#00D9FF'][i], animationDelay: `${i * 150}ms`, animationDuration: '1.2s' }} />
-                    ))}
-                  </div>
-                )}
+                <button className="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-[#00D9FF] text-[#0B0814] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><Play className="w-4 h-4 fill-current ml-0.5" /></button>
               </div>
-              <div className="flex-1 p-3 flex flex-col justify-between">
-                <div>
-                  <p className="text-white text-base font-black tabular-nums">{liveVotes.toLocaleString()}</p>
-                  <p className="text-white/30 text-[10px] mb-0.5">community votes cast</p>
+              <div className="p-4 flex flex-col flex-1">
+                <p className="text-white font-bold text-sm">Echoes: The Journey</p>
+                <p className="text-white/50 text-xs mb-auto">by Skyline Beats</p>
+                <div className="flex items-center gap-2 text-xs text-white/60 mt-3">
+                  <span className="flex items-center gap-1 text-[#FFB800]"><Star className="w-3.5 h-3.5 fill-current" /> 4.9</span>
+                  <span className="text-white/30">·</span>
+                  <span>8.7K Streams</span>
                 </div>
-                <button
-                  onClick={() => setVideoModalOpen(true)}
-                  className="mt-2 w-full py-1.5 bg-gradient-to-r from-[#FFB800] to-[#FF6B00] text-black text-[10px] font-bold rounded-lg hover:opacity-90 transition-opacity"
-                >
-                  Watch Performance →
-                </button>
               </div>
             </div>
 
-            {/* CARD 4 — Distribution Engine */}
-            <div className="bg-[#0D1635] border border-white/10 rounded-2xl p-4 hover:border-[#00D9FF]/30 transition-colors flex flex-col justify-between">
-              <div>
-                <p className="text-white/40 text-[10px] uppercase mb-1">Distribution Engine</p>
-                <h3 className="text-xl font-black text-white">30+ Platforms</h3>
-                <p className="text-white/40 text-xs mb-2">Upload once. Reach everywhere.</p>
-                <p className="text-[#00F5A0] text-sm font-bold tabular-nums">{tracksDistributed.toLocaleString()}</p>
-                <p className="text-white/30 text-[10px]">tracks distributed</p>
+            {/* 3. NOW PLAYING */}
+            <div className="shrink-0 w-64 snap-start rounded-2xl overflow-hidden border border-white/10 bg-gradient-to-br from-[#7B2D8E] via-[#5B2A8A] to-[#3a1d6e] h-80 flex flex-col p-4">
+              <span className="self-start px-2.5 py-1 bg-white/15 text-white text-[10px] font-black rounded-full backdrop-blur-sm">NOW PLAYING</span>
+              <div className="flex-1 flex flex-col justify-center">
+                <div className="flex items-center gap-2 mb-1">
+                  <Music className="w-4 h-4 text-white/80" />
+                  <p className="text-white font-black text-lg leading-tight">Holy Ground</p>
+                </div>
+                <p className="text-white/70 text-sm mb-4">Grace Adele</p>
+                <div className="flex items-center justify-between text-[11px] text-white/70 mb-1.5">
+                  <span>02:18</span><span>04:36</span>
+                </div>
+                <div className="h-1.5 bg-white/20 rounded-full overflow-hidden mb-4">
+                  <div className="h-full w-1/2 bg-white rounded-full" />
+                </div>
+                <Equalizer color="#ffffff" bars={26} className="opacity-70 h-8" />
               </div>
-              <div className="overflow-hidden my-2">
-                <div className="flex gap-2 animate-marquee whitespace-nowrap">
-                  {[...DISTRIBUTION_PLATFORMS, ...DISTRIBUTION_PLATFORMS].map((p, i) => (
-                    <span key={i} className="shrink-0 text-[10px] text-white/30 border border-white/10 rounded-full px-2 py-0.5">{p}</span>
-                  ))}
+              <button className="self-end w-11 h-11 rounded-full bg-white text-[#5B2A8A] flex items-center justify-center shadow-lg"><Play className="w-5 h-5 fill-current ml-0.5" /></button>
+            </div>
+
+            {/* 4. TOP ALBUM */}
+            <div className="group relative shrink-0 w-64 snap-start rounded-2xl overflow-hidden border border-white/10 h-80 flex flex-col bg-gradient-to-br from-[#2a2548] to-[#0B0814]">
+              <img src={ARTIST_IMAGES[0]} alt="" className="absolute inset-0 w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0B0814] via-[#0B0814]/30 to-transparent" />
+              <span className="relative z-10 m-3 self-start px-2.5 py-1 bg-[#FFB800] text-[#0B0814] text-[10px] font-black rounded-full">TOP ALBUM</span>
+              <button className="absolute inset-0 z-10 m-auto w-12 h-12 rounded-full bg-white/90 text-[#0B0814] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-xl"><Play className="w-5 h-5 fill-current ml-0.5" /></button>
+              <div className="relative z-10 mt-auto p-4">
+                <p className="text-white font-bold text-sm">Midnight Dreams</p>
+                <p className="text-white/60 text-xs mb-2.5">by Jayden Morris</p>
+                <div className="flex items-center gap-2 text-xs text-white/60">
+                  <span className="flex items-center gap-1 text-[#FFB800]"><Star className="w-3.5 h-3.5 fill-current" /> 4.8</span>
+                  <span className="text-white/30">·</span>
+                  <span>15.2K Streams</span>
                 </div>
               </div>
-              <div className="flex flex-col gap-1.5">
-                <Link to="/upload/distribute"
-                  className="text-center py-1.5 bg-gradient-to-r from-[#FFB800] to-[#FF6B00] text-black text-[10px] font-bold rounded-xl hover:opacity-90 transition-opacity">
-                  Start Distribution
-                </Link>
-                <Link to="/upload/distribute"
-                  className="text-center py-1.5 bg-white/5 border border-white/10 text-white/60 text-[10px] font-semibold rounded-xl hover:bg-white/10 transition-colors">
-                  Upload Track
-                </Link>
+            </div>
+
+            {/* 5. TRENDING PODCAST */}
+            <div className="shrink-0 w-64 snap-start rounded-2xl overflow-hidden border border-white/10 bg-[#0D1635] h-80 flex flex-col p-4">
+              <span className="self-start px-2.5 py-1 bg-[#9D4EDD]/20 text-[#c78bff] text-[10px] font-black rounded-full border border-[#9D4EDD]/30">TRENDING PODCAST</span>
+              <div className="flex-1 flex flex-col justify-center">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#9D4EDD] to-[#00D9FF] flex items-center justify-center mb-3">
+                  <Mic className="w-6 h-6 text-white" />
+                </div>
+                <p className="text-white font-black text-base leading-tight">The Creator's Journey</p>
+                <p className="text-white/50 text-xs mb-4">With WANKONG Studios</p>
+                <Equalizer color="#9D4EDD" bars={24} className="opacity-70 h-7" />
+              </div>
+              <div className="flex items-center justify-between mt-3">
+                <span className="flex items-center gap-1.5 text-xs text-white/60"><Headphones className="w-3.5 h-3.5" /> 6.3K Listeners</span>
+                <button className="w-10 h-10 rounded-full bg-[#9D4EDD] text-white flex items-center justify-center"><Play className="w-4 h-4 fill-current ml-0.5" /></button>
               </div>
             </div>
           </div>
