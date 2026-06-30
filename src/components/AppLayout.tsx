@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase';
 import Header from './Header';
 import Footer from './Footer';
 import ProductCard from './ProductCard';
+import TiltCard from './TiltCard';
 import { Play, Pause, Zap, Music, BookOpen, Video, Mic, Trophy, Globe, Users, DollarSign, TrendingUp, ArrowRight, Headphones, Radio, Star, ChevronRight, ChevronLeft, Clock, ShieldCheck, BarChart3, CreditCard, MoreVertical, Heart, Shuffle, SkipBack, SkipForward, Repeat, SlidersHorizontal, Megaphone, Palette, Scissors, Wand2, Quote, Check, ChevronDown, UploadCloud, Rocket, Youtube, Facebook, Disc } from 'lucide-react';
 import { usePlayer } from './GlobalPlayer';
 import { asArray } from '@/lib/utils';
@@ -1151,6 +1152,7 @@ export default function AppLayout() {
             <div className="grid lg:grid-cols-[1.05fr_1fr] gap-5">
               {/* Large feature */}
               <Reveal>
+              <TiltCard className="rounded-3xl" max={6} glow="rgba(0,245,160,0.30)">
               <Link to={`/product/${feat.handle ?? ''}`} className="group relative block rounded-3xl overflow-hidden border border-white/10 min-h-[320px] md:min-h-[380px]">
                 {img(feat)
                   ? <img src={img(feat)} alt={feat.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
@@ -1164,6 +1166,7 @@ export default function AppLayout() {
                   <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-[#0B0814] font-bold text-sm group-hover:opacity-90 transition-opacity"><Play className="w-4 h-4 fill-[#0B0814]" /> Play now</span>
                 </div>
               </Link>
+              </TiltCard>
               </Reveal>
               {/* Scrolling rail */}
               <Reveal delay={120}>
@@ -1227,7 +1230,8 @@ export default function AppLayout() {
               const live = i < 2;
               return (
                 <div key={artist.slug ?? artist.name} className="shrink-0 w-60 group">
-                  <div className="relative rounded-2xl overflow-hidden hover:-translate-y-1.5 transition-transform duration-300">
+                  <TiltCard className="rounded-2xl" glow="rgba(157,78,221,0.40)">
+                  <div className="relative rounded-2xl overflow-hidden">
                     {/* animated gradient border (on hover) */}
                     <div className="pointer-events-none absolute inset-[-60%] wk-spin opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: 'conic-gradient(from 0deg, transparent 0%, #9D4EDD 18%, #00D9FF 34%, transparent 52%)' }} />
                     <div className="relative m-[1.5px] rounded-2xl bg-[#120C22] overflow-hidden">
@@ -1260,6 +1264,7 @@ export default function AppLayout() {
                       </div>
                     </div>
                   </div>
+                  </TiltCard>
                 </div>
               );
             })}
@@ -1718,7 +1723,8 @@ export default function AppLayout() {
               { quote: 'I published my book and audiobook in three languages. Sales tripled in the first month.', name: 'Dr. Faith Mensah', role: 'Author', flag: '🇰🇪', stat: '4.2K readers', grad: 'from-[#00F5A0] to-[#0E9E6E]' },
             ].map((t, i) => (
               <Reveal key={t.name} delay={i * 90}>
-                <div className="group relative h-full rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6 hover:-translate-y-1.5 hover:border-white/20 transition-all duration-300 overflow-hidden">
+                <TiltCard className="h-full rounded-2xl" max={5} glow="rgba(157,78,221,0.28)">
+                <div className="group relative h-full rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6 hover:border-white/20 transition-colors duration-300 overflow-hidden">
                   <div className={`absolute -right-10 -top-10 w-32 h-32 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br ${t.grad}`} />
                   <div className="relative flex items-center justify-between mb-4">
                     <Quote className="w-8 h-8 text-white/15" />
@@ -1738,6 +1744,7 @@ export default function AppLayout() {
                     <span className="shrink-0 px-2.5 py-1 rounded-full text-[11px] font-bold bg-white/5 border border-white/10 text-[#00F5A0]">{t.stat}</span>
                   </div>
                 </div>
+                </TiltCard>
               </Reveal>
             ))}
           </div>
