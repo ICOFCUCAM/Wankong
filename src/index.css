@@ -217,3 +217,13 @@ input[type="range"]::-webkit-slider-thumb {
 @keyframes wk-spin-strip { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 .wk-pin { position: absolute; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: var(--c); box-shadow: 0 0 6px var(--c); }
 .wk-pin::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; border: 1.5px solid var(--c); transform-origin: center; animation: wk-ping 2.6s ease-out infinite; animation-delay: inherit; }
+
+/* ── Page transition + skeleton shimmer ──────────────────────────────────── */
+.wk-page-in { animation: wk-page-in .45s ease-out; }
+@keyframes wk-page-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.wk-shimmer { position: relative; overflow: hidden; }
+.wk-shimmer::after { content: ''; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent); animation: wk-shimmer 1.6s infinite; }
+@keyframes wk-shimmer { 100% { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) {
+  .wk-page-in, .wk-shimmer::after, .wk-spin-strip, .wk-aurora, .wk-float, .wk-ping, .wk-eqbar, .wk-spin { animation: none !important; }
+}

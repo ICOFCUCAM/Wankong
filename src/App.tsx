@@ -1,5 +1,5 @@
 import { Suspense, lazy } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import GlobalPlayer from './components/GlobalPlayer';
 import ProtectedRoute from './components/ProtectedRoute';
 import AddToPlaylistModal from './components/playlist/AddToPlaylistModal';
@@ -111,12 +111,14 @@ const Spinner = () => (
 // ── App ────────────────────────────────────────────────────────────────────────
 
 export default function App() {
+  const location = useLocation();
   return (
     <>
       <GlobalPlayer />
       <MobileBottomNav />
       <AddToPlaylistModal />
       <Suspense fallback={<Spinner />}>
+        <div key={location.pathname} className="wk-page-in">
         <Routes>
           {/* ── Public ─────────────────────────────────────────────────────── */}
           <Route path="/"                         element={<Index />} />
@@ -239,6 +241,7 @@ export default function App() {
 
           <Route path="*"                   element={<NotFound />} />
         </Routes>
+        </div>
       </Suspense>
     </>
   );

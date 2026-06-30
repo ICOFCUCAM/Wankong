@@ -581,12 +581,18 @@ export default function AppLayout() {
         <div className="relative min-h-[560px] lg:min-h-[620px] flex items-center">
           {/* Hero image on the right — cover crops the black frame; edges feathered into the bg */}
           <div className="absolute right-0 top-1/2 -translate-y-1/2 w-full lg:w-[54%] h-[440px] lg:h-[520px] pointer-events-none select-none">
-            <img
-              src="/wankong.png"
-              alt="WANKONG — Create, Distribute, Get Paid"
-              className="w-full h-full object-cover object-[56%_50%]"
-              loading="eager"
-            />
+            <picture className="block w-full h-full">
+              <source srcSet="/wankong.webp" type="image/webp" />
+              <img
+                src="/wankong.png"
+                alt="WANKONG — Create, Distribute, Get Paid"
+                className="w-full h-full object-cover object-[56%_50%]"
+                width={1400}
+                height={858}
+                loading="eager"
+                fetchPriority="high"
+              />
+            </picture>
             <div className="absolute inset-0 bg-gradient-to-r from-[#0B0814] via-transparent to-transparent" />
             <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#0B0814] to-transparent" />
             <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0B0814] to-transparent" />
