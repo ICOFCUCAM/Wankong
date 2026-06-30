@@ -93,17 +93,47 @@ export default function ProductPage() {
   }, [handle, user?.id]);
 
   if (loading) return (
-    <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
-      <div className="w-8 h-8 border-2 border-[#9D4EDD] border-t-transparent rounded-full animate-spin" />
+    <div className="min-h-screen bg-[#0B0814]">
+      <Header />
+      <div className="max-w-6xl mx-auto px-4 lg:px-8 py-10">
+        <div className="h-4 w-40 rounded bg-white/5 animate-pulse mb-8" />
+        <div className="grid lg:grid-cols-2 gap-10">
+          <div className="aspect-square rounded-2xl bg-white/5 animate-pulse" />
+          <div className="space-y-4">
+            <div className="h-9 w-3/4 rounded-lg bg-white/5 animate-pulse" />
+            <div className="h-5 w-1/3 rounded bg-white/5 animate-pulse" />
+            <div className="h-24 w-full rounded-xl bg-white/5 animate-pulse mt-4" />
+            <div className="grid grid-cols-2 gap-3 mt-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="h-16 rounded-xl bg-white/5 animate-pulse" />
+              ))}
+            </div>
+            <div className="h-12 w-full rounded-xl bg-white/5 animate-pulse mt-4" />
+          </div>
+        </div>
+      </div>
+      <Footer />
     </div>
   );
 
   if (!product) return (
-    <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
-      <div className="text-center">
-        <p className="text-gray-400 text-lg mb-4">Product not found</p>
-        <Link to="/" className="text-[#B794F4] hover:text-[#C9B3F5]">← Go back home</Link>
+    <div className="min-h-screen bg-[#0B0814] flex flex-col">
+      <Header />
+      <div className="flex-1 flex items-center justify-center px-6">
+        <div className="text-center max-w-sm">
+          <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+            <svg className="w-7 h-7 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+            </svg>
+          </div>
+          <h1 className="text-white text-xl font-bold mb-2">Product not found</h1>
+          <p className="text-white/45 text-sm mb-6">This item may have been removed or is no longer available.</p>
+          <Link to="/" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white text-sm bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] hover:opacity-90 transition-opacity">
+            Back to marketplace
+          </Link>
+        </div>
       </div>
+      <Footer />
     </div>
   );
 
@@ -181,7 +211,7 @@ export default function ProductPage() {
 
         <Link
           to="/music-store"
-          className="text-sm text-gray-400 hover:text-white mb-6 inline-flex items-center gap-1 transition-colors"
+          className="text-sm text-white/55 hover:text-white mb-6 inline-flex items-center gap-1 transition-colors"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -210,42 +240,42 @@ export default function ProductPage() {
                 {product.product_type || rawType}
               </span>
               {product.language && (
-                <span className="px-3 py-1 rounded-full text-xs text-gray-300 bg-gray-800">
+                <span className="px-3 py-1 rounded-full text-xs text-white/70 bg-white/10">
                   {product.language}
                 </span>
               )}
             </div>
 
             <h1 className="text-3xl font-bold text-white mb-2">{product.title}</h1>
-            {creator && <p className="text-gray-400 mb-4">by {creator}</p>}
+            {creator && <p className="text-white/55 mb-4">by {creator}</p>}
 
             {product.body_html && (
-              <p className="text-gray-300 leading-relaxed mb-6">{product.body_html}</p>
+              <p className="text-white/70 leading-relaxed mb-6">{product.body_html}</p>
             )}
 
             {/* Metadata grid */}
             <div className="grid grid-cols-2 gap-3 mb-6">
               {product.genre && (
-                <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-3">
-                  <p className="text-xs text-gray-500">Genre</p>
+                <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-3">
+                  <p className="text-xs text-white/40">Genre</p>
                   <p className="text-sm text-white">{product.genre}</p>
                 </div>
               )}
               {product.language && (
-                <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-3">
-                  <p className="text-xs text-gray-500">Language</p>
+                <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-3">
+                  <p className="text-xs text-white/40">Language</p>
                   <p className="text-sm text-white">{product.language}</p>
                 </div>
               )}
               {product.duration && (
-                <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-3">
-                  <p className="text-xs text-gray-500">Duration</p>
+                <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-3">
+                  <p className="text-xs text-white/40">Duration</p>
                   <p className="text-sm text-white">{product.duration}</p>
                 </div>
               )}
               {product.pages && (
-                <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-3">
-                  <p className="text-xs text-gray-500">Pages</p>
+                <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-3">
+                  <p className="text-xs text-white/40">Pages</p>
                   <p className="text-sm text-white">{product.pages}</p>
                 </div>
               )}
@@ -254,7 +284,7 @@ export default function ProductPage() {
             {/* Variant selector */}
             {variants.length > 1 && (
               <div className="mb-5">
-                <p className="text-sm text-gray-400 mb-2">Options</p>
+                <p className="text-sm text-white/55 mb-2">Options</p>
                 <div className="flex flex-wrap gap-2">
                   {variants.map(v => (
                     <button
@@ -263,7 +293,7 @@ export default function ProductPage() {
                       className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
                         selectedVariant?.id === v.id
                           ? 'bg-[#9D4EDD] text-white'
-                          : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                          : 'bg-white/10 text-white/70 hover:bg-white/15'
                       }`}
                     >
                       {v.title}
@@ -290,17 +320,17 @@ export default function ProductPage() {
                 <p className="text-3xl font-bold text-white">${price.toFixed(2)}</p>
               )}
               {!isFree && (
-                <div className="flex items-center gap-2 bg-gray-800 rounded-xl p-1">
+                <div className="flex items-center gap-2 bg-white/10 rounded-xl p-1">
                   <button
                     onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                    className="w-8 h-8 text-white hover:bg-gray-700 rounded-lg flex items-center justify-center transition-colors"
+                    className="w-8 h-8 text-white hover:bg-white/15 rounded-lg flex items-center justify-center transition-colors"
                   >
                     −
                   </button>
                   <span className="text-white w-6 text-center">{quantity}</span>
                   <button
                     onClick={() => setQuantity(q => q + 1)}
-                    className="w-8 h-8 text-white hover:bg-gray-700 rounded-lg flex items-center justify-center transition-colors"
+                    className="w-8 h-8 text-white hover:bg-white/15 rounded-lg flex items-center justify-center transition-colors"
                   >
                     +
                   </button>
@@ -318,7 +348,7 @@ export default function ProductPage() {
                   className={`flex items-center gap-2 px-5 py-3 rounded-xl transition-colors font-medium ${
                     isPreviewing
                       ? 'bg-[#9D4EDD] text-white hover:bg-[#7C3AED]'
-                      : 'bg-gray-800 hover:bg-gray-700 text-white'
+                      : 'bg-white/10 hover:bg-white/15 text-white'
                   }`}
                 >
                   <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
@@ -367,7 +397,7 @@ export default function ProductPage() {
                     className={`flex items-center gap-2 px-5 py-3 rounded-xl font-semibold transition-colors ${
                       trackSaved
                         ? 'bg-[#9D4EDD] text-white hover:bg-[#7C3AED]'
-                        : 'border border-gray-700 text-white hover:bg-gray-800'
+                        : 'border border-white/10 text-white hover:bg-white/10'
                     }`}
                   >
                     <svg className="w-5 h-5" fill={trackSaved ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor">
@@ -381,7 +411,7 @@ export default function ProductPage() {
                   {/* Add to Cart */}
                   <button
                     onClick={handleAddToCart}
-                    className="flex items-center gap-2 px-5 py-3 border border-gray-700 hover:bg-gray-800 text-white font-semibold rounded-xl transition-colors"
+                    className="flex items-center gap-2 px-5 py-3 border border-white/10 hover:bg-white/10 text-white font-semibold rounded-xl transition-colors"
                   >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -409,7 +439,7 @@ export default function ProductPage() {
                   className={`flex items-center gap-1.5 px-3 py-2 text-sm rounded-xl transition-colors ${
                     trackSaved
                       ? 'bg-[#9D4EDD]/20 text-[#B794F4] border border-[#9D4EDD]/30'
-                      : 'bg-gray-800 text-gray-400 hover:text-white'
+                      : 'bg-white/10 text-white/55 hover:text-white'
                   }`}
                 >
                   <svg className="w-4 h-4" fill={trackSaved ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor">
@@ -422,7 +452,7 @@ export default function ProductPage() {
               {/* Add to Playlist */}
               <button
                 onClick={handleAddToPlaylist}
-                className="flex items-center gap-1.5 px-3 py-2 text-sm bg-gray-800 text-gray-400 hover:text-white rounded-xl transition-colors"
+                className="flex items-center gap-1.5 px-3 py-2 text-sm bg-white/10 text-white/55 hover:text-white rounded-xl transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -434,7 +464,7 @@ export default function ProductPage() {
               {previewUrl && (contentType === 'music' || contentType === 'podcast') && (
                 <button
                   onClick={() => setShowClipModal(true)}
-                  className="flex items-center gap-1.5 px-3 py-2 text-sm bg-gray-800 text-gray-400 hover:text-[#00D9FF] rounded-xl transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-2 text-sm bg-white/10 text-white/55 hover:text-[#00D9FF] rounded-xl transition-colors"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -449,7 +479,7 @@ export default function ProductPage() {
             {/* ── External streaming buttons ── */}
             {(product.spotify_url || product.apple_music_url || product.youtube_music_url || product.deezer_url) && (
               <div className="mt-6 pt-5 border-t border-white/8">
-                <p className="text-xs text-gray-500 uppercase tracking-widest font-semibold mb-3">Also available on</p>
+                <p className="text-xs text-white/40 uppercase tracking-widest font-semibold mb-3">Also available on</p>
                 <div className="flex flex-wrap gap-2">
                   {product.spotify_url && (
                     <a
