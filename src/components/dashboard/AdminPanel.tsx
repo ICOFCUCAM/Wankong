@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { formatNumber, formatCurrency } from '@/lib/constants';
 import CompetitionApprovalQueue from './CompetitionApprovalQueue';
+import PlatformAccountsManager from './PlatformAccountsManager';
 
 interface Profile {
   id: string;
@@ -347,7 +348,12 @@ export default function AdminPanel() {
         </div>
       )}
 
-      {activeTab === 'competitions' && <CompetitionApprovalQueue />}
+      {activeTab === 'competitions' && (
+        <div className="space-y-4">
+          <PlatformAccountsManager />
+          <CompetitionApprovalQueue />
+        </div>
+      )}
     </div>
   );
 }

@@ -19,6 +19,7 @@ const ArtistProfile      = lazy(() => import('./pages/ArtistProfile'));
 const AuthorProfile      = lazy(() => import('./pages/AuthorProfile'));
 const DistributePage     = lazy(() => import('./pages/DistributePage'));
 const TalentArenaPage    = lazy(() => import('./pages/TalentArenaPage'));
+const SocialOAuthCallback = lazy(() => import('./pages/social/SocialOAuthCallback'));
 const AboutPage          = lazy(() => import('./pages/AboutPage'));
 const CareersPage        = lazy(() => import('./pages/CareersPage'));
 const PressPage          = lazy(() => import('./pages/PressPage'));
@@ -125,6 +126,7 @@ export default function App() {
           <Route path="/cart"                     element={<CartPage />} />
           <Route path="/checkout"                 element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
           <Route path="/order-confirmation"       element={<OrderConfirmation />} />
+          <Route path="/settings/social/callback" element={<SocialOAuthCallback />} />
           <Route path="/search"                   element={<SearchPage />} />
           <Route path="/collections/:handle"      element={<CollectionPage />} />
           <Route path="/products/:handle"         element={<ProductPage />} />
