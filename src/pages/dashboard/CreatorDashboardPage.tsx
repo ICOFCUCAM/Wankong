@@ -166,14 +166,14 @@ export default function CreatorDashboardPage() {
               <Star className="w-5 h-5 text-[#FFB800]" /> My Performances
               {entries.length > 0 && <span className="text-sm font-normal text-gray-500">({entries.length})</span>}
             </h2>
-            <Link to="/talent-arena" className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors">
+            <Link to="/talent-arena" className="text-sm text-[#B794F4] hover:text-[#C9B3F5] transition-colors">
               Explore arena →
             </Link>
           </div>
 
           {loading ? (
             <div className="py-12 flex justify-center">
-              <Loader2 className="w-6 h-6 text-indigo-400 animate-spin" />
+              <Loader2 className="w-6 h-6 text-[#B794F4] animate-spin" />
             </div>
           ) : entries.length === 0 ? (
             <div className="py-12 text-center bg-white/3 border border-white/8 rounded-2xl border-dashed">

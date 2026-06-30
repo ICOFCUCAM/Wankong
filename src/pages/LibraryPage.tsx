@@ -59,20 +59,20 @@ function PlaylistCard({
   setMenuOpen: (v: boolean) => void;
 }) {
   return (
-    <div className="group relative bg-gray-900/40 border border-gray-800 hover:border-indigo-500/30 rounded-2xl overflow-hidden transition-all cursor-pointer"
+    <div className="group relative bg-gray-900/40 border border-gray-800 hover:border-[#9D4EDD]/30 rounded-2xl overflow-hidden transition-all cursor-pointer"
       onClick={onOpen}>
       {/* Cover */}
-      <div className="relative aspect-square bg-gradient-to-br from-indigo-600/30 to-purple-700/30 flex items-center justify-center overflow-hidden">
+      <div className="relative aspect-square bg-gradient-to-br from-[#9D4EDD]/30 to-purple-700/30 flex items-center justify-center overflow-hidden">
         {playlist.cover_url
           ? <img src={playlist.cover_url} alt="" className="w-full h-full object-cover" />
           : <Music className="w-12 h-12 text-white/20" />}
         {playlist.is_editorial && (
-          <span className="absolute top-2 left-2 px-2 py-0.5 text-[10px] bg-indigo-600 text-white rounded-full font-medium">Editorial</span>
+          <span className="absolute top-2 left-2 px-2 py-0.5 text-[10px] bg-[#9D4EDD] text-white rounded-full font-medium">Editorial</span>
         )}
         {/* Hover play */}
         <button
           onClick={e => { e.stopPropagation(); onPlay(); }}
-          className="absolute bottom-2 right-2 w-10 h-10 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-xl translate-y-2 group-hover:translate-y-0"
+          className="absolute bottom-2 right-2 w-10 h-10 bg-[#9D4EDD] hover:bg-[#9D4EDD] text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-xl translate-y-2 group-hover:translate-y-0"
         >
           <Play className="w-4 h-4 ml-0.5" />
         </button>
@@ -97,7 +97,7 @@ function PlaylistCard({
           {menuOpen && (
             <>
               <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
-              <div className="absolute right-0 top-8 z-20 w-36 bg-[#0D1B3E] border border-white/10 rounded-xl shadow-2xl py-1">
+              <div className="absolute right-0 top-8 z-20 w-36 bg-[#0B0814] border border-white/10 rounded-xl shadow-2xl py-1">
                 <button onClick={() => { onRename(); setMenuOpen(false); }} className="w-full text-left px-3.5 py-2.5 text-sm text-gray-300 hover:bg-white/5 flex items-center gap-2"><Edit2 className="w-3.5 h-3.5" />Rename</button>
                 <button onClick={() => { onDelete(); setMenuOpen(false); }} className="w-full text-left px-3.5 py-2.5 text-sm text-red-400 hover:bg-red-500/10 flex items-center gap-2"><Trash2 className="w-3.5 h-3.5" />Delete</button>
               </div>
@@ -241,7 +241,7 @@ export default function LibraryPage() {
         </div>
         <button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2.5 rounded-xl transition-colors"
+          className="flex items-center gap-2 bg-[#9D4EDD] hover:bg-[#7C3AED] text-white font-semibold px-4 py-2.5 rounded-xl transition-colors"
         >
           <Plus className="w-4 h-4" /> New Playlist
         </button>
@@ -253,7 +253,7 @@ export default function LibraryPage() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${activeTab === tab.id ? 'bg-indigo-600 text-white' : 'bg-gray-800/60 text-gray-400 hover:text-white hover:bg-gray-800'}`}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${activeTab === tab.id ? 'bg-[#9D4EDD] text-white' : 'bg-gray-800/60 text-gray-400 hover:text-white hover:bg-gray-800'}`}
           >
             {tab.icon} {tab.label}
           </button>
@@ -290,7 +290,7 @@ export default function LibraryPage() {
                 <SavedTrackRow key={track.id} track={track} onPlay={() => playTrack(track)} onUnsave={() => pl.unsaveTrack(track.track_id)} />
               ))}
               {activeTab === 'all' && savedMusic.length > 8 && (
-                <button onClick={() => setActiveTab('tracks')} className="w-full pt-3 text-sm text-indigo-400 hover:text-indigo-300 text-center transition-colors">
+                <button onClick={() => setActiveTab('tracks')} className="w-full pt-3 text-sm text-[#B794F4] hover:text-[#C9B3F5] text-center transition-colors">
                   See all {savedMusic.length} saved tracks →
                 </button>
               )}
@@ -303,7 +303,7 @@ export default function LibraryPage() {
       {showSection('albums') && (
         <section className="space-y-4">
           <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <Disc3 className="w-5 h-5 text-indigo-400" /> Saved Albums
+            <Disc3 className="w-5 h-5 text-[#B794F4]" /> Saved Albums
             {savedAlbums.length > 0 && <span className="text-sm font-normal text-gray-400">({savedAlbums.length})</span>}
           </h2>
           {savedAlbums.length === 0 ? (
@@ -350,10 +350,10 @@ export default function LibraryPage() {
         <section className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-bold text-white flex items-center gap-2">
-              <Music className="w-5 h-5 text-indigo-400" /> My Playlists
+              <Music className="w-5 h-5 text-[#B794F4]" /> My Playlists
               {pl.myPlaylists.length > 0 && <span className="text-sm font-normal text-gray-400">({pl.myPlaylists.length})</span>}
             </h2>
-            <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 text-sm text-indigo-400 hover:text-indigo-300 transition-colors">
+            <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 text-sm text-[#B794F4] hover:text-[#C9B3F5] transition-colors">
               <Plus className="w-4 h-4" /> Create
             </button>
           </div>
@@ -362,7 +362,7 @@ export default function LibraryPage() {
             <div className="py-10 text-center bg-gray-900/30 rounded-2xl border border-gray-800 border-dashed">
               <Music className="w-10 h-10 text-gray-600 mx-auto mb-2" />
               <p className="text-gray-400">No playlists yet.</p>
-              <button onClick={() => setShowCreate(true)} className="mt-3 text-sm text-indigo-400 hover:text-indigo-300 transition-colors">Create your first playlist →</button>
+              <button onClick={() => setShowCreate(true)} className="mt-3 text-sm text-[#B794F4] hover:text-[#C9B3F5] transition-colors">Create your first playlist →</button>
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -526,7 +526,7 @@ export default function LibraryPage() {
                 <div
                   key={item.id}
                   onClick={() => navigate(`/products/${item.product_id}`)}
-                  className="bg-gray-900/40 border border-gray-800 hover:border-indigo-500/30 rounded-2xl overflow-hidden cursor-pointer group transition-all"
+                  className="bg-gray-900/40 border border-gray-800 hover:border-[#9D4EDD]/30 rounded-2xl overflow-hidden cursor-pointer group transition-all"
                 >
                   <div className="aspect-square bg-gradient-to-br from-[#9D4EDD]/20 to-[#00D9FF]/10 overflow-hidden">
                     {item.product?.cover_url
@@ -545,7 +545,7 @@ export default function LibraryPage() {
             </div>
           )}
           {activeTab === 'all' && purchases.length > 8 && (
-            <button onClick={() => setActiveTab('purchases')} className="w-full pt-1 text-sm text-indigo-400 hover:text-indigo-300 text-center transition-colors">
+            <button onClick={() => setActiveTab('purchases')} className="w-full pt-1 text-sm text-[#B794F4] hover:text-[#C9B3F5] text-center transition-colors">
               See all {purchases.length} purchases →
             </button>
           )}

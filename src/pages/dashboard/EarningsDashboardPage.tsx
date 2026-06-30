@@ -115,7 +115,7 @@ function WithdrawalModal({ userId, maxAmount, onClose, onSuccess }: WithdrawalMo
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-      <div className="bg-[#0D1733] border border-white/10 rounded-2xl w-full max-w-md">
+      <div className="bg-[#0B0814] border border-white/10 rounded-2xl w-full max-w-md">
         <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
           <h2 className="text-lg font-bold text-white">Request Withdrawal</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-white text-2xl leading-none">&times;</button>

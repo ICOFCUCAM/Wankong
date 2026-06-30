@@ -193,7 +193,7 @@ export default function ResultsPage() {
         {leaderboard.length > 0 ? (
           <div>
             <h2 className="text-xl font-black text-white mb-4">All Entries</h2>
-            <div className="bg-[#1A2240] rounded-2xl overflow-hidden">
+            <div className="bg-[#120C22] rounded-2xl overflow-hidden">
               <div className="grid grid-cols-[48px_1fr_auto_auto] gap-3 px-5 py-3 border-b border-white/10">
                 <span className="text-gray-500 text-xs font-semibold">#</span>
                 <span className="text-gray-500 text-xs font-semibold">Performer</span>

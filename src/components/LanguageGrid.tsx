@@ -30,7 +30,7 @@ const LanguageGrid: React.FC<LanguageGridProps> = ({ languages, onSelect }) => {
             onClick={() => handleSelect(lang.code)}
             className={[
               'flex flex-col items-center gap-2 p-3 rounded-xl border transition-all duration-200 cursor-pointer',
-              'bg-[#1A2240] text-white',
+              'bg-[#120C22] text-white',
               isSelected
                 ? 'border-[#00D9FF] bg-[#0d1a36] shadow-[0_0_12px_rgba(0,217,255,0.3)]'
                 : 'border-[#2d3a5a] hover:border-[#00D9FF] hover:scale-105',

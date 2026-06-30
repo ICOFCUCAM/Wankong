@@ -184,7 +184,7 @@ export default function WalletView() {
   const colorMap: Record<string, { bg: string; text: string; border: string }> = {
     emerald: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/20' },
     amber:   { bg: 'bg-amber-500/10',   text: 'text-amber-400',   border: 'border-amber-500/20'   },
-    indigo:  { bg: 'bg-indigo-500/10',  text: 'text-indigo-400',  border: 'border-indigo-500/20'  },
+    indigo:  { bg: 'bg-[#9D4EDD]/10',  text: 'text-[#B794F4]',  border: 'border-[#9D4EDD]/20'  },
     blue:    { bg: 'bg-blue-500/10',    text: 'text-blue-400',    border: 'border-blue-500/20'    },
     pink:    { bg: 'bg-pink-500/10',    text: 'text-pink-400',    border: 'border-pink-500/20'    },
     purple:  { bg: 'bg-purple-500/10',  text: 'text-purple-400',  border: 'border-purple-500/20'  },
@@ -200,7 +200,7 @@ export default function WalletView() {
         </div>
         <button
           onClick={() => setShowWithdraw(true)}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-5 py-2.5 rounded-xl transition-colors flex items-center gap-2"
+          className="bg-[#9D4EDD] hover:bg-[#7C3AED] text-white font-medium px-5 py-2.5 rounded-xl transition-colors flex items-center gap-2"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -210,7 +210,7 @@ export default function WalletView() {
       </div>
 
       {/* Total balance hero */}
-      <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl p-6 text-white">
+      <div className="bg-gradient-to-br from-[#9D4EDD] to-purple-700 rounded-2xl p-6 text-white">
         <p className="text-sm opacity-80 mb-1">Total Balance</p>
         {loading ? (
           <div className="h-10 w-40 bg-white/20 rounded animate-pulse" />
@@ -279,7 +279,7 @@ export default function WalletView() {
                         onClick={() => setWithdrawMethod(m.id)}
                         className={`p-3 rounded-xl text-left transition-all ${
                           withdrawMethod === m.id
-                            ? 'bg-indigo-600/20 border-indigo-500 border'
+                            ? 'bg-[#9D4EDD]/20 border-[#9D4EDD] border'
                             : 'bg-gray-800 border border-gray-700 hover:border-gray-600'
                         }`}
                       >
@@ -299,7 +299,7 @@ export default function WalletView() {
                     onChange={e => setWithdrawAmount(e.target.value)}
                     placeholder="0.00"
                     required
-                    className="w-full bg-gray-800 border border-gray-600 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full bg-gray-800 border border-gray-600 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#9D4EDD]"
                   />
                   <p className="text-xs text-gray-500 mt-1">Available: {fmt(balances.available)}</p>
                 </div>
@@ -311,7 +311,7 @@ export default function WalletView() {
                       value={phoneNumber}
                       onChange={e => setPhoneNumber(e.target.value)}
                       placeholder="+254 7XX XXX XXX"
-                      className="w-full bg-gray-800 border border-gray-600 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full bg-gray-800 border border-gray-600 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#9D4EDD]"
                     />
                   </div>
                 )}
@@ -326,7 +326,7 @@ export default function WalletView() {
                   <button
                     type="submit"
                     disabled={withdrawing}
-                    className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl transition-colors disabled:opacity-50"
+                    className="flex-1 bg-[#9D4EDD] hover:bg-[#7C3AED] text-white py-3 rounded-xl transition-colors disabled:opacity-50"
                   >
                     {withdrawing ? 'Processing…' : 'Withdraw'}
                   </button>
@@ -348,7 +348,7 @@ export default function WalletView() {
                 onClick={() => setTxFilter(f)}
                 className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
                   txFilter === f
-                    ? 'bg-indigo-600 text-white'
+                    ? 'bg-[#9D4EDD] text-white'
                     : 'bg-gray-800 text-gray-400 hover:text-white'
                 }`}
               >

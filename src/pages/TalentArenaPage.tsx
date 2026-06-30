@@ -309,7 +309,7 @@ export default function TalentArenaPage() {
           onClick={() => { setVideoModal(null); setActiveVttUrl(null); }}
         >
           <div
-            className="w-full max-w-2xl bg-[#0D1733] rounded-2xl overflow-hidden shadow-2xl"
+            className="w-full max-w-2xl bg-[#0B0814] rounded-2xl overflow-hidden shadow-2xl"
             onClick={e => e.stopPropagation()}
           >
             {/* Modal header */}

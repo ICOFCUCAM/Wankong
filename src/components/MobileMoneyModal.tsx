@@ -143,7 +143,7 @@ export default function MobileMoneyModal({ amount, orderId, onClose, onSuccess }
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
       onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="bg-[#0D1733] border border-white/10 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl">
+      <div className="bg-[#0B0814] border border-white/10 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl">
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-white/8">

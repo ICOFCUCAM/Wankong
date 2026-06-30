@@ -9,7 +9,7 @@ interface Props {
   onClose:     () => void;
 }
 
-const inp = 'w-full bg-[#0D1B3E] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#00D9FF]/40 text-sm';
+const inp = 'w-full bg-[#0B0814] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#00D9FF]/40 text-sm';
 
 export default function PlaylistCreateModal({ open, initial, title = 'Create Playlist', onConfirm, onClose }: Props) {
   const [name,        setName]        = useState('');
@@ -111,7 +111,7 @@ export default function PlaylistCreateModal({ open, initial, title = 'Create Pla
             <button
               type="submit"
               disabled={saving || !name.trim()}
-              className="flex-1 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-colors"
+              className="flex-1 bg-[#9D4EDD] hover:bg-[#7C3AED] disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-colors"
             >
               {saving ? 'Saving...' : title.includes('Rename') ? 'Save Changes' : 'Create Playlist'}
             </button>

@@ -56,7 +56,7 @@ const LANGUAGES = [
 const MIN_TRACKS = 2;
 const MAX_TRACKS = 6;
 
-const inp = 'w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm';
+const inp = 'w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD] text-sm';
 const lbl = 'block text-sm font-medium text-gray-300 mb-1';
 
 // ── track interface ───────────────────────────────────────────────────────────
@@ -309,7 +309,7 @@ export default function UploadMusicEP({ onSuccess }: Props) {
       <section className="bg-gray-900/40 border border-gray-800 rounded-2xl p-6 space-y-3">
         <h3 className="text-sm font-semibold text-gray-200 uppercase tracking-wider">EP Artwork</h3>
         <p className="text-xs text-gray-400">Minimum 3000×3000 px · Square · JPG or PNG</p>
-        <div onClick={() => artworkRef.current?.click()} className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${artworkFile ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-gray-700 hover:border-indigo-500'}`}>
+        <div onClick={() => artworkRef.current?.click()} className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${artworkFile ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-gray-700 hover:border-[#9D4EDD]'}`}>
           <input ref={artworkRef} type="file" className="hidden" accept="image/jpeg,image/png" onChange={e => { const f = e.target.files?.[0]; if (f) handleArtwork(f); }} />
           {artworkFile ? (
             <div className="flex items-center justify-center gap-3">
@@ -331,7 +331,7 @@ export default function UploadMusicEP({ onSuccess }: Props) {
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold text-gray-200 uppercase tracking-wider">Tracks ({tracks.length}/{MAX_TRACKS})</h3>
           <button type="button" onClick={addTrack} disabled={tracks.length >= MAX_TRACKS}
-            className="flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 disabled:opacity-40">
+            className="flex items-center gap-1.5 text-xs text-[#B794F4] hover:text-[#C9B3F5] disabled:opacity-40">
             <Plus className="w-3.5 h-3.5" /> Add Track
           </button>
         </div>
@@ -342,7 +342,7 @@ export default function UploadMusicEP({ onSuccess }: Props) {
               <span className="text-xs font-semibold text-gray-400 uppercase">Track {idx + 1}</span>
               <div className="flex gap-2">
                 <button type="button" onClick={() => duplicateTrack(track.id)} title="Duplicate"
-                  className="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-indigo-400 rounded-lg hover:bg-indigo-500/10 transition-colors">
+                  className="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-[#B794F4] rounded-lg hover:bg-[#9D4EDD]/10 transition-colors">
                   <Copy className="w-3.5 h-3.5" />
                 </button>
                 {tracks.length > MIN_TRACKS && (
@@ -376,7 +376,7 @@ export default function UploadMusicEP({ onSuccess }: Props) {
               <label className={lbl}>Audio File (WAV or MP3)</label>
               <div
                 onClick={() => audioRefs.current.get(track.id)?.click()}
-                className={`border border-dashed rounded-lg p-4 text-center cursor-pointer transition-all ${track.audioFile ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-gray-600 hover:border-indigo-500'}`}
+                className={`border border-dashed rounded-lg p-4 text-center cursor-pointer transition-all ${track.audioFile ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-gray-600 hover:border-[#9D4EDD]'}`}
               >
                 <input
                   type="file"
@@ -403,12 +403,12 @@ export default function UploadMusicEP({ onSuccess }: Props) {
       <section className="bg-gray-900/40 border border-gray-800 rounded-2xl p-6 space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold text-gray-200 uppercase tracking-wider">Distribution Platforms</h3>
-          <button type="button" onClick={() => setPlatforms(Object.fromEntries(PLATFORMS.map(p => [p.id, true])))} className="text-xs text-indigo-400 hover:text-indigo-300">Select All</button>
+          <button type="button" onClick={() => setPlatforms(Object.fromEntries(PLATFORMS.map(p => [p.id, true])))} className="text-xs text-[#B794F4] hover:text-[#C9B3F5]">Select All</button>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
           {PLATFORMS.map(p => (
             <button key={p.id} type="button" onClick={() => setPlatforms(prev => ({ ...prev, [p.id]: !prev[p.id] }))}
-              className={`py-2.5 px-3 rounded-xl text-xs font-medium border transition-all ${platforms[p.id] ? 'bg-indigo-600/20 border-indigo-500/50 text-indigo-300' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:border-gray-600'}`}>
+              className={`py-2.5 px-3 rounded-xl text-xs font-medium border transition-all ${platforms[p.id] ? 'bg-[#9D4EDD]/20 border-[#9D4EDD]/50 text-[#C9B3F5]' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:border-gray-600'}`}>
               {p.name}
             </button>
           ))}
@@ -417,13 +417,13 @@ export default function UploadMusicEP({ onSuccess }: Props) {
 
       {submitting && (
         <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
-          <div className="flex justify-between mb-2"><span className="text-sm text-white">Submitting EP...</span><span className="text-sm text-indigo-400">{Math.round(progress)}%</span></div>
-          <div className="w-full bg-gray-800 rounded-full h-2"><div className="bg-indigo-600 h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} /></div>
+          <div className="flex justify-between mb-2"><span className="text-sm text-white">Submitting EP...</span><span className="text-sm text-[#B794F4]">{Math.round(progress)}%</span></div>
+          <div className="w-full bg-gray-800 rounded-full h-2"><div className="bg-[#9D4EDD] h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} /></div>
         </div>
       )}
 
       <button type="submit" disabled={submitting || !releaseTitle || !primaryArtist}
-        className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-xl transition-colors text-base">
+        className="w-full bg-[#9D4EDD] hover:bg-[#7C3AED] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-xl transition-colors text-base">
         {submitting ? 'Submitting EP to Ditto...' : `Submit EP for Distribution (${tracks.length} tracks)`}
       </button>
     </form>

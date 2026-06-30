@@ -140,7 +140,7 @@ function ConfirmModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
       <div
         className="w-full max-w-sm rounded-2xl border border-white/10 p-6 shadow-2xl"
-        style={{ background: '#0D1733' }}
+        style={{ background: '#0B0814' }}
       >
         <div className="flex items-start gap-3 mb-5">
           <AlertTriangle
@@ -457,7 +457,7 @@ export default function ModerationQueuePage() {
         {/* Report list */}
         <div
           className="rounded-2xl border border-white/5 overflow-hidden"
-          style={{ background: '#0D1733' }}
+          style={{ background: '#0B0814' }}
         >
           {loading ? (
             <ReportSkeleton />

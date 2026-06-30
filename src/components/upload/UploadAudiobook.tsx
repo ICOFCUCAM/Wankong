@@ -25,8 +25,8 @@ const LANGUAGES = [
   { code: 'es', name: 'Spanish' }, { code: 'pt', name: 'Portuguese' }, { code: 'ar', name: 'Arabic' },
 ];
 
-const inp = 'w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm';
-const inpSm = 'w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm';
+const inp = 'w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD] text-sm';
+const inpSm = 'w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD] text-sm';
 const lbl = 'block text-sm font-medium text-gray-300 mb-1';
 
 interface ChapterDraft {
@@ -196,7 +196,7 @@ export default function UploadAudiobook({ onSuccess }: Props) {
       <section className="bg-gray-900/40 border border-gray-800 rounded-2xl p-6 space-y-3">
         <h3 className="text-sm font-semibold text-gray-200 uppercase tracking-wider">Cover Image</h3>
         <p className="text-xs text-gray-400">Minimum 3000×3000 px · Square · JPG or PNG</p>
-        <div onClick={() => coverRef.current?.click()} className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${coverFile ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-gray-700 hover:border-indigo-500'}`}>
+        <div onClick={() => coverRef.current?.click()} className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${coverFile ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-gray-700 hover:border-[#9D4EDD]'}`}>
           <input ref={coverRef} type="file" className="hidden" accept="image/jpeg,image/png" onChange={e => { const f = e.target.files?.[0]; if (f) handleCover(f); }} />
           {coverFile
             ? <div className="flex items-center justify-center gap-3"><svg className="w-8 h-8 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg><p className="text-white text-sm">{coverFile.name}</p><button type="button" onClick={e => { e.stopPropagation(); setCoverFile(null); }} className="text-xs text-red-400 ml-2">Remove</button></div>
@@ -209,7 +209,7 @@ export default function UploadAudiobook({ onSuccess }: Props) {
       <section className="bg-gray-900/40 border border-gray-800 rounded-2xl p-6 space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold text-gray-200 uppercase tracking-wider">Chapters ({chapters.length})</h3>
-          <button type="button" onClick={addChapter} className="flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300">
+          <button type="button" onClick={addChapter} className="flex items-center gap-1.5 text-xs text-[#B794F4] hover:text-[#C9B3F5]">
             <Plus className="w-3.5 h-3.5" /> Add Chapter
           </button>
         </div>
@@ -232,7 +232,7 @@ export default function UploadAudiobook({ onSuccess }: Props) {
               <label className="block text-xs text-gray-400 mb-1">Chapter Audio (WAV or MP3)</label>
               <div
                 onClick={() => audioRefs.current.get(chapter.id)?.click()}
-                className={`border border-dashed rounded-lg p-3 text-center cursor-pointer transition-all text-xs ${chapter.audioFile ? 'border-emerald-500/50 bg-emerald-500/5 text-emerald-400' : 'border-gray-600 hover:border-indigo-500 text-gray-400'}`}
+                className={`border border-dashed rounded-lg p-3 text-center cursor-pointer transition-all text-xs ${chapter.audioFile ? 'border-emerald-500/50 bg-emerald-500/5 text-emerald-400' : 'border-gray-600 hover:border-[#9D4EDD] text-gray-400'}`}
               >
                 <input
                   type="file" className="hidden" accept=".wav,.mp3,audio/wav,audio/mpeg"
@@ -248,13 +248,13 @@ export default function UploadAudiobook({ onSuccess }: Props) {
 
       {submitting && (
         <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
-          <div className="flex justify-between mb-2"><span className="text-sm text-white">Uploading audiobook...</span><span className="text-sm text-indigo-400">{Math.round(progress)}%</span></div>
-          <div className="w-full bg-gray-800 rounded-full h-2"><div className="bg-indigo-600 h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} /></div>
+          <div className="flex justify-between mb-2"><span className="text-sm text-white">Uploading audiobook...</span><span className="text-sm text-[#B794F4]">{Math.round(progress)}%</span></div>
+          <div className="w-full bg-gray-800 rounded-full h-2"><div className="bg-[#9D4EDD] h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} /></div>
         </div>
       )}
 
       <button type="submit" disabled={submitting || !title || !author}
-        className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-xl transition-colors text-base">
+        className="w-full bg-[#9D4EDD] hover:bg-[#7C3AED] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-xl transition-colors text-base">
         {submitting ? 'Uploading Audiobook...' : `Publish Audiobook (${chapters.length} chapter${chapters.length !== 1 ? 's' : ''})`}
       </button>
     </form>

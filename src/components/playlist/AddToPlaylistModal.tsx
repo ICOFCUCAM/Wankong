@@ -69,8 +69,8 @@ export default function AddToPlaylistModal() {
             onClick={() => setShowCreate(true)}
             className="w-full flex items-center gap-3 px-5 py-3.5 border-b border-white/5 hover:bg-white/5 transition-colors"
           >
-            <div className="w-10 h-10 rounded-lg bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center shrink-0">
-              <Plus className="w-5 h-5 text-indigo-400" />
+            <div className="w-10 h-10 rounded-lg bg-[#9D4EDD]/20 border border-[#9D4EDD]/30 flex items-center justify-center shrink-0">
+              <Plus className="w-5 h-5 text-[#B794F4]" />
             </div>
             <span className="text-white text-sm font-medium">Create new playlist</span>
           </button>

@@ -464,7 +464,7 @@ export default function AdminReleaseQueuePage() {
               className={[
                 'flex items-start gap-4 p-4 rounded-xl border transition-colors',
                 needsAction
-                  ? 'bg-[#0D1B3E] border-white/8 hover:border-white/15'
+                  ? 'bg-[#0B0814] border-white/8 hover:border-white/15'
                   : 'bg-white/3 border-white/5 hover:border-white/10',
               ].join(' ')}
             >
@@ -542,7 +542,7 @@ export default function AdminReleaseQueuePage() {
           onClick={() => { setPreview(null); setError(''); setNote(''); setValidation(null); }}
         >
           <div
-            className="bg-[#0D1B3E] border border-white/10 rounded-2xl w-full max-w-2xl p-6 space-y-5 max-h-[90vh] overflow-y-auto"
+            className="bg-[#0B0814] border border-white/10 rounded-2xl w-full max-w-2xl p-6 space-y-5 max-h-[90vh] overflow-y-auto"
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}

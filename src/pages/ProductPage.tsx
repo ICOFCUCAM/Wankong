@@ -14,7 +14,7 @@ import ShareClipModal from '@/components/ShareClipModal';
 import ReactionBar from '@/components/ReactionBar';
 
 const TYPE_COLORS: Record<string, string> = {
-  music:    'from-indigo-500 to-purple-600',
+  music:    'from-[#9D4EDD] to-purple-600',
   book:     'from-amber-500 to-orange-600',
   books:    'from-amber-500 to-orange-600',
   video:    'from-red-500 to-pink-600',
@@ -93,16 +93,16 @@ export default function ProductPage() {
   }, [handle, user?.id]);
 
   if (loading) return (
-    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
-      <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+    <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
+      <div className="w-8 h-8 border-2 border-[#9D4EDD] border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
   if (!product) return (
-    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
+    <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
       <div className="text-center">
         <p className="text-gray-400 text-lg mb-4">Product not found</p>
-        <Link to="/" className="text-indigo-400 hover:text-indigo-300">← Go back home</Link>
+        <Link to="/" className="text-[#B794F4] hover:text-[#C9B3F5]">← Go back home</Link>
       </div>
     </div>
   );
@@ -111,7 +111,7 @@ export default function ProductPage() {
   const isFree      = price === 0;
   const image       = product.images?.[0] || product.cover_art || product.cover_url;
   const rawType     = product.product_type?.toLowerCase() || '';
-  const gradient    = TYPE_COLORS[rawType] || 'from-indigo-500 to-purple-600';
+  const gradient    = TYPE_COLORS[rawType] || 'from-[#9D4EDD] to-purple-600';
   const contentType = toContentType(rawType);
   const creator     = product.vendor || product.artist || product.author;
   const previewUrl  = product.preview_url || product.audio_url;
@@ -175,7 +175,7 @@ export default function ProductPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
       <div className="max-w-6xl mx-auto px-4 lg:px-8 py-12">
 
@@ -262,7 +262,7 @@ export default function ProductPage() {
                       onClick={() => setSelectedVariant(v)}
                       className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
                         selectedVariant?.id === v.id
-                          ? 'bg-indigo-600 text-white'
+                          ? 'bg-[#9D4EDD] text-white'
                           : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                       }`}
                     >
@@ -317,7 +317,7 @@ export default function ProductPage() {
                   onClick={handlePlay}
                   className={`flex items-center gap-2 px-5 py-3 rounded-xl transition-colors font-medium ${
                     isPreviewing
-                      ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                      ? 'bg-[#9D4EDD] text-white hover:bg-[#7C3AED]'
                       : 'bg-gray-800 hover:bg-gray-700 text-white'
                   }`}
                 >
@@ -366,7 +366,7 @@ export default function ProductPage() {
                     onClick={handleSave}
                     className={`flex items-center gap-2 px-5 py-3 rounded-xl font-semibold transition-colors ${
                       trackSaved
-                        ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                        ? 'bg-[#9D4EDD] text-white hover:bg-[#7C3AED]'
                         : 'border border-gray-700 text-white hover:bg-gray-800'
                     }`}
                   >
@@ -392,7 +392,7 @@ export default function ProductPage() {
                   {/* Buy Now */}
                   <button
                     onClick={handleBuyNow}
-                    className="flex-1 flex items-center justify-center gap-2 px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 px-5 py-3 bg-[#9D4EDD] hover:bg-[#7C3AED] text-white font-semibold rounded-xl transition-colors"
                   >
                     Buy Now — ${(price * quantity).toFixed(2)}
                   </button>
@@ -408,7 +408,7 @@ export default function ProductPage() {
                   onClick={handleSave}
                   className={`flex items-center gap-1.5 px-3 py-2 text-sm rounded-xl transition-colors ${
                     trackSaved
-                      ? 'bg-indigo-600/20 text-indigo-400 border border-indigo-500/30'
+                      ? 'bg-[#9D4EDD]/20 text-[#B794F4] border border-[#9D4EDD]/30'
                       : 'bg-gray-800 text-gray-400 hover:text-white'
                   }`}
                 >

@@ -44,7 +44,7 @@ const GENRE_GRADIENTS: Record<string, string> = {
   Jazz:         'from-[#00D9FF]/30 to-blue-900/20',
   'R&B':        'from-pink-900/40 to-[#9D4EDD]/20',
   Praise:       'from-[#00F5A0]/20 to-[#9D4EDD]/20',
-  Worship:      'from-[#00D9FF]/20 to-indigo-900/20',
+  Worship:      'from-[#00D9FF]/20 to-[#1E1235]/20',
   Contemporary: 'from-[#9D4EDD]/30 to-[#FF6B00]/20',
 };
 
@@ -673,7 +673,7 @@ export default function LanguageMusicPage() {
                           ? p === 'free'
                             ? 'bg-[#00F5A0]/20 text-[#00F5A0] border border-[#00F5A0]/30'
                             : p === 'paid'
-                              ? 'bg-indigo-600/20 text-indigo-400 border border-indigo-500/30'
+                              ? 'bg-[#9D4EDD]/20 text-[#B794F4] border border-[#9D4EDD]/30'
                               : 'bg-[#9D4EDD] text-white border border-[#9D4EDD]'
                           : 'bg-white/5 text-gray-400 border border-white/10 hover:text-white'
                       }`}

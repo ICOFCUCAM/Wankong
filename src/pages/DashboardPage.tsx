@@ -59,7 +59,7 @@ export default function DashboardPage() {
   const guestMode = !isAuthenticated;
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] flex">
+    <div className="min-h-screen bg-[#0B0814] flex">
       {/* Sidebar overlay (mobile) */}
       {sidebarOpen && <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={toggleSidebar} />}
 
@@ -68,7 +68,7 @@ export default function DashboardPage() {
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center gap-2 p-4 border-b border-gray-800">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#9D4EDD] to-purple-600 flex items-center justify-center">
               <span className="text-white font-bold text-sm">W</span>
             </div>
             <span className="text-white font-bold">WANKONG</span>
@@ -93,12 +93,12 @@ export default function DashboardPage() {
               <button
                 key={item.page}
                 onClick={() => { setCurrentPage(item.page); if (sidebarOpen) toggleSidebar(); }}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-left relative ${currentPage === item.page ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'}`}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-left relative ${currentPage === item.page ? 'bg-[#9D4EDD] text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'}`}
               >
                 <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} /></svg>
                 {item.label}
                 {item.page === 'notifications' && unreadCount > 0 && (
-                  <span className="ml-auto w-5 h-5 bg-indigo-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold">{unreadCount}</span>
+                  <span className="ml-auto w-5 h-5 bg-[#9D4EDD] text-white text-[10px] rounded-full flex items-center justify-center font-bold">{unreadCount}</span>
                 )}
               </button>
             ))}
@@ -131,7 +131,7 @@ export default function DashboardPage() {
           {!isAuthenticated && (
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-400">Not signed in</span>
-              <a href="/" className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-lg transition-colors">Sign In</a>
+              <a href="/" className="px-3 py-1.5 bg-[#9D4EDD] hover:bg-[#7C3AED] text-white text-sm rounded-lg transition-colors">Sign In</a>
             </div>
           )}
         </header>

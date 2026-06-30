@@ -30,7 +30,7 @@ const GENRE_GRADIENTS: Record<string, string> = {
   Jazz: 'from-[#00D9FF]/30 to-blue-900/20',
   'R&B': 'from-pink-900/40 to-[#9D4EDD]/20',
   Praise: 'from-[#00F5A0]/20 to-[#9D4EDD]/20',
-  Worship: 'from-[#00D9FF]/20 to-indigo-900/20',
+  Worship: 'from-[#00D9FF]/20 to-[#1E1235]/20',
 };
 
 // ── Track Card ────────────────────────────────────────────────────────────────

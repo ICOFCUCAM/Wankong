@@ -91,16 +91,16 @@ export default function FeaturedCreators() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {creators.map(creator => (
-          <div key={creator.id} className="group bg-gray-900/50 border border-gray-800 rounded-2xl overflow-hidden hover:border-indigo-500/30 transition-all hover:-translate-y-1">
+          <div key={creator.id} className="group bg-gray-900/50 border border-gray-800 rounded-2xl overflow-hidden hover:border-[#9D4EDD]/30 transition-all hover:-translate-y-1">
             <div className="relative">
-              <div className="h-24 bg-gradient-to-r from-indigo-600/30 to-purple-600/30" />
+              <div className="h-24 bg-gradient-to-r from-[#9D4EDD]/30 to-purple-600/30" />
               <img src={creator.avatar} alt={creator.name} className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full object-cover border-4 border-gray-900" />
             </div>
             <div className="pt-10 pb-5 px-4 text-center">
               <div className="flex items-center justify-center gap-1.5 mb-1">
                 <h3 className="font-semibold text-white">{creator.name}</h3>
                 {creator.verified && (
-                  <svg className="w-4 h-4 text-indigo-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                  <svg className="w-4 h-4 text-[#B794F4]" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
                 )}
               </div>
               <p className="text-sm text-gray-400 mb-1">@{creator.username}</p>
@@ -117,7 +117,7 @@ export default function FeaturedCreators() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <button onClick={() => toggleFollow(creator.id)} className={`flex-1 py-2 rounded-xl text-sm font-medium transition-all ${following.has(creator.id) ? 'bg-gray-800 text-gray-300 border border-gray-600' : 'bg-indigo-600 hover:bg-indigo-700 text-white'}`}>
+                <button onClick={() => toggleFollow(creator.id)} className={`flex-1 py-2 rounded-xl text-sm font-medium transition-all ${following.has(creator.id) ? 'bg-gray-800 text-gray-300 border border-gray-600' : 'bg-[#9D4EDD] hover:bg-[#7C3AED] text-white'}`}>
                   {following.has(creator.id) ? 'Following' : 'Follow'}
                 </button>
                 <button className="p-2 bg-gray-800 rounded-xl text-gray-400 hover:text-white transition-colors">

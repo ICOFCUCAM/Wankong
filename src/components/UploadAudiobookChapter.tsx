@@ -152,7 +152,7 @@ const UploadAudiobookChapter: React.FC<UploadAudiobookChapterProps> = ({
 
   if (success) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 p-8 bg-[#1A2240] rounded-2xl">
+      <div className="flex flex-col items-center justify-center gap-4 p-8 bg-[#120C22] rounded-2xl">
         <CheckCircle className="w-10 h-10 text-[#00F5A0]" />
         <p className="text-white font-semibold">Chapter {chapterNum} uploaded successfully!</p>
       </div>
@@ -162,7 +162,7 @@ const UploadAudiobookChapter: React.FC<UploadAudiobookChapterProps> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-[#1A2240] rounded-2xl p-6 flex flex-col gap-5 w-full max-w-lg"
+      className="bg-[#120C22] rounded-2xl p-6 flex flex-col gap-5 w-full max-w-lg"
     >
       {/* Header */}
       <div className="flex items-center gap-3">

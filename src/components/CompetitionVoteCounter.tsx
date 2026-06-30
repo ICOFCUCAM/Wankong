@@ -77,7 +77,7 @@ const CompetitionVoteCounter: React.FC<CompetitionVoteCounterProps> = ({
   return (
     <div
       className={[
-        'inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1A2240] border transition-all duration-300',
+        'inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#120C22] border transition-all duration-300',
         pulse ? 'border-[#00D9FF] shadow-[0_0_12px_rgba(0,217,255,0.4)]' : 'border-[#2d3a5a]',
       ].join(' ')}
     >

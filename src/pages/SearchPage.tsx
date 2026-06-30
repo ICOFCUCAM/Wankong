@@ -202,7 +202,7 @@ export default function SearchPage() {
   const setSort = (s: SortOption)   => setFilters(f => ({ ...f, sort: s }));
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
       <div className="max-w-7xl mx-auto px-4 lg:px-8 py-10">
 

@@ -317,7 +317,7 @@ export default function DistributeUploadPage() {
               <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Album Cover Artwork</p>
               <div
                 onClick={() => artRef.current?.click()}
-                className="w-40 h-40 rounded-2xl border-2 border-dashed border-white/10 hover:border-[#9D4EDD]/40 cursor-pointer overflow-hidden bg-[#0D1B3E] flex items-center justify-center transition-colors"
+                className="w-40 h-40 rounded-2xl border-2 border-dashed border-white/10 hover:border-[#9D4EDD]/40 cursor-pointer overflow-hidden bg-[#0B0814] flex items-center justify-center transition-colors"
               >
                 <input ref={artRef} type="file" className="hidden" accept="image/*"
                   onChange={e => { const f = e.target.files?.[0]; if (f) { setArtFile(f); setArtPreview(URL.createObjectURL(f)); } }}
@@ -466,7 +466,7 @@ export default function DistributeUploadPage() {
                 <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Cover Artwork</p>
                 <div
                   onClick={() => artRef.current?.click()}
-                  className="aspect-square rounded-2xl border-2 border-dashed border-white/10 hover:border-[#9D4EDD]/40 cursor-pointer overflow-hidden bg-[#0D1B3E] flex items-center justify-center transition-colors group"
+                  className="aspect-square rounded-2xl border-2 border-dashed border-white/10 hover:border-[#9D4EDD]/40 cursor-pointer overflow-hidden bg-[#0B0814] flex items-center justify-center transition-colors group"
                 >
                   <input ref={artRef} type="file" className="hidden" accept="image/*"
                     onChange={e => {
@@ -490,7 +490,7 @@ export default function DistributeUploadPage() {
                 <div
                   onClick={() => audioRef.current?.click()}
                   className={`h-full min-h-[160px] rounded-2xl border-2 border-dashed cursor-pointer flex flex-col items-center justify-center p-6 transition-colors ${
-                    audioFile ? 'border-[#00D9FF]/40 bg-[#00D9FF]/5' : 'border-white/10 hover:border-white/20 bg-[#0D1B3E]'
+                    audioFile ? 'border-[#00D9FF]/40 bg-[#00D9FF]/5' : 'border-white/10 hover:border-white/20 bg-[#0B0814]'
                   }`}
                 >
                   <input ref={audioRef} type="file" className="hidden" accept=".wav,.flac,.mp3"
@@ -546,7 +546,7 @@ export default function DistributeUploadPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-4 bg-[#0D1B3E] border border-white/10 rounded-xl">
+            <div className="flex items-center justify-between p-4 bg-[#0B0814] border border-white/10 rounded-xl">
               <div>
                 <p className="text-white font-medium text-sm">Explicit Content</p>
                 <p className="text-gray-500 text-xs">Contains strong language or adult themes</p>
@@ -584,7 +584,7 @@ export default function DistributeUploadPage() {
                     className={`py-3 rounded-xl text-sm font-semibold capitalize border transition-all ${
                       meta.release_type === t
                         ? 'bg-[#9D4EDD] border-[#9D4EDD] text-white'
-                        : 'bg-[#0D1B3E] border-white/10 text-gray-400 hover:border-white/20'
+                        : 'bg-[#0B0814] border-white/10 text-gray-400 hover:border-white/20'
                     }`}>
                     {t}
                   </button>
@@ -683,7 +683,7 @@ export default function DistributeUploadPage() {
             <h2 className="text-2xl font-black text-white">Distribution Targets</h2>
 
             {/* Select all toggle */}
-            <div className="flex items-center justify-between p-4 bg-[#0D1B3E] border border-white/10 rounded-xl">
+            <div className="flex items-center justify-between p-4 bg-[#0B0814] border border-white/10 rounded-xl">
               <div>
                 <p className="text-white font-semibold text-sm">Distribute to All Platforms</p>
                 <p className="text-gray-500 text-xs">Reach every supported DSP at once</p>
@@ -702,7 +702,7 @@ export default function DistributeUploadPage() {
                   className={`flex items-center gap-3 p-3 rounded-xl border transition-all text-left ${
                     platforms[p.key]
                       ? 'bg-[#9D4EDD]/10 border-[#9D4EDD]/40 text-white'
-                      : 'bg-[#0D1B3E] border-white/10 text-gray-400 hover:border-white/20'
+                      : 'bg-[#0B0814] border-white/10 text-gray-400 hover:border-white/20'
                   }`}>
                   <div className={`w-5 h-5 rounded flex items-center justify-center shrink-0 ${platforms[p.key] ? 'bg-[#9D4EDD]' : 'bg-white/10'}`}>
                     {platforms[p.key] && <span className="text-white text-[10px] font-black">✓</span>}
@@ -727,7 +727,7 @@ export default function DistributeUploadPage() {
             <h2 className="text-2xl font-black text-white">Royalty Splits</h2>
             <p className="text-gray-400 text-sm">Default: 70% artist, 30% platform. Add collaborators below.</p>
 
-            <div className="p-5 bg-[#0D1B3E] border border-white/10 rounded-2xl">
+            <div className="p-5 bg-[#0B0814] border border-white/10 rounded-2xl">
               <RoyaltySplitEditor
                 splits={splits}
                 onChange={s => {
@@ -754,7 +754,7 @@ export default function DistributeUploadPage() {
           <div className="space-y-6">
             <h2 className="text-2xl font-black text-white">Confirm & Submit</h2>
 
-            <div className="bg-[#0D1B3E] border border-white/10 rounded-2xl p-5 space-y-4">
+            <div className="bg-[#0B0814] border border-white/10 rounded-2xl p-5 space-y-4">
               {artPreview && (
                 <img src={artPreview} alt="Artwork" className="w-28 h-28 rounded-xl object-cover" />
               )}

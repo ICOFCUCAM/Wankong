@@ -152,7 +152,7 @@ const CreatorWithdrawalPanel: React.FC<CreatorWithdrawalPanelProps> = ({ userId 
         </div>
 
         {/* Available balance in gold (large) */}
-        <div className="bg-[#1A2240] rounded-2xl p-6">
+        <div className="bg-[#120C22] rounded-2xl p-6">
           <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-2">Available Balance</p>
           {loadingBalance ? (
             <Loader2 className="w-6 h-6 text-[#00D9FF] animate-spin" />
@@ -165,7 +165,7 @@ const CreatorWithdrawalPanel: React.FC<CreatorWithdrawalPanelProps> = ({ userId 
         </div>
 
         {/* Withdrawal form */}
-        <div className="bg-[#1A2240] rounded-2xl p-6 flex flex-col gap-4">
+        <div className="bg-[#120C22] rounded-2xl p-6 flex flex-col gap-4">
           <h2 className="text-white font-semibold text-base">Request Withdrawal</h2>
 
           {error && (
@@ -247,7 +247,7 @@ const CreatorWithdrawalPanel: React.FC<CreatorWithdrawalPanelProps> = ({ userId 
         </div>
 
         {/* History table */}
-        <div className="bg-[#1A2240] rounded-2xl p-6 flex flex-col gap-4">
+        <div className="bg-[#120C22] rounded-2xl p-6 flex flex-col gap-4">
           <h2 className="text-white font-semibold text-base">Withdrawal History</h2>
 
           {withdrawals.length === 0 ? (

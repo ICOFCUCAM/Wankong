@@ -104,7 +104,7 @@ export default function CollectionPage() {
       completed: 'bg-gray-500/20 text-gray-400 border-gray-500/30',
     };
     return (
-      <div className="min-h-screen bg-[#0A0A0F]">
+      <div className="min-h-screen bg-[#0B0814]">
         <Header />
         <div className="max-w-7xl mx-auto px-4 lg:px-8 py-12">
           <h1 className="text-3xl font-bold text-white mb-2">Talent Arena</h1>
@@ -118,11 +118,11 @@ export default function CollectionPage() {
             )) : rooms.length === 0 ? (
               <div className="col-span-full text-center py-12 text-gray-500">No competitions yet.</div>
             ) : rooms.map((room: any) => (
-              <div key={room.id} className="bg-gray-900/50 border border-gray-800 rounded-2xl overflow-hidden hover:border-indigo-500/20 transition-all group">
+              <div key={room.id} className="bg-gray-900/50 border border-gray-800 rounded-2xl overflow-hidden hover:border-[#9D4EDD]/20 transition-all group">
                 <div className="relative h-40 overflow-hidden">
                   {room.cover_url
                     ? <img src={room.cover_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    : <div className="w-full h-full bg-gradient-to-br from-indigo-600/30 to-purple-600/30" />}
+                    : <div className="w-full h-full bg-gradient-to-br from-[#9D4EDD]/30 to-purple-600/30" />}
                   <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent" />
                   <div className="absolute top-3 right-3">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold border capitalize ${statusColors[room.status] ?? statusColors.completed}`}>{room.status}</span>
@@ -151,7 +151,7 @@ export default function CollectionPage() {
   // Artists page
   if (isArtists) {
     return (
-      <div className="min-h-screen bg-[#0A0A0F]">
+      <div className="min-h-screen bg-[#0B0814]">
         <Header />
         <div className="max-w-7xl mx-auto px-4 lg:px-8 py-12">
           <h1 className="text-3xl font-bold text-white mb-2">Artists</h1>
@@ -165,11 +165,11 @@ export default function CollectionPage() {
             )) : artists.length === 0 ? (
               <div className="col-span-full text-center py-12 text-gray-500">No artists yet.</div>
             ) : artists.map((p: any) => (
-              <Link key={p.id} to={`/artists/${p.username ?? p.id}`} className="group flex flex-col items-center text-center p-4 bg-gray-900/50 border border-gray-800 rounded-xl hover:border-indigo-500/30 transition-all">
-                <img src={p.avatar_url ?? `https://api.dicebear.com/7.x/initials/svg?seed=${p.id}`} alt={p.display_name ?? ''} className="w-16 h-16 rounded-full object-cover mb-3 ring-2 ring-transparent group-hover:ring-indigo-500/50 transition-all" />
+              <Link key={p.id} to={`/artists/${p.username ?? p.id}`} className="group flex flex-col items-center text-center p-4 bg-gray-900/50 border border-gray-800 rounded-xl hover:border-[#9D4EDD]/30 transition-all">
+                <img src={p.avatar_url ?? `https://api.dicebear.com/7.x/initials/svg?seed=${p.id}`} alt={p.display_name ?? ''} className="w-16 h-16 rounded-full object-cover mb-3 ring-2 ring-transparent group-hover:ring-[#9D4EDD]/50 transition-all" />
                 <p className="text-sm font-medium text-white truncate w-full">{p.display_name ?? p.username}</p>
                 <p className="text-xs text-gray-400 capitalize">{p.role}</p>
-                <p className="text-xs text-indigo-400 mt-0.5">{formatNumber(p.follower_count ?? 0)} followers</p>
+                <p className="text-xs text-[#B794F4] mt-0.5">{formatNumber(p.follower_count ?? 0)} followers</p>
               </Link>
             ))}
           </div>
@@ -196,18 +196,18 @@ export default function CollectionPage() {
       { name: 'Ndombolo', flag: '🇨🇩', count: 410, origin: 'DRC' },
     ];
     return (
-      <div className="min-h-screen bg-[#0A0A0F]">
+      <div className="min-h-screen bg-[#0B0814]">
         <Header />
         <div className="max-w-7xl mx-auto px-4 lg:px-8 py-12">
           <h1 className="text-3xl font-bold text-white mb-2">Music by Language & Genre</h1>
           <p className="text-gray-400 mb-8">Explore music from every African musical tradition</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {langs.map(lang => (
-              <Link key={lang.name} to={`/collections/music?language=${encodeURIComponent(lang.name)}`} className="group p-5 bg-gray-900/50 border border-gray-800 rounded-xl hover:border-indigo-500/30 transition-all">
+              <Link key={lang.name} to={`/collections/music?language=${encodeURIComponent(lang.name)}`} className="group p-5 bg-gray-900/50 border border-gray-800 rounded-xl hover:border-[#9D4EDD]/30 transition-all">
                 <span className="text-3xl mb-3 block">{lang.flag}</span>
                 <h3 className="font-semibold text-white mb-1">{lang.name}</h3>
                 <p className="text-xs text-gray-500 mb-2">Origin: {lang.origin}</p>
-                <p className="text-xs text-indigo-400">{formatNumber(lang.count)} tracks</p>
+                <p className="text-xs text-[#B794F4]">{formatNumber(lang.count)} tracks</p>
               </Link>
             ))}
           </div>
@@ -220,7 +220,7 @@ export default function CollectionPage() {
   const collectionTitle = collection?.title || handle?.charAt(0).toUpperCase()! + handle?.slice(1)! || 'Collection';
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
       <div className="max-w-7xl mx-auto px-4 lg:px-8 py-12">
         {/* Header */}
@@ -240,7 +240,7 @@ export default function CollectionPage() {
                     <button
                       key={lang}
                       onClick={() => setSelectedLanguage(lang)}
-                      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${selectedLanguage === lang ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'}`}
+                      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${selectedLanguage === lang ? 'bg-[#9D4EDD] text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'}`}
                     >
                       {lang}
                     </button>
@@ -252,7 +252,7 @@ export default function CollectionPage() {
                     <button
                       key={g}
                       onClick={() => setSelectedGenre(g)}
-                      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${selectedGenre === g ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'}`}
+                      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${selectedGenre === g ? 'bg-[#9D4EDD] text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'}`}
                     >
                       {g}
                     </button>
@@ -273,7 +273,7 @@ export default function CollectionPage() {
               {!isMusic && (
                 <div className="flex gap-2 overflow-x-auto">
                   {['all', 'music', 'video', 'book', 'podcast', 'course'].map(t => (
-                    <button key={t} onClick={() => setTypeFilter(t)} className={`px-3 py-1.5 rounded-full text-xs font-medium capitalize whitespace-nowrap transition-colors ${typeFilter === t ? 'bg-indigo-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>
+                    <button key={t} onClick={() => setTypeFilter(t)} className={`px-3 py-1.5 rounded-full text-xs font-medium capitalize whitespace-nowrap transition-colors ${typeFilter === t ? 'bg-[#9D4EDD] text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>
                       {t === 'all' ? 'All' : t}
                     </button>
                   ))}
@@ -296,7 +296,7 @@ export default function CollectionPage() {
                     {products.map(p => {
                       const audioUrl = p.audio_url;
                       return (
-                        <div key={p.id} className="group relative bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden hover:border-indigo-500/30 transition-all">
+                        <div key={p.id} className="group relative bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden hover:border-[#9D4EDD]/30 transition-all">
                           <div className="aspect-square overflow-hidden">
                             <img src={p.cover_art || p.images?.[0]} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={e => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300?text=Music'; }} />
                           </div>
@@ -305,7 +305,7 @@ export default function CollectionPage() {
                               onClick={() => playTrack({ id: p.id, title: p.title, artist: p.vendor || p.artist || 'Unknown', cover: p.cover_art || p.images?.[0] || '', audioUrl })}
                               className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40"
                             >
-                              <div className="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg">
+                              <div className="w-12 h-12 bg-[#9D4EDD] rounded-full flex items-center justify-center shadow-lg">
                                 <svg className="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                               </div>
                             </button>
@@ -313,7 +313,7 @@ export default function CollectionPage() {
                           <div className="p-3">
                             <p className="text-xs font-medium text-white truncate">{p.title}</p>
                             <p className="text-[10px] text-gray-400 truncate">{p.vendor || p.artist}</p>
-                            {p.language && <p className="text-[10px] text-indigo-400">{p.language}</p>}
+                            {p.language && <p className="text-[10px] text-[#B794F4]">{p.language}</p>}
                           </div>
                         </div>
                       );

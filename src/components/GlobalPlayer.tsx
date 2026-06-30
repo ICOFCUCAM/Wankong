@@ -730,7 +730,7 @@ export default function GlobalPlayer() {
       <QueueSidebar />
 
       {currentTrack && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 h-20 bg-[#07101F]/96 backdrop-blur-2xl border-t border-white/10">
+        <div className="fixed bottom-0 left-0 right-0 z-40 h-20 bg-[#0B0814]/96 backdrop-blur-2xl border-t border-white/10">
           <div className="h-full max-w-7xl mx-auto px-4 flex items-center gap-4">
 
             {/* Track info (click → Now Playing) */}

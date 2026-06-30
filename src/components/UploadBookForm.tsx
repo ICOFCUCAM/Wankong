@@ -204,7 +204,7 @@ const UploadBookForm: React.FC<UploadBookFormProps> = ({ authorId, onSuccess }) 
 
   if (success) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 p-10 bg-[#1A2240] rounded-2xl">
+      <div className="flex flex-col items-center justify-center gap-4 p-10 bg-[#120C22] rounded-2xl">
         <CheckCircle className="w-12 h-12 text-[#00F5A0]" />
         <h3 className="text-white text-xl font-bold">Book Published!</h3>
         <p className="text-gray-400 text-sm text-center">Your book has been uploaded successfully.</p>
@@ -215,7 +215,7 @@ const UploadBookForm: React.FC<UploadBookFormProps> = ({ authorId, onSuccess }) 
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-[#1A2240] rounded-2xl p-6 flex flex-col gap-5 w-full max-w-2xl"
+      className="bg-[#120C22] rounded-2xl p-6 flex flex-col gap-5 w-full max-w-2xl"
     >
       <div className="flex items-center gap-3 mb-1">
         <BookOpen className="w-6 h-6 text-[#00D9FF]" />

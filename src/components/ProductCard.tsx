@@ -28,7 +28,7 @@ interface ProductCardProps {
 }
 
 const TYPE_COLORS: Record<string, string> = {
-  Music:    'from-indigo-500 to-purple-600',
+  Music:    'from-[#9D4EDD] to-purple-600',
   Books:    'from-amber-500 to-orange-600',
   Videos:   'from-red-500 to-pink-600',
   Podcasts: 'from-green-500 to-teal-600',
@@ -130,7 +130,7 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
   const priceBadge = isFree ? (
     <span className="px-2 py-0.5 text-[10px] rounded-full bg-emerald-500 text-white font-bold">FREE</span>
   ) : (
-    <span className="px-2 py-0.5 text-[10px] rounded-full bg-indigo-600 text-white font-bold">${price.toFixed(2)}</span>
+    <span className="px-2 py-0.5 text-[10px] rounded-full bg-[#9D4EDD] text-white font-bold">${price.toFixed(2)}</span>
   );
 
   // ── Portrait variant (2:3 ratio — reference card for all discovery grids) ───
@@ -229,7 +229,7 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
             ) : (
               <button
                 onClick={handleAddToCart}
-                className="flex items-center gap-0.5 px-1.5 py-1 rounded-lg text-[10px] font-medium bg-indigo-600/15 hover:bg-indigo-600/25 text-indigo-400 border border-indigo-500/15 transition-colors"
+                className="flex items-center gap-0.5 px-1.5 py-1 rounded-lg text-[10px] font-medium bg-[#9D4EDD]/15 hover:bg-[#9D4EDD]/25 text-[#B794F4] border border-[#9D4EDD]/15 transition-colors"
               >
                 + Cart
               </button>
@@ -258,7 +258,7 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
         className="group block hover:-translate-y-1 transition-all duration-300"
       >
         {/* Cover — 1:1 */}
-        <div className="relative w-full aspect-square rounded-xl overflow-hidden border border-white/8 shadow-lg group-hover:shadow-[0_8px_28px_rgba(0,0,0,0.6)] transition-all duration-300 bg-[#0f172a]">
+        <div className="relative w-full aspect-square rounded-xl overflow-hidden border border-white/8 shadow-lg group-hover:shadow-[0_8px_28px_rgba(0,0,0,0.6)] transition-all duration-300 bg-[#0B0814]">
           {product.image ? (
             <img
               src={product.image}
@@ -378,7 +378,7 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
               )}
               <button
                 onClick={handleAddToCart}
-                className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs rounded-lg transition-colors"
+                className="px-3 py-1.5 bg-[#9D4EDD] hover:bg-[#7C3AED] text-white text-xs rounded-lg transition-colors"
               >
                 {isFree ? 'Get Free' : 'Add to Cart'}
               </button>
@@ -394,7 +394,7 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
   return (
     <Link
       to={`/products/${product.handle}`}
-      className="group block bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden hover:border-indigo-500/30 transition-all hover:-translate-y-0.5"
+      className="group block bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden hover:border-[#9D4EDD]/30 transition-all hover:-translate-y-0.5"
     >
       {/* Cover art */}
       <div className="relative aspect-square overflow-hidden bg-gray-800">
@@ -433,7 +433,7 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
             onClick={handleSave}
             title={saved ? 'Saved' : 'Save'}
             className={`p-2 rounded-lg transition-colors ${
-              saved ? 'bg-indigo-600 text-white' : 'bg-gray-900/80 hover:bg-gray-700 text-white'
+              saved ? 'bg-[#9D4EDD] text-white' : 'bg-gray-900/80 hover:bg-gray-700 text-white'
             }`}
           >
             <svg className="w-4 h-4" fill={saved ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor">
@@ -458,7 +458,7 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
           <button
             onClick={handleAddToPlaylist}
             title="Add to playlist"
-            className="bg-gray-900/80 hover:bg-indigo-600 text-white p-2 rounded-lg transition-colors"
+            className="bg-gray-900/80 hover:bg-[#9D4EDD] text-white p-2 rounded-lg transition-colors"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z" />
@@ -469,7 +469,7 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
           <button
             onClick={handleAddToCart}
             title={isFree ? 'Get Free' : 'Add to Cart'}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white p-2 rounded-lg transition-colors"
+            className="bg-[#9D4EDD] hover:bg-[#7C3AED] text-white p-2 rounded-lg transition-colors"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />

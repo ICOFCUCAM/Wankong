@@ -55,7 +55,7 @@ function LanguageSwitcher() {
               key={lang.code}
               onClick={() => handleSelect(lang.code)}
               className={`w-full flex items-center justify-between px-3 py-2 text-xs hover:bg-gray-800 transition-colors ${
-                lang.code === current.code ? 'text-indigo-400 font-semibold' : 'text-gray-300'
+                lang.code === current.code ? 'text-[#B794F4] font-semibold' : 'text-gray-300'
               }`}
             >
               <span>{lang.nativeLabel}</span>
@@ -123,7 +123,7 @@ export default function Header() {
 
   return (
     <>
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-center text-xs py-2 px-4">
+      <div className="bg-gradient-to-r from-[#9D4EDD] to-purple-600 text-white text-center text-xs py-2 px-4">
         🎵 New: Global Music Distribution to 30+ platforms — <Link to="/dashboard" className="underline font-medium">Start distributing →</Link>
       </div>
 
@@ -168,7 +168,7 @@ export default function Header() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
                 {cartCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-indigo-600 text-white text-[10px] rounded-full flex items-center justify-center font-bold">
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#9D4EDD] text-white text-[10px] rounded-full flex items-center justify-center font-bold">
                     {cartCount > 9 ? '9+' : cartCount}
                   </span>
                 )}
@@ -195,7 +195,7 @@ export default function Header() {
                   <button onClick={() => navigate('/auth/login')} className="px-3 py-1.5 text-sm text-gray-300 hover:text-white transition-colors hidden sm:block">
                     {t('nav.signIn')}
                   </button>
-                  <button onClick={() => navigate('/auth/register')} className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+                  <button onClick={() => navigate('/auth/register')} className="px-3 py-1.5 bg-[#9D4EDD] hover:bg-[#7C3AED] text-white text-sm font-medium rounded-lg transition-colors">
                     {t('nav.getStarted')}
                   </button>
                 </div>
@@ -225,7 +225,7 @@ export default function Header() {
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   placeholder={t('common.search') + ' music, books, videos, artists...'}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-10 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-10 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD]"
                 />
               </div>
             </form>
@@ -246,7 +246,7 @@ export default function Header() {
                   {t(item.key)}
                 </Link>
               ))}
-              <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 text-sm text-indigo-400 hover:text-indigo-300 hover:bg-gray-800 rounded-lg transition-colors">
+              <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 text-sm text-[#B794F4] hover:text-[#C9B3F5] hover:bg-gray-800 rounded-lg transition-colors">
                 {t('nav.dashboard')}
               </Link>
             </nav>

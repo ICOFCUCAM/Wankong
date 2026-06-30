@@ -371,7 +371,7 @@ export default function AdminDistributionPanel() {
           return (
             <div
               key={r.id}
-              className="flex items-center gap-4 p-4 bg-[#0D1B3E] border border-white/5 rounded-xl hover:border-white/10 transition-colors"
+              className="flex items-center gap-4 p-4 bg-[#0B0814] border border-white/5 rounded-xl hover:border-white/10 transition-colors"
             >
               {/* Artwork */}
               <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-gradient-to-br from-[#9D4EDD] to-[#00D9FF] flex items-center justify-center">
@@ -447,7 +447,7 @@ export default function AdminDistributionPanel() {
           onClick={() => { setPreview(null); setError(''); setNote(''); }}
         >
           <div
-            className="bg-[#0D1B3E] border border-white/10 rounded-2xl w-full max-w-lg p-6 space-y-5 max-h-[90vh] overflow-y-auto"
+            className="bg-[#0B0814] border border-white/10 rounded-2xl w-full max-w-lg p-6 space-y-5 max-h-[90vh] overflow-y-auto"
             onClick={e => e.stopPropagation()}
           >
             {/* Modal header */}

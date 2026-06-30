@@ -472,7 +472,7 @@ export default function UploadAlbumPage() {
                       ? 'border-[#9D4EDD]/60 bg-[#9D4EDD]/10'
                       : albumArtFile
                       ? 'border-[#9D4EDD]/40 bg-[#9D4EDD]/5'
-                      : 'border-white/10 hover:border-[#9D4EDD]/40 bg-[#0D1B3E]',
+                      : 'border-white/10 hover:border-[#9D4EDD]/40 bg-[#0B0814]',
                   ].join(' ')}
                 >
                   <input

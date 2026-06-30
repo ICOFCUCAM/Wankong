@@ -170,7 +170,7 @@ const CreatorLevelProgress: React.FC<Props> = ({ userId }) => {
         </div>
 
         {/* Level card — current level name colour-coded */}
-        <div className="bg-[#1A2240] rounded-2xl p-6 flex flex-col gap-5">
+        <div className="bg-[#120C22] rounded-2xl p-6 flex flex-col gap-5">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-400 text-xs uppercase tracking-widest mb-1">Current Level</p>
@@ -239,7 +239,7 @@ const CreatorLevelProgress: React.FC<Props> = ({ userId }) => {
         </div>
 
         {/* Recent XP section — last 10 creator_earnings */}
-        <div className="bg-[#1A2240] rounded-2xl p-6 flex flex-col gap-4">
+        <div className="bg-[#120C22] rounded-2xl p-6 flex flex-col gap-4">
           <h2 className="text-white font-semibold flex items-center gap-2">
             <Zap className="w-4 h-4 text-[#FFB800]" />
             Recent XP Activity
@@ -285,7 +285,7 @@ const CreatorLevelProgress: React.FC<Props> = ({ userId }) => {
         </div>
 
         {/* "How to earn XP" section — all 7 actions */}
-        <div className="bg-[#1A2240] rounded-2xl p-6 flex flex-col gap-4">
+        <div className="bg-[#120C22] rounded-2xl p-6 flex flex-col gap-4">
           <h2 className="text-white font-semibold flex items-center gap-2">
             <Star className="w-4 h-4 text-[#00D9FF]" />
             How to Earn XP
@@ -317,7 +317,7 @@ const CreatorLevelProgress: React.FC<Props> = ({ userId }) => {
         </div>
 
         {/* Level thresholds reference */}
-        <div className="bg-[#1A2240] rounded-2xl p-6 flex flex-col gap-3">
+        <div className="bg-[#120C22] rounded-2xl p-6 flex flex-col gap-3">
           <h2 className="text-white font-semibold">Level Thresholds</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {LEVEL_THRESHOLDS.map(t => (

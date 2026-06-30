@@ -59,7 +59,7 @@ export default function CreatorDashboard() {
   const earningsData = [
     { label: 'Available', value: wallet.available, color: 'bg-emerald-500', textColor: 'text-emerald-400' },
     { label: 'Pending', value: wallet.pending, color: 'bg-amber-500', textColor: 'text-amber-400' },
-    { label: 'Subscriptions', value: wallet.subscriptions, color: 'bg-indigo-500', textColor: 'text-indigo-400' },
+    { label: 'Subscriptions', value: wallet.subscriptions, color: 'bg-[#9D4EDD]', textColor: 'text-[#B794F4]' },
     { label: 'Tips', value: wallet.tips, color: 'bg-pink-500', textColor: 'text-pink-400' },
     { label: 'Distributions', value: wallet.distributions, color: 'bg-blue-500', textColor: 'text-blue-400' },
     { label: 'Competitions', value: wallet.competitions, color: 'bg-purple-500', textColor: 'text-purple-400' },
@@ -79,12 +79,12 @@ export default function CreatorDashboard() {
         <div className="flex items-center gap-3">
           <div className="flex bg-gray-800 rounded-lg p-1">
             {(['7d', '30d', '90d'] as const).map(range => (
-              <button key={range} onClick={() => setTimeRange(range)} className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${timeRange === range ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:text-white'}`}>
+              <button key={range} onClick={() => setTimeRange(range)} className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${timeRange === range ? 'bg-[#9D4EDD] text-white' : 'text-gray-400 hover:text-white'}`}>
                 {range}
               </button>
             ))}
           </div>
-          <button onClick={() => setCurrentPage('upload')} className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-xl transition-colors flex items-center gap-2">
+          <button onClick={() => setCurrentPage('upload')} className="bg-[#9D4EDD] hover:bg-[#7C3AED] text-white text-sm font-medium px-4 py-2 rounded-xl transition-colors flex items-center gap-2">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
             Upload
           </button>
@@ -103,12 +103,12 @@ export default function CreatorDashboard() {
         ))}
       </div>
 
-      <div className="bg-gradient-to-r from-indigo-600/20 to-purple-600/20 border border-indigo-500/20 rounded-xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-[#9D4EDD]/20 to-purple-600/20 border border-[#9D4EDD]/20 rounded-xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
           <p className="text-sm text-gray-400">Total Earnings</p>
           <p className="text-3xl font-bold text-white">{formatCurrency(totalEarnings)}</p>
         </div>
-        <button onClick={() => setCurrentPage('wallet')} className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-3 rounded-xl transition-colors">
+        <button onClick={() => setCurrentPage('wallet')} className="bg-[#9D4EDD] hover:bg-[#7C3AED] text-white font-medium px-6 py-3 rounded-xl transition-colors">
           Withdraw Funds
         </button>
       </div>
@@ -120,7 +120,7 @@ export default function CreatorDashboard() {
             {chartBars.map((height, i) => (
               <div key={i} className="flex-1 flex flex-col items-center gap-1">
                 <div className="w-full bg-gray-800 rounded-t-sm overflow-hidden" style={{ height: '100%' }}>
-                  <div className="w-full bg-gradient-to-t from-indigo-600 to-indigo-400 rounded-t-sm transition-all duration-500" style={{ height: `${height}%`, marginTop: `${100 - height}%` }} />
+                  <div className="w-full bg-gradient-to-t from-[#9D4EDD] to-[#B794F4] rounded-t-sm transition-all duration-500" style={{ height: `${height}%`, marginTop: `${100 - height}%` }} />
                 </div>
                 <span className="text-[10px] text-gray-500">{months[i]}</span>
               </div>
@@ -153,7 +153,7 @@ export default function CreatorDashboard() {
       <div className="bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden">
         <div className="p-4 border-b border-gray-800 flex items-center justify-between">
           <h3 className="font-semibold text-white">Recent Content</h3>
-          <button onClick={() => setCurrentPage('marketplace')} className="text-sm text-indigo-400 hover:text-indigo-300">View All</button>
+          <button onClick={() => setCurrentPage('marketplace')} className="text-sm text-[#B794F4] hover:text-[#C9B3F5]">View All</button>
         </div>
         <div className="divide-y divide-gray-800">
           {recentProducts.length === 0 ? (
@@ -163,8 +163,8 @@ export default function CreatorDashboard() {
               {item.cover_url ? (
                 <img src={item.cover_url} alt="" className="w-12 h-12 rounded-lg object-cover" />
               ) : (
-                <div className="w-12 h-12 rounded-lg bg-indigo-600/20 flex items-center justify-center flex-shrink-0">
-                  <svg className="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" /></svg>
+                <div className="w-12 h-12 rounded-lg bg-[#9D4EDD]/20 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-[#B794F4]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" /></svg>
                 </div>
               )}
               <div className="flex-1 min-w-0">
@@ -189,7 +189,7 @@ export default function CreatorDashboard() {
             <h3 className="font-semibold text-white">Social Distribution Status</h3>
             <p className="text-xs text-gray-400 mt-0.5">Approved competition submissions distributed to social platforms</p>
           </div>
-          <button onClick={() => setCurrentPage('competitions')} className="text-sm text-indigo-400 hover:text-indigo-300">View Competitions</button>
+          <button onClick={() => setCurrentPage('competitions')} className="text-sm text-[#B794F4] hover:text-[#C9B3F5]">View Competitions</button>
         </div>
         {socialItems.length > 0 ? (
           <div className="divide-y divide-gray-800">
@@ -243,7 +243,7 @@ export default function CreatorDashboard() {
       <div className="bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden">
         <div className="p-4 border-b border-gray-800 flex items-center justify-between">
           <h3 className="font-semibold text-white">Recent Transactions</h3>
-          <button onClick={() => setCurrentPage('wallet')} className="text-sm text-indigo-400 hover:text-indigo-300">View All</button>
+          <button onClick={() => setCurrentPage('wallet')} className="text-sm text-[#B794F4] hover:text-[#C9B3F5]">View All</button>
         </div>
         <div className="divide-y divide-gray-800">
           {recentTxs.length === 0 ? (

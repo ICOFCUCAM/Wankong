@@ -203,7 +203,7 @@ const CreatorLeaderboard: React.FC = () => {
         )}
 
         {/* Full table */}
-        <div className="bg-[#1A2240] rounded-2xl overflow-hidden">
+        <div className="bg-[#120C22] rounded-2xl overflow-hidden">
           {/* Table header */}
           <div className="grid grid-cols-[48px_1fr_auto_auto] gap-2 px-4 py-3 border-b border-[#2d3a5a]">
             <span className="text-gray-500 text-xs font-semibold">#</span>
@@ -281,7 +281,7 @@ const CreatorLeaderboard: React.FC = () => {
 
         {/* "Your Rank" section at bottom if userId known */}
         {user?.id && userRank !== null && (
-          <div className="bg-[#1A2240] border border-[#00D9FF]/20 rounded-2xl px-6 py-4 flex items-center justify-between">
+          <div className="bg-[#120C22] border border-[#00D9FF]/20 rounded-2xl px-6 py-4 flex items-center justify-between">
             <div>
               <p className="text-gray-400 text-xs uppercase tracking-widest mb-1">Your Rank</p>
               <p className="text-[#00D9FF] text-2xl font-black">#{userRank}</p>

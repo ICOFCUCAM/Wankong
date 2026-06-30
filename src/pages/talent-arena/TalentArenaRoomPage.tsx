@@ -53,7 +53,7 @@ function EntryCard({ entry, rank }: { entry: Entry; rank: number }) {
   const [playing, setPlaying] = useState(false);
 
   return (
-    <div className={`bg-[#0D1B3E] border rounded-2xl overflow-hidden transition-all ${
+    <div className={`bg-[#0B0814] border rounded-2xl overflow-hidden transition-all ${
       entry.is_winner ? 'border-[#FFB800]/40 shadow-[0_0_24px_rgba(255,184,0,0.08)]' : 'border-white/5 hover:border-white/10'
     }`}>
       {/* Thumbnail / preview */}
@@ -228,7 +228,7 @@ export default function TalentArenaRoomPage() {
 
       <div className="max-w-7xl mx-auto px-4 py-10">
         {/* Tab toggle */}
-        <div className="flex gap-1 bg-[#0D1B3E] border border-white/10 rounded-xl p-1 w-fit mb-8">
+        <div className="flex gap-1 bg-[#0B0814] border border-white/10 rounded-xl p-1 w-fit mb-8">
           {(['leaderboard', 'latest'] as const).map(t => (
             <button key={t} onClick={() => setTab(t)}
               className={`px-4 py-1.5 rounded-lg text-sm font-semibold capitalize transition-colors ${
@@ -248,7 +248,7 @@ export default function TalentArenaRoomPage() {
                 <div key={e.id} className={`text-center p-4 rounded-2xl border ${
                   realRank === 1
                     ? 'bg-[#FFB800]/10 border-[#FFB800]/30 order-first md:-mt-4'
-                    : 'bg-[#0D1B3E] border-white/5'
+                    : 'bg-[#0B0814] border-white/5'
                 }`}>
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg font-black mx-auto mb-2 ${
                     realRank === 1 ? 'bg-[#FFB800] text-black' :

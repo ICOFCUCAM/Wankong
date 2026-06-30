@@ -10,7 +10,7 @@ export interface Split {
 
 const ROLES = ['artist', 'platform', 'producer', 'songwriter', 'choir', 'featured_artist'];
 
-const inputCls = "bg-[#0D1B3E] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#00D9FF]/40";
+const inputCls = "bg-[#0B0814] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#00D9FF]/40";
 
 export default function RoyaltySplitEditor({
   splits,

@@ -123,7 +123,7 @@ const CreatorRevenueDashboard: React.FC<CreatorRevenueDashboardProps> = ({ userI
           </div>
 
           {/* Period tabs: 'month' | 'quarter' | 'all' */}
-          <div className="flex gap-1 bg-[#1A2240] rounded-xl p-1">
+          <div className="flex gap-1 bg-[#120C22] rounded-xl p-1">
             {(Object.keys(PERIOD_LABELS) as Period[]).map(p => (
               <button
                 key={p}
@@ -142,7 +142,7 @@ const CreatorRevenueDashboard: React.FC<CreatorRevenueDashboardProps> = ({ userI
         </div>
 
         {/* Total earnings card — large gold text */}
-        <div className="bg-[#1A2240] rounded-2xl p-6 flex items-center justify-between">
+        <div className="bg-[#120C22] rounded-2xl p-6 flex items-center justify-between">
           <div>
             <p className="text-gray-400 text-sm font-medium">Total Earnings</p>
             <p className="text-[#FFB800] text-5xl font-bold mt-1 tracking-tight">
@@ -156,7 +156,7 @@ const CreatorRevenueDashboard: React.FC<CreatorRevenueDashboardProps> = ({ userI
         </div>
 
         {/* 7 category rows */}
-        <div className="bg-[#1A2240] rounded-2xl p-6 flex flex-col gap-4">
+        <div className="bg-[#120C22] rounded-2xl p-6 flex flex-col gap-4">
           <h2 className="text-white font-semibold text-base">Earnings by Category</h2>
 
           {loading ? (

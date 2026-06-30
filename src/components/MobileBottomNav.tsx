@@ -20,7 +20,7 @@ export default function MobileBottomNav() {
   const playerOffset = currentTrack ? 'bottom-[80px]' : 'bottom-0';
 
   return (
-    <nav className={`fixed ${playerOffset} left-0 right-0 z-30 md:hidden bg-[#07101F]/95 backdrop-blur-2xl border-t border-white/10 safe-area-inset-bottom`}>
+    <nav className={`fixed ${playerOffset} left-0 right-0 z-30 md:hidden bg-[#0B0814]/95 backdrop-blur-2xl border-t border-white/10 safe-area-inset-bottom`}>
       <div className="flex items-center">
         {TABS.map(({ to, label, Icon }) => (
           <NavLink

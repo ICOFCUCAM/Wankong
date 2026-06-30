@@ -175,7 +175,7 @@ export default function TalentArenaUploadPage() {
             <div
               onClick={() => videoRef.current?.click()}
               className={`p-8 rounded-2xl border-2 border-dashed cursor-pointer transition-colors text-center ${
-                videoFile ? 'border-[#FFB800]/40 bg-[#FFB800]/5' : 'border-white/10 hover:border-white/20 bg-[#0D1B3E]'
+                videoFile ? 'border-[#FFB800]/40 bg-[#FFB800]/5' : 'border-white/10 hover:border-white/20 bg-[#0B0814]'
               }`}
             >
               <input ref={videoRef} type="file" className="hidden" accept=".mp4,.mov" onChange={handleVideo} />
@@ -198,7 +198,7 @@ export default function TalentArenaUploadPage() {
             <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Thumbnail <span className="normal-case text-gray-600">(optional)</span></p>
             <div
               onClick={() => thumbRef.current?.click()}
-              className="p-5 rounded-xl border border-dashed border-white/10 hover:border-white/20 cursor-pointer bg-[#0D1B3E] flex items-center gap-4 transition-colors group"
+              className="p-5 rounded-xl border border-dashed border-white/10 hover:border-white/20 cursor-pointer bg-[#0B0814] flex items-center gap-4 transition-colors group"
             >
               <input ref={thumbRef} type="file" className="hidden" accept="image/*"
                 onChange={e => {
@@ -267,7 +267,7 @@ export default function TalentArenaUploadPage() {
                 className={`px-4 py-2 rounded-xl text-sm font-semibold border capitalize transition-all ${
                   (v === 'original') === form.is_original
                     ? 'bg-[#FFB800]/20 border-[#FFB800]/40 text-[#FFB800]'
-                    : 'bg-[#0D1B3E] border-white/10 text-gray-400 hover:border-white/20'
+                    : 'bg-[#0B0814] border-white/10 text-gray-400 hover:border-white/20'
                 }`}>
                 {v === 'original' ? 'Original Song' : 'Cover Song'}
               </button>
@@ -275,7 +275,7 @@ export default function TalentArenaUploadPage() {
           </div>
 
           {/* Agreement */}
-          <div className="flex items-start gap-3 p-4 bg-[#0D1B3E] border border-white/10 rounded-xl">
+          <div className="flex items-start gap-3 p-4 bg-[#0B0814] border border-white/10 rounded-xl">
             <button type="button" onClick={() => setAgreed(p => !p)}
               className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${agreed ? 'bg-[#FFB800] border-[#FFB800]' : 'border-gray-600 bg-transparent'}`}>
               {agreed && <span className="text-black text-xs font-black">✓</span>}

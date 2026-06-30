@@ -86,7 +86,7 @@ export default function PlaylistView({ playlist, onBack, onDelete }: Props) {
       {/* Playlist header */}
       <div className="flex flex-col sm:flex-row gap-6 items-start">
         {/* Cover */}
-        <div className="w-40 h-40 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center shrink-0 overflow-hidden">
+        <div className="w-40 h-40 rounded-2xl bg-gradient-to-br from-[#9D4EDD] to-purple-700 flex items-center justify-center shrink-0 overflow-hidden">
           {playlist.cover_url
             ? <img src={playlist.cover_url} alt="" className="w-full h-full object-cover" />
             : <Music className="w-16 h-16 text-white/30" />}
@@ -96,7 +96,7 @@ export default function PlaylistView({ playlist, onBack, onDelete }: Props) {
           <div className="flex items-start gap-2">
             <div className="min-w-0">
               {playlist.is_editorial && (
-                <span className="inline-block px-2 py-0.5 text-xs bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 rounded-full mb-1">Editorial</span>
+                <span className="inline-block px-2 py-0.5 text-xs bg-[#9D4EDD]/20 text-[#C9B3F5] border border-[#9D4EDD]/30 rounded-full mb-1">Editorial</span>
               )}
               <h1 className="text-2xl font-bold text-white truncate">{playlist.name}</h1>
               {playlist.description && <p className="text-gray-400 text-sm mt-1">{playlist.description}</p>}
@@ -121,7 +121,7 @@ export default function PlaylistView({ playlist, onBack, onDelete }: Props) {
             <button
               onClick={() => isCurrentPlaylist && isPlaying ? togglePlay() : handlePlay(0)}
               disabled={!tracks.length}
-              className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors"
+              className="flex items-center gap-2 bg-[#9D4EDD] hover:bg-[#7C3AED] disabled:opacity-40 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors"
             >
               {isCurrentPlaylist && isPlaying
                 ? <><Pause className="w-4 h-4" /> Pause</>
@@ -130,7 +130,7 @@ export default function PlaylistView({ playlist, onBack, onDelete }: Props) {
             <button
               onClick={handleShuffle}
               disabled={!tracks.length}
-              className={`flex items-center gap-2 font-medium px-4 py-2.5 rounded-xl border transition-colors disabled:opacity-40 ${shuffle ? 'bg-indigo-600/20 border-indigo-500/50 text-indigo-300' : 'bg-white/5 border-white/10 text-gray-300 hover:text-white'}`}
+              className={`flex items-center gap-2 font-medium px-4 py-2.5 rounded-xl border transition-colors disabled:opacity-40 ${shuffle ? 'bg-[#9D4EDD]/20 border-[#9D4EDD]/50 text-[#C9B3F5]' : 'bg-white/5 border-white/10 text-gray-300 hover:text-white'}`}
             >
               <Shuffle className="w-4 h-4" /> Shuffle
             </button>
@@ -171,7 +171,7 @@ export default function PlaylistView({ playlist, onBack, onDelete }: Props) {
             return (
               <div
                 key={track.id}
-                className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive ? 'bg-indigo-600/10' : 'hover:bg-white/5'}`}
+                className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive ? 'bg-[#9D4EDD]/10' : 'hover:bg-white/5'}`}
               >
                 {/* Index / play indicator */}
                 <div className="w-7 text-center shrink-0">
@@ -230,7 +230,7 @@ export default function PlaylistView({ playlist, onBack, onDelete }: Props) {
                   {openMenu === track.id && (
                     <>
                       <div className="fixed inset-0 z-10" onClick={() => setOpenMenu(null)} />
-                      <div className="absolute right-0 top-8 z-20 w-40 bg-[#0D1B3E] border border-white/10 rounded-xl shadow-2xl py-1 overflow-hidden">
+                      <div className="absolute right-0 top-8 z-20 w-40 bg-[#0B0814] border border-white/10 rounded-xl shadow-2xl py-1 overflow-hidden">
                         <button
                           onClick={() => handlePlay(idx)}
                           className="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors flex items-center gap-2"

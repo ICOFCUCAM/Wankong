@@ -24,7 +24,7 @@ interface ArtistData {
 
 const GENRE_COLORS: Record<string, string> = {
   Afrobeats: 'from-orange-900/40 to-yellow-900/20',
-  Gospel: 'from-purple-900/40 to-indigo-900/20',
+  Gospel: 'from-purple-900/40 to-[#1E1235]/20',
   Hiphop: 'from-gray-900/80 to-gray-800/40',
   Jazz: 'from-blue-900/40 to-cyan-900/20',
   Classical: 'from-amber-900/30 to-yellow-900/20',
@@ -143,7 +143,7 @@ export default function ArtistProfile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A0A0F]">
+      <div className="min-h-screen bg-[#0B0814]">
         <Header />
         <div className="max-w-5xl mx-auto px-4 py-16 animate-pulse space-y-6">
           <div className="h-48 bg-gray-900 rounded-2xl" />
@@ -167,16 +167,16 @@ export default function ArtistProfile() {
 
   if (!artist) {
     return (
-      <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-white mb-2">Artist not found</h2>
-          <Link to="/" className="text-indigo-400 hover:text-indigo-300">Back to homepage</Link>
+          <Link to="/" className="text-[#B794F4] hover:text-[#C9B3F5]">Back to homepage</Link>
         </div>
       </div>
     );
   }
 
-  const bannerGradient = GENRE_COLORS[artist.genre] || 'from-indigo-900/40 to-purple-900/20';
+  const bannerGradient = GENRE_COLORS[artist.genre] || 'from-[#1E1235]/40 to-purple-900/20';
 
   const LANG_NAMES: Record<string, string> = {
     en: 'English', fr: 'French', sw: 'Swahili', yo: 'Yoruba',
@@ -184,7 +184,7 @@ export default function ArtistProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
 
       {/* Cover Banner */}
@@ -192,7 +192,7 @@ export default function ArtistProfile() {
         {artist.coverImage && (
           <img src={artist.coverImage} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0F] via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0B0814] via-transparent to-transparent" />
       </div>
 
       <div className="max-w-5xl mx-auto px-4 lg:px-8">
@@ -202,11 +202,11 @@ export default function ArtistProfile() {
             <img
               src={artist.avatar}
               alt={artist.displayName}
-              className="w-36 h-36 rounded-full border-4 border-[#0A0A0F] object-cover bg-gray-800 shadow-2xl"
+              className="w-36 h-36 rounded-full border-4 border-[#0B0814] object-cover bg-gray-800 shadow-2xl"
               onError={e => { (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${artist.displayName}`; }}
             />
             {artist.verified && (
-              <span className="absolute bottom-1 right-1 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center border-2 border-[#0A0A0F]">
+              <span className="absolute bottom-1 right-1 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center border-2 border-[#0B0814]">
                 <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
               </span>
             )}
@@ -225,7 +225,7 @@ export default function ArtistProfile() {
                 {tracks.some(t => t.audio_url) && (
                   <button
                     onClick={handlePlayAll}
-                    className="flex items-center gap-2 px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-medium text-sm transition-colors"
+                    className="flex items-center gap-2 px-5 py-2 bg-[#9D4EDD] hover:bg-[#7C3AED] text-white rounded-full font-medium text-sm transition-colors"
                   >
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
                     Play All
@@ -255,7 +255,7 @@ export default function ArtistProfile() {
                 <span className="text-gray-400 ml-1 text-xs">Plays</span>
               </div>
               {artist.genre && (
-                <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">{artist.genre}</span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-[#9D4EDD]/10 text-[#B794F4] border border-[#9D4EDD]/20">{artist.genre}</span>
               )}
               {artist.country && (
                 <div className="flex items-center gap-1 text-gray-400">
@@ -273,7 +273,7 @@ export default function ArtistProfile() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-5 py-3 text-sm font-medium capitalize transition-colors border-b-2 -mb-px ${activeTab === tab ? 'border-indigo-500 text-white' : 'border-transparent text-gray-400 hover:text-gray-200'}`}
+              className={`px-5 py-3 text-sm font-medium capitalize transition-colors border-b-2 -mb-px ${activeTab === tab ? 'border-[#9D4EDD] text-white' : 'border-transparent text-gray-400 hover:text-gray-200'}`}
             >
               {tab === 'music' ? `Music (${tracks.length})` : 'About'}
             </button>
@@ -293,7 +293,7 @@ export default function ArtistProfile() {
                         { id: track.id, title: track.title, artist: track.artist || track.vendor, audioUrl: track.audio_url, coverArt: track.image },
                         tracks.filter(t => t.audio_url).map(t => ({ id: t.id, title: t.title, artist: t.artist || t.vendor, audioUrl: t.audio_url, coverArt: t.image }))
                       )}
-                      className="absolute top-2 right-2 w-9 h-9 bg-indigo-600/90 hover:bg-indigo-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                      className="absolute top-2 right-2 w-9 h-9 bg-[#9D4EDD]/90 hover:bg-[#9D4EDD] rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
                     >
                       <svg className="w-4 h-4 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
                     </button>

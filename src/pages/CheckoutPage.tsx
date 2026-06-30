@@ -62,7 +62,7 @@ function CardInputFallback({
             value={card.number}
             onChange={e => setCard(c => ({ ...c, number: fmtNumber(e.target.value) }))}
             maxLength={19}
-            className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-10 pr-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-mono tracking-wider"
+            className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-10 pr-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD] text-sm font-mono tracking-wider"
           />
         </div>
       </div>
@@ -76,7 +76,7 @@ function CardInputFallback({
             value={card.expiry}
             onChange={e => setCard(c => ({ ...c, expiry: fmtExpiry(e.target.value) }))}
             maxLength={5}
-            className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-mono"
+            className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD] text-sm font-mono"
           />
         </div>
         <div>
@@ -88,7 +88,7 @@ function CardInputFallback({
             value={card.cvc}
             onChange={e => setCard(c => ({ ...c, cvc: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
             maxLength={4}
-            className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-mono"
+            className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD] text-sm font-mono"
           />
         </div>
       </div>
@@ -278,7 +278,7 @@ export default function CheckoutPage() {
 
   return (
     <>
-    <div className="min-h-screen bg-[#0A0A0F] py-8 px-4">
+    <div className="min-h-screen bg-[#0B0814] py-8 px-4">
       <div className="max-w-4xl mx-auto">
 
         {/* Header */}
@@ -298,7 +298,7 @@ export default function CheckoutPage() {
                 onClick={() => s === 'payment' ? billingComplete && setStep(s) : setStep(s)}
                 className={`flex items-center gap-2 text-sm font-medium px-3 py-1.5 rounded-lg transition-colors ${
                   step === s
-                    ? 'bg-indigo-600 text-white'
+                    ? 'bg-[#9D4EDD] text-white'
                     : billingComplete || s === 'billing'
                       ? 'text-gray-300 hover:text-white'
                       : 'text-gray-600 cursor-not-allowed'
@@ -335,14 +335,14 @@ export default function CheckoutPage() {
                       value={form[f.key as keyof typeof form]}
                       onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))}
                       placeholder={f.placeholder}
-                      className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#9D4EDD]"
                     />
                   </div>
                 ))}
                 <button
                   type="submit"
                   disabled={!billingComplete}
-                  className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 text-white font-semibold py-3 rounded-xl transition-colors mt-2"
+                  className="w-full bg-[#9D4EDD] hover:bg-[#7C3AED] disabled:opacity-40 text-white font-semibold py-3 rounded-xl transition-colors mt-2"
                 >
                   Continue to Payment →
                 </button>
@@ -370,7 +370,7 @@ export default function CheckoutPage() {
                       onClick={() => setPayMethod(m.id)}
                       className={`flex flex-col items-center gap-1 py-2.5 rounded-xl border text-xs font-semibold transition-all ${
                         payMethod === m.id
-                          ? 'border-indigo-500 bg-indigo-500/10 text-white'
+                          ? 'border-[#9D4EDD] bg-[#9D4EDD]/10 text-white'
                           : 'border-gray-700 text-gray-400 hover:border-gray-600'
                       }`}
                     >
@@ -534,7 +534,7 @@ export default function CheckoutPage() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="flex-1 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
+                      className="flex-1 bg-[#9D4EDD] hover:bg-[#7C3AED] disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
                     >
                       {loading ? (
                         <>

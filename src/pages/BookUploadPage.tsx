@@ -39,7 +39,7 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
   );
 }
 
-const inputCls = "w-full bg-[#0D1B3E] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#FFB800]/40 focus:border-[#FFB800]/40 transition-colors";
+const inputCls = "w-full bg-[#0B0814] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#FFB800]/40 focus:border-[#FFB800]/40 transition-colors";
 const selectCls = inputCls + " cursor-pointer";
 
 export default function BookUploadPage() {
@@ -245,7 +245,7 @@ export default function BookUploadPage() {
               <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Cover Image</p>
               <div
                 onClick={() => coverRef.current?.click()}
-                className="aspect-[3/4] rounded-2xl border-2 border-dashed border-white/10 hover:border-[#FFB800]/40 cursor-pointer flex items-center justify-center overflow-hidden bg-[#0D1B3E] transition-colors group"
+                className="aspect-[3/4] rounded-2xl border-2 border-dashed border-white/10 hover:border-[#FFB800]/40 cursor-pointer flex items-center justify-center overflow-hidden bg-[#0B0814] transition-colors group"
               >
                 <input ref={coverRef} type="file" className="hidden" accept="image/*" onChange={handleCoverChange} />
                 {coverPreview ? (
@@ -268,7 +268,7 @@ export default function BookUploadPage() {
                 className={`p-5 rounded-xl border-2 border-dashed cursor-pointer transition-colors group ${
                   bookFile
                     ? 'border-[#00D9FF]/40 bg-[#00D9FF]/5'
-                    : 'border-white/10 hover:border-white/20 bg-[#0D1B3E]'
+                    : 'border-white/10 hover:border-white/20 bg-[#0B0814]'
                 }`}
               >
                 <input
@@ -307,7 +307,7 @@ export default function BookUploadPage() {
             </div>
 
             {/* Royalty preview card */}
-            <div className="rounded-xl border border-white/10 bg-[#0D1B3E] p-4">
+            <div className="rounded-xl border border-white/10 bg-[#0B0814] p-4">
               <div className="flex items-center gap-2 mb-3">
                 <TrendingUp className="w-4 h-4 text-[#00F5A0]" />
                 <p className="text-xs font-semibold text-[#00F5A0] uppercase tracking-wide">Royalty Model</p>
@@ -440,7 +440,7 @@ export default function BookUploadPage() {
             </div>
 
             {/* Pricing section */}
-            <div className="bg-[#0D1B3E] border border-white/10 rounded-2xl p-5 space-y-4">
+            <div className="bg-[#0B0814] border border-white/10 rounded-2xl p-5 space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-semibold text-white">Free Book</p>

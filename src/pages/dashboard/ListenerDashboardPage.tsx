@@ -36,20 +36,20 @@ function TrackRow({ title, artist, cover, audioUrl, id, isActive, isPlaying, onP
   return (
     <div
       onClick={onPlay}
-      className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors cursor-pointer ${isActive ? 'bg-indigo-600/15 border border-indigo-500/20' : 'hover:bg-white/5'}`}
+      className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors cursor-pointer ${isActive ? 'bg-[#9D4EDD]/15 border border-[#9D4EDD]/20' : 'hover:bg-white/5'}`}
     >
       <div className="relative w-10 h-10 rounded-lg bg-gray-800 shrink-0 overflow-hidden flex items-center justify-center">
         {cover
           ? <img src={cover} alt="" className="w-full h-full object-cover" />
           : <Music className="w-4 h-4 text-gray-500" />}
         {isActive && (
-          <div className="absolute inset-0 bg-indigo-600/60 flex items-center justify-center">
+          <div className="absolute inset-0 bg-[#9D4EDD]/60 flex items-center justify-center">
             {isPlaying ? <Pause className="w-3.5 h-3.5 fill-white text-white" /> : <Play className="w-3.5 h-3.5 fill-white text-white ml-0.5" />}
           </div>
         )}
       </div>
       <div className="flex-1 min-w-0">
-        <p className={`text-sm font-medium truncate ${isActive ? 'text-indigo-400' : 'text-white'}`}>{title}</p>
+        <p className={`text-sm font-medium truncate ${isActive ? 'text-[#B794F4]' : 'text-white'}`}>{title}</p>
         <p className="text-xs text-gray-400 truncate">{artist}</p>
       </div>
     </div>
@@ -172,7 +172,7 @@ export default function ListenerDashboardPage() {
               <h2 className="text-lg font-bold text-white flex items-center gap-2">
                 <Play className="w-5 h-5 text-[#00D9FF]" /> Recently Played
               </h2>
-              <Link to="/library" className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors">
+              <Link to="/library" className="text-sm text-[#B794F4] hover:text-[#C9B3F5] transition-colors">
                 View all →
               </Link>
             </div>
@@ -204,7 +204,7 @@ export default function ListenerDashboardPage() {
               <Heart className="w-5 h-5 text-red-400 fill-current" /> Liked Songs
               {likedSongs.length > 0 && <span className="text-sm font-normal text-gray-500">({likedSongs.length})</span>}
             </h2>
-            <Link to="/library" className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors">
+            <Link to="/library" className="text-sm text-[#B794F4] hover:text-[#C9B3F5] transition-colors">
               View all →
             </Link>
           </div>
@@ -231,7 +231,7 @@ export default function ListenerDashboardPage() {
                 />
               ))}
               {likedSongs.length > 6 && (
-                <Link to="/library" className="block w-full pt-2 text-center text-xs text-indigo-400 hover:text-indigo-300 transition-colors">
+                <Link to="/library" className="block w-full pt-2 text-center text-xs text-[#B794F4] hover:text-[#C9B3F5] transition-colors">
                   + {likedSongs.length - 6} more in library
                 </Link>
               )}
@@ -246,7 +246,7 @@ export default function ListenerDashboardPage() {
               <ListMusic className="w-5 h-5 text-[#9D4EDD]" /> My Playlists
               {pl.myPlaylists.length > 0 && <span className="text-sm font-normal text-gray-500">({pl.myPlaylists.length})</span>}
             </h2>
-            <Link to="/library" className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors">
+            <Link to="/library" className="text-sm text-[#B794F4] hover:text-[#C9B3F5] transition-colors">
               Manage →
             </Link>
           </div>
@@ -255,7 +255,7 @@ export default function ListenerDashboardPage() {
             <div className="py-8 text-center bg-white/3 border border-white/8 rounded-2xl border-dashed">
               <ListMusic className="w-8 h-8 text-gray-600 mx-auto mb-2" />
               <p className="text-gray-400 text-sm">No playlists yet.</p>
-              <Link to="/library" className="mt-2 inline-block text-xs text-indigo-400 hover:text-indigo-300 transition-colors">
+              <Link to="/library" className="mt-2 inline-block text-xs text-[#B794F4] hover:text-[#C9B3F5] transition-colors">
                 Create your first playlist →
               </Link>
             </div>
@@ -265,9 +265,9 @@ export default function ListenerDashboardPage() {
                 <Link
                   key={p.id}
                   to="/library"
-                  className="group flex flex-col bg-white/3 border border-white/8 hover:border-indigo-500/30 rounded-2xl overflow-hidden transition-all hover:-translate-y-0.5"
+                  className="group flex flex-col bg-white/3 border border-white/8 hover:border-[#9D4EDD]/30 rounded-2xl overflow-hidden transition-all hover:-translate-y-0.5"
                 >
-                  <div className="aspect-square bg-gradient-to-br from-indigo-600/30 to-purple-700/30 flex items-center justify-center overflow-hidden">
+                  <div className="aspect-square bg-gradient-to-br from-[#9D4EDD]/30 to-purple-700/30 flex items-center justify-center overflow-hidden">
                     {p.cover_url
                       ? <img src={p.cover_url} alt="" className="w-full h-full object-cover" />
                       : <Music className="w-10 h-10 text-white/20" />}
@@ -291,13 +291,13 @@ export default function ListenerDashboardPage() {
 
           {loadingFollowed ? (
             <div className="py-8 flex justify-center">
-              <Loader2 className="w-5 h-5 text-indigo-400 animate-spin" />
+              <Loader2 className="w-5 h-5 text-[#B794F4] animate-spin" />
             </div>
           ) : followed.length === 0 ? (
             <div className="py-8 text-center bg-white/3 border border-white/8 rounded-2xl">
               <Users className="w-8 h-8 text-gray-600 mx-auto mb-2" />
               <p className="text-gray-400 text-sm">Not following anyone yet.</p>
-              <Link to="/collections/music" className="mt-2 inline-block text-xs text-indigo-400 hover:text-indigo-300 transition-colors">
+              <Link to="/collections/music" className="mt-2 inline-block text-xs text-[#B794F4] hover:text-[#C9B3F5] transition-colors">
                 Discover artists →
               </Link>
             </div>
@@ -309,7 +309,7 @@ export default function ListenerDashboardPage() {
                   to={creator.slug ? `/artists/${creator.slug}` : `/artist/${creator.artist_id}`}
                   className="flex-shrink-0 flex flex-col items-center gap-2 w-20 group"
                 >
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#9D4EDD] to-[#00D9FF] flex items-center justify-center overflow-hidden border-2 border-transparent group-hover:border-indigo-500 transition-all">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#9D4EDD] to-[#00D9FF] flex items-center justify-center overflow-hidden border-2 border-transparent group-hover:border-[#9D4EDD] transition-all">
                     {creator.avatar_url
                       ? <img src={creator.avatar_url} alt="" className="w-full h-full object-cover" />
                       : <Users className="w-6 h-6 text-white/50" />}

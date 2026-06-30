@@ -1143,7 +1143,7 @@ export default function AppLayout() {
           </div>
           <div className="flex gap-5 overflow-x-auto pb-3 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             {(featuredArtists.length ? featuredArtists : MOCK_ARTISTS).map((artist: any, i: number) => {
-              const GRADIENTS = ['from-violet-600 to-cyan-500','from-fuchsia-600 to-indigo-500','from-emerald-500 to-cyan-500','from-orange-500 to-pink-600','from-indigo-500 to-violet-600','from-cyan-500 to-violet-600'];
+              const GRADIENTS = ['from-violet-600 to-cyan-500','from-fuchsia-600 to-[#9D4EDD]','from-emerald-500 to-cyan-500','from-orange-500 to-pink-600','from-[#9D4EDD] to-violet-600','from-cyan-500 to-violet-600'];
               let flag = '🌍';
               try {
                 if (artist.country_code && /^[A-Z]{2}$/i.test(artist.country_code)) {

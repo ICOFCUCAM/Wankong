@@ -22,14 +22,14 @@ interface Artist {
 }
 
 const GENRE_GRADIENTS: Record<string, string> = {
-  Gospel:    'from-purple-900 via-indigo-900 to-[#0B0814]',
+  Gospel:    'from-purple-900 via-[#1E1235] to-[#0B0814]',
   Afrobeats: 'from-orange-900 via-yellow-900 to-[#0B0814]',
   'Hip-Hop': 'from-gray-800 via-gray-900 to-[#0B0814]',
   Classical: 'from-amber-900 via-yellow-900 to-[#0B0814]',
   Jazz:      'from-blue-900 via-cyan-900 to-[#0B0814]',
   'R&B':     'from-pink-900 via-purple-900 to-[#0B0814]',
-  Praise:    'from-[#9D4EDD]/40 via-indigo-900 to-[#0B0814]',
-  Worship:   'from-[#00D9FF]/20 via-indigo-900 to-[#0B0814]',
+  Praise:    'from-[#9D4EDD]/40 via-[#1E1235] to-[#0B0814]',
+  Worship:   'from-[#00D9FF]/20 via-[#1E1235] to-[#0B0814]',
 };
 
 function fmt(n: number): string {
