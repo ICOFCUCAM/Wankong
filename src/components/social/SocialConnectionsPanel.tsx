@@ -57,14 +57,21 @@ interface Connected {
 
 export default function SocialConnectionsPanel() {
   const [connected, setConnected] = useState<Connected[]>([]);
+  const [clientIds, setClientIds] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
 
   const load = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setLoading(false); return; }
-    const { data } = await supabase.from('social_accounts').select('platform, username').eq('user_id', user.id);
-    setConnected(Array.isArray(data) ? data : []);
+    const [accts, ids] = await Promise.all([
+      supabase.from('social_accounts').select('platform, username').eq('user_id', user.id),
+      supabase.rpc('oauth_client_ids'),   // admin-configured public client ids
+    ]);
+    setConnected(Array.isArray(accts.data) ? accts.data : []);
+    const idMap: Record<string, string> = {};
+    for (const r of Array.isArray(ids.data) ? ids.data : []) if (r.client_id) idMap[r.platform] = r.client_id;
+    setClientIds(idMap);
     setLoading(false);
   };
 
@@ -73,9 +80,10 @@ export default function SocialConnectionsPanel() {
   const isConnected = (p: Platform) => connected.some(c => c.platform === p);
 
   const connect = (pm: PlatformMeta) => {
-    const clientId = (import.meta as any).env?.[pm.clientEnv] as string | undefined;
+    // Prefer the admin-configured client id (Admin → Integrations); fall back to env.
+    const clientId = clientIds[pm.id] || ((import.meta as any).env?.[pm.clientEnv] as string | undefined);
     if (!clientId) {
-      alert(`${pm.label} is not configured yet. An admin needs to set ${pm.clientEnv} to enable connecting.`);
+      alert(`${pm.label} is not configured yet. An admin needs to add its OAuth client id under Admin → Integrations.`);
       return;
     }
     // Send the creator to the platform's OAuth consent screen. The callback

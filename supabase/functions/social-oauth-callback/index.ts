@@ -39,12 +39,14 @@ interface TokenResult {
 
 const env = (k: string) => Deno.env.get(k) ?? '';
 
-async function exchangeGoogle(code: string, redirectUri: string): Promise<TokenResult> {
+interface Creds { clientId: string; clientSecret: string; }
+
+async function exchangeGoogle(code: string, redirectUri: string, c: Creds): Promise<TokenResult> {
   const res = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
-      code, client_id: env('GOOGLE_CLIENT_ID'), client_secret: env('GOOGLE_CLIENT_SECRET'),
+      code, client_id: c.clientId, client_secret: c.clientSecret,
       redirect_uri: redirectUri, grant_type: 'authorization_code',
     }),
   });
@@ -62,12 +64,12 @@ async function exchangeGoogle(code: string, redirectUri: string): Promise<TokenR
   return { access_token: t.access_token, refresh_token: t.refresh_token, expires_in: t.expires_in, platform_uid: uid, username };
 }
 
-async function exchangeTikTok(code: string, redirectUri: string): Promise<TokenResult> {
+async function exchangeTikTok(code: string, redirectUri: string, c: Creds): Promise<TokenResult> {
   const res = await fetch('https://open.tiktokapis.com/v2/oauth/token/', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
-      client_key: env('TIKTOK_CLIENT_KEY'), client_secret: env('TIKTOK_CLIENT_SECRET'),
+      client_key: c.clientId, client_secret: c.clientSecret,
       code, grant_type: 'authorization_code', redirect_uri: redirectUri,
     }),
   });
@@ -76,9 +78,9 @@ async function exchangeTikTok(code: string, redirectUri: string): Promise<TokenR
   return { access_token: t.access_token, refresh_token: t.refresh_token, expires_in: t.expires_in, platform_uid: t.open_id, username: null };
 }
 
-async function exchangeFacebook(code: string, redirectUri: string, wantInstagram = false): Promise<TokenResult> {
+async function exchangeFacebook(code: string, redirectUri: string, c: Creds, wantInstagram = false): Promise<TokenResult> {
   const res = await fetch(`https://graph.facebook.com/v18.0/oauth/access_token?${new URLSearchParams({
-    client_id: env('FACEBOOK_APP_ID'), client_secret: env('FACEBOOK_APP_SECRET'),
+    client_id: c.clientId, client_secret: c.clientSecret,
     redirect_uri: redirectUri, code,
   })}`);
   const t = await res.json();
@@ -103,13 +105,13 @@ async function exchangeFacebook(code: string, redirectUri: string, wantInstagram
   return { access_token: t.access_token, refresh_token: null, expires_in: t.expires_in, platform_uid: uid, username };
 }
 
-async function exchangeTwitter(code: string, redirectUri: string, codeVerifier: string): Promise<TokenResult> {
-  const basic = btoa(`${env('TWITTER_CLIENT_ID')}:${env('TWITTER_CLIENT_SECRET')}`);
+async function exchangeTwitter(code: string, redirectUri: string, codeVerifier: string, c: Creds): Promise<TokenResult> {
+  const basic = btoa(`${c.clientId}:${c.clientSecret}`);
   const res = await fetch('https://api.twitter.com/2/oauth2/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded', Authorization: `Basic ${basic}` },
     body: new URLSearchParams({
-      code, grant_type: 'authorization_code', client_id: env('TWITTER_CLIENT_ID'),
+      code, grant_type: 'authorization_code', client_id: c.clientId,
       redirect_uri: redirectUri, code_verifier: codeVerifier || 'challenge',
     }),
   });
@@ -142,13 +144,40 @@ Deno.serve(async (req) => {
     const { platform, code, redirect_uri, code_verifier } = await req.json();
     if (!platform || !code || !redirect_uri) return json({ error: 'Missing platform/code/redirect_uri' }, 400);
 
+    // Resolve OAuth credentials: admin-configured (DB) first, env vars as fallback.
+    const ENV_FALLBACK: Record<string, { id: string; secret: string }> = {
+      youtube:   { id: 'GOOGLE_CLIENT_ID',   secret: 'GOOGLE_CLIENT_SECRET' },
+      tiktok:    { id: 'TIKTOK_CLIENT_KEY',  secret: 'TIKTOK_CLIENT_SECRET' },
+      facebook:  { id: 'FACEBOOK_APP_ID',    secret: 'FACEBOOK_APP_SECRET' },
+      instagram: { id: 'FACEBOOK_APP_ID',    secret: 'FACEBOOK_APP_SECRET' },
+      twitter:   { id: 'TWITTER_CLIENT_ID',  secret: 'TWITTER_CLIENT_SECRET' },
+    };
+    const fb = ENV_FALLBACK[platform];
+    const { data: cfg } = await supabase
+      .from('platform_social_accounts')
+      .select('client_id, client_secret')
+      .eq('platform', platform)
+      .maybeSingle();
+    // Instagram shares the Meta app with Facebook — fall back to the facebook row.
+    let cfg2 = cfg;
+    if (platform === 'instagram' && (!cfg?.client_id || !cfg?.client_secret)) {
+      const { data: fbCfg } = await supabase
+        .from('platform_social_accounts').select('client_id, client_secret').eq('platform', 'facebook').maybeSingle();
+      cfg2 = { client_id: cfg?.client_id || fbCfg?.client_id, client_secret: cfg?.client_secret || fbCfg?.client_secret };
+    }
+    const c: Creds = {
+      clientId: cfg2?.client_id || (fb ? env(fb.id) : ''),
+      clientSecret: cfg2?.client_secret || (fb ? env(fb.secret) : ''),
+    };
+    if (!c.clientId || !c.clientSecret) return json({ error: `${platform} is not configured. Add its client id/secret under Admin → Integrations.` }, 400);
+
     let result: TokenResult;
     switch (platform) {
-      case 'youtube':   result = await exchangeGoogle(code, redirect_uri); break;
-      case 'tiktok':    result = await exchangeTikTok(code, redirect_uri); break;
-      case 'facebook':  result = await exchangeFacebook(code, redirect_uri, false); break;
-      case 'instagram': result = await exchangeFacebook(code, redirect_uri, true); break;
-      case 'twitter':   result = await exchangeTwitter(code, redirect_uri, code_verifier); break;
+      case 'youtube':   result = await exchangeGoogle(code, redirect_uri, c); break;
+      case 'tiktok':    result = await exchangeTikTok(code, redirect_uri, c); break;
+      case 'facebook':  result = await exchangeFacebook(code, redirect_uri, c, false); break;
+      case 'instagram': result = await exchangeFacebook(code, redirect_uri, c, true); break;
+      case 'twitter':   result = await exchangeTwitter(code, redirect_uri, code_verifier, c); break;
       default: return json({ error: `Unsupported platform: ${platform}` }, 400);
     }
 

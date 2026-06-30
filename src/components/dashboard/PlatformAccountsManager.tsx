@@ -17,9 +17,9 @@ const PLATFORMS = [
   { id: 'twitter',   label: 'X (Twitter)', Icon: Twitter, color: '#1DA1F2' },
 ] as const;
 
-interface Row { platform: string; display_name: string; account_uid: string; access_token: string; is_active: boolean; }
+interface Row { platform: string; display_name: string; account_uid: string; access_token: string; client_id: string; client_secret: string; is_active: boolean; }
 
-const blank = (p: string): Row => ({ platform: p, display_name: '', account_uid: '', access_token: '', is_active: true });
+const blank = (p: string): Row => ({ platform: p, display_name: '', account_uid: '', access_token: '', client_id: '', client_secret: '', is_active: true });
 
 export default function PlatformAccountsManager() {
   const [rows, setRows] = useState<Record<string, Row>>({});
@@ -29,7 +29,7 @@ export default function PlatformAccountsManager() {
 
   const load = async () => {
     setLoading(true);
-    const { data } = await supabase.from('platform_social_accounts').select('platform, display_name, account_uid, access_token, is_active');
+    const { data } = await supabase.from('platform_social_accounts').select('platform, display_name, account_uid, access_token, client_id, client_secret, is_active');
     const map: Record<string, Row> = {};
     for (const p of PLATFORMS) map[p.id] = blank(p.id);
     for (const r of Array.isArray(data) ? data : []) {
@@ -38,6 +38,8 @@ export default function PlatformAccountsManager() {
         display_name: r.display_name ?? '',
         account_uid: r.account_uid ?? '',
         access_token: r.access_token ? '••••••••' : '',
+        client_id: r.client_id ?? '',
+        client_secret: r.client_secret ? '••••••••' : '',
         is_active: r.is_active ?? true,
       };
     }
@@ -57,11 +59,13 @@ export default function PlatformAccountsManager() {
       platform: p,
       display_name: r.display_name || null,
       account_uid: r.account_uid || null,
+      client_id: r.client_id || null,
       is_active: r.is_active,
       updated_at: new Date().toISOString(),
     };
-    // Only overwrite the token if the admin actually typed a new one (not the mask).
+    // Only overwrite secrets if the admin actually typed new ones (not the mask).
     if (r.access_token && !r.access_token.startsWith('••')) payload.access_token = r.access_token;
+    if (r.client_secret && !r.client_secret.startsWith('••')) payload.client_secret = r.client_secret;
     const { error } = await supabase.from('platform_social_accounts').upsert(payload, { onConflict: 'platform' });
     setSavedMsg(error ? `Error: ${error.message}` : `${p} saved.`);
     await load();
@@ -75,10 +79,12 @@ export default function PlatformAccountsManager() {
           <ShieldCheck className="w-5 h-5 text-white" />
         </div>
         <div>
-          <h3 className="text-white font-bold text-lg tracking-tight">WANKONG official accounts</h3>
+          <h3 className="text-white font-bold text-lg tracking-tight">Social integrations</h3>
           <p className="text-white/45 text-sm mt-0.5 max-w-2xl">
-            Approved competition videos are published to these channels first. Paste a long-lived access token per
-            platform (and the channel/page/user id). Tokens are stored encrypted-at-rest and only readable by admins.
+            One place for everything per platform: the OAuth app <span className="text-white/70">client id / secret</span>
+            (lets creators connect their accounts) and WANKONG's <span className="text-white/70">official account token</span>
+            (the channel a video is published to first). Secrets are admin-only and read server-side; only the client id
+            is ever exposed to start an OAuth flow.
           </p>
         </div>
       </div>
@@ -103,6 +109,16 @@ export default function PlatformAccountsManager() {
                     Active
                   </label>
                 </div>
+                <p className="text-white/30 text-[10px] uppercase tracking-widest mb-1.5">OAuth app — lets creators connect</p>
+                <div className="grid sm:grid-cols-2 gap-2 mb-2.5">
+                  <input value={r.client_id} onChange={e => update(pm.id, { client_id: e.target.value })}
+                    placeholder="Client ID / key (public)"
+                    className="bg-[#0B0814] border border-white/10 rounded-lg px-3 py-2 text-white text-xs placeholder-gray-600 focus:outline-none focus:border-[#FFB800]/40" />
+                  <input value={r.client_secret} onChange={e => update(pm.id, { client_secret: e.target.value })}
+                    placeholder="Client secret" type="password"
+                    className="bg-[#0B0814] border border-white/10 rounded-lg px-3 py-2 text-white text-xs placeholder-gray-600 focus:outline-none focus:border-[#FFB800]/40" />
+                </div>
+                <p className="text-white/30 text-[10px] uppercase tracking-widest mb-1.5">WANKONG official account — published to first</p>
                 <div className="grid sm:grid-cols-3 gap-2">
                   <input value={r.display_name} onChange={e => update(pm.id, { display_name: e.target.value })}
                     placeholder="Display name (@wankong)"

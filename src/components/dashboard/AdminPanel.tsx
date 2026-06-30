@@ -36,7 +36,7 @@ interface Withdrawal {
 }
 
 export default function AdminPanel() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'content' | 'withdrawals' | 'competitions'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'content' | 'withdrawals' | 'competitions' | 'integrations'>('overview');
   const [selectedUsers,  setSelectedUsers]  = useState<Set<string>>(new Set());
   const [contentStatus,  setContentStatus]  = useState<Record<string, string>>({});
   const [withdrawalStatus, setWithdrawalStatus] = useState<Record<string, string>>({});
@@ -150,6 +150,7 @@ export default function AdminPanel() {
     { id: 'content'      as const, label: 'Content',      icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10' },
     { id: 'withdrawals'  as const, label: 'Withdrawals',  icon: 'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z' },
     { id: 'competitions' as const, label: 'Competitions', icon: 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z' },
+    { id: 'integrations' as const, label: 'Integrations', icon: 'M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1' },
   ];
 
   return (
@@ -348,12 +349,9 @@ export default function AdminPanel() {
         </div>
       )}
 
-      {activeTab === 'competitions' && (
-        <div className="space-y-4">
-          <PlatformAccountsManager />
-          <CompetitionApprovalQueue />
-        </div>
-      )}
+      {activeTab === 'competitions' && <CompetitionApprovalQueue />}
+
+      {activeTab === 'integrations' && <PlatformAccountsManager />}
     </div>
   );
 }
