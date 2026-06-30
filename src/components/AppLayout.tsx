@@ -152,6 +152,47 @@ function WatchLinks({ platforms }: { platforms: string[] }) {
   );
 }
 
+// ── Live ecosystem ticker — makes WANKONG feel like a living OS ───────────────
+const LIVE_ACTIVITY: { flag: string; who: string; text: string; accent: string }[] = [
+  { flag: '🇳🇬', who: 'An artist in Lagos', text: 'uploaded a new album',        accent: '#00D9FF' },
+  { flag: '🇰🇷', who: 'A creator in Seoul', text: 'entered the Talent Arena',     accent: '#9D4EDD' },
+  { flag: '🇰🇪', who: 'A reader in Nairobi', text: 'bought an audiobook',          accent: '#00F5A0' },
+  { flag: '🇧🇷', who: 'A producer in Rio',  text: 'hit 1M streams',               accent: '#FFB800' },
+  { flag: '🇯🇵', who: 'A host in Tokyo',    text: 'released a podcast',           accent: '#FF006E' },
+  { flag: '🇺🇸', who: 'An artist in LA',    text: 'distributed to 30+ platforms', accent: '#00D9FF' },
+  { flag: '🇿🇦', who: 'A singer in Cape Town', text: 'won this week’s arena', accent: '#FFB800' },
+  { flag: '🇬🇧', who: 'An author in London', text: 'published a new book',         accent: '#9D4EDD' },
+  { flag: '🇲🇽', who: 'A band in Mexico City', text: 'gained 10K fans',           accent: '#00F5A0' },
+  { flag: '🇬🇭', who: 'A creator in Accra',  text: 'went live on the arena',      accent: '#FF6B00' },
+];
+const EDGE_FADE = {
+  maskImage: 'linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent)',
+  WebkitMaskImage: 'linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent)',
+} as React.CSSProperties;
+
+function LiveActivityTicker() {
+  return (
+    <div className="relative border-y border-white/8 bg-white/[0.02] backdrop-blur-sm">
+      <div className="flex items-center gap-3 py-2.5 px-4 max-w-7xl mx-auto">
+        <span className="flex items-center gap-1.5 shrink-0 text-[#00F5A0] text-[11px] font-bold uppercase tracking-wider">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#00F5A0] animate-pulse" /> Live
+        </span>
+        <div className="relative flex-1 overflow-hidden" style={EDGE_FADE}>
+          <div className="flex items-center gap-10 wk-ticker whitespace-nowrap w-max">
+            {[...LIVE_ACTIVITY, ...LIVE_ACTIVITY].map((a, i) => (
+              <span key={i} className="inline-flex items-center gap-2 text-sm text-white/65">
+                <span className="text-base">{a.flag}</span>
+                <span><b className="text-white font-semibold">{a.who}</b> {a.text}</span>
+                <span className="w-1.5 h-1.5 rounded-full" style={{ background: a.accent, boxShadow: `0 0 6px ${a.accent}` }} />
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Language discovery data ───────────────────────────────────────────────────
 
 const ALL_LANGUAGES = [
@@ -640,11 +681,15 @@ export default function AppLayout() {
 
   return (
     <div className="relative min-h-screen bg-[#0B0814] pb-20">
-      {/* Aurora / mesh background */}
+      {/* Layered atmosphere — base vignette · drifting aurora · starfield · grain */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden>
-        <div className="absolute -top-1/4 -left-1/4 w-[60vw] h-[60vw] rounded-full blur-[120px] opacity-25 wk-aurora" style={{ background: 'radial-gradient(circle, #9D4EDD, transparent 60%)' }} />
-        <div className="absolute top-1/3 -right-1/4 w-[55vw] h-[55vw] rounded-full blur-[120px] opacity-20 wk-aurora-2" style={{ background: 'radial-gradient(circle, #00D9FF, transparent 60%)' }} />
-        <div className="absolute bottom-0 left-1/4 w-[50vw] h-[50vw] rounded-full blur-[120px] opacity-15 wk-aurora-3" style={{ background: 'radial-gradient(circle, #FF3B6B, transparent 60%)' }} />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,rgba(157,78,221,0.14),transparent_55%)]" />
+        <div className="absolute -top-1/4 -left-1/4 w-[60vw] h-[60vw] rounded-full blur-[130px] opacity-[0.22] wk-aurora" style={{ background: 'radial-gradient(circle, #9D4EDD, transparent 60%)' }} />
+        <div className="absolute top-1/3 -right-1/4 w-[55vw] h-[55vw] rounded-full blur-[130px] opacity-[0.18] wk-aurora-2" style={{ background: 'radial-gradient(circle, #00D9FF, transparent 60%)' }} />
+        <div className="absolute bottom-0 left-1/4 w-[50vw] h-[50vw] rounded-full blur-[130px] opacity-[0.14] wk-aurora-3" style={{ background: 'radial-gradient(circle, #FF3B6B, transparent 60%)' }} />
+        <div className="absolute top-1/2 left-1/3 w-[45vw] h-[45vw] rounded-full blur-[150px] opacity-[0.12] wk-aurora-4" style={{ background: 'radial-gradient(circle, #2D6BFF, transparent 60%)' }} />
+        <div className="absolute inset-0 wk-stars opacity-30" />
+        <div className="absolute inset-0 wk-noise" />
       </div>
       <div className="relative z-10">
       <Header />
@@ -752,6 +797,9 @@ export default function AppLayout() {
           </div>
         </div>
       </section>
+
+      {/* ── LIVE ECOSYSTEM TICKER ──────────────────────────────────────────── */}
+      <LiveActivityTicker />
 
       {/* ── PERSONALIZED SECTIONS (for you / follow feed / trending genre) ── */}
       <SectionErrorBoundary>
@@ -876,7 +924,8 @@ export default function AppLayout() {
       </section>
 
       {/* ── Trending Now — Creator Dashboard ─────────────────────────────── */}
-      <section className="py-12">
+      <section className="py-12 relative overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-[420px] -z-10 pointer-events-none bg-[radial-gradient(ellipse_at_50%_0%,rgba(255,107,0,0.10),transparent_70%)]" />
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
@@ -1072,7 +1121,8 @@ export default function AppLayout() {
       )}
 
       {/* ── 4. NEW RELEASES — HORIZONTAL CAROUSEL ─────────────────────── */}
-      <section className="py-12">
+      <section className="py-12 relative overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-[420px] -z-10 pointer-events-none bg-[radial-gradient(ellipse_at_50%_0%,rgba(0,217,255,0.09),transparent_70%)]" />
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
@@ -1099,7 +1149,7 @@ export default function AppLayout() {
       </section>
 
       {/* ── 5. FEATURED CREATORS ──────────────────────────────────────── */}
-      <section className="py-12 bg-[#0D1535]">
+      <section className="py-12">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
@@ -1173,7 +1223,8 @@ export default function AppLayout() {
       <SectionErrorBoundary><FeaturedPerformancesGrid /></SectionErrorBoundary>
 
       {/* ── 7. TRENDING BOOKS ─────────────────────────────────────────── */}
-      <section className="py-16">
+      <section className="py-16 relative overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-[420px] -z-10 pointer-events-none bg-[radial-gradient(ellipse_at_50%_0%,rgba(255,184,0,0.10),transparent_70%)]" />
         <div className="max-w-7xl mx-auto px-4">
           <Reveal>
           <div className="flex items-center justify-between mb-8">
@@ -1284,7 +1335,8 @@ export default function AppLayout() {
       </section>
 
       {/* ── 8. AUDIOBOOKS ─────────────────────────────────────────────── */}
-      <section className="py-12 bg-[#0D1535]">
+      <section className="py-12 relative overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-[420px] -z-10 pointer-events-none bg-[radial-gradient(ellipse_at_50%_0%,rgba(255,0,110,0.09),transparent_70%)]" />
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
@@ -1758,7 +1810,8 @@ export default function AppLayout() {
       </section>
 
       {/* ── 11. DISTRIBUTION CTA ──────────────────────────────────────── */}
-      <section className="py-16">
+      <section className="py-16 relative overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-[420px] -z-10 pointer-events-none bg-[radial-gradient(ellipse_at_50%_0%,rgba(45,107,255,0.10),transparent_70%)]" />
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#00D9FF]/10 border border-[#00D9FF]/30 rounded-full mb-4">

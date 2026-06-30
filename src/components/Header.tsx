@@ -127,14 +127,14 @@ export default function Header() {
         🎵 New: Global Music Distribution to 30+ platforms — <Link to="/dashboard" className="underline font-medium">Start distributing →</Link>
       </div>
 
-      <header className={`sticky top-0 z-40 transition-all duration-300 ${scrolled ? 'bg-gray-950/95 backdrop-blur-xl shadow-lg shadow-black/20' : 'bg-gray-950/80 backdrop-blur-md'} border-b border-gray-800/50`}>
+      <header className={`sticky top-0 z-40 transition-all duration-300 border-b ${scrolled ? 'bg-[#0B0814]/80 backdrop-blur-xl saturate-150 shadow-lg shadow-black/30 border-white/10' : 'bg-[#0B0814]/40 backdrop-blur-md border-white/5'}`}>
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
-          <div className="flex items-center justify-between h-16 gap-4">
+          <div className={`flex items-center justify-between gap-4 transition-all duration-300 ${scrolled ? 'h-14' : 'h-16'}`}>
 
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2.5 flex-shrink-0">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#9D4EDD]/25 to-[#00D9FF]/10 border border-white/10 flex items-center justify-center">
-                <img src="/wankong-mark.png" alt="WANKONG" className="w-7 h-7 object-contain" />
+              <div className={`rounded-xl bg-gradient-to-br from-[#9D4EDD]/25 to-[#00D9FF]/10 border border-white/10 flex items-center justify-center transition-all duration-300 ${scrolled ? 'w-8 h-8' : 'w-10 h-10'}`}>
+                <img src="/wankong-mark.png" alt="WANKONG" className={`object-contain transition-all duration-300 ${scrolled ? 'w-5 h-5' : 'w-7 h-7'}`} />
               </div>
               <span className="text-white font-bold text-lg tracking-wide hidden sm:block">WANKONG</span>
             </Link>
