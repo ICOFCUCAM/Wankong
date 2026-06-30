@@ -27,7 +27,7 @@ type FilterTab = 'all' | 'pending' | 'reviewed' | 'dmca';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
-const NAVY = '#0A1128';
+const NAVY = '#0B0814';
 const CYAN = '#00D9FF';
 
 const CONTENT_TYPE_COLOURS: Record<string, string> = {

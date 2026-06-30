@@ -147,11 +147,11 @@ export default function DistributePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A1128]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
 
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#0A1128] via-[#0D1635] to-[#0A1128] border-b border-white/5 py-12">
+      <div className="bg-gradient-to-br from-[#0B0814] via-[#0D1635] to-[#0B0814] border-b border-white/5 py-12">
         <div className="max-w-6xl mx-auto px-4 lg:px-8">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00D9FF] to-[#9D4EDD] flex items-center justify-center text-xl">🚀</div>
@@ -213,20 +213,20 @@ export default function DistributePage() {
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <label className="text-xs text-gray-400 mb-1.5 block">Genre *</label>
-                          <select value={releaseForm.genre} onChange={e => setReleaseForm(f => ({...f, genre: e.target.value}))} className="w-full bg-[#0A1128] border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#00D9FF]/50">
+                          <select value={releaseForm.genre} onChange={e => setReleaseForm(f => ({...f, genre: e.target.value}))} className="w-full bg-[#0B0814] border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#00D9FF]/50">
                             <option value="">Select genre</option>
                             {['Gospel', 'Christian Hip-Hop', 'Worship', 'Praise', 'Contemporary Christian', 'Afrobeats', 'R&B', 'Soul', 'Jazz', 'Classical'].map(g => <option key={g} value={g}>{g}</option>)}
                           </select>
                         </div>
                         <div>
                           <label className="text-xs text-gray-400 mb-1.5 block">Release Date *</label>
-                          <input type="date" value={releaseForm.releaseDate} onChange={e => setReleaseForm(f => ({...f, releaseDate: e.target.value}))} className="w-full bg-[#0A1128] border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#00D9FF]/50" />
+                          <input type="date" value={releaseForm.releaseDate} onChange={e => setReleaseForm(f => ({...f, releaseDate: e.target.value}))} className="w-full bg-[#0B0814] border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#00D9FF]/50" />
                         </div>
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <label className="text-xs text-gray-400 mb-1.5 block">Language</label>
-                          <select value={releaseForm.language} onChange={e => setReleaseForm(f => ({...f, language: e.target.value}))} className="w-full bg-[#0A1128] border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#00D9FF]/50">
+                          <select value={releaseForm.language} onChange={e => setReleaseForm(f => ({...f, language: e.target.value}))} className="w-full bg-[#0B0814] border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#00D9FF]/50">
                             {[['en','English'],['fr','French'],['sw','Swahili'],['yo','Yoruba'],['ig','Igbo'],['pt','Portuguese'],['ar','Arabic']].map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                           </select>
                         </div>
@@ -375,7 +375,7 @@ export default function DistributePage() {
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-5">
                   <div>
                     <label className="text-xs text-gray-400 mb-1.5 block">Select Competition *</label>
-                    <select value={compForm.competitionId} onChange={e => setCompForm(f => ({...f, competitionId: e.target.value}))} className="w-full bg-[#0A1128] border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#FFB800]/50">
+                    <select value={compForm.competitionId} onChange={e => setCompForm(f => ({...f, competitionId: e.target.value}))} className="w-full bg-[#0B0814] border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#FFB800]/50">
                       <option value="">Choose a competition…</option>
                       {competitions.map(c => <option key={c.id} value={c.id}>{c.title} — Prize: {c.prize}</option>)}
                     </select>

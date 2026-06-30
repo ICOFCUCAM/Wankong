@@ -99,7 +99,7 @@ export default function OnboardingPage() {
 
   if (step === 'done') {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex flex-col items-center justify-center text-center px-6">
+      <div className="min-h-screen bg-[#0B0814] flex flex-col items-center justify-center text-center px-6">
         <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#00D9FF] to-[#9D4EDD] flex items-center justify-center mb-6 shadow-2xl shadow-cyan-500/30">
           <Check className="w-10 h-10 text-white" />
         </div>
@@ -119,7 +119,7 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A1128] flex flex-col items-center justify-center px-6 py-10">
+    <div className="min-h-screen bg-[#0B0814] flex flex-col items-center justify-center px-6 py-10">
       <div className="w-full max-w-lg">
 
         {/* Logo */}
@@ -139,7 +139,7 @@ export default function OnboardingPage() {
                 i <= stepIdx ? 'text-[#00D9FF]' : 'text-white/25'
               }`}>
                 <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black ${
-                  i < stepIdx ? 'bg-[#00D9FF] text-[#0A1128]' : i === stepIdx ? 'border-2 border-[#00D9FF] text-[#00D9FF]' : 'border border-white/15 text-white/25'
+                  i < stepIdx ? 'bg-[#00D9FF] text-[#0B0814]' : i === stepIdx ? 'border-2 border-[#00D9FF] text-[#00D9FF]' : 'border border-white/15 text-white/25'
                 }`}>
                   {i < stepIdx ? <Check className="w-3 h-3" /> : i + 1}
                 </div>

@@ -248,7 +248,7 @@ export default function MusicStorePage() {
   const paidCount  = tracks.filter(t => t.price > 0).length;
 
   return (
-    <div className="min-h-screen bg-[#0A1128]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
 
       {/* Hero banner */}

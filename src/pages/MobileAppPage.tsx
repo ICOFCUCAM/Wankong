@@ -65,7 +65,7 @@ export default function MobileAppPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white flex flex-col">
+    <div className="min-h-screen bg-[#0B0814] text-white flex flex-col">
       <Header />
 
       <main className="flex-1">
@@ -179,7 +179,7 @@ export default function MobileAppPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-3 rounded-xl font-semibold bg-[#00D9FF] text-[#0A1128] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-3 rounded-xl font-semibold bg-[#00D9FF] text-[#0B0814] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {submitting ? 'Saving…' : 'Notify Me'}
                 </button>

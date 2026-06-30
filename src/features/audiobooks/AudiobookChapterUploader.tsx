@@ -141,7 +141,7 @@ export function AudiobookChapterUploader({
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-[#0A1128] rounded-2xl border border-white/10 p-6 space-y-5"
+      className="bg-[#0B0814] rounded-2xl border border-white/10 p-6 space-y-5"
     >
       {/* Hidden audio element for duration probing */}
       <audio ref={hiddenAudioRef} className="hidden" />
@@ -272,7 +272,7 @@ export function AudiobookChapterUploader({
           <button
             type="submit"
             disabled={isWorking || !audioFile || status === 'reading'}
-            className="w-full flex items-center justify-center gap-2 bg-[#00D9FF] hover:bg-[#00D9FF]/85 disabled:opacity-50 disabled:cursor-not-allowed text-[#0A1128] font-semibold py-3 px-6 rounded-xl transition-all active:scale-[0.98]"
+            className="w-full flex items-center justify-center gap-2 bg-[#00D9FF] hover:bg-[#00D9FF]/85 disabled:opacity-50 disabled:cursor-not-allowed text-[#0B0814] font-semibold py-3 px-6 rounded-xl transition-all active:scale-[0.98]"
           >
             {isWorking ? (
               <>

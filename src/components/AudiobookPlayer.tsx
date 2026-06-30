@@ -349,7 +349,7 @@ const AudiobookPlayer: React.FC<AudiobookPlayerProps> = ({
         {SPEED_PRESETS.map(r => (
           <button key={r} onClick={() => setSpeed(r)}
             className={`px-2 py-0.5 rounded-full text-[11px] font-bold transition-all ${
-              speed === r ? 'bg-[#00D9FF] text-[#0A1128]' : 'bg-white/8 text-white/40 hover:bg-white/15 hover:text-white'
+              speed === r ? 'bg-[#00D9FF] text-[#0B0814]' : 'bg-white/8 text-white/40 hover:bg-white/15 hover:text-white'
             }`}>
             {r}×
           </button>

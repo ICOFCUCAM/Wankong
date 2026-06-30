@@ -133,9 +133,7 @@ export default function Footer() {
           {/* Col 1 — Brand (spans 2 on lg) */}
           <div className="md:col-span-1 lg:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#00D9FF] to-[#9D4EDD] flex items-center justify-center shrink-0">
-                <span className="text-white font-black text-sm">W</span>
-              </div>
+              <img src="/wankong-mark.png" alt="WANKONG" className="w-9 h-9 object-contain shrink-0" />
               <span className="text-white font-black text-xl">WANKONG</span>
             </div>
             <p className="text-white/40 text-sm leading-relaxed mb-5">

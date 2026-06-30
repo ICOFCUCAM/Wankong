@@ -105,9 +105,9 @@ function MiniCard({ track }: { track: RecoTrack }) {
             `}
           >
             {isActive && isPlaying ? (
-              <Pause className="w-4 h-4 text-[#0A1128]" fill="#0A1128" />
+              <Pause className="w-4 h-4 text-[#0B0814]" fill="#0B0814" />
             ) : (
-              <Play className="w-4 h-4 text-[#0A1128] ml-0.5" fill="#0A1128" />
+              <Play className="w-4 h-4 text-[#0B0814] ml-0.5" fill="#0B0814" />
             )}
           </span>
         </button>
@@ -271,7 +271,7 @@ export default function RecommendationsSections() {
   if (allEmpty) return null;
 
   return (
-    <div className="bg-[#0A1128] py-6 px-4 sm:px-6">
+    <div className="bg-[#0B0814] py-6 px-4 sm:px-6">
       <Shelf
         title={becauseTitle}
         seeAllHref="/music"

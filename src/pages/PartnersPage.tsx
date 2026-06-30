@@ -149,7 +149,7 @@ export default function PartnersPage() {
   const partner = (type && PARTNER_TYPES[type]) ? PARTNER_TYPES[type] : DEFAULT_TYPE;
 
   return (
-    <div className="min-h-screen bg-[#0A1128]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
 
       <div className="max-w-4xl mx-auto px-4 lg:px-8 py-16">
@@ -171,7 +171,7 @@ export default function PartnersPage() {
               href={`/partners/${key}`}
               className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all border ${
                 type === key
-                  ? 'text-[#0A1128] border-transparent'
+                  ? 'text-[#0B0814] border-transparent'
                   : 'bg-white/5 border-white/10 text-gray-300 hover:border-white/20'
               }`}
               style={type === key ? { backgroundColor: p.color, borderColor: p.color } : {}}
@@ -226,7 +226,7 @@ export default function PartnersPage() {
           </p>
           <a
             href={`mailto:${partner.email}?subject=${encodeURIComponent(partner.cta)}`}
-            className="inline-flex px-6 py-2.5 rounded-xl text-sm font-semibold text-[#0A1128] hover:opacity-90 transition-opacity"
+            className="inline-flex px-6 py-2.5 rounded-xl text-sm font-semibold text-[#0B0814] hover:opacity-90 transition-opacity"
             style={{ backgroundColor: partner.color }}
           >
             Email {partner.email}

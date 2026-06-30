@@ -153,7 +153,7 @@ function ReleaseCard({
 
         {/* Free badge */}
         <div className="absolute top-2 right-2">
-          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-[#00F5A0] text-[#0A1128]">FREE</span>
+          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-[#00F5A0] text-[#0B0814]">FREE</span>
         </div>
 
         {/* Play overlay */}
@@ -479,7 +479,7 @@ export default function LanguageMusicPage() {
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="min-h-screen bg-[#0B0814] text-white">
       <Header />
 
       {/* ── SECTION 1: Language Hero ──────────────────────────────────────── */}

@@ -137,7 +137,7 @@ const CreatorWithdrawalPanel: React.FC<CreatorWithdrawalPanelProps> = ({ userId 
   };
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white p-6">
+    <div className="min-h-screen bg-[#0B0814] text-white p-6">
       <div className="max-w-2xl mx-auto flex flex-col gap-6">
 
         {/* Header */}
@@ -197,7 +197,7 @@ const CreatorWithdrawalPanel: React.FC<CreatorWithdrawalPanelProps> = ({ userId 
                   onChange={e => setAmount(e.target.value)}
                   placeholder="0.00"
                   required
-                  className="bg-[#0A1128] border border-[#2d3a5a] rounded-lg pl-7 pr-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[#00D9FF] transition-colors text-sm w-full"
+                  className="bg-[#0B0814] border border-[#2d3a5a] rounded-lg pl-7 pr-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[#00D9FF] transition-colors text-sm w-full"
                 />
               </div>
               <button
@@ -222,7 +222,7 @@ const CreatorWithdrawalPanel: React.FC<CreatorWithdrawalPanelProps> = ({ userId 
                       'flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl border text-xs font-medium transition-all duration-150',
                       method === m
                         ? 'bg-[#00D9FF]/10 border-[#00D9FF] text-[#00D9FF]'
-                        : 'bg-[#0A1128] border-[#2d3a5a] text-gray-400 hover:border-[#00D9FF]',
+                        : 'bg-[#0B0814] border-[#2d3a5a] text-gray-400 hover:border-[#00D9FF]',
                     ].join(' ')}
                   >
                     {METHOD_ICONS[m]}
@@ -235,7 +235,7 @@ const CreatorWithdrawalPanel: React.FC<CreatorWithdrawalPanelProps> = ({ userId 
             <button
               type="submit"
               disabled={submitting || loadingBalance || unpaidBalance < MIN_WITHDRAWAL}
-              className="w-full flex items-center justify-center gap-2 bg-[#FFB800] hover:bg-[#e6a600] disabled:opacity-50 disabled:cursor-not-allowed text-[#0A1128] font-bold py-3 rounded-xl transition-colors text-sm"
+              className="w-full flex items-center justify-center gap-2 bg-[#FFB800] hover:bg-[#e6a600] disabled:opacity-50 disabled:cursor-not-allowed text-[#0B0814] font-bold py-3 rounded-xl transition-colors text-sm"
             >
               {submitting ? (
                 <><Loader2 className="w-5 h-5 animate-spin" /> Submitting...</>
@@ -260,7 +260,7 @@ const CreatorWithdrawalPanel: React.FC<CreatorWithdrawalPanelProps> = ({ userId 
                 return (
                   <div
                     key={w.id}
-                    className="flex items-center justify-between bg-[#0A1128] rounded-xl px-4 py-3"
+                    className="flex items-center justify-between bg-[#0B0814] rounded-xl px-4 py-3"
                   >
                     {/* date + method */}
                     <div className="flex items-center gap-3">

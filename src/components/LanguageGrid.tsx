@@ -52,7 +52,7 @@ const LanguageGrid: React.FC<LanguageGridProps> = ({ languages, onSelect }) => {
               className={[
                 'text-[10px] font-semibold px-2 py-0.5 rounded-full',
                 isSelected
-                  ? 'bg-[#00D9FF] text-[#0A1128]'
+                  ? 'bg-[#00D9FF] text-[#0B0814]'
                   : 'bg-[#2d3a5a] text-gray-300',
               ].join(' ')}
             >

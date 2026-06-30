@@ -65,7 +65,7 @@ export default function ResultsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
         <Loader2 className="w-8 h-8 text-[#00D9FF] animate-spin" />
       </div>
     );
@@ -76,7 +76,7 @@ export default function ResultsPage() {
   const leaderboard = entries;
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="min-h-screen bg-[#0B0814] text-white">
       <Header />
 
       <div className="max-w-5xl mx-auto px-4 lg:px-8 py-10">
@@ -105,7 +105,7 @@ export default function ResultsPage() {
         {winner && (
           <div className="bg-gradient-to-r from-[#FFB800]/20 to-[#FF6B00]/10 border-2 border-[#FFB800]/60 rounded-3xl p-8 text-center mb-12 shadow-[0_0_40px_rgba(255,184,0,0.15)]">
             <div className="text-5xl mb-3">🏆</div>
-            <div className="inline-block bg-[#FFB800] text-[#0A1128] font-black px-5 py-1 rounded-full text-sm mb-6 tracking-widest uppercase">
+            <div className="inline-block bg-[#FFB800] text-[#0B0814] font-black px-5 py-1 rounded-full text-sm mb-6 tracking-widest uppercase">
               WINNER 🏆
             </div>
 
@@ -135,7 +135,7 @@ export default function ResultsPage() {
               </div>
               <Link
                 to={`/competition/watch/${winner.id}`}
-                className="mt-2 inline-flex items-center gap-2 px-8 py-3 bg-[#FFB800] text-[#0A1128] font-bold rounded-xl hover:bg-[#e6a600] transition-colors"
+                className="mt-2 inline-flex items-center gap-2 px-8 py-3 bg-[#FFB800] text-[#0B0814] font-bold rounded-xl hover:bg-[#e6a600] transition-colors"
               >
                 ▶ Watch Performance
               </Link>

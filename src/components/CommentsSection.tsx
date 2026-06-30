@@ -240,7 +240,7 @@ export default function CommentsSection({ productId, className = '' }: Props) {
               />
               <button type="submit" disabled={sending || !body.trim()}
                 className="w-10 h-10 rounded-xl bg-[#00D9FF] disabled:opacity-40 flex items-center justify-center hover:bg-[#00D9FF]/90 transition-colors shrink-0">
-                <Send className="w-4 h-4 text-[#0A1128]" />
+                <Send className="w-4 h-4 text-[#0B0814]" />
               </button>
             </div>
             {error && <p className="text-red-400 text-xs mt-1">{error}</p>}

@@ -325,7 +325,7 @@ export function ReleaseUploader({ artistId, onSuccess }: ReleaseUploaderProps) {
         className="w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all"
         style={{
           background: submitting ? 'rgba(0,217,255,0.3)' : '#00D9FF',
-          color: '#0A1128',
+          color: '#0B0814',
           opacity: submitting ? 0.7 : 1,
           cursor: submitting ? 'not-allowed' : 'pointer',
         }}

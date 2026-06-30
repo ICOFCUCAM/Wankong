@@ -30,7 +30,7 @@ function getRankRowClass(rank: number): string {
   if (rank === 1) return 'bg-[#FFB800]/10 border border-[#FFB800]/30';
   if (rank === 2) return 'bg-[#C0C0C0]/10 border border-[#C0C0C0]/30';
   if (rank === 3) return 'bg-[#CD7F32]/10 border border-[#CD7F32]/30';
-  return 'bg-[#0A1128] border border-[#1a2540]';
+  return 'bg-[#0B0814] border border-[#1a2540]';
 }
 
 function getRankNumberStyle(rank: number): string {
@@ -141,7 +141,7 @@ const CreatorLeaderboard: React.FC = () => {
   }, [user?.id]);
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white p-6">
+    <div className="min-h-screen bg-[#0B0814] text-white p-6">
       <div className="max-w-3xl mx-auto flex flex-col gap-6">
 
         {/* Header */}

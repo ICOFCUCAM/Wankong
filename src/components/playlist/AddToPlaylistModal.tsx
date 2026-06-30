@@ -44,7 +44,7 @@ export default function AddToPlaylistModal() {
       <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4">
         <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={closeAddToPlaylist} />
 
-        <div className="relative w-full max-w-sm bg-[#0A1128] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+        <div className="relative w-full max-w-sm bg-[#0B0814] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
             <div className="min-w-0">

@@ -111,7 +111,7 @@ export default function CreatorDashboardPage() {
   const winnerEntries  = entries.filter(e => e.status === 'winner').length;
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white flex flex-col">
+    <div className="min-h-screen bg-[#0B0814] text-white flex flex-col">
       <Header />
 
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 lg:px-8 py-10 space-y-10">

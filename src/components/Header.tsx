@@ -132,11 +132,11 @@ export default function Header() {
           <div className="flex items-center justify-between h-16 gap-4">
 
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 flex-shrink-0">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">W</span>
+            <Link to="/" className="flex items-center gap-2.5 flex-shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#9D4EDD]/25 to-[#00D9FF]/10 border border-white/10 flex items-center justify-center">
+                <img src="/wankong-mark.png" alt="WANKONG" className="w-7 h-7 object-contain" />
               </div>
-              <span className="text-white font-bold text-lg hidden sm:block">WANKONG</span>
+              <span className="text-white font-bold text-lg tracking-wide hidden sm:block">WANKONG</span>
             </Link>
 
             {/* Desktop nav */}

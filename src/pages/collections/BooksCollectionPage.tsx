@@ -116,7 +116,7 @@ function BookCard({ book, onAction }: { book: Book; onAction: (book: Book, actio
 
         {/* Price badge */}
         <div className="absolute top-2 right-2">
-          <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${book.price === 0 ? 'bg-[#00F5A0] text-[#0A1128]' : 'bg-[#FFB800] text-[#0A1128]'}`}>
+          <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${book.price === 0 ? 'bg-[#00F5A0] text-[#0B0814]' : 'bg-[#FFB800] text-[#0B0814]'}`}>
             {book.price === 0 ? 'FREE' : `$${book.price.toFixed(2)}`}
           </span>
         </div>
@@ -269,11 +269,11 @@ export default function BooksCollectionPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="min-h-screen bg-[#0B0814] text-white">
       <Header />
 
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#0A1128] via-[#100D2E] to-[#0A1128] border-b border-white/5 py-12">
+      <div className="bg-gradient-to-br from-[#0B0814] via-[#100D2E] to-[#0B0814] border-b border-white/5 py-12">
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#9D4EDD] to-[#FFB800] flex items-center justify-center text-xl">📚</div>

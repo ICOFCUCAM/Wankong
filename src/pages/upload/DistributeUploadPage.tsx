@@ -29,7 +29,7 @@ const LANGUAGES = [
 ];
 const STEPS = ['Upload', 'Metadata', 'Platforms', 'Royalties', 'Confirm'];
 
-const inputCls   = "w-full bg-[#0A1128] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD]/40 focus:border-[#9D4EDD]/40 transition-colors";
+const inputCls   = "w-full bg-[#0B0814] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD]/40 focus:border-[#9D4EDD]/40 transition-colors";
 const selectCls  = inputCls + " cursor-pointer";
 
 // ── helper ────────────────────────────────────────────────────────────────────
@@ -201,7 +201,7 @@ export default function DistributeUploadPage() {
 
   // ── success screen ──────────────────────────────────────────────────────────
   if (done) return (
-    <div className="min-h-screen bg-[#0A1128] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#0B0814] flex items-center justify-center px-4">
       <div className="text-center max-w-sm">
         <div className="w-20 h-20 rounded-full bg-[#00F5A0]/20 flex items-center justify-center mx-auto mb-6">
           <CheckCircle className="w-10 h-10 text-[#00F5A0]" />
@@ -219,7 +219,7 @@ export default function DistributeUploadPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#0A1128]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
       <div className="max-w-3xl mx-auto px-4 py-12">
 
@@ -353,9 +353,9 @@ export default function DistributeUploadPage() {
                       value={at.title}
                       onChange={e => setAlbumTracks(prev => prev.map(t => t.id === at.id ? { ...t, title: e.target.value } : t))}
                       placeholder={`Track ${idx + 1} title`}
-                      className="flex-1 bg-[#0A1128] border border-white/10 rounded-lg px-3 py-2 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-[#9D4EDD]/40"
+                      className="flex-1 bg-[#0B0814] border border-white/10 rounded-lg px-3 py-2 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-[#9D4EDD]/40"
                     />
-                    <label className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-white/10 bg-[#0A1128] cursor-pointer hover:border-[#9D4EDD]/40 transition-colors shrink-0">
+                    <label className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-white/10 bg-[#0B0814] cursor-pointer hover:border-[#9D4EDD]/40 transition-colors shrink-0">
                       <input
                         type="file"
                         accept=".wav,.flac,.mp3"

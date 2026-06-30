@@ -111,7 +111,7 @@ export default function NotificationSettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="min-h-screen bg-[#0B0814] text-white">
       <Header />
 
       <div className="max-w-2xl mx-auto px-4 lg:px-8 py-12">

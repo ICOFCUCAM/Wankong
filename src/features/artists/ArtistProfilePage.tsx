@@ -137,7 +137,7 @@ export default function ArtistProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#0A1128' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#0B0814' }}>
         <Loader2 className="animate-spin text-cyan-400" size={40} />
       </div>
     );
@@ -145,7 +145,7 @@ export default function ArtistProfilePage() {
 
   if (!artist) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#0A1128' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#0B0814' }}>
         <p className="text-gray-400 text-lg">Artist not found.</p>
       </div>
     );
@@ -158,7 +158,7 @@ export default function ArtistProfilePage() {
   ];
 
   return (
-    <div className="min-h-screen" style={{ background: '#0A1128', color: '#fff' }}>
+    <div className="min-h-screen" style={{ background: '#0B0814', color: '#fff' }}>
       {/* ── Hero ── */}
       <div className="relative h-64 md:h-80 w-full overflow-hidden">
         {artist.banner_url ? (
@@ -170,11 +170,11 @@ export default function ArtistProfilePage() {
         ) : (
           <div
             className="w-full h-full"
-            style={{ background: 'linear-gradient(135deg, #0A1128 0%, #1a1f45 50%, #0A1128 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #0B0814 0%, #1a1f45 50%, #0B0814 100%)' }}
           />
         )}
         {/* Gradient overlay */}
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, #0A1128 0%, transparent 60%)' }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, #0B0814 0%, transparent 60%)' }} />
       </div>
 
       {/* ── Profile info ── */}
@@ -237,7 +237,7 @@ export default function ArtistProfilePage() {
               style={
                 following
                   ? { background: 'rgba(0,217,255,0.1)', color: '#00D9FF', border: '1px solid #00D9FF' }
-                  : { background: '#00D9FF', color: '#0A1128', border: 'none' }
+                  : { background: '#00D9FF', color: '#0B0814', border: 'none' }
               }
             >
               {followLoading ? (
@@ -254,7 +254,7 @@ export default function ArtistProfilePage() {
       </div>
 
       {/* ── Tabs ── */}
-      <div className="sticky top-0 z-20 px-4 md:px-8 border-b" style={{ background: '#0A1128', borderColor: 'rgba(255,255,255,0.08)' }}>
+      <div className="sticky top-0 z-20 px-4 md:px-8 border-b" style={{ background: '#0B0814', borderColor: 'rgba(255,255,255,0.08)' }}>
         <div className="flex gap-0 -mb-px">
           {TABS.map((t) => (
             <button

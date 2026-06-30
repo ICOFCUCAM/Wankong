@@ -49,7 +49,7 @@ export default function PlaylistCreateModal({ open, initial, title = 'Create Pla
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative w-full max-w-md bg-[#0A1128] border border-white/10 rounded-2xl shadow-2xl p-6 space-y-5">
+      <div className="relative w-full max-w-md bg-[#0B0814] border border-white/10 rounded-2xl shadow-2xl p-6 space-y-5">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold text-white">{title}</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors">

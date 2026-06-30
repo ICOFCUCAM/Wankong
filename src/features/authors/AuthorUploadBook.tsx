@@ -247,7 +247,7 @@ export function AuthorUploadBook({ authorId, onSuccess }: AuthorUploadBookProps)
 
   if (success) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 py-14 bg-[#0A1128] rounded-2xl border border-[#00F5A0]/30">
+      <div className="flex flex-col items-center justify-center gap-4 py-14 bg-[#0B0814] rounded-2xl border border-[#00F5A0]/30">
         <div className="w-14 h-14 rounded-full bg-[#00F5A0]/10 flex items-center justify-center">
           <BookOpen size={28} className="text-[#00F5A0]" />
         </div>
@@ -258,7 +258,7 @@ export function AuthorUploadBook({ authorId, onSuccess }: AuthorUploadBookProps)
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-[#0A1128] rounded-2xl border border-white/10 p-6 space-y-6 text-white">
+    <form onSubmit={handleSubmit} className="bg-[#0B0814] rounded-2xl border border-white/10 p-6 space-y-6 text-white">
       <div>
         <h2 className="text-lg font-bold text-white">Upload a New Book</h2>
         <p className="text-sm text-gray-400 mt-0.5">Fill in the details, choose formats, and upload your files.</p>
@@ -299,12 +299,12 @@ export function AuthorUploadBook({ authorId, onSuccess }: AuthorUploadBookProps)
           <div className="grid grid-cols-2 gap-3">
             <Field label="Genre" icon={<Tag size={14} />}>
               <select name="genre" value={form.genre} onChange={handleChange} disabled={submitting} className={selectCls}>
-                {GENRES.map(g => <option key={g} value={g} className="bg-[#0A1128]">{g}</option>)}
+                {GENRES.map(g => <option key={g} value={g} className="bg-[#0B0814]">{g}</option>)}
               </select>
             </Field>
             <Field label="Language" icon={<Globe size={14} />}>
               <select name="language" value={form.language} onChange={handleChange} disabled={submitting} className={selectCls}>
-                {LANGUAGES.map(l => <option key={l.code} value={l.code} className="bg-[#0A1128]">{l.label}</option>)}
+                {LANGUAGES.map(l => <option key={l.code} value={l.code} className="bg-[#0B0814]">{l.label}</option>)}
               </select>
             </Field>
           </div>
@@ -400,9 +400,9 @@ export function AuthorUploadBook({ authorId, onSuccess }: AuthorUploadBookProps)
             </Field>
             <Field label="Source" icon={<ExternalLink size={13} />}>
               <select value={form.softcover_source} onChange={e => set('softcover_source', e.target.value as Source)} disabled={submitting} className={`${selectCls} text-xs py-2`}>
-                <option value="wankong" className="bg-[#0A1128]">WANKONG Checkout</option>
-                <option value="amazon" className="bg-[#0A1128]">Amazon</option>
-                <option value="external" className="bg-[#0A1128]">External URL</option>
+                <option value="wankong" className="bg-[#0B0814]">WANKONG Checkout</option>
+                <option value="amazon" className="bg-[#0B0814]">Amazon</option>
+                <option value="external" className="bg-[#0B0814]">External URL</option>
               </select>
             </Field>
           </div>
@@ -450,9 +450,9 @@ export function AuthorUploadBook({ authorId, onSuccess }: AuthorUploadBookProps)
             </Field>
             <Field label="Source" icon={<ExternalLink size={13} />}>
               <select value={form.hardcover_source} onChange={e => set('hardcover_source', e.target.value as Source)} disabled={submitting} className={`${selectCls} text-xs py-2`}>
-                <option value="wankong" className="bg-[#0A1128]">WANKONG Checkout</option>
-                <option value="amazon" className="bg-[#0A1128]">Amazon</option>
-                <option value="external" className="bg-[#0A1128]">External URL</option>
+                <option value="wankong" className="bg-[#0B0814]">WANKONG Checkout</option>
+                <option value="amazon" className="bg-[#0B0814]">Amazon</option>
+                <option value="external" className="bg-[#0B0814]">External URL</option>
               </select>
             </Field>
           </div>
@@ -497,7 +497,7 @@ export function AuthorUploadBook({ authorId, onSuccess }: AuthorUploadBookProps)
       <button
         type="submit"
         disabled={submitting}
-        className="w-full flex items-center justify-center gap-2 bg-[#00D9FF] hover:bg-[#00D9FF]/85 disabled:opacity-50 disabled:cursor-not-allowed text-[#0A1128] font-semibold py-3 px-6 rounded-xl transition-all active:scale-[0.98]"
+        className="w-full flex items-center justify-center gap-2 bg-[#00D9FF] hover:bg-[#00D9FF]/85 disabled:opacity-50 disabled:cursor-not-allowed text-[#0B0814] font-semibold py-3 px-6 rounded-xl transition-all active:scale-[0.98]"
       >
         {submitting ? <><Loader2 size={16} className="animate-spin" />Publishing…</> : <><Upload size={16} />Publish Book</>}
       </button>
@@ -525,7 +525,7 @@ function FormatBlock({
             className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${checked ? 'border-transparent' : 'border-gray-600 bg-transparent'}`}
             style={checked ? { background: color } : {}}
           >
-            {checked && <span className="text-[#0A1128] text-xs font-black">✓</span>}
+            {checked && <span className="text-[#0B0814] text-xs font-black">✓</span>}
           </button>
           <span className="text-sm font-semibold text-white">{label}</span>
           {checked && <span className="text-[9px] px-1.5 py-0.5 rounded font-bold" style={{ background: `${color}20`, color }}>{id.toUpperCase()}</span>}

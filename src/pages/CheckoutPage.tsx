@@ -394,7 +394,7 @@ export default function CheckoutPage() {
                 )}
 
                 {payMethod === 'mobile_money' && (
-                  <div className="rounded-xl bg-[#0A1128] border border-white/10 p-4 text-center space-y-3">
+                  <div className="rounded-xl bg-[#0B0814] border border-white/10 p-4 text-center space-y-3">
                     <div className="flex justify-center gap-3 text-2xl">🟢 🟡 🔴</div>
                     <p className="text-white/60 text-sm">
                       Supports M-Pesa, MTN MoMo, and Airtel Money across Africa.
@@ -436,7 +436,7 @@ export default function CheckoutPage() {
                 )}
 
                 {payMethod === 'paypal' && (
-                  <div className="rounded-xl bg-[#0A1128] border border-white/10 p-4 text-center space-y-3">
+                  <div className="rounded-xl bg-[#0B0814] border border-white/10 p-4 text-center space-y-3">
                     <div className="text-3xl font-bold text-[#003087]">
                       <span className="text-[#009CDE]">Pay</span><span className="text-[#003087]">Pal</span>
                     </div>

@@ -138,7 +138,7 @@ export default function PreSavePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-[#00D9FF] border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -146,7 +146,7 @@ export default function PreSavePage() {
 
   if (!release) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex flex-col items-center justify-center text-center px-6">
+      <div className="min-h-screen bg-[#0B0814] flex flex-col items-center justify-center text-center px-6">
         <Music className="w-12 h-12 text-white/20 mb-4" />
         <h1 className="text-white text-xl font-bold mb-2">Release not found</h1>
         <Link to="/" className="text-[#00D9FF] text-sm hover:underline">Back to Home</Link>
@@ -159,8 +159,8 @@ export default function PreSavePage() {
     : null;
 
   return (
-    <div className="min-h-screen bg-[#0A1128] flex flex-col items-center justify-center px-4 py-16"
-      style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(157,78,221,0.15) 0%, #0A1128 70%)' }}>
+    <div className="min-h-screen bg-[#0B0814] flex flex-col items-center justify-center px-4 py-16"
+      style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(157,78,221,0.15) 0%, #0B0814 70%)' }}>
 
       <div className="w-full max-w-sm">
 
@@ -174,7 +174,7 @@ export default function PreSavePage() {
 
           {/* "Coming soon" ribbon */}
           {release.publish_at && new Date(release.publish_at) > new Date() && (
-            <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-black text-[#0A1128]"
+            <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-black text-[#0B0814]"
               style={{ background: 'linear-gradient(135deg,#00D9FF,#9D4EDD)' }}>
               COMING SOON
             </div>

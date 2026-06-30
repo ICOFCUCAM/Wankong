@@ -205,7 +205,7 @@ export default function MobileMoneyModal({ amount, orderId, onClose, onSuccess }
               {/* Phone input */}
               <div>
                 <label className="block text-xs font-medium text-white/40 mb-1.5">Phone Number</label>
-                <div className="flex items-center bg-[#0A1128] border border-white/10 rounded-xl overflow-hidden focus-within:border-[#00D9FF]/50 transition-colors">
+                <div className="flex items-center bg-[#0B0814] border border-white/10 rounded-xl overflow-hidden focus-within:border-[#00D9FF]/50 transition-colors">
                   <span className="px-3 text-sm font-mono text-white/50 border-r border-white/10 shrink-0">{cfg.prefix}</span>
                   <input
                     type="tel"

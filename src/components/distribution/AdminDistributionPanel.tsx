@@ -43,7 +43,7 @@ type ActionState =
   | 'rejecting';
 
 const inputCls =
-  'w-full bg-[#0A1128] border border-white/10 rounded-lg px-3 py-2 text-white text-sm ' +
+  'w-full bg-[#0B0814] border border-white/10 rounded-lg px-3 py-2 text-white text-sm ' +
   'focus:outline-none focus:ring-2 focus:ring-[#00D9FF]/40';
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {

@@ -108,7 +108,7 @@ function Completeness({ release }: { release: QueueRelease }) {
 // ── Input style ───────────────────────────────────────────────────────────────
 
 const inputCls =
-  'w-full bg-[#0A1128] border border-white/10 rounded-lg px-3 py-2 text-white text-sm ' +
+  'w-full bg-[#0B0814] border border-white/10 rounded-lg px-3 py-2 text-white text-sm ' +
   'focus:outline-none focus:ring-2 focus:ring-[#00D9FF]/40 placeholder-gray-600';
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -118,7 +118,7 @@ export default function AdminReleaseQueuePage() {
 
   if (!user || !isAdmin) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0A1128]">
+      <div className="min-h-screen flex items-center justify-center bg-[#0B0814]">
         <div className="text-center">
           <p className="text-4xl mb-4">🔒</p>
           <h2 className="text-2xl font-bold text-white mb-2">Access Denied</h2>

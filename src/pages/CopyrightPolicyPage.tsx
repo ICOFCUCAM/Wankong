@@ -21,7 +21,7 @@ const MUSICAL_RULES = [
 
 export default function CopyrightPolicyPage() {
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white flex flex-col">
+    <div className="min-h-screen bg-[#0B0814] text-white flex flex-col">
       <Header />
 
       <main className="flex-1">

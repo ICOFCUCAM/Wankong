@@ -107,7 +107,7 @@ const CreatorRevenueDashboard: React.FC<CreatorRevenueDashboardProps> = ({ userI
   const total = earnings.reduce((s, e) => s + e.amount, 0);
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white p-6">
+    <div className="min-h-screen bg-[#0B0814] text-white p-6">
       <div className="max-w-4xl mx-auto flex flex-col gap-6">
 
         {/* Header */}
@@ -131,7 +131,7 @@ const CreatorRevenueDashboard: React.FC<CreatorRevenueDashboardProps> = ({ userI
                 className={[
                   'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200',
                   period === p
-                    ? 'bg-[#FFB800] text-[#0A1128]'
+                    ? 'bg-[#FFB800] text-[#0B0814]'
                     : 'text-gray-400 hover:text-white',
                 ].join(' ')}
               >
@@ -199,7 +199,7 @@ const CreatorRevenueDashboard: React.FC<CreatorRevenueDashboardProps> = ({ userI
                       </div>
                     </div>
                     {/* CSS width % bar */}
-                    <div className="h-1.5 bg-[#0A1128] rounded-full overflow-hidden">
+                    <div className="h-1.5 bg-[#0B0814] rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full transition-all duration-500"
                         style={{ width: `${pct}%`, background: meta.color }}

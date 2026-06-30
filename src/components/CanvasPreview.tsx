@@ -67,7 +67,7 @@ const CanvasPreview: React.FC<CanvasPreviewProps> = ({ releaseId }) => {
   const isDone = asset.status === 'done';
 
   return (
-    <div className="relative rounded-xl overflow-hidden aspect-video bg-[#0A1128]">
+    <div className="relative rounded-xl overflow-hidden aspect-video bg-[#0B0814]">
       {asset.asset_type === 'canvas' ? (
         <video
           src={asset.asset_url}

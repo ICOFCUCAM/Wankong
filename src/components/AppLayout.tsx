@@ -4,8 +4,9 @@ import { supabase } from '@/lib/supabase';
 import Header from './Header';
 import Footer from './Footer';
 import ProductCard from './ProductCard';
-import { Play, Zap, Music, BookOpen, Video, Mic, Trophy, Globe, Users, DollarSign, TrendingUp, ArrowRight, Headphones, Radio, Star, ChevronRight, ChevronLeft, Clock } from 'lucide-react';
+import { Play, Zap, Music, BookOpen, Video, Mic, Trophy, Globe, Users, DollarSign, TrendingUp, ArrowRight, Headphones, Radio, Star, ChevronRight, ChevronLeft, Clock, ShieldCheck, BarChart3, CreditCard } from 'lucide-react';
 import { usePlayer } from './GlobalPlayer';
+import { asArray } from '@/lib/utils';
 import FeaturedPerformancesGrid from './home/FeaturedPerformancesGrid';
 import DefaultBookCover from './home/DefaultBookCover';
 import AudiobookCard from './home/AudiobookCard';
@@ -21,8 +22,6 @@ class SectionErrorBoundary extends Component<{ children: ReactNode }, { hasError
     return this.props.children;
   }
 }
-
-const HERO_IMAGE = 'https://d64gsuwffb70l.cloudfront.net/69bdd0721a1fe097ab8615d8_1774047590438_0a152d8a.png';
 
 const ARTIST_IMAGES = [
   'https://d64gsuwffb70l.cloudfront.net/69bdd0721a1fe097ab8615d8_1774047821550_5abc0a11.png',
@@ -204,9 +203,10 @@ export default function AppLayout() {
         .from('ecom_collections')
         .select('*')
         .eq('is_visible', true);
-      if (cols) setCollections(cols);
+      const colsArr = asArray<any>(cols);
+      setCollections(colsArr);
 
-      const trendingCol = cols?.find(c => c.handle === 'trending');
+      const trendingCol = colsArr.find(c => c.handle === 'trending');
       if (trendingCol) {
         const { data: links } = await supabase
           .from('ecom_product_collections')
@@ -225,7 +225,7 @@ export default function AppLayout() {
         }
       }
 
-      const featuredCol = cols?.find(c => c.handle === 'featured');
+      const featuredCol = colsArr.find(c => c.handle === 'featured');
       if (featuredCol) {
         const { data: links } = await supabase
           .from('ecom_product_collections')
@@ -254,7 +254,7 @@ export default function AppLayout() {
       if (newProds && newProds.length > 0) setNewReleases(newProds);
 
       // Books — try 'books' collection, fall back to type filter
-      const booksCol = cols?.find((c: any) => c.handle === 'books');
+      const booksCol = colsArr.find((c: any) => c.handle === 'books');
       if (booksCol) {
         const { data: bLinks } = await supabase
           .from('ecom_product_collections')
@@ -375,48 +375,97 @@ export default function AppLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A1128] pb-20">
+    <div className="min-h-screen bg-[#0B0814] pb-20">
       <Header />
 
       {/* ── 1. HERO ──────────────────────────────────────────────────────────── */}
-      <section className="relative pt-28 pb-16 overflow-hidden">
-        <div className="absolute inset-0">
-          <img src={HERO_IMAGE} alt="WANKONG" className="w-full h-full object-cover opacity-40" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0A1128]/60 via-[#0A1128]/80 to-[#0A1128]" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0A1128] via-transparent to-[#0A1128]/80" />
+      <section className="relative overflow-hidden bg-[#0B0814]">
+        {/* Hero band — image confined here (not the stats area) */}
+        <div className="relative min-h-[560px] lg:min-h-[620px] flex items-center">
+          {/* Hero image on the right — cover crops the black frame; edges feathered into the bg */}
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-full lg:w-[54%] h-[440px] lg:h-[520px] pointer-events-none select-none">
+            <img
+              src="/wankong.png"
+              alt="WANKONG — Create, Distribute, Get Paid"
+              className="w-full h-full object-cover object-[56%_50%]"
+              loading="eager"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0B0814] via-transparent to-transparent" />
+            <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#0B0814] to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0B0814] to-transparent" />
+          </div>
+
+          <div className="relative max-w-7xl mx-auto w-full px-4 pt-12 pb-10 md:pt-16">
+            <div className="max-w-xl">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full mb-6 backdrop-blur-sm">
+                <div className="w-2 h-2 bg-[#9D4EDD] rounded-full animate-pulse shadow-[0_0_8px_#9D4EDD]" />
+                <span className="text-white/80 text-sm font-medium">The Global Creator Economy</span>
+              </div>
+              <h1 className="text-5xl md:text-7xl font-black text-white leading-[1.04] mb-6">
+                Create. Distribute.
+                <br />
+                <span className="bg-gradient-to-r from-[#00D9FF] via-[#9D4EDD] to-[#FF4D9D] bg-clip-text text-transparent">
+                  Get Paid.
+                </span>
+              </h1>
+              <p className="text-lg md:text-xl text-white/60 mb-8 max-w-lg">
+                The ultimate platform for creators to upload, distribute and monetize music, videos, books, audiobooks and more.
+              </p>
+
+              {/* Feature row */}
+              <div className="flex flex-wrap gap-x-7 gap-y-3 mb-9">
+                {[
+                  { icon: Globe, label: '30+ Platforms', color: '#00D9FF' },
+                  { icon: ShieldCheck, label: '100% Ownership', color: '#00F5A0' },
+                  { icon: BarChart3, label: 'Real-time Analytics', color: '#9D4EDD' },
+                  { icon: CreditCard, label: 'Global Payments', color: '#FFB800' },
+                ].map(({ icon: Icon, label, color }) => (
+                  <div key={label} className="flex items-center gap-2 text-white/75 text-sm font-medium">
+                    <Icon className="w-4 h-4" style={{ color }} />
+                    {label}
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-wrap gap-4">
+                <button
+                  onClick={() => navigate('/collections/featured')}
+                  className="px-7 py-3.5 bg-gradient-to-r from-[#9D4EDD] to-[#6D2EBD] text-white font-bold rounded-xl hover:opacity-90 transition-all transform hover:scale-[1.03] flex items-center gap-2 shadow-lg shadow-[#9D4EDD]/30"
+                >
+                  Start Creating Now
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => navigate('/collections/marketplace')}
+                  className="px-7 py-3.5 bg-white/[0.06] border border-white/15 text-white font-bold rounded-xl hover:bg-white/10 transition-all flex items-center gap-2"
+                >
+                  <Play className="w-5 h-5 text-[#9D4EDD]" />
+                  Explore the Platform
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="relative max-w-7xl mx-auto px-4 py-16 md:py-24">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#FFB800]/10 border border-[#FFB800]/30 rounded-full mb-6">
-              <div className="w-2 h-2 bg-[#00F5A0] rounded-full animate-pulse" />
-              <span className="text-[#FFB800] text-sm font-medium">Talent Arena Week 12 — Voting Now Live</span>
-            </div>
-            <h1 className="text-5xl md:text-7xl font-black text-white leading-tight mb-6">
-              Create. Distribute.
-              <br />
-              <span className="bg-gradient-to-r from-[#00D9FF] via-[#9D4EDD] to-[#FFB800] bg-clip-text text-transparent">
-                Get Paid.
-              </span>
-            </h1>
-            <p className="text-xl text-white/60 mb-8 max-w-xl">
-              The global creator economy platform. Upload music, videos, books & podcasts. Distribute to 30+ streaming outlets. Compete in the Talent Arena. Earn royalties worldwide.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <button
-                onClick={() => navigate('/collections/featured')}
-                className="px-8 py-4 bg-gradient-to-r from-[#00D9FF] to-[#9D4EDD] text-white font-bold rounded-xl hover:opacity-90 transition-all transform hover:scale-105 flex items-center gap-2"
-              >
-                <Play className="w-5 h-5" />
-                Start Creating
-              </button>
-              <button
-                onClick={() => navigate('/collections/talent-arena')}
-                className="px-8 py-4 bg-white/10 border border-white/20 text-white font-bold rounded-xl hover:bg-white/20 transition-all flex items-center gap-2"
-              >
-                <Trophy className="w-5 h-5 text-[#FFB800]" />
-                Talent Arena
-              </button>
-            </div>
+
+        {/* Stats — single bordered card, icon-left */}
+        <div className="relative max-w-7xl mx-auto px-4 pb-14">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm grid grid-cols-2 md:grid-cols-4 divide-y divide-white/10 md:divide-y-0 md:divide-x">
+            {[
+              { icon: Users, label: 'Active Creators', value: '12,500+', color: '#00D9FF' },
+              { icon: Globe, label: 'Countries', value: '140+', color: '#9D4EDD' },
+              { icon: DollarSign, label: 'Creator Payouts', value: '$2.8M+', color: '#00F5A0' },
+              { icon: TrendingUp, label: 'Monthly Streams', value: '45M+', color: '#FFB800' },
+            ].map((stat, i) => (
+              <div key={i} className="flex items-center gap-4 p-5 md:p-6">
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${stat.color}1A` }}>
+                  <stat.icon className="w-5 h-5" style={{ color: stat.color }} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-2xl md:text-3xl font-black text-white leading-none mb-1">{stat.value}</p>
+                  <p className="text-white/40 text-sm truncate">{stat.label}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

@@ -107,7 +107,7 @@ function CreateProfileForm({
   };
 
   return (
-    <div className="min-h-screen bg-[#0A1128]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
       <div className="max-w-lg mx-auto px-4 py-20">
         <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
@@ -269,7 +269,7 @@ export default function AuthorDashboardPage() {
 
   if (authLoading || profileLoading) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
         <Loader2 className="w-8 h-8 text-[#00D9FF] animate-spin" />
       </div>
     );
@@ -290,11 +290,11 @@ export default function AuthorDashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="min-h-screen bg-[#0B0814] text-white">
       <Header />
 
       {/* Profile hero */}
-      <div className="bg-gradient-to-br from-[#0A1128] via-[#100D2E] to-[#0A1128] border-b border-white/5 py-10">
+      <div className="bg-gradient-to-br from-[#0B0814] via-[#100D2E] to-[#0B0814] border-b border-white/5 py-10">
         <div className="max-w-6xl mx-auto px-4 lg:px-8">
           <div className="flex items-center gap-5">
             {profile.photo_url ? (

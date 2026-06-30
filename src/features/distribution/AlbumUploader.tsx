@@ -448,7 +448,7 @@ export function AlbumUploader({ artistId, onSuccess }: AlbumUploaderProps) {
         className="w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all mt-2"
         style={{
           background: submitting ? 'rgba(0,217,255,0.3)' : '#00D9FF',
-          color: '#0A1128',
+          color: '#0B0814',
           cursor: submitting ? 'not-allowed' : 'pointer',
         }}
       >

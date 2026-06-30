@@ -263,7 +263,7 @@ export default function SearchPage() {
               <button key={f.value} onClick={() => setType(f.value)}
                 className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all shrink-0 ${
                   filters.type === f.value
-                    ? 'bg-[#00D9FF] text-[#0A1128]'
+                    ? 'bg-[#00D9FF] text-[#0B0814]'
                     : 'bg-white/5 text-white/60 hover:bg-white/10 border border-white/10'
                 }`}>
                 <span>{f.icon}</span>
@@ -293,7 +293,7 @@ export default function SearchPage() {
               <SlidersHorizontal className="w-4 h-4" />
               Filters
               {(filters.genre || filters.maxPrice > 0 || filters.verified) && (
-                <span className="w-4 h-4 rounded-full bg-[#00D9FF] text-[#0A1128] text-[9px] font-black flex items-center justify-center">
+                <span className="w-4 h-4 rounded-full bg-[#00D9FF] text-[#0B0814] text-[9px] font-black flex items-center justify-center">
                   {[!!filters.genre, filters.maxPrice > 0, filters.verified].filter(Boolean).length}
                 </span>
               )}

@@ -9,7 +9,7 @@ import { Upload, Video, Image as ImageIcon, CheckCircle, Loader2, AlertCircle, C
 const CATEGORIES = ['Gospel','Worship','Praise','Contemporary','Traditional','Choir','Solo','Duo','Group'];
 const LANGUAGES  = ['English','French','Yoruba','Igbo','Hausa','Swahili','Zulu','Pidgin','Spanish','Portuguese'];
 
-const inputCls  = "w-full bg-[#0A1128] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#FFB800]/40 focus:border-[#FFB800]/40 transition-colors";
+const inputCls  = "w-full bg-[#0B0814] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#FFB800]/40 focus:border-[#FFB800]/40 transition-colors";
 const selectCls = inputCls + " cursor-pointer";
 
 export default function TalentArenaUploadPage() {
@@ -126,7 +126,7 @@ export default function TalentArenaUploadPage() {
   };
 
   if (done) return (
-    <div className="min-h-screen bg-[#0A1128] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#0B0814] flex items-center justify-center px-4">
       <div className="text-center max-w-sm">
         <div className="w-20 h-20 rounded-full bg-[#FFB800]/20 flex items-center justify-center mx-auto mb-6">
           <CheckCircle className="w-10 h-10 text-[#FFB800]" />
@@ -147,7 +147,7 @@ export default function TalentArenaUploadPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#0A1128]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
       <div className="max-w-2xl mx-auto px-4 py-12">
 

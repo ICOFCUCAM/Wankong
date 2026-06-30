@@ -40,7 +40,7 @@ export default function SubscriptionGate({ require, children, fallback, compact 
       </div>
 
       {/* Overlay */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0A1128]/70 backdrop-blur-sm p-6 text-center">
+      <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0B0814]/70 backdrop-blur-sm p-6 text-center">
         <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#00D9FF] to-[#9D4EDD] flex items-center justify-center mb-3 shadow-xl shadow-cyan-500/20">
           {require === 'premium' ? <Zap className="w-5 h-5 text-white" /> : <Lock className="w-5 h-5 text-white" />}
         </div>

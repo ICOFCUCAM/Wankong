@@ -103,7 +103,7 @@ const LibraryPage = lazy(() => import('./pages/LibraryPage'));
 // ── Spinner ────────────────────────────────────────────────────────────────────
 
 const Spinner = () => (
-  <div className="min-h-screen bg-[#0A1128] flex items-center justify-center">
+  <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
     <div className="w-8 h-8 border-2 border-[#00D9FF] border-t-transparent rounded-full animate-spin" />
   </div>
 );

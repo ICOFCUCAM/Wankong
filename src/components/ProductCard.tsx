@@ -181,9 +181,9 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
           {/* Price badge — top-right */}
           <div className="absolute top-2 right-2">
             {isFree ? (
-              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-[#00F5A0] text-[#0A1128]">FREE</span>
+              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-[#00F5A0] text-[#0B0814]">FREE</span>
             ) : (
-              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-[#FFB800] text-[#0A1128]">${price.toFixed(2)}</span>
+              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-[#FFB800] text-[#0B0814]">${price.toFixed(2)}</span>
             )}
           </div>
 

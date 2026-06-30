@@ -59,10 +59,10 @@ function BookCard({ book }: { book: Book }) {
         </div>
         {/* Badges */}
         {book.isNew && (
-          <div className="absolute top-2 left-2 bg-[#00F5A0] text-[#0A1128] text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wide">NEW</div>
+          <div className="absolute top-2 left-2 bg-[#00F5A0] text-[#0B0814] text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wide">NEW</div>
         )}
         {book.isBestseller && !book.isNew && (
-          <div className="absolute top-2 left-2 bg-[#FFB800] text-[#0A1128] text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wide">BEST</div>
+          <div className="absolute top-2 left-2 bg-[#FFB800] text-[#0B0814] text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wide">BEST</div>
         )}
         {/* Hover overlay */}
         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
@@ -155,11 +155,11 @@ export default function EbookMarketplacePage() {
   }, [books, search, genre, sort, lang]);
 
   return (
-    <div className="min-h-screen bg-[#0A1128] pb-20">
+    <div className="min-h-screen bg-[#0B0814] pb-20">
       <Header />
 
       {/* ── Page Header ── */}
-      <div className="bg-gradient-to-br from-[#0A1128] via-[#0D1635] to-[#0A1128] border-b border-white/5 py-8">
+      <div className="bg-gradient-to-br from-[#0B0814] via-[#0D1635] to-[#0B0814] border-b border-white/5 py-8">
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
@@ -200,7 +200,7 @@ export default function EbookMarketplacePage() {
           <div className="flex gap-2 overflow-x-auto pb-1 flex-1" style={{ scrollbarWidth: 'none' }}>
             {GENRES.map(g => (
               <button key={g} onClick={() => setGenre(g)}
-                className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${genre === g ? 'bg-[#FFB800] text-[#0A1128] font-bold' : 'bg-white/5 border border-white/10 text-white/50 hover:text-white hover:border-white/20'}`}>
+                className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${genre === g ? 'bg-[#FFB800] text-[#0B0814] font-bold' : 'bg-white/5 border border-white/10 text-white/50 hover:text-white hover:border-white/20'}`}>
                 {g}
               </button>
             ))}

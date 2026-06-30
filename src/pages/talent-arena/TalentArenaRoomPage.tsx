@@ -166,19 +166,19 @@ export default function TalentArenaRoomPage() {
     : [...entries].sort((a, b) => new Date(b.created_at ?? b.id).getTime() - new Date(a.created_at ?? a.id).getTime());
 
   if (loading) return (
-    <div className="min-h-screen bg-[#0A1128] flex items-center justify-center">
+    <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
       <Loader2 className="w-8 h-8 text-[#FFB800] animate-spin" />
     </div>
   );
 
   if (!room) return (
-    <div className="min-h-screen bg-[#0A1128] flex items-center justify-center text-gray-400">
+    <div className="min-h-screen bg-[#0B0814] flex items-center justify-center text-gray-400">
       Competition room not found.
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#0A1128]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
 
       {/* Room hero */}
@@ -186,7 +186,7 @@ export default function TalentArenaRoomPage() {
         {room.cover_url && (
           <img src={room.cover_url} alt="" className="absolute inset-0 w-full h-full object-cover opacity-20" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0A1128]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0B0814]" />
         <div className="relative max-w-7xl mx-auto px-4 py-14">
           <div className="flex items-center gap-2 text-xs text-gray-500 mb-4">
             <Link to="/talent-arena" className="hover:text-white transition-colors">Talent Arena</Link>

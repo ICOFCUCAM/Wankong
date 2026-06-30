@@ -128,7 +128,7 @@ WANKONG reserves the right to update these terms. Material changes will be commu
 
 export default function ContentLicensePage() {
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white flex flex-col">
+    <div className="min-h-screen bg-[#0B0814] text-white flex flex-col">
       <Header />
 
       <main className="flex-1">

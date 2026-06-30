@@ -5,7 +5,7 @@ import RoleSelector from '@/components/auth/RoleSelector';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
-const NAVY   = '#0A1128';
+const NAVY   = '#0B0814';
 const CYAN   = '#00D9FF';
 const PURPLE = '#9D4EDD';
 

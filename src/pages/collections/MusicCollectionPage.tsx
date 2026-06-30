@@ -170,11 +170,11 @@ export default function MusicCollectionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="min-h-screen bg-[#0B0814] text-white">
       <Header />
 
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#0A1128] via-[#100D2E] to-[#0A1128] border-b border-white/5 py-12">
+      <div className="bg-gradient-to-br from-[#0B0814] via-[#100D2E] to-[#0B0814] border-b border-white/5 py-12">
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00D9FF] to-[#9D4EDD] flex items-center justify-center text-xl">🎵</div>
@@ -223,7 +223,7 @@ export default function MusicCollectionPage() {
                   <span className={`text-xs font-semibold text-center leading-tight ${isActive ? 'text-[#00D9FF]' : 'text-white'}`}>
                     {lang.name}
                   </span>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isActive ? 'bg-[#00D9FF] text-[#0A1128]' : 'bg-white/10 text-white/50'}`}>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isActive ? 'bg-[#00D9FF] text-[#0B0814]' : 'bg-white/10 text-white/50'}`}>
                     {lang.trackCount}
                   </span>
                   <div className="flex gap-1 mt-0.5">

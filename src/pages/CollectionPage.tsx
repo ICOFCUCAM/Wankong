@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
+import { asArray } from '@/lib/utils';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
@@ -62,7 +63,7 @@ export default function CollectionPage() {
         else if (sortBy === 'price_desc') query = query.order('price', { ascending: false });
 
         const { data: productData } = await query.limit(48);
-        if (productData) setProducts(productData);
+        setProducts(asArray(productData));
 
         // Talent Arena rooms
         if (isTalentArena) {

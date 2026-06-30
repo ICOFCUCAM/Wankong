@@ -88,9 +88,9 @@ function RoomCard({ room }: { room: CompetitionRoom }) {
             <DefaultPerformanceThumbnail gradient="from-[#9D4EDD]/40 to-[#00D9FF]/20" label={room.title} />
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A1128] via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0B0814] via-transparent to-transparent" />
         {room.prize_pool && (
-          <div className="absolute top-3 right-3 bg-[#FFB800] text-[#0A1128] text-xs font-bold px-2.5 py-1 rounded-xl">
+          <div className="absolute top-3 right-3 bg-[#FFB800] text-[#0B0814] text-xs font-bold px-2.5 py-1 rounded-xl">
             {room.prize_pool}
           </div>
         )}
@@ -279,11 +279,11 @@ export default function TalentArenaCollectionPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="min-h-screen bg-[#0B0814] text-white">
       <Header />
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[#0A1128] via-[#100D2E] to-[#0A1128] border-b border-white/5 py-16">
+      <div className="relative overflow-hidden bg-gradient-to-br from-[#0B0814] via-[#100D2E] to-[#0B0814] border-b border-white/5 py-16">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(157,78,221,0.15),transparent_60%)]" />
 
         <div className="relative max-w-7xl mx-auto px-4 lg:px-8">
@@ -430,7 +430,7 @@ export default function TalentArenaCollectionPage() {
                 )}
               </div>
             ))}
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0A1128]/60" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0B0814]/60" />
           </div>
 
           {/* CTA body */}

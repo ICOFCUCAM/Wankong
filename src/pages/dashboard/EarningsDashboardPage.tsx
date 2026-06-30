@@ -144,7 +144,7 @@ function WithdrawalModal({ userId, maxAmount, onClose, onSuccess }: WithdrawalMo
             <select
               value={method}
               onChange={e => setMethod(e.target.value)}
-              className="w-full bg-[#0A1128] border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#FFB800]/50"
+              className="w-full bg-[#0B0814] border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#FFB800]/50"
             >
               {['PayPal', 'Bank Transfer', 'Mobile Money'].map(m => (
                 <option key={m} value={m}>{m}</option>
@@ -262,14 +262,14 @@ export default function EarningsDashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
         <Loader2 className="w-8 h-8 text-[#FFB800] animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="min-h-screen bg-[#0B0814] text-white">
       <Header />
 
       {showWithdrawal && userId && (
@@ -305,7 +305,7 @@ export default function EarningsDashboardPage() {
       )}
 
       {/* Hero — large gold total earnings number */}
-      <div className="bg-gradient-to-br from-[#0A1128] via-[#100D2E] to-[#0A1128] border-b border-white/5 py-12">
+      <div className="bg-gradient-to-br from-[#0B0814] via-[#100D2E] to-[#0B0814] border-b border-white/5 py-12">
         <div className="max-w-5xl mx-auto px-4 lg:px-8">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FFB800] to-[#FF6B00] flex items-center justify-center">

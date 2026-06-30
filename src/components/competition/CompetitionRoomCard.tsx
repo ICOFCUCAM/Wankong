@@ -61,7 +61,7 @@ export default function CompetitionRoomCard({ room, onEnter }: Props) {
             />
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A1128]/90 via-[#0A1128]/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0B0814]/90 via-[#0B0814]/20 to-transparent" />
 
         {/* Status badge */}
         <div className="absolute top-2.5 left-2.5">
@@ -72,7 +72,7 @@ export default function CompetitionRoomCard({ room, onEnter }: Props) {
 
         {/* Prize badge */}
         {prize && (
-          <div className="absolute top-2.5 right-2.5 flex items-center gap-1 bg-[#FFB800] text-[#0A1128] text-[10px] font-black px-2 py-0.5 rounded-lg">
+          <div className="absolute top-2.5 right-2.5 flex items-center gap-1 bg-[#FFB800] text-[#0B0814] text-[10px] font-black px-2 py-0.5 rounded-lg">
             <Trophy className="w-2.5 h-2.5" />
             {prize}
           </div>

@@ -71,9 +71,9 @@ function PodcastCard({
               <p className="text-gray-400 text-xs mt-0.5 truncate">{podcast.authors?.name ?? t('common.unknown', 'Unknown')}</p>
             </div>
             {podcast.price === 0 ? (
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#00F5A0] text-[#0A1128] font-bold shrink-0">{t('common.free')}</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#00F5A0] text-[#0B0814] font-bold shrink-0">{t('common.free')}</span>
             ) : (
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#FFB800] text-[#0A1128] font-bold shrink-0">${podcast.price}</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#FFB800] text-[#0B0814] font-bold shrink-0">${podcast.price}</span>
             )}
           </div>
 
@@ -205,11 +205,11 @@ export default function PodcastsCollectionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="min-h-screen bg-[#0B0814] text-white">
       <Header />
 
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#0A1128] via-[#100D2E] to-[#0A1128] border-b border-white/5 py-12">
+      <div className="bg-gradient-to-br from-[#0B0814] via-[#100D2E] to-[#0B0814] border-b border-white/5 py-12">
         <div className="max-w-5xl mx-auto px-4 lg:px-8">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#9D4EDD] to-[#00F5A0] flex items-center justify-center text-xl">🎙️</div>

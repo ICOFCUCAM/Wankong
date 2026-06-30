@@ -599,13 +599,13 @@ function NowPlayingModal() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-stretch overflow-hidden"
-      style={{ background: `linear-gradient(150deg, ${bgColor}dd 0%, #0A1128 55%)` }}>
+      style={{ background: `linear-gradient(150deg, ${bgColor}dd 0%, #0B0814 55%)` }}>
       {/* Spotify Canvas looping video */}
       {currentTrack.canvasUrl && (
         <video src={currentTrack.canvasUrl} autoPlay muted loop playsInline
           className="absolute inset-0 w-full h-full object-cover opacity-15 pointer-events-none" />
       )}
-      <div className="absolute inset-0" style={{ background: `linear-gradient(150deg,${bgColor}88 0%,#0A112888 100%)`, backdropFilter: 'blur(40px)' }} />
+      <div className="absolute inset-0" style={{ background: `linear-gradient(150deg,${bgColor}88 0%,#0B081488 100%)`, backdropFilter: 'blur(40px)' }} />
 
       <div className="relative flex-1 flex flex-col items-center justify-between py-10 px-6 max-w-sm mx-auto w-full">
         {/* Top */}
@@ -671,8 +671,8 @@ function NowPlayingModal() {
           <button onClick={togglePlay}
             className="w-16 h-16 rounded-full bg-white shadow-2xl shadow-black/40 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform">
             {isPlaying
-              ? <Pause className="w-7 h-7 text-[#0A1128]" />
-              : <Play className="w-7 h-7 text-[#0A1128] ml-1" />}
+              ? <Pause className="w-7 h-7 text-[#0B0814]" />
+              : <Play className="w-7 h-7 text-[#0B0814] ml-1" />}
           </button>
           <button onClick={next} className="text-white/60 hover:text-white transition-colors"><SkipForward className="w-7 h-7" /></button>
           <button onClick={cycleRepeat} className={`transition-colors ${repeat !== 'off' ? 'text-[#00D9FF]' : 'text-white/30 hover:text-white'}`}>
@@ -687,7 +687,7 @@ function NowPlayingModal() {
             <button key={r} onClick={() => setPlaybackRate(r)}
               className={`px-2 py-1 rounded-full text-[11px] font-bold transition-all ${
                 playbackRate === r
-                  ? 'bg-[#00D9FF] text-[#0A1128]'
+                  ? 'bg-[#00D9FF] text-[#0B0814]'
                   : 'bg-white/10 text-white/50 hover:bg-white/20 hover:text-white'
               }`}>
               {r}×
@@ -814,7 +814,7 @@ export default function GlobalPlayer() {
                 className={`p-1.5 rounded-lg transition-all relative ${showQueue ? 'text-[#00D9FF] bg-[#00D9FF]/10' : 'text-white/30 hover:text-white'}`}>
                 <ListMusic className="w-4 h-4" />
                 {queue.length > 0 && (
-                  <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-[#00D9FF] text-[#0A1128] text-[8px] font-black flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-[#00D9FF] text-[#0B0814] text-[8px] font-black flex items-center justify-center">
                     {queue.length > 9 ? '9+' : queue.length}
                   </span>
                 )}

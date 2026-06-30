@@ -177,7 +177,7 @@ export default function BookUploadPage() {
   // ── Success screen ────────────────────────────────────────────────────────
   if (success) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[#0B0814] flex items-center justify-center px-4">
         <div className="text-center max-w-sm">
           <div className="w-20 h-20 bg-[#FFB800]/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <BookOpen className="w-10 h-10 text-[#FFB800]" />
@@ -215,7 +215,7 @@ export default function BookUploadPage() {
   const fileColor: Record<string, string> = { PDF: '#FF6B00', EPUB: '#00D9FF', MOBI: '#9D4EDD' };
 
   return (
-    <div className="min-h-screen bg-[#0A1128]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
 
       <div className="max-w-4xl mx-auto px-4 lg:px-8 py-12">

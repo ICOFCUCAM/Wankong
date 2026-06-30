@@ -86,7 +86,7 @@ const SubtitleSelector: React.FC<SubtitleSelectorProps> = ({ entryId, onSelect }
         className={[
           'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold transition-all duration-150',
           selected === 'off' || selected === null
-            ? 'bg-[#00D9FF] text-[#0A1128]'
+            ? 'bg-[#00D9FF] text-[#0B0814]'
             : 'bg-[#1A2240] border border-[#2d3a5a] text-gray-300 hover:border-[#00D9FF]',
         ].join(' ')}
       >
@@ -101,7 +101,7 @@ const SubtitleSelector: React.FC<SubtitleSelectorProps> = ({ entryId, onSelect }
           className={[
             'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-all duration-150',
             selected === sub.language_code
-              ? 'bg-[#00D9FF] text-[#0A1128]'
+              ? 'bg-[#00D9FF] text-[#0B0814]'
               : 'bg-[#1A2240] border border-[#2d3a5a] text-gray-300 hover:border-[#00D9FF]',
           ].join(' ')}
           title={sub.language_name}

@@ -65,7 +65,7 @@ export default function CareersPage() {
   const filtered = selectedDept === 'All' ? OPENINGS : OPENINGS.filter(o => o.dept === selectedDept);
 
   return (
-    <div className="min-h-screen bg-[#0A1128]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
 
       {/* Hero */}

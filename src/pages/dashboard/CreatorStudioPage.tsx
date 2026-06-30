@@ -124,7 +124,7 @@ export default function CreatorStudioPage() {
   const fmtMoney = (n: number) => `$${n.toFixed(2)}`;
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="min-h-screen bg-[#0B0814] text-white">
       <Header />
 
       <div className="max-w-5xl mx-auto px-4 lg:px-8 py-12">

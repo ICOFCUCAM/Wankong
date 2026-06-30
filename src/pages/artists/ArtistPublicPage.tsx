@@ -22,14 +22,14 @@ interface Artist {
 }
 
 const GENRE_GRADIENTS: Record<string, string> = {
-  Gospel:    'from-purple-900 via-indigo-900 to-[#0A1128]',
-  Afrobeats: 'from-orange-900 via-yellow-900 to-[#0A1128]',
-  'Hip-Hop': 'from-gray-800 via-gray-900 to-[#0A1128]',
-  Classical: 'from-amber-900 via-yellow-900 to-[#0A1128]',
-  Jazz:      'from-blue-900 via-cyan-900 to-[#0A1128]',
-  'R&B':     'from-pink-900 via-purple-900 to-[#0A1128]',
-  Praise:    'from-[#9D4EDD]/40 via-indigo-900 to-[#0A1128]',
-  Worship:   'from-[#00D9FF]/20 via-indigo-900 to-[#0A1128]',
+  Gospel:    'from-purple-900 via-indigo-900 to-[#0B0814]',
+  Afrobeats: 'from-orange-900 via-yellow-900 to-[#0B0814]',
+  'Hip-Hop': 'from-gray-800 via-gray-900 to-[#0B0814]',
+  Classical: 'from-amber-900 via-yellow-900 to-[#0B0814]',
+  Jazz:      'from-blue-900 via-cyan-900 to-[#0B0814]',
+  'R&B':     'from-pink-900 via-purple-900 to-[#0B0814]',
+  Praise:    'from-[#9D4EDD]/40 via-indigo-900 to-[#0B0814]',
+  Worship:   'from-[#00D9FF]/20 via-indigo-900 to-[#0B0814]',
 };
 
 function fmt(n: number): string {
@@ -152,7 +152,7 @@ export default function ArtistPublicPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A1128]">
+      <div className="min-h-screen bg-[#0B0814]">
         <Header />
         <div className="animate-pulse max-w-5xl mx-auto px-4 py-10 space-y-6">
           <div className="h-56 rounded-2xl bg-white/5" />
@@ -171,7 +171,7 @@ export default function ArtistPublicPage() {
 
   if (!artist) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex flex-col items-center justify-center gap-4">
+      <div className="min-h-screen bg-[#0B0814] flex flex-col items-center justify-center gap-4">
         <Header />
         <p className="text-2xl font-bold text-white">Artist not found</p>
         <Link to="/" className="text-[#00D9FF] hover:underline">Back to homepage</Link>
@@ -179,7 +179,7 @@ export default function ArtistPublicPage() {
     );
   }
 
-  const gradient = GENRE_GRADIENTS[artist.genre] ?? 'from-[#9D4EDD]/30 via-[#0A1128] to-[#0A1128]';
+  const gradient = GENRE_GRADIENTS[artist.genre] ?? 'from-[#9D4EDD]/30 via-[#0B0814] to-[#0B0814]';
   const totalReleases = releases.length + tracks.length;
 
   const STATUS_COLORS: Record<string, string> = {
@@ -191,7 +191,7 @@ export default function ArtistPublicPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="min-h-screen bg-[#0B0814] text-white">
       <Header />
 
       {/* Hero Banner */}
@@ -203,7 +203,7 @@ export default function ArtistPublicPage() {
             className="absolute inset-0 w-full h-full object-cover opacity-25"
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A1128] via-[#0A1128]/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0B0814] via-[#0B0814]/40 to-transparent" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(0,217,255,0.08),transparent_60%)]" />
       </div>
 
@@ -215,7 +215,7 @@ export default function ArtistPublicPage() {
               <img
                 src={artist.photo_url}
                 alt={artist.name}
-                className="w-32 h-32 sm:w-36 sm:h-36 rounded-full border-4 border-[#0A1128] object-cover bg-white/10 shadow-2xl"
+                className="w-32 h-32 sm:w-36 sm:h-36 rounded-full border-4 border-[#0B0814] object-cover bg-white/10 shadow-2xl"
                 onError={e => {
                   (e.target as HTMLImageElement).src =
                     `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(artist.name)}`;
@@ -223,7 +223,7 @@ export default function ArtistPublicPage() {
               />
             ) : (
               <div
-                className="w-32 h-32 sm:w-36 sm:h-36 rounded-full border-4 border-[#0A1128] bg-gradient-to-br from-[#9D4EDD] to-[#00D9FF] flex items-center justify-center shadow-2xl"
+                className="w-32 h-32 sm:w-36 sm:h-36 rounded-full border-4 border-[#0B0814] bg-gradient-to-br from-[#9D4EDD] to-[#00D9FF] flex items-center justify-center shadow-2xl"
               >
                 <span className="text-4xl font-black text-white">
                   {artist.name.charAt(0).toUpperCase()}
@@ -231,8 +231,8 @@ export default function ArtistPublicPage() {
               </div>
             )}
             {artist.verified && (
-              <span className="absolute bottom-1 right-1 w-7 h-7 bg-[#00D9FF] rounded-full flex items-center justify-center border-2 border-[#0A1128] shadow">
-                <svg className="w-3.5 h-3.5 text-[#0A1128]" fill="currentColor" viewBox="0 0 20 20">
+              <span className="absolute bottom-1 right-1 w-7 h-7 bg-[#00D9FF] rounded-full flex items-center justify-center border-2 border-[#0B0814] shadow">
+                <svg className="w-3.5 h-3.5 text-[#0B0814]" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
               </span>

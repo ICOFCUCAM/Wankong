@@ -43,7 +43,7 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, EBSta
       return (
         <div style={{
           minHeight: '100vh',
-          background: '#0A1128',
+          background: '#0B0814',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

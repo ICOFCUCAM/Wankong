@@ -148,14 +148,14 @@ const CreatorLevelProgress: React.FC<Props> = ({ userId }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
         <Loader2 className="w-10 h-10 text-[#00D9FF] animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white p-6">
+    <div className="min-h-screen bg-[#0B0814] text-white p-6">
       <div className="max-w-3xl mx-auto flex flex-col gap-6">
 
         {/* Header */}
@@ -214,7 +214,7 @@ const CreatorLevelProgress: React.FC<Props> = ({ userId }) => {
                 <span style={{ color: levelColor }} className="font-semibold">Max Level!</span>
               )}
             </div>
-            <div className="h-3 bg-[#0A1128] rounded-full overflow-hidden">
+            <div className="h-3 bg-[#0B0814] rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-700"
                 style={{
@@ -260,7 +260,7 @@ const CreatorLevelProgress: React.FC<Props> = ({ userId }) => {
                 return (
                   <div
                     key={earning.id}
-                    className="flex items-center justify-between bg-[#0A1128] rounded-xl px-4 py-3"
+                    className="flex items-center justify-between bg-[#0B0814] rounded-xl px-4 py-3"
                   >
                     <div className="flex items-center gap-3">
                       <div
@@ -298,7 +298,7 @@ const CreatorLevelProgress: React.FC<Props> = ({ userId }) => {
               return (
                 <div
                   key={cat}
-                  className="flex items-center justify-between bg-[#0A1128] rounded-xl px-4 py-3"
+                  className="flex items-center justify-between bg-[#0B0814] rounded-xl px-4 py-3"
                 >
                   <div className="flex items-center gap-3">
                     <div

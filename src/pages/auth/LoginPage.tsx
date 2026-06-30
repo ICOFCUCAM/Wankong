@@ -26,7 +26,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A1128] flex items-center justify-center px-4 py-16">
+    <div className="min-h-screen bg-[#0B0814] flex items-center justify-center px-4 py-16">
       <div className="w-full max-w-md">
 
         {/* Logo */}

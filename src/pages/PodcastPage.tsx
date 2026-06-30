@@ -111,7 +111,7 @@ function EpisodeRow({ ep, show, isPlaying, isActive, onPlay, listened, onToggleL
               style={{ background: isActive ? '#00D9FF' : 'rgba(0,217,255,0.15)' }}>
               {isActive && isPlaying
                 ? <Pause className="w-4 h-4 text-white fill-white" />
-                : <Play  className="w-4 h-4 fill-[#00D9FF]" style={isActive ? { fill: '#0A1128' } : undefined} />}
+                : <Play  className="w-4 h-4 fill-[#00D9FF]" style={isActive ? { fill: '#0B0814' } : undefined} />}
             </button>
           </div>
 
@@ -224,7 +224,7 @@ export default function PodcastPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-[#00D9FF] border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -232,7 +232,7 @@ export default function PodcastPage() {
 
   if (!show) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex flex-col items-center justify-center text-center px-6">
+      <div className="min-h-screen bg-[#0B0814] flex flex-col items-center justify-center text-center px-6">
         <Mic2 className="w-12 h-12 text-white/20 mb-4" />
         <h1 className="text-white text-xl font-bold mb-2">Podcast not found</h1>
         <Link to="/collections/podcasts" className="text-[#00D9FF] text-sm hover:underline">Browse Podcasts</Link>
@@ -243,12 +243,12 @@ export default function PodcastPage() {
   const listenedCount = episodes.filter(e => listened.has(e.id)).length;
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="min-h-screen bg-[#0B0814] text-white">
       <Header />
 
       {/* Header gradient */}
       <div className="relative pt-16 overflow-hidden"
-        style={{ background: 'linear-gradient(180deg,rgba(0,217,255,0.15) 0%,#0A1128 100%)' }}>
+        style={{ background: 'linear-gradient(180deg,rgba(0,217,255,0.15) 0%,#0B0814 100%)' }}>
         <div className="max-w-4xl mx-auto px-4 lg:px-8 pt-8 pb-10">
           <Link to="/collections/podcasts"
             className="inline-flex items-center gap-1.5 text-white/40 hover:text-white text-sm mb-6 transition-colors">
