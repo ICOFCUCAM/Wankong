@@ -173,6 +173,13 @@ function langsForContinent(key: string) {
     .map(n => ALL_LANGUAGES.find(l => l.lang === n))
     .filter(Boolean) as typeof ALL_LANGUAGES;
 }
+const CONTINENT_STATS: Record<string, { langs: number; songs: number; artists: number }> = {
+  Global:   { langs: 52, songs: 8.2, artists: 420 },
+  Africa:   { langs: 43, songs: 3.1, artists: 180 },
+  Europe:   { langs: 24, songs: 2.4, artists: 110 },
+  Asia:     { langs: 30, songs: 1.9, artists: 95 },
+  Americas: { langs: 18, songs: 1.6, artists: 88 },
+};
 
 // ── Equalizer (decorative waveform) ───────────────────────────────────────────
 const EQ_PATTERN = [30, 55, 40, 78, 52, 88, 44, 66, 34, 72, 50, 90, 40, 60, 28, 82, 56, 46, 70, 38, 62, 36, 76, 48];
@@ -685,34 +692,55 @@ export default function AppLayout() {
           </div>
           </Reveal>
 
-          <div className="grid lg:grid-cols-[260px_1fr] gap-10 lg:gap-12 items-center">
-            {/* Globe + continent selector */}
-            <div className="flex flex-col items-center gap-7">
-              <div className="relative">
-                <div className="absolute -inset-8 rounded-full bg-[#9D4EDD]/25 blur-3xl wk-aurora" />
-                <div className="relative w-52 h-52 rounded-full overflow-hidden border border-white/10 shadow-2xl" style={{ background: 'radial-gradient(circle at 34% 28%, #1b2c5e, #0c1430 55%, #060912 100%)' }}>
-                  {/* rotating dotted world map */}
-                  <div
-                    className="absolute inset-y-0 -inset-x-[2%] wk-worldspin"
-                    style={{ backgroundImage: 'url(/world-dots.svg)', backgroundSize: 'auto 70%', backgroundPosition: 'center', backgroundRepeat: 'repeat-x' }}
-                  />
-                  {/* meridian lines for sphere structure */}
-                  <svg viewBox="0 0 208 208" className="absolute inset-0 w-full h-full pointer-events-none">
-                    <g fill="none" strokeWidth="0.8" stroke="#ffffff" strokeOpacity="0.08">
-                      <ellipse cx="104" cy="104" rx="34" ry="92" />
-                      <ellipse cx="104" cy="104" rx="68" ry="92" />
-                      <ellipse cx="104" cy="104" rx="92" ry="40" />
-                      <ellipse cx="104" cy="104" rx="92" ry="74" />
-                    </g>
-                  </svg>
-                  {/* sphere shading: highlight + darkened rim for curvature */}
-                  <div className="absolute inset-0 rounded-full" style={{ background: 'radial-gradient(circle at 32% 26%, rgba(255,255,255,0.28), transparent 42%)' }} />
-                  <div className="absolute inset-0 rounded-full" style={{ boxShadow: 'inset -18px -22px 44px rgba(0,0,0,0.75), inset 12px 12px 30px rgba(124,77,255,0.18)' }} />
+          <div className="grid lg:grid-cols-[380px_1fr] gap-10 lg:gap-14 items-center">
+            {/* Interactive globe + continent selector */}
+            <div className="flex flex-col items-center gap-6">
+              <div className="relative w-[300px] h-[300px] max-w-full">
+                {/* aurora atmosphere */}
+                <div className="absolute inset-[-6%] rounded-full blur-3xl opacity-70 wk-aurora" style={{ background: 'radial-gradient(circle at 50% 45%, rgba(157,78,221,0.55), rgba(0,217,255,0.22) 52%, transparent 72%)' }} />
+                {/* faint orbital rings (music · books · videos · podcasts · distribution) */}
+                <svg viewBox="0 0 300 300" className="absolute inset-0 w-full h-full pointer-events-none">
+                  <g fill="none" className="wk-rings" style={{ transformOrigin: '150px 150px' }}>
+                    <ellipse cx="150" cy="150" rx="146" ry="46" stroke="#9D4EDD" strokeOpacity="0.18" />
+                    <ellipse cx="150" cy="150" rx="140" ry="40" stroke="#00D9FF" strokeOpacity="0.14" transform="rotate(20 150 150)" />
+                    <ellipse cx="150" cy="150" rx="148" ry="56" stroke="#FF3B9A" strokeOpacity="0.10" transform="rotate(-22 150 150)" />
+                  </g>
+                </svg>
+                {/* floating particles */}
+                {[
+                  { t: '8%', l: '18%', c: '#00D9FF', d: '0s' }, { t: '22%', l: '86%', c: '#9D4EDD', d: '1.1s' },
+                  { t: '74%', l: '10%', c: '#FF3B9A', d: '2s' }, { t: '88%', l: '70%', c: '#00F5A0', d: '0.6s' },
+                  { t: '46%', l: '94%', c: '#00D9FF', d: '1.6s' }, { t: '60%', l: '4%', c: '#9D4EDD', d: '2.4s' },
+                ].map((p, i) => (
+                  <span key={i} className="absolute w-1.5 h-1.5 rounded-full wk-float" style={{ top: p.t, left: p.l, backgroundColor: p.c, boxShadow: `0 0 8px ${p.c}`, animationDelay: p.d }} />
+                ))}
+                {/* dotted Earth sphere (rotating) */}
+                <div className="absolute inset-[5%] rounded-full overflow-hidden border border-white/10 shadow-2xl" style={{ background: 'radial-gradient(circle at 34% 28%, #25407e, #0d1530 58%, #060912 100%)' }}>
+                  <div className="absolute inset-y-0 -inset-x-[2%] wk-worldspin" style={{ backgroundImage: 'url(/world-dots.svg)', backgroundSize: 'auto 64%', backgroundPosition: 'center', backgroundRepeat: 'repeat-x' }} />
+                  <div className="absolute inset-0 rounded-full" style={{ background: 'radial-gradient(circle at 32% 26%, rgba(255,255,255,0.26), transparent 44%)' }} />
+                  <div className="absolute inset-0 rounded-full" style={{ boxShadow: 'inset -16px -20px 42px rgba(0,0,0,0.72), inset 10px 10px 26px rgba(124,77,255,0.16)' }} />
                   <div className="absolute inset-0 rounded-full ring-1 ring-inset ring-[#00D9FF]/20" />
                 </div>
-                <span className="absolute top-1/2 left-1/2 w-2.5 h-2.5 -ml-1 -mt-1 rounded-full bg-[#00D9FF] shadow-[0_0_12px_#00D9FF] wk-orbit" />
+                {/* glowing music hotspots + neural connection lines */}
+                <svg viewBox="0 0 300 300" className="absolute inset-0 w-full h-full pointer-events-none">
+                  <g fill="none" stroke="#00D9FF" strokeOpacity="0.35" strokeWidth="1" strokeDasharray="3 6" className="wk-flow">
+                    <path d="M96,150 L138,108 L150,158 L196,124 L172,182 L132,176 Z" />
+                  </g>
+                  {[
+                    { x: 138, y: 108, c: '#9D6BFF' }, { x: 150, y: 158, c: '#34E1FF' },
+                    { x: 132, y: 176, c: '#00F5A0' }, { x: 172, y: 182, c: '#FF3B9A' },
+                    { x: 196, y: 124, c: '#34E1FF' }, { x: 96, y: 150, c: '#9D6BFF' },
+                  ].map((h, i) => (
+                    <g key={i}>
+                      <circle cx={h.x} cy={h.y} r="9" fill={h.c} opacity="0.22" className="wk-pulse-dot" style={{ animationDelay: `${i * 0.4}s` }} />
+                      <circle cx={h.x} cy={h.y} r="2.6" fill={h.c} style={{ filter: `drop-shadow(0 0 4px ${h.c})` }} />
+                    </g>
+                  ))}
+                </svg>
               </div>
-              <div className="flex flex-wrap justify-center gap-2 max-w-[260px]">
+
+              {/* continent selector */}
+              <div className="flex flex-wrap justify-center gap-2 max-w-[330px]">
                 {CONTINENTS.map(c => (
                   <button
                     key={c.key}
@@ -721,6 +749,20 @@ export default function AppLayout() {
                   >
                     {c.emoji} {c.label}
                   </button>
+                ))}
+              </div>
+
+              {/* live per-continent stats */}
+              <div key={continent} className="grid grid-cols-3 gap-2.5 w-full max-w-[330px]">
+                {[
+                  { to: (CONTINENT_STATS[continent] ?? CONTINENT_STATS.Global).langs, suffix: '', label: 'Languages' },
+                  { to: (CONTINENT_STATS[continent] ?? CONTINENT_STATS.Global).songs, suffix: 'M', decimals: 1, label: 'Songs' },
+                  { to: (CONTINENT_STATS[continent] ?? CONTINENT_STATS.Global).artists, suffix: 'K', label: 'Artists' },
+                ].map(s => (
+                  <div key={s.label} className="rounded-xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-2.5 text-center">
+                    <p className="text-white font-black text-base leading-none mb-1"><CountUp to={s.to} suffix={s.suffix} decimals={s.decimals ?? 0} /></p>
+                    <p className="text-white/40 text-[10px] uppercase tracking-wide">{s.label}</p>
+                  </div>
                 ))}
               </div>
             </div>

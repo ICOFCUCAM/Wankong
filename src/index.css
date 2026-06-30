@@ -197,3 +197,13 @@ input[type="range"]::-webkit-slider-thumb {
 /* ── Dotted world globe spin ─────────────────────────────────────────────── */
 .wk-worldspin { animation: wk-worldspin 26s linear infinite; }
 @keyframes wk-worldspin { from { background-position-x: 0; } to { background-position-x: -416px; } }
+
+/* ── Globe orbital rings + particles ─────────────────────────────────────── */
+.wk-rings { animation: wk-rings 40s linear infinite; transform-box: fill-box; }
+@keyframes wk-rings { to { transform: rotate(360deg); } }
+.wk-float { animation: wk-float 6s ease-in-out infinite; }
+@keyframes wk-float { 0%,100% { transform: translateY(0) scale(1); opacity:.5; } 50% { transform: translateY(-10px) scale(1.4); opacity:1; } }
+
+/* ── Globe hotspots ──────────────────────────────────────────────────────── */
+.wk-pulse-dot { transform-box: fill-box; transform-origin: center; animation: wk-pulse-dot 2.4s ease-out infinite; }
+@keyframes wk-pulse-dot { 0% { transform: scale(0.6); opacity: .5; } 70% { opacity: 0; } 100% { transform: scale(2.4); opacity: 0; } }
