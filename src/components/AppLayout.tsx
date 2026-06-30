@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase';
 import Header from './Header';
 import Footer from './Footer';
 import ProductCard from './ProductCard';
-import { Play, Pause, Zap, Music, BookOpen, Video, Mic, Trophy, Globe, Users, DollarSign, TrendingUp, ArrowRight, Headphones, Radio, Star, ChevronRight, ChevronLeft, Clock, ShieldCheck, BarChart3, CreditCard, MoreVertical, Heart, Shuffle, SkipBack, SkipForward, Repeat, SlidersHorizontal, Megaphone, Palette, Scissors, Wand2, Quote } from 'lucide-react';
+import { Play, Pause, Zap, Music, BookOpen, Video, Mic, Trophy, Globe, Users, DollarSign, TrendingUp, ArrowRight, Headphones, Radio, Star, ChevronRight, ChevronLeft, Clock, ShieldCheck, BarChart3, CreditCard, MoreVertical, Heart, Shuffle, SkipBack, SkipForward, Repeat, SlidersHorizontal, Megaphone, Palette, Scissors, Wand2, Quote, Check, ChevronDown, UploadCloud, Rocket } from 'lucide-react';
 import { usePlayer } from './GlobalPlayer';
 import { asArray } from '@/lib/utils';
 import FeaturedPerformancesGrid from './home/FeaturedPerformancesGrid';
@@ -288,6 +288,7 @@ export default function AppLayout() {
   const [langMode, setLangMode] = useState<'region' | 'global'>('region');
   const [continent, setContinent] = useState<string>('Global');
   const continentLangs = langsForContinent(continent);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   // Talent Arena live battle (mock real-time)
   const [battleVotes, setBattleVotes] = useState({ a: 64218, b: 62224 });
@@ -1517,6 +1518,128 @@ export default function AppLayout() {
             ))}
           </div>
           </Reveal>
+        </div>
+      </section>
+
+      {/* ── PRESS / FEATURED ──────────────────────────────────────────── */}
+      <section className="py-10 border-y border-white/5">
+        <div className="max-w-7xl mx-auto px-4">
+          <p className="text-center text-white/30 text-xs uppercase tracking-[0.2em] mb-5">Trusted &amp; featured across the industry</p>
+          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
+            {['AfroBeats Daily', 'Gospel Now', 'TechCrunch', 'Music Africa', 'The Distributor', 'Creator Weekly'].map(n => (
+              <span key={n} className="text-white/35 hover:text-white/60 transition-colors font-bold text-base md:text-lg tracking-tight">{n}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── HOW IT WORKS ──────────────────────────────────────────────── */}
+      <section className="py-16 relative">
+        <div className="max-w-7xl mx-auto px-4">
+          <Reveal>
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#00D9FF]/10 border border-[#00D9FF]/20 rounded-full text-[#00D9FF] text-xs font-semibold mb-3">How it works</div>
+            <h2 className="text-3xl md:text-4xl font-black text-white mb-2">From upload to payout in 3 steps</h2>
+            <p className="text-white/40 text-sm">Go global — without the gatekeepers.</p>
+          </div>
+          </Reveal>
+          <div className="grid md:grid-cols-3 gap-8 relative">
+            <div className="hidden md:block absolute top-12 left-[17%] right-[17%] h-px bg-gradient-to-r from-[#9D4EDD]/40 via-[#00D9FF]/40 to-[#00F5A0]/40" />
+            {[
+              { icon: UploadCloud, title: 'Upload', desc: 'Drop your music, books, audiobooks or videos. Add cover art, languages and pricing.', grad: 'from-[#9D4EDD] to-[#6D2EBD]' },
+              { icon: Rocket,      title: 'Distribute', desc: 'Our AI engine delivers to 30+ stores — Spotify, Apple, TikTok, YouTube and more.', grad: 'from-[#00D9FF] to-[#0E7C9E]' },
+              { icon: DollarSign,  title: 'Get Paid', desc: 'Track streams in real time and keep 100% of your royalties, paid out worldwide.', grad: 'from-[#00F5A0] to-[#0E9E6E]' },
+            ].map((s, i) => (
+              <Reveal key={s.title} delay={i * 110}>
+                <div className="relative text-center">
+                  <div className={`relative mx-auto w-24 h-24 rounded-2xl bg-gradient-to-br ${s.grad} flex items-center justify-center mb-5 shadow-xl`}>
+                    <s.icon className="w-10 h-10 text-white" />
+                    <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-white text-[#0B0814] font-black flex items-center justify-center text-sm shadow">{i + 1}</span>
+                  </div>
+                  <h3 className="text-white font-bold text-lg mb-2">{s.title}</h3>
+                  <p className="text-white/45 text-sm max-w-xs mx-auto leading-relaxed">{s.desc}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── PRICING ───────────────────────────────────────────────────── */}
+      <section className="py-16 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(157,78,221,0.08),transparent_70%)]" />
+        <div className="relative max-w-7xl mx-auto px-4">
+          <Reveal>
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#FFB800]/10 border border-[#FFB800]/20 rounded-full text-[#FFB800] text-xs font-semibold mb-3">Pricing</div>
+            <h2 className="text-3xl md:text-4xl font-black text-white mb-2">Simple, creator-first pricing</h2>
+            <p className="text-white/40 text-sm">Keep 100% of your royalties — always.</p>
+          </div>
+          </Reveal>
+          <div className="grid md:grid-cols-3 gap-5 max-w-5xl mx-auto items-stretch">
+            {[
+              { name: 'Starter', price: '$0', sub: 'Forever free', featured: false, cta: 'Start Free', accent: '#00D9FF', features: ['Upload unlimited tracks', 'Sell on the WANKONG store', 'Basic analytics', 'Community support'] },
+              { name: 'Pro', price: '$9', sub: 'per month', featured: true, cta: 'Go Pro', accent: '#9D4EDD', features: ['Everything in Starter', 'Distribute to 30+ platforms', 'Real-time royalty tracking', 'Talent Arena entry', 'Priority support'] },
+              { name: 'Label', price: '$29', sub: 'per month', featured: false, cta: 'Contact Sales', accent: '#FFB800', features: ['Everything in Pro', 'Multi-artist roster', 'Royalty splits & teams', 'Custom branding', 'Dedicated manager'] },
+            ].map((p, i) => (
+              <Reveal key={p.name} delay={i * 90} className="h-full">
+                <div className={`relative h-full rounded-2xl p-6 flex flex-col transition-all duration-300 hover:-translate-y-1.5 ${p.featured ? 'border-2 border-[#9D4EDD]/60 bg-gradient-to-b from-[#9D4EDD]/12 to-transparent shadow-xl shadow-[#9D4EDD]/15' : 'border border-white/10 bg-white/[0.03]'}`}>
+                  {p.featured && <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] text-white text-[10px] font-black rounded-full uppercase tracking-wide">Most Popular</span>}
+                  <p className="text-white font-bold text-lg">{p.name}</p>
+                  <div className="flex items-baseline gap-1 mt-2 mb-1">
+                    <span className="text-4xl font-black text-white">{p.price}</span>
+                    <span className="text-white/40 text-sm">/{p.sub.includes('month') ? 'mo' : 'free'}</span>
+                  </div>
+                  <p className="text-white/40 text-xs mb-5">{p.sub}</p>
+                  <ul className="space-y-2.5 mb-6 flex-1">
+                    {p.features.map(f => (
+                      <li key={f} className="flex items-start gap-2 text-sm text-white/70">
+                        <Check className="w-4 h-4 mt-0.5 shrink-0" style={{ color: p.accent }} />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link to="/pricing" className={`mt-auto block text-center py-3 rounded-xl font-bold text-sm transition-all ${p.featured ? 'bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] text-white hover:opacity-90' : 'bg-white/5 border border-white/15 text-white hover:bg-white/10'}`}>{p.cta}</Link>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FAQ ───────────────────────────────────────────────────────── */}
+      <section className="py-16">
+        <div className="max-w-3xl mx-auto px-4">
+          <Reveal>
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#00F5A0]/10 border border-[#00F5A0]/20 rounded-full text-[#00F5A0] text-xs font-semibold mb-3">FAQ</div>
+            <h2 className="text-3xl md:text-4xl font-black text-white mb-2">Questions? Answered.</h2>
+            <p className="text-white/40 text-sm">Everything you need to know before you start.</p>
+          </div>
+          </Reveal>
+          <div className="space-y-3">
+            {[
+              { q: 'Do I keep my royalties?', a: 'Yes — 100%. WANKONG never takes a cut of your streaming or sales royalties. You only pay your plan fee.' },
+              { q: 'Which platforms do you distribute to?', a: 'Spotify, Apple Music, YouTube Music, TikTok, Amazon Music, Deezer, Tidal, Boomplay and 20+ more — over 30 stores worldwide.' },
+              { q: 'Can I publish books and audiobooks too?', a: 'Absolutely. WANKONG is a full creator marketplace — music, eBooks, audiobooks, videos and podcasts, in multiple languages.' },
+              { q: 'How fast do I get paid?', a: 'Royalties are tracked in real time and paid out monthly via Stripe, M-Pesa, MTN MoMo and more.' },
+              { q: 'What is the Talent Arena?', a: 'Live, global head-to-head competitions where fans vote for their favorite creators. Winners earn prizes and massive exposure.' },
+            ].map((f, i) => (
+              <Reveal key={i} delay={i * 60}>
+                <div className="rounded-xl border border-white/10 bg-white/[0.03] overflow-hidden">
+                  <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="w-full flex items-center justify-between gap-4 p-5 text-left hover:bg-white/[0.02] transition-colors">
+                    <span className="text-white font-semibold text-sm md:text-base">{f.q}</span>
+                    <ChevronDown className={`w-5 h-5 text-white/50 shrink-0 transition-transform duration-300 ${openFaq === i ? 'rotate-180' : ''}`} />
+                  </button>
+                  <div className={`grid transition-all duration-300 ease-out ${openFaq === i ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                    <div className="overflow-hidden">
+                      <p className="px-5 pb-5 text-white/50 text-sm leading-relaxed">{f.a}</p>
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 
