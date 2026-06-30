@@ -41,7 +41,7 @@ const PARTNER_TYPES: Record<string, PartnerType> = {
     title: 'WANKONG for Universities',
     subtitle: 'Educational audiobooks, multilingual content, and student creator support',
     color: '#9D4EDD',
-    description: 'WANKONG partners with universities and higher education institutions to build multilingual digital libraries, support student creators, and publish academic and educational audiobooks accessible to students across Africa and the diaspora. Our platform helps universities reach students in their native languages.',
+    description: 'WANKONG partners with universities and higher education institutions to build multilingual digital libraries, support student creators, and publish academic and educational audiobooks accessible to students worldwide. Our platform helps universities reach students in their native languages.',
     benefits: [
       'Educational audiobook hosting and distribution to enrolled students',
       'Student creator programme — upload, distribute, and earn from original work',

@@ -41,8 +41,8 @@ const TYPE_FILTERS: { label: string; value: ContentType; icon: string }[] = [
 ];
 
 const GENRES = [
-  'Gospel', 'Afrobeats', 'Highlife', 'Worship', 'Afro-Gospel',
-  'Pidgin', 'R&B', 'Hip-Hop', 'Jazz', 'Classical', 'Reggae',
+  'Pop', 'Afrobeats', 'Hip-Hop', 'K-Pop', 'Latin', 'R&B',
+  'EDM', 'Jazz', 'Classical', 'Reggae', 'Rock', 'Gospel',
 ];
 
 // Trending terms are loaded from the top-streamed content titles at runtime

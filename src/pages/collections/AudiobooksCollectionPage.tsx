@@ -21,7 +21,7 @@ interface Audiobook {
   authors?: { name: string } | null;
 }
 
-const GENRES = ['All', 'Gospel', 'Fiction', 'Non-Fiction', 'Christian Living', 'Theology', 'Biography', 'Children', 'Poetry', 'Self-Help'];
+const GENRES = ['All', 'Fiction', 'Non-Fiction', 'Romance', 'Thriller', 'Sci-Fi & Fantasy', 'Biography', 'Business', 'Self-Help', 'Children', 'Poetry', 'Religion & Spirituality'];
 type PriceFilter = 'all' | 'free' | 'paid';
 const PAGE_SIZE = 24;
 
@@ -164,7 +164,7 @@ export default function AudiobooksCollectionPage() {
           <h1 className="text-4xl sm:text-5xl font-black text-white mb-3">
             Listen to <span className="bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] bg-clip-text text-transparent">Audiobooks</span>
           </h1>
-          <p className="text-gray-400 text-lg max-w-xl">Gospel stories, African literature and Christian books — narrated and ready to play.</p>
+          <p className="text-white/55 text-lg max-w-xl">Stories, non-fiction and bestsellers from creators worldwide — narrated and ready to play.</p>
         </div>
       </div>
 

@@ -22,7 +22,7 @@ interface VideoEntry {
   created_at: string;
 }
 
-const VIDEO_CATEGORIES = ['All', 'Worship', 'Gospel', 'Competition Highlights', 'Live Sessions'];
+const VIDEO_CATEGORIES = ['All', 'Music Videos', 'Live Sessions', 'Competition Highlights', 'Behind the Scenes'];
 const PAGE_SIZE = 20;
 
 function fmt(n: number): string {
@@ -132,8 +132,8 @@ export default function VideosCollectionPage() {
       const catMap: Record<string, string> = {
         'Competition Highlights': 'competition',
         'Live Sessions': 'live',
-        'Worship': 'worship',
-        'Gospel': 'gospel',
+        'Music Videos': 'music',
+        'Behind the Scenes': 'bts',
       };
       const dbCat = catMap[selectedCategory] ?? selectedCategory.toLowerCase();
       query = query.ilike('category', `%${dbCat}%`);
@@ -185,7 +185,7 @@ export default function VideosCollectionPage() {
           <h1 className="text-4xl sm:text-5xl font-black text-white mb-3">
             Videos &amp; <span className="bg-gradient-to-r from-[#FF6B00] to-[#FFB800] bg-clip-text text-transparent">Performances</span>
           </h1>
-          <p className="text-gray-400 text-lg max-w-xl">Watch competition entries, live worship sessions and gospel performances.</p>
+          <p className="text-white/55 text-lg max-w-xl">Watch music videos, live performances and competition entries from creators worldwide.</p>
         </div>
       </div>
 

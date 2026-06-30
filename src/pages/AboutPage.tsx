@@ -3,24 +3,24 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 const TEAM = [
-  { name: 'Pastor Emmanuel Ofori', role: 'Founder & CEO', bio: 'Visionary gospel entrepreneur with 15 years in Christian media and music ministry.', avatar: 'EO', color: 'from-[#9D4EDD] to-[#00D9FF]' },
-  { name: 'Rachel Mensah', role: 'Head of Artists & Talent', bio: 'Former A&R at a major gospel label, passionate about discovering and elevating new voices.', avatar: 'RM', color: 'from-[#00D9FF] to-[#00F5A0]' },
-  { name: 'Daniel Asante', role: 'CTO', bio: 'Full-stack engineer and worship leader. Believes technology should serve the Kingdom.', avatar: 'DA', color: 'from-[#FFB800] to-[#FF6B00]' },
-  { name: 'Grace Oduya', role: 'Head of Content', bio: 'Award-winning music producer and podcaster with a heart for authentic Christian storytelling.', avatar: 'GO', color: 'from-[#00F5A0] to-[#9D4EDD]' },
+  { name: 'Emmanuel Ofori', role: 'Founder & CEO', bio: 'Creator-economy entrepreneur with 15 years building media and distribution platforms across three continents.', avatar: 'EO', color: 'from-[#9D4EDD] to-[#00D9FF]' },
+  { name: 'Rachel Mensah', role: 'Head of Artists & Talent', bio: 'Former major-label A&R, passionate about discovering and elevating new voices from every region.', avatar: 'RM', color: 'from-[#00D9FF] to-[#00F5A0]' },
+  { name: 'Daniel Asante', role: 'CTO', bio: 'Full-stack engineer who has scaled streaming products to millions of listeners worldwide.', avatar: 'DA', color: 'from-[#FFB800] to-[#FF6B00]' },
+  { name: 'Grace Oduya', role: 'Head of Content', bio: 'Award-winning music producer and podcaster with a global ear for authentic storytelling.', avatar: 'GO', color: 'from-[#00F5A0] to-[#9D4EDD]' },
 ];
 
 const VALUES = [
-  { icon: '✝️', title: 'Faith First', desc: 'Every decision we make is rooted in our commitment to Christ and Kingdom values.' },
-  { icon: '🎵', title: 'Artist Empowerment', desc: 'We exist to serve creators — giving them tools, visibility, and fair compensation.' },
-  { icon: '🌍', title: 'Global Impact', desc: 'Gospel music has no borders. We distribute and promote to 150+ countries.' },
-  { icon: '🤝', title: 'Integrity', desc: 'Transparent royalties, honest policies, and authentic community.' },
+  { icon: '🎤', title: 'Creators First', desc: 'Every decision starts with the creator — better tools, more visibility, fairer pay.' },
+  { icon: '🎵', title: 'Keep Your Royalties', desc: 'We never take a cut of your streaming or sales royalties. You keep 100%.' },
+  { icon: '🌍', title: 'Borderless', desc: 'Music, books and stories have no borders. We distribute and promote to 150+ countries.' },
+  { icon: '🤝', title: 'Integrity', desc: 'Transparent royalties, honest policies, and an authentic global community.' },
 ];
 
 const STATS = [
-  { value: '50,000+', label: 'Artists & Creators' },
+  { value: '50,000+', label: 'Creators Worldwide' },
   { value: '150+', label: 'Countries Reached' },
-  { value: '5M+', label: 'Monthly Streams' },
-  { value: '$2M+', label: 'Royalties Paid Out' },
+  { value: '45M+', label: 'Monthly Streams' },
+  { value: '$2.8M+', label: 'Royalties Paid Out' },
 ];
 
 export default function AboutPage() {
@@ -33,17 +33,17 @@ export default function AboutPage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(157,78,221,0.12),transparent_70%)]" />
         <div className="relative max-w-4xl mx-auto px-4 lg:px-8 text-center">
           <div className="inline-flex items-center gap-2 bg-[#9D4EDD]/10 border border-[#9D4EDD]/20 text-[#9D4EDD] text-sm px-4 py-1.5 rounded-full mb-6">
-            <span>✝️</span> About Wankong
+            <span>🌍</span> About WANKONG
           </div>
           <h1 className="text-5xl font-black text-white mb-6">
-            Amplifying{' '}
+            Empowering{' '}
             <span className="bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] bg-clip-text text-transparent">
-              Gospel Music
+              Creators
             </span>{' '}
             Worldwide
           </h1>
-          <p className="text-gray-300 text-xl leading-relaxed max-w-2xl mx-auto">
-            Wankong is the premier platform for Christian and gospel artists — a place to distribute music, compete for recognition, and build a fanbase that shares your faith.
+          <p className="text-white/65 text-xl leading-relaxed max-w-2xl mx-auto">
+            WANKONG is the global creator marketplace — a place for artists, authors and podcasters everywhere to distribute their work, compete for recognition, and build a worldwide fanbase while keeping 100% of their royalties.
           </p>
         </div>
       </div>
@@ -68,12 +68,12 @@ export default function AboutPage() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <span className="text-[#00D9FF] text-sm font-medium uppercase tracking-widest block mb-3">Our Mission</span>
-              <h2 className="text-3xl font-black text-white mb-5">Built for Kingdom Artists</h2>
-              <p className="text-gray-300 leading-relaxed mb-4">
-                We started Wankong because we saw talented gospel artists struggling to get their music heard. The mainstream music industry wasn't built with faith-driven creators in mind.
+              <h2 className="text-3xl font-black text-white mb-5">Built for Independent Creators</h2>
+              <p className="text-white/65 leading-relaxed mb-4">
+                We started WANKONG because we saw talented creators everywhere struggling to get their work heard — and giving away most of their earnings to gatekeepers.
               </p>
-              <p className="text-gray-300 leading-relaxed">
-                Wankong changes that. We combine professional-grade distribution tools with a community that understands your message — and a competition system that rewards raw talent fairly.
+              <p className="text-white/65 leading-relaxed">
+                WANKONG changes that. We combine professional-grade distribution to 30+ platforms with a global community and a competition system that rewards raw talent fairly — while you keep 100% of your royalties.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4">

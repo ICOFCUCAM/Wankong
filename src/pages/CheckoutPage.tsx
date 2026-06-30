@@ -397,7 +397,7 @@ export default function CheckoutPage() {
                   <div className="rounded-xl bg-[#0B0814] border border-white/10 p-4 text-center space-y-3">
                     <div className="flex justify-center gap-3 text-2xl">🟢 🟡 🔴</div>
                     <p className="text-white/60 text-sm">
-                      Supports M-Pesa, MTN MoMo, and Airtel Money across Africa.
+                      Supports mobile money worldwide — M-Pesa, MTN MoMo, Airtel Money, Pix and more.
                     </p>
                     <button
                       type="button"

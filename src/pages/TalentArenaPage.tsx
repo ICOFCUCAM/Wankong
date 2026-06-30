@@ -367,8 +367,8 @@ export default function TalentArenaPage() {
               Win Prizes.
             </span>
           </h1>
-          <p className="text-gray-400 text-lg max-w-lg mb-8 leading-relaxed">
-            The global stage for gospel artists. Compete in live arenas, earn real prizes, and get discovered by millions.
+          <p className="text-white/55 text-lg max-w-lg mb-8 leading-relaxed">
+            The global stage for creators of every kind. Compete in live arenas, earn real prizes, and get discovered by millions.
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <Link

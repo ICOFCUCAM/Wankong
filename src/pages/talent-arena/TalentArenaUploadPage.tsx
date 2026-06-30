@@ -6,7 +6,7 @@ import { extractVideoMetadata, validateVideoDuration } from '@/services/competit
 import { scoreCompetitionEntry } from '@/services/competition/aiScoringService';
 import { Upload, Video, Image as ImageIcon, CheckCircle, Loader2, AlertCircle, ChevronRight, Trophy } from 'lucide-react';
 
-const CATEGORIES = ['Gospel','Worship','Praise','Contemporary','Traditional','Choir','Solo','Duo','Group'];
+const CATEGORIES = ['Singing','Rap / Hip-Hop','Dance','Instrumental','Producer','Songwriting','Comedy','Spoken Word','Band / Group'];
 const LANGUAGES  = ['English','French','Yoruba','Igbo','Hausa','Swahili','Zulu','Pidgin','Spanish','Portuguese'];
 
 const inputCls  = "w-full bg-[#0B0814] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#FFB800]/40 focus:border-[#FFB800]/40 transition-colors";

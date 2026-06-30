@@ -48,51 +48,51 @@ const STATS = [
 // ── Mock fallbacks — shown until real content is uploaded so sections never sit empty.
 // (ProductCard renders a styled placeholder when `image` is missing.)
 const MOCK_NEW_RELEASES = [
-  { id: 'nr1', image: '/covers/nr1.svg', handle: 'heaven-gates',   title: 'Heaven Gates',   vendor: 'Prophet Elijah', product_type: 'Music', price: 0,    genre: 'Gospel' },
+  { id: 'nr1', image: '/covers/nr1.svg', handle: 'neon-seoul',     title: 'Neon Seoul',     vendor: 'HARU',           product_type: 'Music', price: 0,    genre: 'K-Pop' },
   { id: 'nr2', image: '/covers/nr2.svg', handle: 'afro-vibration', title: 'Afro Vibration', vendor: 'Kojo Mensah',    product_type: 'Music', price: 199,  genre: 'Afrobeats' },
   { id: 'nr3', image: '/covers/nr3.svg', handle: 'midnight-jazz',  title: 'Midnight Jazz',  vendor: 'Adaeze Obi',     product_type: 'Music', price: 299,  genre: 'Jazz' },
-  { id: 'nr4', image: '/covers/nr4.svg', handle: 'street-gospel',  title: 'Street Gospel',  vendor: 'MC Zion',        product_type: 'Music', price: 0,    genre: 'Hip-Hop' },
-  { id: 'nr5', image: '/covers/nr5.svg', handle: 'lagos-nights',   title: 'Lagos Nights',   vendor: 'Funmi Adeyemi',  product_type: 'Music', price: 149,  genre: 'RnB' },
+  { id: 'nr4', image: '/covers/nr4.svg', handle: 'favela-funk',    title: 'Favela Funk',    vendor: 'MC Luana',       product_type: 'Music', price: 0,    genre: 'Hip-Hop' },
+  { id: 'nr5', image: '/covers/nr5.svg', handle: 'corazon-latino', title: 'Corazón Latino', vendor: 'Valentina Cruz', product_type: 'Music', price: 149,  genre: 'Latin' },
   { id: 'nr6', image: '/covers/nr6.svg', handle: 'electric-soul',  title: 'Electric Soul',  vendor: 'DJ Beacon',      product_type: 'Music', price: 249,  genre: 'EDM' },
-  { id: 'nr7', image: '/covers/nr7.svg', handle: 'yoruba-praise',  title: 'Yoruba Praise',  vendor: 'Sis. Busayo',    product_type: 'Music', price: 0,    genre: 'Gospel' },
+  { id: 'nr7', image: '/covers/nr7.svg', handle: 'london-fog',     title: 'London Fog',     vendor: 'Ava Sterling',   product_type: 'Music', price: 0,    genre: 'Pop' },
   { id: 'nr8', image: '/covers/nr8.svg', handle: 'highlife-remix', title: 'Highlife Remix', vendor: 'Kwame Asante',   product_type: 'Music', price: 0,    genre: 'Highlife' },
 ];
 
 const MOCK_BOOKS = [
-  { id: 'bk1', image: '/covers/bk1.svg', handle: 'gospel-of-grace',      title: 'The Gospel of Grace',       author: 'Pastor E. Ofori',     product_type: 'Book', price: 1299, genre: 'Christian Living' },
-  { id: 'bk2', image: '/covers/bk2.svg', handle: 'kingdom-business',     title: 'Kingdom Business Secrets',  author: 'Dr. Faith Mensah',    product_type: 'Book', price: 1899, genre: 'Business' },
-  { id: 'bk3', image: '/covers/bk3.svg', handle: 'midnight-prayers',     title: 'Midnight Prayers',          author: 'Rev. Samuel Asante',  product_type: 'Book', price: 999,  genre: 'Devotional' },
-  { id: 'bk4', image: '/covers/bk4.svg', handle: 'praise-anthology',     title: 'African Praise Anthology',  author: 'Various Authors',     product_type: 'Book', price: 2499, genre: 'Worship' },
-  { id: 'bk5', image: '/covers/bk5.svg', handle: 'prophetic-voice',      title: 'The Prophetic Voice',       author: 'Apostle Grace Oduya', product_type: 'Book', price: 1599, genre: 'Prophecy' },
-  { id: 'bk6', image: '/covers/bk6.svg', handle: 'healing-wings',        title: 'Healing in His Wings',      author: 'Dr. Emmanuel Yaw',    product_type: 'Book', price: 1399, genre: 'Healing' },
-  { id: 'bk7', image: '/covers/bk7.svg', handle: 'digital-christian',    title: 'The Digital Christian',     author: 'Tech Pastor Kwame',   product_type: 'Book', price: 1199, genre: 'Christian Living' },
-  { id: 'bk8', image: '/covers/bk8.svg', handle: 'songs-of-ascent',      title: 'Songs of Ascent',          author: 'Choir Master David',  product_type: 'Book', price: 899,  genre: 'Worship' },
-  { id: 'bk9', image: '/covers/bk9.svg', handle: 'raising-kingdom-kids', title: 'Raising Kingdom Kids',      author: 'Pastor Mary Adofo',   product_type: 'Book', price: 1699, genre: 'Parenting' },
-  { id: 'bk10', image: '/covers/bk10.svg', handle: 'fast-breaks-chains',  title: 'The Fast That Breaks Chains', author: 'Bishop John Asare', product_type: 'Book', price: 1099, genre: 'Devotional' },
+  { id: 'bk1', image: '/covers/bk1.svg', handle: 'the-silent-tide',     title: 'The Silent Tide',          author: 'Mara Lindqvist',     product_type: 'Book', price: 1299, genre: 'Fiction' },
+  { id: 'bk2', image: '/covers/bk2.svg', handle: 'scale-or-fail',       title: 'Scale or Fail',            author: 'Dr. Faith Mensah',   product_type: 'Book', price: 1899, genre: 'Business' },
+  { id: 'bk3', image: '/covers/bk3.svg', handle: 'midnight-in-tokyo',   title: 'Midnight in Tokyo',        author: 'Kenji Nakamura',     product_type: 'Book', price: 999,  genre: 'Thriller' },
+  { id: 'bk4', image: '/covers/bk4.svg', handle: 'world-poetry',        title: 'World Poetry Anthology',   author: 'Various Authors',    product_type: 'Book', price: 2499, genre: 'Poetry' },
+  { id: 'bk5', image: '/covers/bk5.svg', handle: 'the-quantum-garden',  title: 'The Quantum Garden',       author: 'Aisha Rahman',       product_type: 'Book', price: 1599, genre: 'Sci-Fi' },
+  { id: 'bk6', image: '/covers/bk6.svg', handle: 'mindful-mornings',    title: 'Mindful Mornings',         author: 'Dr. Emmanuel Yaw',   product_type: 'Book', price: 1399, genre: 'Self-Help' },
+  { id: 'bk7', image: '/covers/bk7.svg', handle: 'the-startup-diaries', title: 'The Startup Diaries',      author: 'Lucas Bennett',      product_type: 'Book', price: 1199, genre: 'Business' },
+  { id: 'bk8', image: '/covers/bk8.svg', handle: 'paris-after-dark',    title: 'Paris After Dark',         author: 'Camille Laurent',    product_type: 'Book', price: 899,  genre: 'Romance' },
+  { id: 'bk9', image: '/covers/bk9.svg', handle: 'raising-bright-kids', title: 'Raising Bright Kids',      author: 'Mary Adofo',         product_type: 'Book', price: 1699, genre: 'Parenting' },
+  { id: 'bk10', image: '/covers/bk10.svg', handle: 'breaking-the-chain', title: 'Breaking the Chain',      author: 'Sofia Rossi',        product_type: 'Book', price: 1099, genre: 'Non-Fiction' },
 ];
 
 const MOCK_AUDIOBOOKS = [
-  { id: 'ab1', image: '/covers/ab1.svg', handle: 'grace-audio',     title: 'The Gospel of Grace (Audio)', author: 'Pastor E. Ofori',    product_type: 'Audiobook', price: 1499, genre: 'Christian Living' },
-  { id: 'ab2', image: '/covers/ab2.svg', handle: 'prayers-audio',   title: 'Midnight Prayers (Audio)',    author: 'Rev. Samuel Asante', product_type: 'Audiobook', price: 1199, genre: 'Devotional' },
-  { id: 'ab3', image: '/covers/ab3.svg', handle: 'prophetic-audio', title: 'The Prophetic Voice (Audio)', author: 'Apostle Grace Oduya', product_type: 'Audiobook', price: 1799, genre: 'Prophecy' },
-  { id: 'ab4', image: '/covers/ab4.svg', handle: 'kingdom-audio',   title: 'Kingdom Business (Audio)',    author: 'Dr. Faith Mensah',   product_type: 'Audiobook', price: 1999, genre: 'Business' },
-  { id: 'ab5', image: '/covers/ab5.svg', handle: 'healing-audio',   title: 'Healing in His Wings (Audio)', author: 'Dr. Emmanuel Yaw',  product_type: 'Audiobook', price: 1599, genre: 'Healing' },
-  { id: 'ab6', image: '/covers/ab6.svg', handle: 'ascent-audio',    title: 'Songs of Ascent (Audio)',     author: 'Choir Master David', product_type: 'Audiobook', price: 1299, genre: 'Worship' },
+  { id: 'ab1', image: '/covers/ab1.svg', handle: 'silent-tide-audio',  title: 'The Silent Tide (Audio)',   author: 'Mara Lindqvist',    product_type: 'Audiobook', price: 1499, genre: 'Fiction' },
+  { id: 'ab2', image: '/covers/ab2.svg', handle: 'tokyo-audio',        title: 'Midnight in Tokyo (Audio)', author: 'Kenji Nakamura',    product_type: 'Audiobook', price: 1199, genre: 'Thriller' },
+  { id: 'ab3', image: '/covers/ab3.svg', handle: 'quantum-audio',      title: 'The Quantum Garden (Audio)', author: 'Aisha Rahman',     product_type: 'Audiobook', price: 1799, genre: 'Sci-Fi' },
+  { id: 'ab4', image: '/covers/ab4.svg', handle: 'scale-audio',        title: 'Scale or Fail (Audio)',     author: 'Dr. Faith Mensah',  product_type: 'Audiobook', price: 1999, genre: 'Business' },
+  { id: 'ab5', image: '/covers/ab5.svg', handle: 'mindful-audio',      title: 'Mindful Mornings (Audio)',  author: 'Dr. Emmanuel Yaw',  product_type: 'Audiobook', price: 1599, genre: 'Self-Help' },
+  { id: 'ab6', image: '/covers/ab6.svg', handle: 'paris-audio',        title: 'Paris After Dark (Audio)',  author: 'Camille Laurent',   product_type: 'Audiobook', price: 1299, genre: 'Romance' },
 ];
 
 const MOCK_ARTISTS = [
-  { name: 'Prophet Elijah', genre: 'Gospel',    slug: 'prophet-elijah', streams_count: 1284000, country_code: 'NG', verified: true },
+  { name: 'HARU',           genre: 'K-Pop',     slug: 'haru',           streams_count: 2840000, country_code: 'KR', verified: true },
   { name: 'Kojo Mensah',    genre: 'Afrobeats', slug: 'kojo-mensah',    streams_count: 892000,  country_code: 'GH', verified: true },
-  { name: 'Adaeze Obi',     genre: 'Jazz',      slug: 'adaeze-obi',     streams_count: 453000,  country_code: 'NG', verified: true },
-  { name: 'Zawadi Kamau',   genre: 'Afrobeats', slug: 'zawadi-kamau',   streams_count: 734000,  country_code: 'KE', verified: true },
+  { name: 'Valentina Cruz', genre: 'Latin',     slug: 'valentina-cruz', streams_count: 1530000, country_code: 'MX', verified: true },
+  { name: 'Ava Sterling',   genre: 'Pop',       slug: 'ava-sterling',   streams_count: 1184000, country_code: 'GB', verified: true },
   { name: 'Sipho Dlamini',  genre: 'Blues',     slug: 'sipho-dlamini',  streams_count: 287000,  country_code: 'ZA', verified: true },
-  { name: 'Funmi Adeyemi',  genre: 'RnB',       slug: 'funmi-adeyemi',  streams_count: 678000,  country_code: 'NG', verified: true },
+  { name: 'Lucas Bennett',  genre: 'Indie',     slug: 'lucas-bennett',  streams_count: 678000,  country_code: 'US', verified: true },
 ];
 
 const MOCK_TOP_CREATORS = [
-  { user_id: 'tc1', name: 'Grace Adele',   level: 'Diamond',  xp: 48200 },
-  { user_id: 'tc2', name: 'Kojo Mensah',   level: 'Platinum', xp: 39100 },
-  { user_id: 'tc3', name: 'Prophet Elijah', level: 'Gold',    xp: 31500 },
+  { user_id: 'tc1', name: 'Valentina Cruz', level: 'Diamond',  xp: 48200 },
+  { user_id: 'tc2', name: 'HARU',           level: 'Platinum', xp: 39100 },
+  { user_id: 'tc3', name: 'Kojo Mensah',    level: 'Gold',     xp: 31500 },
 ];
 
 // ── Language discovery data ───────────────────────────────────────────────────
@@ -1385,9 +1385,9 @@ export default function AppLayout() {
             <div className="flex flex-col gap-3">
               {[
                 { title: 'Building in Public', host: 'Ada & Kojo', dur: '48 min', grad: 'from-[#9D4EDD] to-[#00D9FF]' },
-                { title: 'Faith & Frequency', host: 'Prophet Elijah', dur: '32 min', grad: 'from-[#FF6B00] to-[#FFB800]' },
-                { title: 'The Afrobeat Files', host: 'DJ Beacon', dur: '55 min', grad: 'from-[#00F5A0] to-[#0E9E6E]' },
-                { title: 'Studio Sessions', host: 'Funmi A.', dur: '41 min', grad: 'from-[#FF006E] to-[#9D4EDD]' },
+                { title: 'The Creator Economy', host: 'Ava Sterling', dur: '32 min', grad: 'from-[#FF6B00] to-[#FFB800]' },
+                { title: 'Global Beat Files', host: 'DJ Beacon', dur: '55 min', grad: 'from-[#00F5A0] to-[#0E9E6E]' },
+                { title: 'Studio Sessions', host: 'Valentina C.', dur: '41 min', grad: 'from-[#FF006E] to-[#9D4EDD]' },
               ].map((p, i) => (
                 <Reveal key={p.title} delay={i * 60}>
                 <Link to="/collections/podcasts" className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3.5 hover:bg-white/[0.06] hover:-translate-y-0.5 transition-all">
@@ -1473,7 +1473,7 @@ export default function AppLayout() {
 
           <div className="grid md:grid-cols-3 gap-5">
             {[
-              { quote: 'WANKONG put my gospel album on 30+ platforms in a weekend — and I kept 100% of my royalties.', name: 'Grace Adele', role: 'Gospel Artist', flag: '🇳🇬', stat: '$18K earned', grad: 'from-[#9D4EDD] to-[#00D9FF]' },
+              { quote: 'WANKONG put my album on 30+ platforms in a weekend — and I kept 100% of my royalties.', name: 'Ava Sterling', role: 'Pop Artist', flag: '🇬🇧', stat: '$18K earned', grad: 'from-[#9D4EDD] to-[#00D9FF]' },
               { quote: 'The Talent Arena changed everything. I went from 200 to 60,000 fans after a single live battle.', name: 'Kojo Mensah', role: 'Afrobeats Producer', flag: '🇬🇭', stat: '2.3M streams', grad: 'from-[#FF6B00] to-[#FFB800]' },
               { quote: 'I published my book and audiobook in three languages. Sales tripled in the first month.', name: 'Dr. Faith Mensah', role: 'Author', flag: '🇰🇪', stat: '4.2K readers', grad: 'from-[#00F5A0] to-[#0E9E6E]' },
             ].map((t, i) => (
@@ -1526,7 +1526,7 @@ export default function AppLayout() {
         <div className="max-w-7xl mx-auto px-4">
           <p className="text-center text-white/30 text-xs uppercase tracking-[0.2em] mb-5">Trusted &amp; featured across the industry</p>
           <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
-            {['AfroBeats Daily', 'Gospel Now', 'TechCrunch', 'Music Africa', 'The Distributor', 'Creator Weekly'].map(n => (
+            {['Billboard', 'Rolling Stone', 'TechCrunch', 'Pitchfork', 'The Distributor', 'Creator Weekly'].map(n => (
               <span key={n} className="text-white/35 hover:text-white/60 transition-colors font-bold text-base md:text-lg tracking-tight">{n}</span>
             ))}
           </div>

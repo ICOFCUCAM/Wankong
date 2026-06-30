@@ -9,7 +9,7 @@ const OPENINGS = [
     dept: 'Engineering',
     type: 'Full-time',
     location: 'Remote',
-    desc: 'Build and scale the platform powering thousands of gospel artists. React, TypeScript, Supabase, Node.',
+    desc: 'Build and scale the platform powering thousands of creators worldwide. React, TypeScript, Supabase, Node.',
     tags: ['React', 'TypeScript', 'Supabase', 'Node.js'],
   },
   {
@@ -17,9 +17,9 @@ const OPENINGS = [
     title: 'Artist Relations Manager',
     dept: 'Artists & Talent',
     type: 'Full-time',
-    location: 'Lagos / Remote',
-    desc: 'Onboard, support, and grow relationships with our artist community. Passion for gospel music required.',
-    tags: ['Artist Management', 'Communication', 'Gospel Music'],
+    location: 'Remote',
+    desc: 'Onboard, support, and grow relationships with our global creator community across every genre.',
+    tags: ['Artist Management', 'Communication', 'Creator Relations'],
   },
   {
     id: 3,
@@ -27,17 +27,17 @@ const OPENINGS = [
     dept: 'Marketing',
     type: 'Full-time',
     location: 'Remote',
-    desc: 'Drive organic and paid growth. Create campaigns that resonate with faith-based audiences globally.',
+    desc: 'Drive organic and paid growth. Create campaigns that resonate with creators and fans worldwide.',
     tags: ['Content Strategy', 'Social Media', 'SEO', 'Paid Ads'],
   },
   {
     id: 4,
-    title: 'Gospel A&R Coordinator',
+    title: 'A&R Coordinator',
     dept: 'Artists & Talent',
     type: 'Contract',
     location: 'Remote',
-    desc: 'Discover emerging gospel talent, curate playlists, and evaluate competition submissions.',
-    tags: ['Music Curation', 'A&R', 'Gospel'],
+    desc: 'Discover emerging talent across genres, curate playlists, and evaluate competition submissions.',
+    tags: ['Music Curation', 'A&R', 'Discovery'],
   },
   {
     id: 5,
@@ -51,8 +51,8 @@ const OPENINGS = [
 ];
 
 const PERKS = [
-  { icon: '🕊️', title: 'Faith-Centered Culture', desc: 'Work with people who share your values and passion for the Kingdom.' },
-  { icon: '🌍', title: 'Work From Anywhere', desc: 'Fully remote team across Africa, Europe, and the Americas.' },
+  { icon: '🤝', title: 'Creator-First Culture', desc: 'Work with people who care deeply about empowering creators everywhere.' },
+  { icon: '🌍', title: 'Work From Anywhere', desc: 'Fully remote team spanning the Americas, Europe, Africa and Asia.' },
   { icon: '🎵', title: 'Music Allowance', desc: '$50/month for streaming and music tools.' },
   { icon: '📚', title: 'Learning Budget', desc: '$1,000/year for courses, books, and conferences.' },
   { icon: '🏥', title: 'Health Benefits', desc: 'Comprehensive health and wellness coverage.' },
@@ -81,8 +81,8 @@ export default function CareersPage() {
               That Matters
             </span>
           </h1>
-          <p className="text-gray-300 text-xl max-w-2xl mx-auto">
-            Join a mission-driven team amplifying gospel music worldwide. We're building the future of faith-based content — and we want you on the team.
+          <p className="text-white/65 text-xl max-w-2xl mx-auto">
+            Join a mission-driven team empowering creators worldwide. We're building the future of the global creator economy — and we want you on the team.
           </p>
         </div>
       </div>

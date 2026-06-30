@@ -270,11 +270,11 @@ export default function MusicStorePage() {
           <h1 className="text-4xl md:text-5xl font-black text-white mb-3">
             Discover & Stream<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00D9FF] to-[#9D4EDD]">
-              African Sounds
+              Sounds From Everywhere
             </span>
           </h1>
-          <p className="text-gray-400 text-lg max-w-xl mb-8">
-            Gospel, Afrobeats, Highlife, Jazz and more — straight from independent African creators.
+          <p className="text-white/55 text-lg max-w-xl mb-8">
+            Afrobeats, K-pop, hip-hop, pop, jazz, gospel and more — straight from independent creators worldwide.
           </p>
 
           {/* Stats pills */}

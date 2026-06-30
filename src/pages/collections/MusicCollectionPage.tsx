@@ -187,7 +187,7 @@ export default function MusicCollectionPage() {
           <h1 className="text-4xl sm:text-5xl font-black text-white mb-3">
             Explore <span className="bg-gradient-to-r from-[#00D9FF] to-[#9D4EDD] bg-clip-text text-transparent">Music</span>
           </h1>
-          <p className="text-gray-400 text-lg max-w-xl">Discover gospel, afrobeats, praise &amp; worship and more from creators worldwide.</p>
+          <p className="text-white/55 text-lg max-w-xl">Discover afrobeats, hip-hop, pop, K-pop, gospel, jazz and more from creators across every continent.</p>
         </div>
       </div>
 

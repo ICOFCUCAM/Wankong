@@ -175,9 +175,9 @@ function PerformanceSkeleton() {
 
 function EmptyRoomsState() {
   const PLACEHOLDERS = [
-    { label: 'Gospel Vocal Competition', sub: 'Opening Next Week',   gradient: 'from-[#9D4EDD]/40 to-[#00D9FF]/20' },
-    { label: 'Worship Leader Challenge', sub: 'New Room — Stay Tuned', gradient: 'from-[#FFB800]/30 to-[#FF6B00]/20' },
-    { label: 'Choir Ensemble Battle',   sub: 'Upcoming Competition',  gradient: 'from-[#00F5A0]/30 to-[#00D9FF]/20' },
+    { label: 'Global Vocal Championship', sub: 'Opening Next Week',   gradient: 'from-[#9D4EDD]/40 to-[#00D9FF]/20' },
+    { label: 'Producer Beat Battle',      sub: 'New Room — Stay Tuned', gradient: 'from-[#FFB800]/30 to-[#FF6B00]/20' },
+    { label: 'Dance Crew Showdown',       sub: 'Upcoming Competition',  gradient: 'from-[#00F5A0]/30 to-[#00D9FF]/20' },
   ];
 
   return (

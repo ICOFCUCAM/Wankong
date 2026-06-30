@@ -200,7 +200,7 @@ export default function CollectionPage() {
         <Header />
         <div className="max-w-7xl mx-auto px-4 lg:px-8 py-12">
           <h1 className="text-3xl font-bold text-white mb-2">Music by Language & Genre</h1>
-          <p className="text-gray-400 mb-8">Explore music from every African musical tradition</p>
+          <p className="text-white/55 mb-8">Explore music from every language and musical tradition worldwide</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {langs.map(lang => (
               <Link key={lang.name} to={`/collections/music?language=${encodeURIComponent(lang.name)}`} className="group p-5 bg-gray-900/50 border border-gray-800 rounded-xl hover:border-[#9D4EDD]/30 transition-all">

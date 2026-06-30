@@ -42,7 +42,7 @@ interface Book {
   hardcover_visible?: boolean | null;
 }
 
-const BOOK_GENRES = ['All', 'Fiction', 'Non-Fiction', 'Christian Living', 'Theology', 'Biography', 'Children', 'Poetry', 'Self-Help', 'History'];
+const BOOK_GENRES = ['All', 'Fiction', 'Non-Fiction', 'Romance', 'Thriller', 'Sci-Fi & Fantasy', 'Biography', 'Business', 'Self-Help', 'Children', 'Poetry', 'History', 'Religion & Spirituality'];
 type PriceFilter  = 'all' | 'free' | 'paid';
 type FormatFilter = 'all' | 'ebook' | 'audiobook' | 'softcover' | 'hardcover';
 
@@ -286,7 +286,7 @@ export default function BooksCollectionPage() {
           <h1 className="text-4xl sm:text-5xl font-black text-white mb-3">
             Explore <span className="bg-gradient-to-r from-[#9D4EDD] to-[#FFB800] bg-clip-text text-transparent">Books</span>
           </h1>
-          <p className="text-gray-400 text-lg max-w-xl">Discover African literature, Christian books, poetry and more — available in eBook, audiobook, softcover and hardcover.</p>
+          <p className="text-white/55 text-lg max-w-xl">Discover fiction, non-fiction, poetry and more from independent authors worldwide — available in eBook, audiobook, softcover and hardcover.</p>
         </div>
       </div>
 

@@ -7,16 +7,16 @@ import { useAuth } from '@/contexts/AuthContext';
 // ── Data ───────────────────────────────────────────────────────────��───────────
 
 const GENRES = [
-  { id: 'gospel',     label: 'Gospel',     emoji: '✝️' },
+  { id: 'pop',        label: 'Pop',        emoji: '⭐' },
   { id: 'afrobeats',  label: 'Afrobeats',  emoji: '🥁' },
-  { id: 'worship',    label: 'Worship',    emoji: '🙏' },
   { id: 'hiphop',     label: 'Hip-Hop',    emoji: '🎤' },
+  { id: 'kpop',       label: 'K-Pop',      emoji: '🇰🇷' },
+  { id: 'latin',      label: 'Latin',      emoji: '💃' },
   { id: 'rnb',        label: 'R&B',        emoji: '🎸' },
-  { id: 'highlife',   label: 'Highlife',   emoji: '🎺' },
+  { id: 'edm',        label: 'EDM',        emoji: '🎧' },
   { id: 'jazz',       label: 'Jazz',       emoji: '🎷' },
   { id: 'classical',  label: 'Classical',  emoji: '🎻' },
-  { id: 'reggae',     label: 'Reggae',     emoji: '🌿' },
-  { id: 'pop',        label: 'Pop',        emoji: '⭐' },
+  { id: 'gospel',     label: 'Gospel',     emoji: '🎶' },
   { id: 'podcasts',   label: 'Podcasts',   emoji: '🎙️' },
   { id: 'audiobooks', label: 'Audiobooks', emoji: '📚' },
 ];
