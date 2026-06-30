@@ -697,43 +697,34 @@ export default function AppLayout() {
             <div className="flex flex-col items-center gap-6">
               <div className="relative w-[300px] h-[300px] max-w-full">
                 {/* aurora atmosphere */}
-                <div className="absolute inset-[-6%] rounded-full blur-3xl opacity-70 wk-aurora" style={{ background: 'radial-gradient(circle at 50% 45%, rgba(157,78,221,0.55), rgba(0,217,255,0.22) 52%, transparent 72%)' }} />
-                {/* faint orbital rings (music · books · videos · podcasts · distribution) */}
-                <svg viewBox="0 0 300 300" className="absolute inset-0 w-full h-full pointer-events-none">
-                  <g fill="none" className="wk-rings" style={{ transformOrigin: '150px 150px' }}>
-                    <ellipse cx="150" cy="150" rx="146" ry="46" stroke="#9D4EDD" strokeOpacity="0.18" />
-                    <ellipse cx="150" cy="150" rx="140" ry="40" stroke="#00D9FF" strokeOpacity="0.14" transform="rotate(20 150 150)" />
-                    <ellipse cx="150" cy="150" rx="148" ry="56" stroke="#FF3B9A" strokeOpacity="0.10" transform="rotate(-22 150 150)" />
-                  </g>
-                </svg>
-                {/* floating particles */}
+                <div className="absolute inset-[-4%] rounded-full blur-3xl opacity-60 wk-aurora" style={{ background: 'radial-gradient(circle at 50% 46%, rgba(157,78,221,0.5), rgba(0,217,255,0.2) 54%, transparent 72%)' }} />
+                {/* a few subtle drifting particles near the rim */}
                 {[
-                  { t: '8%', l: '18%', c: '#00D9FF', d: '0s' }, { t: '22%', l: '86%', c: '#9D4EDD', d: '1.1s' },
-                  { t: '74%', l: '10%', c: '#FF3B9A', d: '2s' }, { t: '88%', l: '70%', c: '#00F5A0', d: '0.6s' },
-                  { t: '46%', l: '94%', c: '#00D9FF', d: '1.6s' }, { t: '60%', l: '4%', c: '#9D4EDD', d: '2.4s' },
+                  { t: '14%', l: '22%', c: '#00D9FF', d: '0s' }, { t: '18%', l: '80%', c: '#9D4EDD', d: '1.4s' },
+                  { t: '82%', l: '26%', c: '#FF3B9A', d: '2.2s' }, { t: '80%', l: '76%', c: '#00F5A0', d: '0.7s' },
                 ].map((p, i) => (
-                  <span key={i} className="absolute w-1.5 h-1.5 rounded-full wk-float" style={{ top: p.t, left: p.l, backgroundColor: p.c, boxShadow: `0 0 8px ${p.c}`, animationDelay: p.d }} />
+                  <span key={i} className="absolute w-1 h-1 rounded-full wk-float" style={{ top: p.t, left: p.l, backgroundColor: p.c, boxShadow: `0 0 6px ${p.c}`, animationDelay: p.d }} />
                 ))}
-                {/* dotted Earth sphere (rotating) */}
+                {/* dotted Earth sphere (static, centered) */}
                 <div className="absolute inset-[5%] rounded-full overflow-hidden border border-white/10 shadow-2xl" style={{ background: 'radial-gradient(circle at 34% 28%, #25407e, #0d1530 58%, #060912 100%)' }}>
-                  <div className="absolute inset-y-0 -inset-x-[2%] wk-worldspin" style={{ backgroundImage: 'url(/world-dots.svg)', backgroundSize: 'auto 64%', backgroundPosition: 'center', backgroundRepeat: 'repeat-x' }} />
-                  <div className="absolute inset-0 rounded-full" style={{ background: 'radial-gradient(circle at 32% 26%, rgba(255,255,255,0.26), transparent 44%)' }} />
+                  <div className="absolute inset-0" style={{ backgroundImage: 'url(/world-dots.svg)', backgroundSize: '150% auto', backgroundPosition: '38% 52%', backgroundRepeat: 'no-repeat' }} />
+                  <div className="absolute inset-0 rounded-full" style={{ background: 'radial-gradient(circle at 32% 26%, rgba(255,255,255,0.24), transparent 44%)' }} />
                   <div className="absolute inset-0 rounded-full" style={{ boxShadow: 'inset -16px -20px 42px rgba(0,0,0,0.72), inset 10px 10px 26px rgba(124,77,255,0.16)' }} />
                   <div className="absolute inset-0 rounded-full ring-1 ring-inset ring-[#00D9FF]/20" />
                 </div>
-                {/* glowing music hotspots + neural connection lines */}
+                {/* clean glowing music hotspots (pin + subtle radar ping) */}
                 <svg viewBox="0 0 300 300" className="absolute inset-0 w-full h-full pointer-events-none">
-                  <g fill="none" stroke="#00D9FF" strokeOpacity="0.35" strokeWidth="1" strokeDasharray="3 6" className="wk-flow">
-                    <path d="M96,150 L138,108 L150,158 L196,124 L172,182 L132,176 Z" />
-                  </g>
                   {[
-                    { x: 138, y: 108, c: '#9D6BFF' }, { x: 150, y: 158, c: '#34E1FF' },
-                    { x: 132, y: 176, c: '#00F5A0' }, { x: 172, y: 182, c: '#FF3B9A' },
-                    { x: 196, y: 124, c: '#34E1FF' }, { x: 96, y: 150, c: '#9D6BFF' },
+                    { x: 78, y: 106, c: '#34E1FF' },  // North America
+                    { x: 110, y: 172, c: '#9D6BFF' }, // South America
+                    { x: 176, y: 106, c: '#34E1FF' }, // Europe
+                    { x: 170, y: 140, c: '#00F5A0' }, // West Africa
+                    { x: 190, y: 158, c: '#FF3B9A' }, // Central Africa
+                    { x: 250, y: 116, c: '#9D6BFF' }, // Asia
                   ].map((h, i) => (
                     <g key={i}>
-                      <circle cx={h.x} cy={h.y} r="9" fill={h.c} opacity="0.22" className="wk-pulse-dot" style={{ animationDelay: `${i * 0.4}s` }} />
-                      <circle cx={h.x} cy={h.y} r="2.6" fill={h.c} style={{ filter: `drop-shadow(0 0 4px ${h.c})` }} />
+                      <circle cx={h.x} cy={h.y} r="4" fill="none" stroke={h.c} strokeWidth="1.4" className="wk-ping" style={{ animationDelay: `${i * 0.5}s` }} />
+                      <circle cx={h.x} cy={h.y} r="2.4" fill={h.c} style={{ filter: `drop-shadow(0 0 5px ${h.c})` }} />
                     </g>
                   ))}
                 </svg>
