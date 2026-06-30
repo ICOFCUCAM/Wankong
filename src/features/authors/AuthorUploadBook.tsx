@@ -1,15 +1,25 @@
 import React, { useRef, useState } from 'react';
 import {
   BookOpen, Upload, FileText, ImagePlus, Globe, Tag, DollarSign,
-  AlignLeft, Hash, Loader2, ExternalLink, Eye, EyeOff,
+  AlignLeft, Hash, Loader2, ExternalLink, Eye, EyeOff, Wand2,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import BookCoverGenerator from '@/components/BookCoverGenerator';
+
+function dataUrlToFile(dataUrl: string, filename: string): File {
+  const [meta, b64] = dataUrl.split(',');
+  const mime = /:(.*?);/.exec(meta)?.[1] ?? 'image/png';
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new File([bytes], filename, { type: mime });
+}
 
 // ── Constants ──────────────────────────────────────────────────────────────
 
 const GENRES = [
-  'Gospel', 'Fiction', 'Non-Fiction', 'Biography', 'Prayer',
-  'Theology', 'Children', 'Poetry',
+  'Fiction', 'Non-Fiction', 'Romance', 'Thriller', 'Sci-Fi & Fantasy',
+  'Biography', 'Business', 'Self-Help', 'Children', 'Poetry', 'Religion & Spirituality',
 ];
 
 const LANGUAGES = [
@@ -67,7 +77,7 @@ interface FormState {
 }
 
 const INITIAL_FORM: FormState = {
-  title: '', description: '', price: '0', genre: 'Gospel', language: 'en', pages: '',
+  title: '', description: '', price: '0', genre: 'Fiction', language: 'en', pages: '',
   has_ebook: true, has_audiobook: false, has_softcover: false, has_hardcover: false,
   ebook_price: '0', audiobook_price: '0', softcover_price: '0', hardcover_price: '0',
   softcover_source: 'wankong', hardcover_source: 'wankong',
@@ -126,6 +136,7 @@ export function AuthorUploadBook({ authorId, onSuccess }: AuthorUploadBookProps)
   const [submitting, setSubmitting] = useState(false);
   const [error,      setError]      = useState('');
   const [success,    setSuccess]    = useState(false);
+  const [showCoverGen, setShowCoverGen] = useState(false);
 
   const set = (key: keyof FormState, val: FormState[keyof FormState]) =>
     setForm(prev => ({ ...prev, [key]: val }));
@@ -285,10 +296,42 @@ export function AuthorUploadBook({ authorId, onSuccess }: AuthorUploadBookProps)
             )}
           </button>
           <input ref={coverInputRef} type="file" accept="image/*" className="hidden" onChange={handleCoverChange} disabled={submitting} />
+          <button
+            type="button"
+            onClick={() => setShowCoverGen(true)}
+            disabled={submitting}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#00D9FF] hover:text-[#9D4EDD] transition-colors"
+          >
+            <Wand2 size={13} /> Generate a cover
+          </button>
           {coverFile && submitting && (
             <div className="space-y-1"><ProgressBar percent={coverProgress} color="#00D9FF" /><p className="text-xs text-gray-500 text-right">{coverProgress}%</p></div>
           )}
         </div>
+
+        {showCoverGen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={() => setShowCoverGen(false)}>
+            <div className="relative w-full max-w-3xl max-h-[92vh] overflow-y-auto rounded-2xl border border-white/10 bg-[#120C22] p-6" onClick={e => e.stopPropagation()}>
+              <div className="flex items-center gap-2 mb-5">
+                <Wand2 size={18} className="text-[#00D9FF]" />
+                <h3 className="text-white font-bold text-lg">Book Cover Generator</h3>
+              </div>
+              <BookCoverGenerator
+                initialTitle={form.title}
+                initialGenre={form.genre}
+                initialBlurb={form.description}
+                onClose={() => setShowCoverGen(false)}
+                onApply={({ frontPng }) => {
+                  const file = dataUrlToFile(frontPng, `${(form.title || 'cover').toLowerCase().replace(/\s+/g, '-')}.png`);
+                  setCoverFile(file);
+                  setCoverPreview(frontPng);
+                  setCoverProgress(0);
+                  setShowCoverGen(false);
+                }}
+              />
+            </div>
+          </div>
+        )}
 
         {/* Right column fields */}
         <div className="space-y-4">

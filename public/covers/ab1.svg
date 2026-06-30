@@ -12,8 +12,8 @@
 <circle cx="300.0" cy="190" r="74" fill="none" stroke="#6BD6F5" stroke-width="2" opacity="0.5"/>
         <circle cx="300.0" cy="190" r="46" fill="#6BD6F5" opacity="0.14"/>
         <circle cx="300.0" cy="190" r="11" fill="#6BD6F5" opacity="0.85"/>
-<text x="300.0" y="90" fill="#6BD6F5" font-size="16" letter-spacing="4" text-anchor="middle" font-family="Arial, sans-serif" opacity="0.85">CHRISTIAN LIVING</text>
-<text x="300.0" y="274" fill="#ffffff" font-size="46" font-weight="bold" text-anchor="middle" style="paint-order:stroke"><tspan x="300.0" dy="0">The Gospel of</tspan><tspan x="300.0" dy="54">Grace</tspan></text>
-<text x="300.0" y="374" fill="#ffffff" font-size="22" text-anchor="middle" opacity="0.75" font-family="Arial, sans-serif">Pastor E. Ofori</text>
+<text x="300.0" y="90" fill="#6BD6F5" font-size="16" letter-spacing="4" text-anchor="middle" font-family="Arial, sans-serif" opacity="0.85">FICTION</text>
+<text x="300.0" y="260" fill="#ffffff" font-size="44" font-weight="bold" text-anchor="middle" style="paint-order:stroke"><tspan x="300.0" dy="0">The Silent</tspan><tspan x="300.0" dy="52">Tide</tspan></text>
+<text x="300.0" y="362" fill="#ffffff" font-size="22" text-anchor="middle" opacity="0.75" font-family="Arial, sans-serif">Mara Lindqvist</text>
 <text x="300.0" y="554" fill="#ffffff" font-size="15" letter-spacing="5" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" opacity="0.65">WANKONG AUDIO</text>
 </svg>

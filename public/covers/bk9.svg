@@ -1,17 +1,31 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="600" height="900" viewBox="0 0 600 900" font-family="Georgia, 'Times New Roman', serif">
 <defs>
-  <linearGradient id="g" x1="0" y1="0" x2="0.4" y2="1">
-    <stop offset="0" stop-color="#D14D8B"/><stop offset="1" stop-color="#4A1030"/>
-  </linearGradient>
-  <radialGradient id="glow" cx="0.5" cy="0.28" r="0.7">
-    <stop offset="0" stop-color="#FFB3D6" stop-opacity="0.35"/><stop offset="1" stop-color="#FFB3D6" stop-opacity="0"/>
-  </radialGradient>
+  <linearGradient id="g" x1="0.2" y1="0" x2="0.8" y2="1"><stop offset="0" stop-color="#3A2408"/><stop offset="1" stop-color="#120A02"/></linearGradient>
+  <radialGradient id="glow" cx="0.5" cy="0.62" r="0.55"><stop offset="0" stop-color="#FFA63D" stop-opacity="0.30"/><stop offset="1" stop-color="#FFA63D" stop-opacity="0"/></radialGradient>
+  <linearGradient id="vig" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity="0.0"/><stop offset="0.78" stop-color="#000" stop-opacity="0.0"/><stop offset="1" stop-color="#000" stop-opacity="0.55"/></linearGradient>
 </defs>
 <rect width="600" height="900" fill="url(#g)"/>
 <rect width="600" height="900" fill="url(#glow)"/>
-<rect x="40" y="40" width="520" height="820" rx="14" fill="none" stroke="#FFB3D6" stroke-width="1.5" opacity="0.35"/>
-<text x="300.0" y="770" fill="#FFB3D6" font-size="18" letter-spacing="4" text-anchor="middle" font-family="Arial, sans-serif" opacity="0.85">PARENTING</text>
-<text x="300.0" y="440" fill="#ffffff" font-size="56" font-weight="bold" text-anchor="middle" style="paint-order:stroke"><tspan x="300.0" dy="0">Raising</tspan><tspan x="300.0" dy="64">Kingdom Kids</tspan></text>
-<text x="300.0" y="562" fill="#ffffff" font-size="26" text-anchor="middle" opacity="0.75" font-family="Arial, sans-serif">Pastor Mary Adofo</text>
-<text x="300.0" y="854" fill="#ffffff" font-size="15" letter-spacing="5" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" opacity="0.65">WANKONG BOOKS</text>
+<line x1="300" y1="560" x2="90" y2="560" stroke="#FFA63D" stroke-width="3" opacity="0.18"/>
+<line x1="300" y1="560" x2="99" y2="501" stroke="#FFA63D" stroke-width="3" opacity="0.18"/>
+<line x1="300" y1="560" x2="123" y2="446" stroke="#FFA63D" stroke-width="3" opacity="0.18"/>
+<line x1="300" y1="560" x2="162" y2="401" stroke="#FFA63D" stroke-width="3" opacity="0.18"/>
+<line x1="300" y1="560" x2="213" y2="369" stroke="#FFA63D" stroke-width="3" opacity="0.18"/>
+<line x1="300" y1="560" x2="270" y2="352" stroke="#FFA63D" stroke-width="3" opacity="0.18"/>
+<line x1="300" y1="560" x2="330" y2="352" stroke="#FFA63D" stroke-width="3" opacity="0.18"/>
+<line x1="300" y1="560" x2="387" y2="369" stroke="#FFA63D" stroke-width="3" opacity="0.18"/>
+<line x1="300" y1="560" x2="438" y2="401" stroke="#FFA63D" stroke-width="3" opacity="0.18"/>
+<line x1="300" y1="560" x2="477" y2="446" stroke="#FFA63D" stroke-width="3" opacity="0.18"/>
+<line x1="300" y1="560" x2="501" y2="501" stroke="#FFA63D" stroke-width="3" opacity="0.18"/>
+<line x1="300" y1="560" x2="510" y2="560" stroke="#FFA63D" stroke-width="3" opacity="0.18"/>
+<path d="M120 560 A180 180 0 0 1 480 560" fill="none" stroke="#FFCB85" stroke-width="4" opacity="0.8"/>
+<circle cx="300" cy="560" r="58" fill="#FFCB85" opacity="0.9"/>
+<circle cx="300" cy="560" r="58" fill="#FFA63D" opacity="0.25"/>
+<rect width="600" height="900" fill="url(#vig)"/>
+<rect x="28" y="28" width="544" height="844" rx="12" fill="none" stroke="#FFCB85" stroke-width="1.5" opacity="0.35"/>
+<text x="300" y="116" fill="#FFCB85" font-size="17" letter-spacing="6" text-anchor="middle" font-family="Arial, sans-serif" opacity="0.9">PARENTING</text>
+<text x="300" y="228" fill="#ffffff" font-size="60" font-weight="bold" text-anchor="middle" style="paint-order:stroke"><tspan x="300" dy="0">Raising</tspan><tspan x="300" dy="66">Bright Kids</tspan></text>
+<rect x="262" y="334" width="76" height="3" rx="1.5" fill="#FFCB85" opacity="0.9"/>
+<text x="300" y="812" fill="#ffffff" font-size="25" text-anchor="middle" opacity="0.82" font-family="Arial, sans-serif">Mary Adofo</text>
+<text x="300" y="852" fill="#FFCB85" font-size="13" letter-spacing="5" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" opacity="0.75">WANKONG BOOKS</text>
 </svg>
