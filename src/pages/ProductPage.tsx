@@ -9,6 +9,8 @@ import { usePlaylistContext } from '@/contexts/PlaylistContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Seo from '@/components/Seo';
+import PremiumBackground from '@/components/PremiumBackground';
+import TiltCard from '@/components/TiltCard';
 import CommentsSection from '@/components/CommentsSection';
 import RelatedProducts from '@/components/RelatedProducts';
 import ShareClipModal from '@/components/ShareClipModal';
@@ -206,15 +208,16 @@ export default function ProductPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0814]">
+    <div className="relative min-h-screen bg-[#0B0814]">
       <Seo
         title={product.title}
         description={(product.body_html ? String(product.body_html).replace(/<[^>]+>/g, '').slice(0, 155) : '') || `${product.title}${creator ? ` by ${creator}` : ''} — available now on WANKONG.`}
         image={image || undefined}
         type="article"
       />
+      <PremiumBackground />
       <Header />
-      <div className="max-w-6xl mx-auto px-4 lg:px-8 py-12">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 lg:px-8 py-12">
 
         <Link
           to="/music-store"
@@ -230,13 +233,15 @@ export default function ProductPage() {
 
           {/* Cover art */}
           <div>
-            {image ? (
-              <img src={image} alt={product.title} className="w-full aspect-square object-cover rounded-2xl" />
-            ) : (
-              <div className={`w-full aspect-square rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center`}>
-                <span className="text-white/30 text-6xl font-bold">{product.title?.[0]}</span>
-              </div>
-            )}
+            <TiltCard className="rounded-2xl" max={8} glow="rgba(157,78,221,0.32)">
+              {image ? (
+                <img src={image} alt={product.title} className="w-full aspect-square object-cover rounded-2xl" />
+              ) : (
+                <div className={`w-full aspect-square rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center`}>
+                  <span className="text-white/30 text-6xl font-bold">{product.title?.[0]}</span>
+                </div>
+              )}
+            </TiltCard>
           </div>
 
           {/* Info panel */}
@@ -253,7 +258,7 @@ export default function ProductPage() {
               )}
             </div>
 
-            <h1 className="text-3xl font-bold text-white mb-2">{product.title}</h1>
+            <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white mb-2">{product.title}</h1>
             {creator && <p className="text-white/55 mb-4">by {creator}</p>}
 
             {product.body_html && (

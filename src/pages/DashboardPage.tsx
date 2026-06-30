@@ -12,6 +12,7 @@ import NotificationsView from '@/components/dashboard/NotificationsView';
 import SettingsView from '@/components/dashboard/SettingsView';
 import AdminPanel from '@/components/dashboard/AdminPanel';
 import Marketplace from '@/components/home/Marketplace';
+import PremiumBackground from '@/components/PremiumBackground';
 import { supabase } from '@/lib/supabase';
 
 const NAV_ITEMS: { page: ViewPage; label: string; icon: string }[] = [
@@ -59,7 +60,8 @@ export default function DashboardPage() {
   const guestMode = !isAuthenticated;
 
   return (
-    <div className="min-h-screen bg-[#0B0814] flex">
+    <div className="relative min-h-screen bg-[#0B0814] flex">
+      <PremiumBackground />
       {/* Sidebar overlay (mobile) */}
       {sidebarOpen && <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={toggleSidebar} />}
 
@@ -121,7 +123,7 @@ export default function DashboardPage() {
       </aside>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col min-h-screen min-w-0">
+      <div className="relative z-10 flex-1 flex flex-col min-h-screen min-w-0">
         {/* Top bar */}
         <header className="sticky top-0 z-20 bg-gray-950/80 backdrop-blur-xl border-b border-gray-800 px-4 py-3 flex items-center gap-3">
           <button onClick={toggleSidebar} className="lg:hidden p-2 text-gray-400 hover:text-white transition-colors">
