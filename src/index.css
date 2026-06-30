@@ -147,3 +147,15 @@ input[type="range"]::-webkit-slider-thumb {
 }
 .wk-fade-up { opacity: 0; animation: wk-fade-up .5s ease-out forwards; }
 @keyframes wk-fade-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+/* ── 3D bookshelf ────────────────────────────────────────────────────────── */
+.wk-book {
+  transform: rotateY(-26deg) translateZ(0);
+  transform-origin: left center;
+  transition: transform .5s cubic-bezier(.2,.7,.2,1), box-shadow .5s ease;
+  will-change: transform;
+}
+.group:hover .wk-book {
+  transform: rotateY(0deg) translateY(-12px) scale(1.06);
+  box-shadow: 0 26px 50px rgba(0,0,0,.6);
+}

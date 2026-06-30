@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase';
 import Header from './Header';
 import Footer from './Footer';
 import ProductCard from './ProductCard';
-import { Play, Pause, Zap, Music, BookOpen, Video, Mic, Trophy, Globe, Users, DollarSign, TrendingUp, ArrowRight, Headphones, Radio, Star, ChevronRight, ChevronLeft, Clock, ShieldCheck, BarChart3, CreditCard, MoreVertical, Heart, Shuffle, SkipBack, SkipForward, Repeat, SlidersHorizontal } from 'lucide-react';
+import { Play, Pause, Zap, Music, BookOpen, Video, Mic, Trophy, Globe, Users, DollarSign, TrendingUp, ArrowRight, Headphones, Radio, Star, ChevronRight, ChevronLeft, Clock, ShieldCheck, BarChart3, CreditCard, MoreVertical, Heart, Shuffle, SkipBack, SkipForward, Repeat, SlidersHorizontal, Megaphone, Palette, Scissors, Wand2 } from 'lucide-react';
 import { usePlayer } from './GlobalPlayer';
 import { asArray } from '@/lib/utils';
 import FeaturedPerformancesGrid from './home/FeaturedPerformancesGrid';
@@ -1118,10 +1118,32 @@ export default function AppLayout() {
             </Link>
           </div>
           </Reveal>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 mb-8">
-            {(trendingBooks.length ? trendingBooks : MOCK_BOOKS).slice(0, 10).map((product: any) => (
-              <ProductCard key={product.id} product={product} variant="portrait" />
-            ))}
+          {/* 3D bookshelf */}
+          <div className="relative mb-8">
+            <div className="flex gap-7 lg:gap-9 overflow-x-auto pb-12 pt-4 px-3 [perspective:1600px] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+              {(trendingBooks.length ? trendingBooks : MOCK_BOOKS).slice(0, 10).map((product: any) => (
+                <Link
+                  key={product.id}
+                  to={product.handle ? `/products/${product.handle}` : '/collections/books'}
+                  className="group shrink-0 w-[150px]"
+                >
+                  <div className="wk-book relative aspect-[2/3] rounded-r-md rounded-l-[3px] overflow-hidden shadow-[12px_14px_28px_rgba(0,0,0,0.55)]">
+                    {product.image
+                      ? <img src={product.image} alt={product.title} className="w-full h-full object-cover" />
+                      : <div className="w-full h-full bg-gradient-to-br from-[#5B2A8A] to-[#1A0E33] flex items-center justify-center"><span className="text-3xl font-black text-white/30">{product.title?.[0] ?? '?'}</span></div>}
+                    {/* spine + page edges */}
+                    <span className="absolute inset-y-0 left-0 w-3 bg-gradient-to-r from-black/55 to-transparent" />
+                    <span className="absolute inset-y-0 right-0 w-1.5 bg-gradient-to-l from-white/15 to-transparent" />
+                    <span className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-white/5" />
+                  </div>
+                  <p className="mt-4 text-white text-xs font-semibold text-center truncate px-1">{product.title}</p>
+                  <p className="text-white/40 text-[11px] text-center truncate px-1">{product.author ?? product.vendor ?? 'WANKONG'}</p>
+                </Link>
+              ))}
+            </div>
+            {/* shelf board */}
+            <div className="mx-2 h-3 rounded-sm bg-gradient-to-b from-[#3a2a18] via-[#241809] to-[#120c05] shadow-[0_12px_26px_rgba(0,0,0,0.6)]" />
+            <div className="mx-6 h-2 rounded-b-lg bg-black/40 blur-[2px]" />
           </div>
           <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
             {['All', 'Devotional', 'Christian Living', 'Worship', 'Business', 'Prophecy', 'Parenting', 'Healing'].map(genre => (
@@ -1132,6 +1154,57 @@ export default function AppLayout() {
               >
                 {genre}
               </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CREATOR MARKETPLACE ───────────────────────────────────────── */}
+      <section className="py-14 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(0,217,255,0.08),transparent_70%)]" />
+        <div className="relative max-w-7xl mx-auto px-4">
+          <Reveal>
+          <div className="flex items-center justify-between mb-7">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#00D9FF] to-[#0E7C9E] flex items-center justify-center shadow-lg shadow-[#00D9FF]/20">
+                <Wand2 className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h2 className="text-2xl md:text-3xl font-black text-white">Creator Marketplace</h2>
+                <p className="text-white/40 text-sm">Hire top creative talent — producers, studios, mixing & more</p>
+              </div>
+            </div>
+            <Link to="/collections/marketplace" className="text-[#00D9FF] hover:text-[#00D9FF]/80 text-sm font-semibold flex items-center gap-1">Browse Services <ArrowRight className="w-4 h-4" /></Link>
+          </div>
+          </Reveal>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { icon: Music,            label: 'Producers',  count: '1,240 pros', color: '#00D9FF' },
+              { icon: Mic,              label: 'Studios',    count: '480 spaces', color: '#9D4EDD' },
+              { icon: SlidersHorizontal,label: 'Mixing',     count: '860 pros',   color: '#00F5A0' },
+              { icon: Headphones,       label: 'Mastering',  count: '520 pros',   color: '#FFB800' },
+              { icon: Scissors,         label: 'Editors',    count: '930 pros',   color: '#FF6B00' },
+              { icon: Palette,          label: 'Artwork',    count: '1,510 pros', color: '#FF006E' },
+              { icon: Megaphone,        label: 'Marketing',  count: '670 pros',   color: '#00D9FF' },
+              { icon: Globe,            label: 'Distribution', count: '30+ stores', color: '#9D4EDD' },
+            ].map((s, i) => (
+              <Reveal key={s.label} delay={i * 50}>
+              <Link
+                to="/collections/marketplace"
+                className="group relative block rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-5 overflow-hidden hover:-translate-y-1.5 hover:border-white/25 transition-all duration-300"
+              >
+                <div className="absolute -right-8 -top-8 w-28 h-28 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ backgroundColor: `${s.color}26` }} />
+                <div className="relative w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110" style={{ backgroundColor: `${s.color}1A` }}>
+                  <s.icon className="w-6 h-6" style={{ color: s.color }} />
+                </div>
+                <p className="relative text-white font-bold text-base mb-0.5">{s.label}</p>
+                <p className="relative text-white/40 text-xs mb-4">{s.count}</p>
+                <span className="relative inline-flex items-center gap-1 text-xs font-semibold transition-colors" style={{ color: s.color }}>
+                  Explore <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </Link>
+              </Reveal>
             ))}
           </div>
         </div>
