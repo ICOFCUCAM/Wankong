@@ -171,3 +171,7 @@ input[type="range"]::-webkit-slider-thumb {
 @keyframes wk-engine-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
 .wk-sonar { transform-box: fill-box; transform-origin: center; animation: wk-sonar 2.6s ease-out infinite; }
 @keyframes wk-sonar { 0% { transform: scale(1); opacity: .55; } 100% { transform: scale(2.3); opacity: 0; } }
+
+/* ── Live waveform bars ──────────────────────────────────────────────────── */
+.wk-eqbar { height: 25%; transform-origin: bottom; animation-name: wk-eqbar; animation-iteration-count: infinite; animation-direction: alternate; animation-timing-function: ease-in-out; }
+@keyframes wk-eqbar { from { height: 12%; opacity: .45; } to { height: 100%; opacity: 1; } }

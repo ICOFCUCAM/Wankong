@@ -242,6 +242,20 @@ function CountUp({ to, prefix = '', suffix = '', decimals = 0, className = '' }:
   return <span ref={ref} className={className}>{prefix}{shown}{suffix}</span>;
 }
 
+function LiveWave({ color, bars = 52 }: { color: string; bars?: number }) {
+  return (
+    <div className="flex items-end gap-[3px] h-full w-full" aria-hidden>
+      {Array.from({ length: bars }).map((_, i) => (
+        <span
+          key={i}
+          className="flex-1 rounded-full wk-eqbar"
+          style={{ backgroundColor: color, animationDelay: `${(i % 13) * 0.07}s`, animationDuration: `${0.7 + (i % 5) * 0.12}s` }}
+        />
+      ))}
+    </div>
+  );
+}
+
 const AVATAR_GRADS = ['from-[#9D4EDD] to-[#00D9FF]', 'from-[#FF6B00] to-[#FFB800]', 'from-[#00F5A0] to-[#00D9FF]', 'from-[#FF3B6B] to-[#9D4EDD]'];
 function AvatarStack({ count = 3 }: { count?: number }) {
   return (
@@ -1260,6 +1274,75 @@ export default function AppLayout() {
                 <ProductCard product={product} variant="square" />
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── PODCAST STUDIO ────────────────────────────────────────────── */}
+      <section className="py-14 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(255,0,110,0.07),transparent_70%)]" />
+        <div className="relative max-w-7xl mx-auto px-4">
+          <Reveal>
+          <div className="flex items-center justify-between mb-7">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#FF006E] to-[#9D4EDD] flex items-center justify-center shadow-lg shadow-[#FF006E]/20">
+                <Mic className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h2 className="text-2xl md:text-3xl font-black text-white">Podcast Studio</h2>
+                <p className="text-white/40 text-sm">Live shows, talk &amp; stories from the community</p>
+              </div>
+            </div>
+            <Link to="/collections/podcasts" className="text-[#FF006E] hover:text-[#FF006E]/80 text-sm font-semibold flex items-center gap-1">All Shows <ArrowRight className="w-4 h-4" /></Link>
+          </div>
+          </Reveal>
+
+          <div className="grid lg:grid-cols-[1.5fr_1fr] gap-5">
+            {/* On-air studio */}
+            <Reveal>
+            <div className="relative rounded-3xl border border-white/10 bg-gradient-to-br from-[#2a0e2e] via-[#1a0e2e] to-[#0F0A1E] p-7 md:p-9 overflow-hidden">
+              <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, rgba(255,0,110,0.4) 1px, transparent 1.5px)', backgroundSize: '18px 18px' }} />
+              <span className="relative inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-500 text-white text-[10px] font-black rounded-full">
+                <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> ON AIR
+              </span>
+              <div className="relative flex items-center gap-5 mt-5 mb-7">
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#FF006E] to-[#9D4EDD] flex items-center justify-center shrink-0 shadow-xl">
+                  <Mic className="w-9 h-9 text-white" />
+                </div>
+                <div>
+                  <p className="text-white/50 text-xs uppercase tracking-widest mb-1">Now Recording</p>
+                  <p className="text-white font-black text-xl md:text-2xl leading-tight">The Creator's Journey</p>
+                  <p className="text-white/50 text-sm">with WANKONG Studios · Ep. 42</p>
+                </div>
+              </div>
+              <div className="relative h-20"><LiveWave color="#FF3B9A" bars={56} /></div>
+              <div className="relative flex items-center justify-between mt-6">
+                <span className="flex items-center gap-2 text-white/60 text-sm"><Headphones className="w-4 h-4" /> 6.3K listening now</span>
+                <button className="w-12 h-12 rounded-full bg-white text-[#FF006E] flex items-center justify-center shadow-lg hover:scale-105 transition-transform"><Play className="w-5 h-5 fill-current ml-0.5" /></button>
+              </div>
+            </div>
+            </Reveal>
+
+            {/* Episode list */}
+            <div className="flex flex-col gap-3">
+              {[
+                { title: 'Building in Public', host: 'Ada & Kojo', dur: '48 min', grad: 'from-[#9D4EDD] to-[#00D9FF]' },
+                { title: 'Faith & Frequency', host: 'Prophet Elijah', dur: '32 min', grad: 'from-[#FF6B00] to-[#FFB800]' },
+                { title: 'The Afrobeat Files', host: 'DJ Beacon', dur: '55 min', grad: 'from-[#00F5A0] to-[#0E9E6E]' },
+                { title: 'Studio Sessions', host: 'Funmi A.', dur: '41 min', grad: 'from-[#FF006E] to-[#9D4EDD]' },
+              ].map((p, i) => (
+                <Reveal key={p.title} delay={i * 60}>
+                <Link to="/collections/podcasts" className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3.5 hover:bg-white/[0.06] hover:-translate-y-0.5 transition-all">
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${p.grad} flex items-center justify-center shrink-0`}><Radio className="w-5 h-5 text-white" /></div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white text-sm font-semibold truncate">{p.title}</p>
+                    <p className="text-white/40 text-xs truncate">{p.host} · {p.dur}</p>
+                  </div>
+                  <span className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 group-hover:bg-[#FF006E] group-hover:text-white group-hover:border-transparent transition-colors"><Play className="w-4 h-4 fill-current ml-0.5" /></span>
+                </Link>
+                </Reveal>
+              ))}
+            </div>
           </div>
         </div>
       </section>
