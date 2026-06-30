@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase';
 import Header from './Header';
 import Footer from './Footer';
 import ProductCard from './ProductCard';
-import { Play, Pause, Zap, Music, BookOpen, Video, Mic, Trophy, Globe, Users, DollarSign, TrendingUp, ArrowRight, Headphones, Radio, Star, ChevronRight, ChevronLeft, Clock, ShieldCheck, BarChart3, CreditCard, MoreVertical, Heart, Shuffle, SkipBack, SkipForward, Repeat, SlidersHorizontal, Megaphone, Palette, Scissors, Wand2 } from 'lucide-react';
+import { Play, Pause, Zap, Music, BookOpen, Video, Mic, Trophy, Globe, Users, DollarSign, TrendingUp, ArrowRight, Headphones, Radio, Star, ChevronRight, ChevronLeft, Clock, ShieldCheck, BarChart3, CreditCard, MoreVertical, Heart, Shuffle, SkipBack, SkipForward, Repeat, SlidersHorizontal, Megaphone, Palette, Scissors, Wand2, Quote } from 'lucide-react';
 import { usePlayer } from './GlobalPlayer';
 import { asArray } from '@/lib/utils';
 import FeaturedPerformancesGrid from './home/FeaturedPerformancesGrid';
@@ -1455,6 +1455,70 @@ export default function AppLayout() {
           </div>
         </div>
       </div>
+
+      {/* ── CREATOR STORIES / TESTIMONIALS ────────────────────────────── */}
+      <section className="py-16 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(157,78,221,0.07),transparent_70%)]" />
+        <div className="relative max-w-7xl mx-auto px-4">
+          <Reveal>
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#9D4EDD]/10 border border-[#9D4EDD]/20 rounded-full text-[#9D4EDD] text-xs font-semibold mb-3">
+              <Heart className="w-3 h-3 fill-current" /> Loved by Creators
+            </div>
+            <h2 className="text-3xl md:text-4xl font-black text-white mb-2">Stories from the community</h2>
+            <p className="text-white/40 text-sm">Real creators · real earnings · real reach</p>
+          </div>
+          </Reveal>
+
+          <div className="grid md:grid-cols-3 gap-5">
+            {[
+              { quote: 'WANKONG put my gospel album on 30+ platforms in a weekend — and I kept 100% of my royalties.', name: 'Grace Adele', role: 'Gospel Artist', flag: '🇳🇬', stat: '$18K earned', grad: 'from-[#9D4EDD] to-[#00D9FF]' },
+              { quote: 'The Talent Arena changed everything. I went from 200 to 60,000 fans after a single live battle.', name: 'Kojo Mensah', role: 'Afrobeats Producer', flag: '🇬🇭', stat: '2.3M streams', grad: 'from-[#FF6B00] to-[#FFB800]' },
+              { quote: 'I published my book and audiobook in three languages. Sales tripled in the first month.', name: 'Dr. Faith Mensah', role: 'Author', flag: '🇰🇪', stat: '4.2K readers', grad: 'from-[#00F5A0] to-[#0E9E6E]' },
+            ].map((t, i) => (
+              <Reveal key={t.name} delay={i * 90}>
+                <div className="group relative h-full rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6 hover:-translate-y-1.5 hover:border-white/20 transition-all duration-300 overflow-hidden">
+                  <div className={`absolute -right-10 -top-10 w-32 h-32 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br ${t.grad}`} />
+                  <div className="relative flex items-center justify-between mb-4">
+                    <Quote className="w-8 h-8 text-white/15" />
+                    <div className="flex gap-0.5">
+                      {Array.from({ length: 5 }).map((_, s) => <Star key={s} className="w-3.5 h-3.5 text-[#FFB800] fill-current" />)}
+                    </div>
+                  </div>
+                  <p className="relative text-white/85 text-[15px] leading-relaxed mb-6">“{t.quote}”</p>
+                  <div className="relative flex items-center gap-3 mt-auto">
+                    <div className={`w-11 h-11 rounded-full bg-gradient-to-br ${t.grad} flex items-center justify-center text-white font-black shrink-0`}>
+                      {t.name[0]}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-white font-bold text-sm flex items-center gap-1.5 truncate">{t.name} <span>{t.flag}</span></p>
+                      <p className="text-white/40 text-xs truncate">{t.role}</p>
+                    </div>
+                    <span className="shrink-0 px-2.5 py-1 rounded-full text-[11px] font-bold bg-white/5 border border-white/10 text-[#00F5A0]">{t.stat}</span>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-center">
+            {[
+              { v: '12,500+', l: 'Creators worldwide' },
+              { v: '140+', l: 'Countries' },
+              { v: '$2.8M+', l: 'Paid to creators' },
+              { v: '4.9★', l: 'Avg. creator rating' },
+            ].map((s, i) => (
+              <div key={i} className="flex items-baseline gap-2">
+                <span className="text-2xl font-black text-white">{s.v}</span>
+                <span className="text-white/40 text-sm">{s.l}</span>
+                {i < 3 && <span className="hidden sm:inline text-white/15 ml-6">|</span>}
+              </div>
+            ))}
+          </div>
+          </Reveal>
+        </div>
+      </section>
 
       {/* ── 11. DISTRIBUTION CTA ──────────────────────────────────────── */}
       <section className="py-16">
