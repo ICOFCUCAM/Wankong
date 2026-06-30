@@ -245,6 +245,17 @@ export default function AppLayout() {
   const [topCreators, setTopCreators] = useState<any[]>([]);
   const [langMode, setLangMode] = useState<'region' | 'global'>('region');
 
+  // Talent Arena live battle (mock real-time)
+  const [battleVotes, setBattleVotes] = useState({ a: 64218, b: 62224 });
+  const [battleCountdown, setBattleCountdown] = useState(8073); // seconds remaining
+  useEffect(() => {
+    const id = setInterval(() => {
+      setBattleVotes(v => ({ a: v.a + (Math.random() > 0.45 ? 1 : 0), b: v.b + (Math.random() > 0.5 ? 1 : 0) }));
+      setBattleCountdown(c => (c > 0 ? c - 1 : 0));
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+
   // Detect user country from browser locale for language priority
   const userCountry = (() => {
     try { return (navigator.language || 'en-US').split('-')[1]?.toUpperCase() ?? 'US'; }
@@ -881,6 +892,109 @@ export default function AppLayout() {
             </div>
 
           </div>
+        </div>
+      </section>
+
+      {/* ── TALENT ARENA — LIVE BATTLE ─────────────────────────────────────── */}
+      <section className="py-14 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(255,107,0,0.10),transparent_70%)]" />
+        <div className="relative max-w-7xl mx-auto px-4">
+          <Reveal>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#FF6B00] to-[#FFB800] flex items-center justify-center shadow-lg shadow-[#FF6B00]/25">
+                <Trophy className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-2xl md:text-3xl font-black text-white">Talent Arena</h2>
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-500 text-white text-[10px] font-black rounded-full"><span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE NOW</span>
+                </div>
+                <p className="text-white/40 text-sm">Global Battle of the Week — vote for your champion</p>
+              </div>
+            </div>
+            <Link to="/collections/talent-arena" className="text-[#FFB800] hover:text-[#FFB800]/80 text-sm font-semibold flex items-center gap-1">Enter Arena <ArrowRight className="w-4 h-4" /></Link>
+          </div>
+          </Reveal>
+
+          {(() => {
+            const total = battleVotes.a + battleVotes.b;
+            const pctA = Math.round((battleVotes.a / total) * 100);
+            const pctB = 100 - pctA;
+            const hh = String(Math.floor(battleCountdown / 3600)).padStart(2, '0');
+            const mm = String(Math.floor((battleCountdown % 3600) / 60)).padStart(2, '0');
+            const ss = String(battleCountdown % 60).padStart(2, '0');
+            const leadA = battleVotes.a >= battleVotes.b;
+            return (
+            <Reveal>
+            <div className="rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-sm p-6 md:p-8">
+              <div className="flex flex-col items-center mb-7">
+                <span className="text-white/40 text-xs uppercase tracking-widest mb-2">Voting closes in</span>
+                <div className="flex items-center gap-2 font-black text-white text-2xl md:text-3xl tabular-nums">
+                  <span className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">{hh}</span><span className="text-white/30">:</span>
+                  <span className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">{mm}</span><span className="text-white/30">:</span>
+                  <span className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">{ss}</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 md:gap-8">
+                <div className="text-center">
+                  <div className={`w-24 h-24 md:w-28 md:h-28 mx-auto rounded-full bg-gradient-to-br from-[#00D9FF] to-[#0E7C9E] flex items-center justify-center text-5xl mb-3 border-2 transition-all ${leadA ? 'border-[#FFB800] shadow-lg shadow-[#FFB800]/30' : 'border-white/10'}`}>🇨🇲</div>
+                  <p className="text-white font-bold text-base md:text-lg">Cameroon</p>
+                  <p className="text-white/40 text-xs mb-2">Bantu Collective</p>
+                  <p className="text-[#00D9FF] font-black text-lg md:text-xl tabular-nums">{battleVotes.a.toLocaleString()}</p>
+                  <p className="text-white/30 text-[11px]">votes</p>
+                </div>
+                <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-br from-[#FF6B00] to-[#FF006E] flex items-center justify-center text-white font-black text-base md:text-lg shadow-lg shadow-[#FF006E]/30">VS</div>
+                <div className="text-center">
+                  <div className={`w-24 h-24 md:w-28 md:h-28 mx-auto rounded-full bg-gradient-to-br from-[#00F5A0] to-[#0E9E6E] flex items-center justify-center text-5xl mb-3 border-2 transition-all ${!leadA ? 'border-[#FFB800] shadow-lg shadow-[#FFB800]/30' : 'border-white/10'}`}>🇳🇬</div>
+                  <p className="text-white font-bold text-base md:text-lg">Nigeria</p>
+                  <p className="text-white/40 text-xs mb-2">Naija Allstars</p>
+                  <p className="text-[#00F5A0] font-black text-lg md:text-xl tabular-nums">{battleVotes.b.toLocaleString()}</p>
+                  <p className="text-white/30 text-[11px]">votes</p>
+                </div>
+              </div>
+
+              <div className="mt-7">
+                <div className="flex justify-between text-xs font-bold mb-1.5">
+                  <span className="text-[#00D9FF]">{pctA}%</span>
+                  <span className="text-white/40 tabular-nums">{total.toLocaleString()} total votes</span>
+                  <span className="text-[#00F5A0]">{pctB}%</span>
+                </div>
+                <div className="h-3 rounded-full overflow-hidden flex bg-white/5">
+                  <div className="h-full bg-gradient-to-r from-[#00D9FF] to-[#0E7C9E] transition-all duration-500" style={{ width: `${pctA}%` }} />
+                  <div className="h-full bg-gradient-to-r from-[#0E9E6E] to-[#00F5A0] transition-all duration-500" style={{ width: `${pctB}%` }} />
+                </div>
+              </div>
+
+              <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
+                <button onClick={() => setBattleVotes(v => ({ ...v, a: v.a + 1 }))} className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#00D9FF] to-[#0E7C9E] text-white font-bold hover:opacity-90 hover:scale-[1.02] transition-all flex items-center justify-center gap-2"><span className="text-lg">🇨🇲</span> Vote Cameroon</button>
+                <button onClick={() => setBattleVotes(v => ({ ...v, b: v.b + 1 }))} className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#0E9E6E] to-[#00F5A0] text-white font-bold hover:opacity-90 hover:scale-[1.02] transition-all flex items-center justify-center gap-2"><span className="text-lg">🇳🇬</span> Vote Nigeria</button>
+              </div>
+            </div>
+            </Reveal>
+            );
+          })()}
+
+          <Reveal className="mt-5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {[
+              { rank: 1, name: 'Bantu Collective', country: '🇨🇲', votes: '64.2K', accent: '#FFB800' },
+              { rank: 2, name: 'Naija Allstars',   country: '🇳🇬', votes: '62.2K', accent: '#C0C0C0' },
+              { rank: 3, name: 'Accra Royals',     country: '🇬🇭', votes: '48.9K', accent: '#CD7F32' },
+            ].map(c => (
+              <div key={c.rank} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-3.5 hover:bg-white/[0.06] transition-colors">
+                <span className="text-xl font-black w-7" style={{ color: c.accent }}>#{c.rank}</span>
+                <span className="text-2xl">{c.country}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-white text-sm font-semibold truncate">{c.name}</p>
+                  <p className="text-white/40 text-xs">{c.votes} votes</p>
+                </div>
+                <Trophy className="w-4 h-4" style={{ color: c.accent }} />
+              </div>
+            ))}
+          </div>
+          </Reveal>
         </div>
       </section>
 
