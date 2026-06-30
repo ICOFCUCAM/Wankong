@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase';
 import Header from './Header';
 import Footer from './Footer';
 import ProductCard from './ProductCard';
-import { Play, Zap, Music, BookOpen, Video, Mic, Trophy, Globe, Users, DollarSign, TrendingUp, ArrowRight, Headphones, Radio, Star, ChevronRight, ChevronLeft, Clock, ShieldCheck, BarChart3, CreditCard } from 'lucide-react';
+import { Play, Pause, Zap, Music, BookOpen, Video, Mic, Trophy, Globe, Users, DollarSign, TrendingUp, ArrowRight, Headphones, Radio, Star, ChevronRight, ChevronLeft, Clock, ShieldCheck, BarChart3, CreditCard, MoreVertical, Heart, Shuffle, SkipBack, SkipForward, Repeat, SlidersHorizontal } from 'lucide-react';
 import { usePlayer } from './GlobalPlayer';
 import { asArray } from '@/lib/utils';
 import FeaturedPerformancesGrid from './home/FeaturedPerformancesGrid';
@@ -43,6 +43,56 @@ const STATS = [
   { icon: Globe, label: 'Countries', value: '140+', color: '#9D4EDD' },
   { icon: DollarSign, label: 'Creator Payouts', value: '$2.8M+', color: '#00F5A0' },
   { icon: TrendingUp, label: 'Monthly Streams', value: '45M+', color: '#FFB800' },
+];
+
+// ── Mock fallbacks — shown until real content is uploaded so sections never sit empty.
+// (ProductCard renders a styled placeholder when `image` is missing.)
+const MOCK_NEW_RELEASES = [
+  { id: 'nr1', handle: 'heaven-gates',   title: 'Heaven Gates',   vendor: 'Prophet Elijah', product_type: 'Music', price: 0,    genre: 'Gospel' },
+  { id: 'nr2', handle: 'afro-vibration', title: 'Afro Vibration', vendor: 'Kojo Mensah',    product_type: 'Music', price: 199,  genre: 'Afrobeats' },
+  { id: 'nr3', handle: 'midnight-jazz',  title: 'Midnight Jazz',  vendor: 'Adaeze Obi',     product_type: 'Music', price: 299,  genre: 'Jazz' },
+  { id: 'nr4', handle: 'street-gospel',  title: 'Street Gospel',  vendor: 'MC Zion',        product_type: 'Music', price: 0,    genre: 'Hip-Hop' },
+  { id: 'nr5', handle: 'lagos-nights',   title: 'Lagos Nights',   vendor: 'Funmi Adeyemi',  product_type: 'Music', price: 149,  genre: 'RnB' },
+  { id: 'nr6', handle: 'electric-soul',  title: 'Electric Soul',  vendor: 'DJ Beacon',      product_type: 'Music', price: 249,  genre: 'EDM' },
+  { id: 'nr7', handle: 'yoruba-praise',  title: 'Yoruba Praise',  vendor: 'Sis. Busayo',    product_type: 'Music', price: 0,    genre: 'Gospel' },
+  { id: 'nr8', handle: 'highlife-remix', title: 'Highlife Remix', vendor: 'Kwame Asante',   product_type: 'Music', price: 0,    genre: 'Highlife' },
+];
+
+const MOCK_BOOKS = [
+  { id: 'bk1', handle: 'gospel-of-grace',      title: 'The Gospel of Grace',       author: 'Pastor E. Ofori',     product_type: 'Book', price: 1299, genre: 'Christian Living' },
+  { id: 'bk2', handle: 'kingdom-business',     title: 'Kingdom Business Secrets',  author: 'Dr. Faith Mensah',    product_type: 'Book', price: 1899, genre: 'Business' },
+  { id: 'bk3', handle: 'midnight-prayers',     title: 'Midnight Prayers',          author: 'Rev. Samuel Asante',  product_type: 'Book', price: 999,  genre: 'Devotional' },
+  { id: 'bk4', handle: 'praise-anthology',     title: 'African Praise Anthology',  author: 'Various Authors',     product_type: 'Book', price: 2499, genre: 'Worship' },
+  { id: 'bk5', handle: 'prophetic-voice',      title: 'The Prophetic Voice',       author: 'Apostle Grace Oduya', product_type: 'Book', price: 1599, genre: 'Prophecy' },
+  { id: 'bk6', handle: 'healing-wings',        title: 'Healing in His Wings',      author: 'Dr. Emmanuel Yaw',    product_type: 'Book', price: 1399, genre: 'Healing' },
+  { id: 'bk7', handle: 'digital-christian',    title: 'The Digital Christian',     author: 'Tech Pastor Kwame',   product_type: 'Book', price: 1199, genre: 'Christian Living' },
+  { id: 'bk8', handle: 'songs-of-ascent',      title: 'Songs of Ascent',          author: 'Choir Master David',  product_type: 'Book', price: 899,  genre: 'Worship' },
+  { id: 'bk9', handle: 'raising-kingdom-kids', title: 'Raising Kingdom Kids',      author: 'Pastor Mary Adofo',   product_type: 'Book', price: 1699, genre: 'Parenting' },
+  { id: 'bk10', handle: 'fast-breaks-chains',  title: 'The Fast That Breaks Chains', author: 'Bishop John Asare', product_type: 'Book', price: 1099, genre: 'Devotional' },
+];
+
+const MOCK_AUDIOBOOKS = [
+  { id: 'ab1', handle: 'grace-audio',     title: 'The Gospel of Grace (Audio)', author: 'Pastor E. Ofori',    product_type: 'Audiobook', price: 1499, genre: 'Christian Living' },
+  { id: 'ab2', handle: 'prayers-audio',   title: 'Midnight Prayers (Audio)',    author: 'Rev. Samuel Asante', product_type: 'Audiobook', price: 1199, genre: 'Devotional' },
+  { id: 'ab3', handle: 'prophetic-audio', title: 'The Prophetic Voice (Audio)', author: 'Apostle Grace Oduya', product_type: 'Audiobook', price: 1799, genre: 'Prophecy' },
+  { id: 'ab4', handle: 'kingdom-audio',   title: 'Kingdom Business (Audio)',    author: 'Dr. Faith Mensah',   product_type: 'Audiobook', price: 1999, genre: 'Business' },
+  { id: 'ab5', handle: 'healing-audio',   title: 'Healing in His Wings (Audio)', author: 'Dr. Emmanuel Yaw',  product_type: 'Audiobook', price: 1599, genre: 'Healing' },
+  { id: 'ab6', handle: 'ascent-audio',    title: 'Songs of Ascent (Audio)',     author: 'Choir Master David', product_type: 'Audiobook', price: 1299, genre: 'Worship' },
+];
+
+const MOCK_ARTISTS = [
+  { name: 'Prophet Elijah', genre: 'Gospel',    slug: 'prophet-elijah', streams_count: 1284000, country_code: 'NG', verified: true },
+  { name: 'Kojo Mensah',    genre: 'Afrobeats', slug: 'kojo-mensah',    streams_count: 892000,  country_code: 'GH', verified: true },
+  { name: 'Adaeze Obi',     genre: 'Jazz',      slug: 'adaeze-obi',     streams_count: 453000,  country_code: 'NG', verified: true },
+  { name: 'Zawadi Kamau',   genre: 'Afrobeats', slug: 'zawadi-kamau',   streams_count: 734000,  country_code: 'KE', verified: true },
+  { name: 'Sipho Dlamini',  genre: 'Blues',     slug: 'sipho-dlamini',  streams_count: 287000,  country_code: 'ZA', verified: true },
+  { name: 'Funmi Adeyemi',  genre: 'RnB',       slug: 'funmi-adeyemi',  streams_count: 678000,  country_code: 'NG', verified: true },
+];
+
+const MOCK_TOP_CREATORS = [
+  { user_id: 'tc1', name: 'Grace Adele',   level: 'Diamond',  xp: 48200 },
+  { user_id: 'tc2', name: 'Kojo Mensah',   level: 'Platinum', xp: 39100 },
+  { user_id: 'tc3', name: 'Prophet Elijah', level: 'Gold',    xp: 31500 },
 ];
 
 // ── Language discovery data ───────────────────────────────────────────────────
@@ -118,6 +168,17 @@ function Equalizer({ color, bars = 20, className = '' }: { color: string; bars?:
           />
         );
       })}
+    </div>
+  );
+}
+
+const AVATAR_GRADS = ['from-[#9D4EDD] to-[#00D9FF]', 'from-[#FF6B00] to-[#FFB800]', 'from-[#00F5A0] to-[#00D9FF]', 'from-[#FF3B6B] to-[#9D4EDD]'];
+function AvatarStack({ count = 3 }: { count?: number }) {
+  return (
+    <div className="flex -space-x-2" aria-hidden>
+      {Array.from({ length: count }).map((_, i) => (
+        <span key={i} className={`w-5 h-5 rounded-full bg-gradient-to-br ${AVATAR_GRADS[i % AVATAR_GRADS.length]} border-2 border-[#0D1635]`} />
+      ))}
     </div>
   );
 }
@@ -604,8 +665,8 @@ export default function AppLayout() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 bg-[#FFB800]/15 border border-[#FFB800]/20 rounded-xl flex items-center justify-center">
-                <Zap className="w-5 h-5 text-[#FFB800]" />
+              <div className="w-11 h-11 bg-gradient-to-br from-[#FFB800] to-[#FF6B00] rounded-xl flex items-center justify-center shadow-lg shadow-[#FFB800]/25">
+                <Zap className="w-5 h-5 text-white fill-white" />
               </div>
               <div>
                 <h2 className="text-2xl md:text-3xl font-black text-white">Trending Now</h2>
@@ -616,112 +677,147 @@ export default function AppLayout() {
               <Link to="/collections/featured" className="text-[#00D9FF] hover:text-[#00D9FF]/80 text-sm font-semibold flex items-center gap-1">
                 View All <ArrowRight className="w-4 h-4" />
               </Link>
-              <div className="hidden sm:flex items-center gap-1.5">
-                <button onClick={() => scrollRow(trendScrollRef, 'left')} aria-label="Scroll left" className="w-9 h-9 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/70 transition-colors"><ChevronLeft className="w-4 h-4" /></button>
-                <button onClick={() => scrollRow(trendScrollRef, 'right')} aria-label="Scroll right" className="w-9 h-9 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/70 transition-colors"><ChevronRight className="w-4 h-4" /></button>
+              <div className="hidden sm:flex items-center gap-2">
+                <button onClick={() => scrollRow(trendScrollRef, 'left')} aria-label="Previous" className="w-9 h-9 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/60 transition-colors"><ChevronLeft className="w-4 h-4" /></button>
+                <button onClick={() => scrollRow(trendScrollRef, 'right')} aria-label="Next" className="w-9 h-9 rounded-full border border-[#9D4EDD]/60 bg-[#9D4EDD]/10 hover:bg-[#9D4EDD]/20 flex items-center justify-center text-white transition-colors"><ArrowRight className="w-4 h-4" /></button>
               </div>
             </div>
           </div>
 
-          {/* 5-card carousel */}
-          <div
-            ref={trendScrollRef}
-            className="flex gap-4 overflow-x-auto pb-3 snap-x [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-          >
+          <div ref={trendScrollRef} className="grid grid-cols-2 lg:grid-cols-6 gap-4">
+
             {/* 1. LIVE */}
-            <div className="group relative shrink-0 w-64 snap-start rounded-2xl overflow-hidden border border-white/10 h-80 flex flex-col bg-gradient-to-br from-[#3a2033] to-[#0B0814]">
-              <img src={ARTIST_IMAGES[2]} alt="" className="absolute inset-0 w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0B0814] via-[#0B0814]/30 to-transparent" />
-              <span className="relative z-10 m-3 self-start inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-500 text-white text-[10px] font-black rounded-full">
-                <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE
-              </span>
-              <button className="absolute inset-0 z-10 m-auto w-12 h-12 rounded-full bg-white/90 text-[#0B0814] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-xl">
-                <Play className="w-5 h-5 fill-current ml-0.5" />
-              </button>
-              <div className="relative z-10 mt-auto p-4">
-                <p className="text-white font-bold text-sm">Live Performance</p>
-                <p className="text-white/60 text-xs mb-2.5">Afro Soul Session</p>
-                <div className="flex items-center justify-between text-xs text-white/60">
-                  <span className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5" /> 12.4K watching</span>
-                  <BarChart3 className="w-4 h-4 text-[#00F5A0]" />
+            <div className="group rounded-2xl overflow-hidden border border-white/10 bg-[#0D1635] flex flex-col hover:-translate-y-1 hover:border-white/20 transition-all duration-300">
+              <div className="relative aspect-[16/11] bg-gradient-to-br from-[#3a2033] to-[#0B0814]">
+                <img src={ARTIST_IMAGES[2]} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0D1635] via-transparent to-transparent" />
+                <span className="absolute top-2.5 left-2.5 inline-flex items-center gap-1 px-2 py-0.5 bg-red-500 text-white text-[10px] font-black rounded-full">
+                  <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE
+                </span>
+                <button className="absolute left-3 bottom-3 w-10 h-10 rounded-full bg-black/40 backdrop-blur border border-white/30 flex items-center justify-center text-white hover:bg-black/60 transition-colors">
+                  <Play className="w-4 h-4 fill-current ml-0.5" />
+                </button>
+              </div>
+              <div className="p-3.5 flex-1 flex flex-col">
+                <p className="text-white font-bold text-sm leading-tight">Live Performance</p>
+                <p className="text-white/50 text-xs mb-3">Afro Soul Session</p>
+                <div className="flex items-center justify-between mt-auto">
+                  <div className="flex items-center gap-2">
+                    <AvatarStack />
+                    <span className="text-white/60 text-xs">12.4K watching</span>
+                  </div>
+                  <Equalizer color="#FF3B6B" bars={4} className="w-5 !h-4" />
                 </div>
               </div>
             </div>
 
             {/* 2. NEW RELEASE */}
-            <div className="group shrink-0 w-64 snap-start rounded-2xl overflow-hidden border border-white/10 bg-[#0D1635] h-80 flex flex-col">
-              <div className="relative h-40 bg-gradient-to-br from-[#1a2a4a] to-[#070b16] flex items-center justify-center">
-                <span className="absolute top-3 left-3 px-2.5 py-1 bg-[#00D9FF] text-[#0B0814] text-[10px] font-black rounded-full">NEW RELEASE</span>
-                <div className="text-center">
-                  <p className="text-white/90 font-black text-2xl tracking-widest leading-none">ECHOES</p>
-                  <p className="text-[#00D9FF] font-bold text-xs tracking-[0.3em] mt-1.5">THE JOURNEY</p>
+            <div className="group rounded-2xl overflow-hidden border border-white/10 bg-[#0D1635] flex flex-col hover:-translate-y-1 hover:border-white/20 transition-all duration-300">
+              <div className="relative aspect-[16/11] bg-gradient-to-br from-[#1a2a4a] to-[#070b16] flex items-center justify-center">
+                <span className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-[#9D4EDD] text-white text-[10px] font-black rounded-full">NEW RELEASE</span>
+                <div className="text-center px-2">
+                  <p className="text-white/90 font-black text-base tracking-widest leading-none">ECHOES</p>
+                  <p className="text-[#00D9FF] font-bold text-[9px] tracking-[0.25em] mt-1">THE JOURNEY</p>
                 </div>
-                <button className="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-[#00D9FF] text-[#0B0814] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><Play className="w-4 h-4 fill-current ml-0.5" /></button>
+                <button className="absolute left-3 bottom-3 w-10 h-10 rounded-full bg-black/40 backdrop-blur border border-white/30 flex items-center justify-center text-white hover:bg-black/60 transition-colors">
+                  <Play className="w-4 h-4 fill-current ml-0.5" />
+                </button>
               </div>
-              <div className="p-4 flex flex-col flex-1">
-                <p className="text-white font-bold text-sm">Echoes: The Journey</p>
-                <p className="text-white/50 text-xs mb-auto">by Skyline Beats</p>
-                <div className="flex items-center gap-2 text-xs text-white/60 mt-3">
-                  <span className="flex items-center gap-1 text-[#FFB800]"><Star className="w-3.5 h-3.5 fill-current" /> 4.9</span>
-                  <span className="text-white/30">·</span>
-                  <span>8.7K Streams</span>
+              <div className="p-3.5 flex-1 flex flex-col">
+                <p className="text-white font-bold text-sm leading-tight">Echoes: The Journey</p>
+                <p className="text-white/50 text-xs mb-3">by Skyline Beats</p>
+                <div className="flex items-center justify-between mt-auto text-xs">
+                  <span className="flex items-center gap-1.5">
+                    <span className="flex items-center gap-1 text-[#FFB800]"><Star className="w-3.5 h-3.5 fill-current" /> 4.9</span>
+                    <span className="text-white/30">·</span>
+                    <span className="text-[#00D9FF]">8.7K Streams</span>
+                  </span>
+                  <button className="text-white/30 hover:text-white transition-colors"><MoreVertical className="w-4 h-4" /></button>
                 </div>
               </div>
             </div>
 
-            {/* 3. NOW PLAYING */}
-            <div className="shrink-0 w-64 snap-start rounded-2xl overflow-hidden border border-white/10 bg-gradient-to-br from-[#7B2D8E] via-[#5B2A8A] to-[#3a1d6e] h-80 flex flex-col p-4">
-              <span className="self-start px-2.5 py-1 bg-white/15 text-white text-[10px] font-black rounded-full backdrop-blur-sm">NOW PLAYING</span>
-              <div className="flex-1 flex flex-col justify-center">
-                <div className="flex items-center gap-2 mb-1">
-                  <Music className="w-4 h-4 text-white/80" />
-                  <p className="text-white font-black text-lg leading-tight">Holy Ground</p>
+            {/* 3. NOW PLAYING — wide player */}
+            <div className="col-span-2 rounded-2xl border border-white/10 bg-gradient-to-br from-[#1a1230] via-[#15103a] to-[#0D1635] p-4 flex flex-col">
+              <span className="self-start inline-flex items-center gap-1.5 px-2.5 py-1 bg-white/10 text-white text-[10px] font-black rounded-full mb-3">
+                <SlidersHorizontal className="w-3 h-3" /> NOW PLAYING
+              </span>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#9D4EDD] to-[#3a1d6e] flex items-center justify-center shrink-0 shadow-lg">
+                  <Music className="w-5 h-5 text-white/80" />
                 </div>
-                <p className="text-white/70 text-sm mb-4">Grace Adele</p>
-                <div className="flex items-center justify-between text-[11px] text-white/70 mb-1.5">
-                  <span>02:18</span><span>04:36</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-white font-black text-base leading-tight truncate">Holy Ground</p>
+                  <p className="text-white/60 text-sm truncate">Grace Adele</p>
                 </div>
-                <div className="h-1.5 bg-white/20 rounded-full overflow-hidden mb-4">
-                  <div className="h-full w-1/2 bg-white rounded-full" />
-                </div>
-                <Equalizer color="#ffffff" bars={26} className="opacity-70 h-8" />
+                <button className="text-white/40 hover:text-[#FF3B6B] transition-colors"><Heart className="w-5 h-5" /></button>
               </div>
-              <button className="self-end w-11 h-11 rounded-full bg-white text-[#5B2A8A] flex items-center justify-center shadow-lg"><Play className="w-5 h-5 fill-current ml-0.5" /></button>
+              <div className="flex items-center gap-2 text-[11px] text-white/60 mb-3.5">
+                <span>02:18</span>
+                <div className="flex-1 h-1 bg-white/15 rounded-full overflow-hidden">
+                  <div className="h-full w-1/2 bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] rounded-full" />
+                </div>
+                <span>04:36</span>
+              </div>
+              <Equalizer color="#9D4EDD" bars={44} className="opacity-80 !h-8 mb-4" />
+              <div className="flex items-center justify-center gap-6 text-white/60">
+                <button className="hover:text-white transition-colors"><Shuffle className="w-4 h-4" /></button>
+                <button className="hover:text-white transition-colors"><SkipBack className="w-5 h-5 fill-current" /></button>
+                <button className="w-12 h-12 rounded-full border-2 border-[#9D4EDD] flex items-center justify-center text-white hover:bg-[#9D4EDD]/20 transition-colors"><Pause className="w-5 h-5 fill-current" /></button>
+                <button className="hover:text-white transition-colors"><SkipForward className="w-5 h-5 fill-current" /></button>
+                <button className="hover:text-white transition-colors"><Repeat className="w-4 h-4" /></button>
+              </div>
             </div>
 
             {/* 4. TOP ALBUM */}
-            <div className="group relative shrink-0 w-64 snap-start rounded-2xl overflow-hidden border border-white/10 h-80 flex flex-col bg-gradient-to-br from-[#2a2548] to-[#0B0814]">
-              <img src={ARTIST_IMAGES[0]} alt="" className="absolute inset-0 w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0B0814] via-[#0B0814]/30 to-transparent" />
-              <span className="relative z-10 m-3 self-start px-2.5 py-1 bg-[#FFB800] text-[#0B0814] text-[10px] font-black rounded-full">TOP ALBUM</span>
-              <button className="absolute inset-0 z-10 m-auto w-12 h-12 rounded-full bg-white/90 text-[#0B0814] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-xl"><Play className="w-5 h-5 fill-current ml-0.5" /></button>
-              <div className="relative z-10 mt-auto p-4">
-                <p className="text-white font-bold text-sm">Midnight Dreams</p>
-                <p className="text-white/60 text-xs mb-2.5">by Jayden Morris</p>
-                <div className="flex items-center gap-2 text-xs text-white/60">
-                  <span className="flex items-center gap-1 text-[#FFB800]"><Star className="w-3.5 h-3.5 fill-current" /> 4.8</span>
-                  <span className="text-white/30">·</span>
-                  <span>15.2K Streams</span>
+            <div className="group rounded-2xl overflow-hidden border border-white/10 bg-[#0D1635] flex flex-col hover:-translate-y-1 hover:border-white/20 transition-all duration-300">
+              <div className="relative aspect-[16/11] bg-gradient-to-br from-[#2a2548] to-[#0B0814]">
+                <img src={ARTIST_IMAGES[0]} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0D1635] via-transparent to-transparent" />
+                <span className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-gradient-to-r from-[#FFB800] to-[#FF6B00] text-white text-[10px] font-black rounded-full">TOP ALBUM</span>
+                <button className="absolute left-3 bottom-3 w-10 h-10 rounded-full bg-black/40 backdrop-blur border border-white/30 flex items-center justify-center text-white hover:bg-black/60 transition-colors">
+                  <Play className="w-4 h-4 fill-current ml-0.5" />
+                </button>
+              </div>
+              <div className="p-3.5 flex-1 flex flex-col">
+                <p className="text-white font-bold text-sm leading-tight">Midnight Dreams</p>
+                <p className="text-white/50 text-xs mb-3">by Jayden Morris</p>
+                <div className="flex items-center justify-between mt-auto text-xs">
+                  <span className="flex items-center gap-1.5">
+                    <span className="flex items-center gap-1 text-[#FFB800]"><Star className="w-3.5 h-3.5 fill-current" /> 4.8</span>
+                    <span className="text-white/30">·</span>
+                    <span className="text-[#00D9FF]">15.2K Streams</span>
+                  </span>
+                  <button className="text-white/30 hover:text-white transition-colors"><MoreVertical className="w-4 h-4" /></button>
                 </div>
               </div>
             </div>
 
             {/* 5. TRENDING PODCAST */}
-            <div className="shrink-0 w-64 snap-start rounded-2xl overflow-hidden border border-white/10 bg-[#0D1635] h-80 flex flex-col p-4">
-              <span className="self-start px-2.5 py-1 bg-[#9D4EDD]/20 text-[#c78bff] text-[10px] font-black rounded-full border border-[#9D4EDD]/30">TRENDING PODCAST</span>
-              <div className="flex-1 flex flex-col justify-center">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#9D4EDD] to-[#00D9FF] flex items-center justify-center mb-3">
+            <div className="group rounded-2xl overflow-hidden border border-white/10 bg-[#0D1635] flex flex-col hover:-translate-y-1 hover:border-white/20 transition-all duration-300">
+              <div className="relative aspect-[16/11] bg-gradient-to-br from-[#2a1d4a] to-[#0B0814] flex items-center justify-center overflow-hidden">
+                <Equalizer color="#9D4EDD" bars={22} className="absolute inset-x-3 bottom-2 opacity-40 !h-10" />
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#9D4EDD] to-[#00D9FF] flex items-center justify-center relative z-10 shadow-lg">
                   <Mic className="w-6 h-6 text-white" />
                 </div>
-                <p className="text-white font-black text-base leading-tight">The Creator's Journey</p>
-                <p className="text-white/50 text-xs mb-4">With WANKONG Studios</p>
-                <Equalizer color="#9D4EDD" bars={24} className="opacity-70 h-7" />
+                <span className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-[#9D4EDD] text-white text-[10px] font-black rounded-full z-10">TRENDING PODCAST</span>
+                <button className="absolute left-3 bottom-3 w-10 h-10 rounded-full bg-black/40 backdrop-blur border border-white/30 flex items-center justify-center text-white hover:bg-black/60 transition-colors z-10">
+                  <Play className="w-4 h-4 fill-current ml-0.5" />
+                </button>
               </div>
-              <div className="flex items-center justify-between mt-3">
-                <span className="flex items-center gap-1.5 text-xs text-white/60"><Headphones className="w-3.5 h-3.5" /> 6.3K Listeners</span>
-                <button className="w-10 h-10 rounded-full bg-[#9D4EDD] text-white flex items-center justify-center"><Play className="w-4 h-4 fill-current ml-0.5" /></button>
+              <div className="p-3.5 flex-1 flex flex-col">
+                <p className="text-white font-bold text-sm leading-tight">The Creator's Journey</p>
+                <p className="text-white/50 text-xs mb-3">With WANKONG Studios</p>
+                <div className="flex items-center justify-between mt-auto">
+                  <div className="flex items-center gap-2">
+                    <AvatarStack />
+                    <span className="text-white/60 text-xs">6.3K Listeners</span>
+                  </div>
+                  <button className="text-white/30 hover:text-white transition-colors"><MoreVertical className="w-4 h-4" /></button>
+                </div>
               </div>
             </div>
+
           </div>
         </div>
       </section>
@@ -776,7 +872,7 @@ export default function AppLayout() {
             </Link>
           </div>
           <div className="flex gap-4 overflow-x-auto pb-3 -mx-4 px-4" style={{ scrollbarWidth: 'none' }}>
-            {newReleases.map((product: any) => (
+            {(newReleases.length ? newReleases : MOCK_NEW_RELEASES).map((product: any) => (
               <div key={product.id} className="shrink-0 w-[200px]">
                 <ProductCard product={product} variant="square" />
               </div>
@@ -801,7 +897,7 @@ export default function AppLayout() {
             <Link to="/collections/music" className="text-[#00D9FF] text-sm hover:underline">See All</Link>
           </div>
           <div className="flex gap-5 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
-            {featuredArtists.map((artist: any, i: number) => {
+            {(featuredArtists.length ? featuredArtists : MOCK_ARTISTS).map((artist: any, i: number) => {
               const GRADIENTS = ['from-violet-600 to-cyan-500','from-violet-700 to-indigo-500','from-emerald-500 to-cyan-500','from-cyan-600 to-violet-600','from-indigo-500 to-violet-600','from-violet-500 to-cyan-600'];
               let flag = '🌍';
               try {
@@ -848,7 +944,7 @@ export default function AppLayout() {
             </Link>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 mb-8">
-            {trendingBooks.slice(0, 10).map((product: any) => (
+            {(trendingBooks.length ? trendingBooks : MOCK_BOOKS).slice(0, 10).map((product: any) => (
               <ProductCard key={product.id} product={product} variant="portrait" />
             ))}
           </div>
@@ -882,7 +978,7 @@ export default function AppLayout() {
             <Link to="/collections/audiobooks" className="text-[#00D9FF] text-sm hover:underline">See All</Link>
           </div>
           <div className="flex gap-4 overflow-x-auto pb-3" style={{ scrollbarWidth: 'none' }}>
-            {audiobooks.map((product: any) => (
+            {(audiobooks.length ? audiobooks : MOCK_AUDIOBOOKS).map((product: any) => (
               <div key={product.id} className="shrink-0 w-[200px]">
                 <ProductCard product={product} variant="square" />
               </div>
@@ -907,7 +1003,7 @@ export default function AppLayout() {
             <Link to="/dashboard/earnings" className="text-[#00D9FF] text-sm hover:underline">Leaderboard</Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {topCreators.map((creator: any, i: number) => {
+            {(topCreators.length ? topCreators : MOCK_TOP_CREATORS).map((creator: any, i: number) => {
               const LEVEL_COLORS: Record<string, string> = { Bronze: '#CD7F32', Silver: '#C0C0C0', Gold: '#FFB800', Platinum: '#E5E4E2', Diamond: '#00D9FF', 'Global Ambassador': '#9D4EDD' };
               const BADGES = ['👑', '💎', '⭐'];
               const color = LEVEL_COLORS[creator.level] ?? '#FFB800';
