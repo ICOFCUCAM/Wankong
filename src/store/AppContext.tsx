@@ -60,6 +60,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [wallet, setWallet] = useState<WalletState>(EMPTY_WALLET);
   const [searchQuery, setSearchQuery] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  // Authoritative role from the profiles table — survives stale JWT metadata
+  // (e.g. a role changed after the session was minted).
+  const [profileRole, setProfileRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!supabaseUser) { setProfileRole(null); return; }
+    supabase.from('profiles').select('role').eq('id', supabaseUser.id).maybeSingle()
+      .then(({ data }) => setProfileRole((data as any)?.role ?? null));
+  }, [supabaseUser]);
 
   // ── Per-user data: notifications + wallet ────────────────────────────────────
   useEffect(() => {
@@ -136,8 +145,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     username: supabaseUser.user_metadata?.username ?? supabaseUser.email?.split('@')?.[0] ?? 'creator',
     avatar: supabaseUser.user_metadata?.avatar_url ?? `https://api.dicebear.com/7.x/initials/svg?seed=${supabaseUser.email}`,
     country: supabaseUser.user_metadata?.country ?? 'US',
-    role: supabaseUser.user_metadata?.role ?? 'creator',
-  } : null, [supabaseUser]);
+    role: profileRole ?? supabaseUser.user_metadata?.role ?? 'creator',
+  } : null, [supabaseUser, profileRole]);
 
   const markNotificationRead = useCallback((id: string) => {
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
