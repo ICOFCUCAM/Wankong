@@ -136,7 +136,7 @@ Deno.serve(async (req) => {
     const jwt = authHeader.replace('Bearer ', '');
     if (!jwt) return json({ error: 'Not authenticated' }, 401);
 
-    const supabase = createClient(env('SUPABASE_URL'), env('SUPABASE_SERVICE_KEY'));
+    const supabase = createClient(env('SUPABASE_URL'), env('SUPABASE_SERVICE_ROLE_KEY') || env('SUPABASE_SERVICE_KEY'));
     const { data: userData, error: userErr } = await supabase.auth.getUser(jwt);
     if (userErr || !userData.user) return json({ error: 'Invalid session' }, 401);
     const userId = userData.user.id;
