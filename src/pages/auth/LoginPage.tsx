@@ -9,6 +9,8 @@ export default function LoginPage() {
   const [password,    setPassword]    = useState('');
   const [loading,     setLoading]     = useState(false);
   const [error,       setError]       = useState('');
+  const [resetSent,   setResetSent]   = useState(false);
+  const [resetting,   setResetting]   = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,6 +24,23 @@ export default function LoginPage() {
       setError(err.message ?? 'Sign in failed. Please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleReset = async () => {
+    setError('');
+    if (!email) { setError('Enter your email above first, then tap "Forgot password?".'); return; }
+    setResetting(true);
+    try {
+      const { error: resetErr } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      });
+      if (resetErr) throw resetErr;
+      setResetSent(true);
+    } catch (err: any) {
+      setError(err.message ?? 'Could not send reset email. Please try again.');
+    } finally {
+      setResetting(false);
     }
   };
 
@@ -44,6 +63,12 @@ export default function LoginPage() {
           {error && (
             <div className="bg-red-500/10 border border-red-500/20 text-red-300 text-sm rounded-xl px-4 py-3 mb-5">
               {error}
+            </div>
+          )}
+
+          {resetSent && (
+            <div className="bg-[#00F5A0]/10 border border-[#00F5A0]/25 text-[#00F5A0] text-sm rounded-xl px-4 py-3 mb-5">
+              Password reset link sent to <span className="font-semibold">{email}</span>. Check your inbox.
             </div>
           )}
 
@@ -70,7 +95,17 @@ export default function LoginPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-white/70 mb-1.5">Password</label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-sm font-medium text-white/70">Password</label>
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  disabled={resetting}
+                  className="text-xs text-[#00D9FF] hover:underline disabled:opacity-50"
+                >
+                  {resetting ? 'Sending…' : 'Forgot password?'}
+                </button>
+              </div>
               <input
                 type="password"
                 required

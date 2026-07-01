@@ -66,6 +66,7 @@ const CallbackPage    = lazy(() => import('./pages/auth/CallbackPage'));
 const SelectRolePage  = lazy(() => import('./pages/auth/SelectRolePage'));
 const RegisterPage    = lazy(() => import('./pages/auth/RegisterPage'));
 const LoginPage       = lazy(() => import('./pages/auth/LoginPage'));
+const ResetPasswordPage = lazy(() => import('./pages/auth/ResetPasswordPage'));
 
 // ── New feature pages ─────────────────────────────────────────────────────────
 const PricingPage                = lazy(() => import('./pages/PricingPage'));
@@ -169,6 +170,7 @@ export default function App() {
 
           {/* ── Auth (Phase 4) ─────────────────────────────────────────────── */}
           <Route path="/auth/login"               element={<LoginPage />} />
+          <Route path="/auth/reset-password"      element={<ResetPasswordPage />} />
           <Route path="/auth/callback"            element={<CallbackPage />} />
           <Route path="/auth/register"            element={<RegisterPage />} />
           <Route path="/auth/select-role"         element={
