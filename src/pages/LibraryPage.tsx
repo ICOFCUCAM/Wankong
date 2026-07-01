@@ -152,7 +152,7 @@ export default function LibraryPage() {
   const [purchases,       setPurchases]        = useState<PurchasedItem[]>([]);
 
   // Admin state
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin';
   const [showEditorial,   setShowEditorial]    = useState(false);
   const [editorialName,   setEditorialName]    = useState('');
   const [editorialType,   setEditorialType]    = useState<'trending'|'top_creators'|'winners'|'new_releases'>('trending');

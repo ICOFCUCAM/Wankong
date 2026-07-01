@@ -32,7 +32,7 @@ export default function DashboardPage() {
   const { isAuthenticated, currentPage, setCurrentPage, user, notifications, sidebarOpen, toggleSidebar } = useApp();
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
 
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin';
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
