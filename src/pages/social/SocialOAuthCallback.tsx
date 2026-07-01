@@ -35,7 +35,17 @@ export default function SocialOAuthCallback() {
             code_verifier: sessionStorage.getItem('wk_oauth_verifier') || 'challenge',
           },
         });
-        if (error || (data as any)?.error) throw new Error((data as any)?.error || error?.message);
+        if (error || (data as any)?.error) {
+          // Supabase wraps function errors as a generic message; dig out the real
+          // error body (e.g. Google's redirect_uri_mismatch / invalid_grant).
+          let detail = (data as any)?.error || error?.message || 'Connection failed';
+          const ctx = (error as any)?.context;
+          try {
+            if (ctx && typeof ctx.json === 'function') { const b = await ctx.json(); if (b?.error) detail = b.error; }
+            else if (ctx && typeof ctx.text === 'function') { const tx = await ctx.text(); if (tx) detail = tx; }
+          } catch { /* keep detail */ }
+          throw new Error(detail);
+        }
         setState('done');
         setMessage(`${platform} connected successfully.`);
         setTimeout(() => navigate('/dashboard?view=settings'), 1400);
