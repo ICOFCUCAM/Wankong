@@ -266,6 +266,10 @@ input[type="range"]::-webkit-slider-thumb {
 .wk-ticker { animation: wk-ticker 38s linear infinite; }
 @keyframes wk-ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
+/* globe orbital light ring — slow rotation */
+.wk-orbit { animation: wk-orbit 26s linear infinite; }
+@keyframes wk-orbit { to { transform: rotate(360deg); } }
+
 /* talent arena stage spotlights — slow sway + flicker */
 .wk-spotlight { transform-origin: top center; animation: wk-spotlight 6s ease-in-out infinite; }
 @keyframes wk-spotlight {
@@ -277,5 +281,5 @@ input[type="range"]::-webkit-slider-thumb {
 .wk-nav-scrolled { backdrop-filter: blur(18px) saturate(1.4); background: rgba(11,8,20,0.72) !important; border-bottom-color: rgba(255,255,255,0.10) !important; }
 
 @media (prefers-reduced-motion: reduce) {
-  .wk-page-in, .wk-shimmer::after, .wk-spin-strip, .wk-aurora, .wk-aurora-2, .wk-aurora-3, .wk-aurora-4, .wk-float, .wk-ping, .wk-eqbar, .wk-spin, .wk-stars, .wk-breathe, .wk-coverfloat, .wk-ticker, .wk-spotlight, .wk-live { animation: none !important; }
+  .wk-page-in, .wk-shimmer::after, .wk-spin-strip, .wk-aurora, .wk-aurora-2, .wk-aurora-3, .wk-aurora-4, .wk-float, .wk-ping, .wk-eqbar, .wk-spin, .wk-stars, .wk-breathe, .wk-coverfloat, .wk-ticker, .wk-spotlight, .wk-live, .wk-orbit { animation: none !important; }
 }

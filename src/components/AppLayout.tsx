@@ -846,8 +846,10 @@ export default function AppLayout() {
       </SectionErrorBoundary>
 
       {/* ── 2. MUSIC BY LANGUAGE — GLOBE EXPLORER ─────────────────────────── */}
-      <section className="py-14 relative overflow-hidden border-t border-white/5">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(157,78,221,0.08),transparent_70%)]" />
+      <section className="py-16 relative overflow-hidden border-t border-white/5">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-5%,rgba(157,78,221,0.12),transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_110%,rgba(0,217,255,0.07),transparent_60%)]" />
+        <div className="absolute inset-0 wk-stars opacity-[0.14] pointer-events-none" />
         <div className="relative max-w-7xl mx-auto px-4">
           <Reveal>
           <div className="text-center mb-9">
@@ -865,6 +867,10 @@ export default function AppLayout() {
               <div className="relative w-[300px] h-[300px] max-w-full">
                 {/* aurora atmosphere */}
                 <div className="absolute inset-[-4%] rounded-full blur-3xl opacity-60 wk-aurora" style={{ background: 'radial-gradient(circle at 50% 46%, rgba(157,78,221,0.5), rgba(0,217,255,0.2) 54%, transparent 72%)' }} />
+                {/* orbital light ring — a thin band of light slowly circling the globe */}
+                <div className="absolute inset-[-11%] rounded-full wk-orbit opacity-70" aria-hidden style={{ background: 'conic-gradient(from 0deg, transparent 0%, #00D9FF 10%, transparent 24%, transparent 58%, #9D4EDD 70%, transparent 84%)', WebkitMaskImage: 'radial-gradient(circle, transparent 58.5%, #000 59.5%, #000 61.5%, transparent 62.5%)', maskImage: 'radial-gradient(circle, transparent 58.5%, #000 59.5%, #000 61.5%, transparent 62.5%)' }} />
+                {/* pedestal glow beneath the globe */}
+                <div className="absolute left-1/2 -bottom-4 -translate-x-1/2 w-[72%] h-9 rounded-[50%] blur-xl opacity-70" aria-hidden style={{ background: 'radial-gradient(ellipse, rgba(0,217,255,0.4), transparent 70%)' }} />
                 {/* a few subtle drifting particles near the rim */}
                 {[
                   { t: '14%', l: '22%', c: '#00D9FF', d: '0s' }, { t: '18%', l: '80%', c: '#9D4EDD', d: '1.4s' },
@@ -930,23 +936,34 @@ export default function AppLayout() {
             </div>
 
             {/* Language cards for the selected continent — animate in on change */}
-            <div key={continent} className="grid grid-cols-2 sm:grid-cols-3 gap-3 self-start">
+            <div key={continent} className="grid grid-cols-2 sm:grid-cols-3 gap-3.5 self-start">
               {continentLangs.map((l, i) => (
-                <Link
+                <TiltCard
                   key={l.lang}
-                  to={`/music/language/${l.lang.toLowerCase()}`}
+                  className="wk-fade-up rounded-2xl"
+                  max={8}
+                  glow={i % 2 === 0 ? 'rgba(0,245,160,0.30)' : 'rgba(0,217,255,0.30)'}
                   style={{ animationDelay: `${i * 55}ms` }}
-                  className="wk-fade-up group bg-[#0D1635] border border-white/8 hover:border-[#9D4EDD]/50 hover:bg-[#9D4EDD]/8 rounded-2xl p-4 transition-colors duration-300"
                 >
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-11 h-11 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-2xl leading-none shrink-0">{l.flag}</div>
-                    <div className="min-w-0">
-                      <p className="text-white font-bold text-sm leading-tight truncate">{l.lang}</p>
-                      <p className="text-white/40 text-xs truncate">{l.desc || 'Worldwide'}</p>
+                  <Link
+                    to={`/music/language/${l.lang.toLowerCase()}`}
+                    className="group relative block h-full rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.02] backdrop-blur-md p-4 overflow-hidden hover:border-white/25 transition-colors duration-300"
+                  >
+                    {/* top sheen */}
+                    <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-11 h-11 rounded-full bg-white/[0.06] border border-white/10 flex items-center justify-center text-2xl leading-none shrink-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">{l.flag}</div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-white font-bold text-sm leading-tight truncate">{l.lang}</p>
+                        <p className="text-white/40 text-xs truncate">{l.desc || 'Worldwide'}</p>
+                      </div>
+                      <span className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 shrink-0 opacity-0 group-hover:opacity-100 group-hover:bg-gradient-to-br group-hover:from-[#9D4EDD] group-hover:to-[#00D9FF] group-hover:text-white group-hover:border-transparent transition-all duration-300">
+                        <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
+                      </span>
                     </div>
-                  </div>
-                  <Equalizer color={i % 2 === 0 ? '#00F5A0' : '#00D9FF'} bars={16} className="opacity-80 group-hover:opacity-100 transition-opacity" />
-                </Link>
+                    <Equalizer color={i % 2 === 0 ? '#00F5A0' : '#00D9FF'} bars={16} className="opacity-80 group-hover:opacity-100 transition-opacity" />
+                  </Link>
+                </TiltCard>
               ))}
             </div>
           </div>
