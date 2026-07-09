@@ -9,6 +9,7 @@ import { Play, Pause, Zap, Music, BookOpen, Video, Mic, Trophy, Globe, Users, Do
 import { usePlayer } from './GlobalPlayer';
 import AudioPulse from './AudioPulse';
 import Bloodstream from './home/Bloodstream';
+import { primeTimeRegion, localDayPhase } from '@/lib/planetClock';
 import { asArray } from '@/lib/utils';
 import { getCurrentDrop, dropPhase, phaseDeadlineSeconds, PHASE_LABEL, type ArenaDrop as ArenaDropRow } from '@/services/competition/arenaDrops';
 import FeaturedPerformancesGrid from './home/FeaturedPerformancesGrid';
@@ -399,7 +400,16 @@ export default function AppLayout() {
   const [featuredArtists, setFeaturedArtists] = useState<any[]>([]);
   const [topCreators, setTopCreators] = useState<any[]>([]);
   const [langMode, setLangMode] = useState<'region' | 'global'>('region');
-  const [continent, setContinent] = useState<string>('Global');
+  // Follow-the-sun theatre: the page knows who's awake. The hero carries the
+  // prime-time line, the globe opens on that region's continent, and the
+  // atmosphere is tinted by the visitor's own time of day.
+  const [primeNow, setPrimeNow] = useState(() => primeTimeRegion());
+  const [sky, setSky] = useState(() => localDayPhase());
+  useEffect(() => {
+    const id = setInterval(() => { setPrimeNow(primeTimeRegion()); setSky(localDayPhase()); }, 5 * 60 * 1000);
+    return () => clearInterval(id);
+  }, []);
+  const [continent, setContinent] = useState<string>(() => primeTimeRegion().continent);
   const continentLangs = langsForContinent(continent);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
@@ -761,6 +771,8 @@ export default function AppLayout() {
       {/* Layered atmosphere — base vignette · drifting aurora · starfield · grain */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,rgba(157,78,221,0.14),transparent_55%)]" />
+        {/* follow-the-sun sky tint — dawn gold → day cyan → dusk pink → night violet */}
+        <div className="absolute inset-0 transition-[background] duration-1000" style={{ background: `radial-gradient(ellipse at 50% -12%, rgba(${sky.rgb},${sky.intensity}), transparent 60%)` }} />
         <div className="absolute -top-1/4 -left-1/4 w-[60vw] h-[60vw] rounded-full blur-[130px] opacity-[0.22] wk-aurora" style={{ background: 'radial-gradient(circle, #9D4EDD, transparent 60%)' }} />
         <div className="absolute top-1/3 -right-1/4 w-[55vw] h-[55vw] rounded-full blur-[130px] opacity-[0.18] wk-aurora-2" style={{ background: 'radial-gradient(circle, #00D9FF, transparent 60%)' }} />
         <div className="absolute bottom-0 left-1/4 w-[50vw] h-[50vw] rounded-full blur-[130px] opacity-[0.14] wk-aurora-3" style={{ background: 'radial-gradient(circle, #FF3B6B, transparent 60%)' }} />
@@ -798,9 +810,18 @@ export default function AppLayout() {
 
           <div className="relative max-w-7xl mx-auto w-full px-4 pt-12 pb-10 md:pt-16">
             <div className="max-w-xl">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full mb-6 backdrop-blur-sm">
-                <div className="w-2 h-2 bg-[#9D4EDD] rounded-full animate-pulse shadow-[0_0_8px_#9D4EDD]" />
-                <span className="text-white/80 text-sm font-medium">The Global Creator Economy</span>
+              <div className="flex flex-wrap items-center gap-2.5 mb-6">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full backdrop-blur-sm">
+                  <div className="w-2 h-2 bg-[#9D4EDD] rounded-full animate-pulse shadow-[0_0_8px_#9D4EDD]" />
+                  <span className="text-white/80 text-sm font-medium">The Global Creator Economy</span>
+                </div>
+                {/* follow-the-sun: who's awake right now */}
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full backdrop-blur-sm border" style={{ borderColor: `${primeNow.accent}40`, background: `${primeNow.accent}12` }}>
+                  <span className="text-base leading-none">{primeNow.flag}</span>
+                  <span className="text-sm font-medium" style={{ color: primeNow.accent }}>
+                    Right now: {primeNow.line} — {primeNow.vibe}
+                  </span>
+                </div>
               </div>
               <h1 className="text-6xl md:text-8xl font-black text-white leading-[0.98] tracking-[-0.03em] mb-6">
                 Create. Distribute.
