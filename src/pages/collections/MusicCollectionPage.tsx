@@ -1,8 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
+import { asArray } from '@/lib/utils';
+import Seo from '@/components/Seo';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import PremiumBackground from '@/components/PremiumBackground';
+import TiltCard from '@/components/TiltCard';
+import { Reveal } from '@/components/ui/premium';
 import { SUPPORTED_LANGUAGES } from '@/pipelines/translation/LanguageMapping';
 import { Download, Play } from 'lucide-react';
 
@@ -18,18 +23,18 @@ interface Track {
   created_at: string;
 }
 
-const GENRES = ['All', 'Gospel', 'Afrobeats', 'Hip-Hop', 'Classical', 'Jazz', 'R&B', 'Praise', 'Worship'];
+const GENRES = ['All', 'Pop', 'Afrobeats', 'Hip-Hop', 'Classical', 'Jazz', 'R&B', 'Electronic', 'K-Pop'];
 const PAGE_SIZE = 24;
 
 const GENRE_GRADIENTS: Record<string, string> = {
-  Gospel: 'from-[#9D4EDD]/40 to-[#00D9FF]/20',
+  Pop: 'from-[#9D4EDD]/40 to-[#00D9FF]/20',
   Afrobeats: 'from-[#FF6B00]/40 to-[#FFB800]/20',
   'Hip-Hop': 'from-gray-700/60 to-gray-900/40',
   Classical: 'from-[#FFB800]/30 to-amber-900/20',
   Jazz: 'from-[#00D9FF]/30 to-blue-900/20',
   'R&B': 'from-pink-900/40 to-[#9D4EDD]/20',
-  Praise: 'from-[#00F5A0]/20 to-[#9D4EDD]/20',
-  Worship: 'from-[#00D9FF]/20 to-indigo-900/20',
+  Electronic: 'from-[#00F5A0]/20 to-[#9D4EDD]/20',
+  'K-Pop': 'from-[#FF006E]/30 to-[#00D9FF]/20',
 };
 
 // ── Track Card ────────────────────────────────────────────────────────────────
@@ -39,7 +44,7 @@ function TrackCard({ track, onPlay }: { track: Track; onPlay: (t: Track) => void
   const gradient = GENRE_GRADIENTS[genre] ?? 'from-[#9D4EDD]/30 to-[#00D9FF]/10';
 
   return (
-    <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all group">
+    <div className="h-full bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all group">
       <div className="aspect-square relative overflow-hidden bg-white/5">
         {track.artwork_url ? (
           <img
@@ -120,13 +125,14 @@ export default function MusicCollectionPage() {
     if (search.trim()) query = query.ilike('title', `%${search.trim()}%`);
 
     const { data, error } = await query;
-    if (!error && data) {
+    if (!error) {
+      const rows = asArray<Track>(data);
       if (reset) {
-        setTracks(data as Track[]);
+        setTracks(rows);
       } else {
-        setTracks(prev => [...prev, ...(data as Track[])]);
+        setTracks(prev => [...prev, ...rows]);
       }
-      setHasMore(data.length === PAGE_SIZE);
+      setHasMore(rows.length === PAGE_SIZE);
       if (!reset) setPage(p => p + 1);
     }
     setLoading(false);
@@ -170,20 +176,25 @@ export default function MusicCollectionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="relative min-h-screen bg-[#0B0814] text-white">
+      <Seo title="Music" description="Stream and download music across every language and genre — afrobeats, hip-hop, pop, K-pop, jazz and more from creators worldwide." />
+      <PremiumBackground />
       <Header />
 
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#0A1128] via-[#100D2E] to-[#0A1128] border-b border-white/5 py-12">
+      <div className="relative z-10 border-b border-white/5 py-16 overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-[360px] -z-10 pointer-events-none bg-[radial-gradient(ellipse_at_30%_0%,rgba(0,217,255,0.14),transparent_65%)]" />
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <Reveal>
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00D9FF] to-[#9D4EDD] flex items-center justify-center text-xl">🎵</div>
             <span className="text-[#00D9FF] text-sm font-medium uppercase tracking-widest">Music</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black text-white mb-3">
+          <h1 className="text-5xl sm:text-6xl font-black tracking-tight text-white mb-3">
             Explore <span className="bg-gradient-to-r from-[#00D9FF] to-[#9D4EDD] bg-clip-text text-transparent">Music</span>
           </h1>
-          <p className="text-gray-400 text-lg max-w-xl">Discover gospel, afrobeats, praise &amp; worship and more from creators worldwide.</p>
+          <p className="text-white/55 text-lg max-w-xl">Discover afrobeats, hip-hop, pop, K-pop, jazz, electronic and more from creators across every continent.</p>
+          </Reveal>
         </div>
       </div>
 
@@ -223,7 +234,7 @@ export default function MusicCollectionPage() {
                   <span className={`text-xs font-semibold text-center leading-tight ${isActive ? 'text-[#00D9FF]' : 'text-white'}`}>
                     {lang.name}
                   </span>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isActive ? 'bg-[#00D9FF] text-[#0A1128]' : 'bg-white/10 text-white/50'}`}>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isActive ? 'bg-[#00D9FF] text-[#0B0814]' : 'bg-white/10 text-white/50'}`}>
                     {lang.trackCount}
                   </span>
                   <div className="flex gap-1 mt-0.5">
@@ -241,7 +252,7 @@ export default function MusicCollectionPage() {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 lg:px-8 py-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 lg:px-8 py-8">
 
         {/* Search */}
         <div className="relative mb-6">
@@ -309,7 +320,9 @@ export default function MusicCollectionPage() {
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
               {tracks.map(track => (
-                <TrackCard key={track.id} track={track} onPlay={handlePlay} />
+                <TiltCard key={track.id} className="rounded-2xl" max={6} glow="rgba(0,217,255,0.30)">
+                  <TrackCard track={track} onPlay={handlePlay} />
+                </TiltCard>
               ))}
             </div>
 

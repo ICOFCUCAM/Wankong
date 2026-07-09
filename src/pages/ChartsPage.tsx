@@ -23,19 +23,19 @@ interface ChartTrack {
   price:        number | null;
 }
 
-type ChartFilter = 'all' | 'gospel' | 'afrobeats' | 'hiphop' | 'worship' | 'rnb' | 'reggae' | 'highlife' | 'pop';
+type ChartFilter = 'all' | 'pop' | 'afrobeats' | 'hiphop' | 'electronic' | 'rnb' | 'reggae' | 'kpop' | 'latin';
 type LangFilter  = 'all' | 'en' | 'fr' | 'yo' | 'ig' | 'ha' | 'sw';
 
 const GENRE_TABS: { id: ChartFilter; label: string }[] = [
   { id: 'all',       label: 'All Genres'  },
-  { id: 'gospel',    label: 'Gospel'      },
+  { id: 'pop',       label: 'Pop'         },
   { id: 'afrobeats', label: 'Afrobeats'   },
-  { id: 'worship',   label: 'Worship'     },
+  { id: 'kpop',      label: 'K-Pop'       },
   { id: 'hiphop',    label: 'Hip-Hop'     },
   { id: 'rnb',       label: 'R&B'         },
   { id: 'reggae',    label: 'Reggae'      },
-  { id: 'highlife',  label: 'Highlife'    },
-  { id: 'pop',       label: 'Pop'         },
+  { id: 'electronic',label: 'Electronic'  },
+  { id: 'latin',     label: 'Latin'       },
 ];
 
 const LANG_TABS: { id: LangFilter; label: string }[] = [
@@ -164,7 +164,7 @@ export default function ChartsPage() {
   const playingId = currentTrack?.id;
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="min-h-screen bg-[#0B0814] text-white">
       <Header />
 
       <div className="max-w-4xl mx-auto px-4 lg:px-8 py-12">
@@ -187,7 +187,7 @@ export default function ChartsPage() {
               <button key={g.id} onClick={() => setGenre(g.id)}
                 className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
                   genre === g.id
-                    ? 'bg-[#00D9FF] text-[#0A1128]'
+                    ? 'bg-[#00D9FF] text-[#0B0814]'
                     : 'bg-white/5 text-white/50 hover:bg-white/10 hover:text-white border border-white/10'
                 }`}>
                 {g.label}

@@ -126,7 +126,7 @@ export function AuthorEarningsPanel({ userId }: AuthorEarningsPanelProps) {
 
   if (loading) {
     return (
-      <div className="bg-[#0A1128] rounded-2xl border border-white/10 p-8 flex items-center justify-center">
+      <div className="bg-[#0B0814] rounded-2xl border border-white/10 p-8 flex items-center justify-center">
         <Loader2 size={28} className="animate-spin text-[#00D9FF]" />
       </div>
     );
@@ -134,14 +134,14 @@ export function AuthorEarningsPanel({ userId }: AuthorEarningsPanelProps) {
 
   if (error) {
     return (
-      <div className="bg-[#0A1128] rounded-2xl border border-red-500/20 p-6 text-center">
+      <div className="bg-[#0B0814] rounded-2xl border border-red-500/20 p-6 text-center">
         <p className="text-red-400 text-sm">{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#0A1128] rounded-2xl border border-white/10 overflow-hidden space-y-0">
+    <div className="bg-[#0B0814] rounded-2xl border border-white/10 overflow-hidden space-y-0">
       {/* ── Total earnings hero ── */}
       <div className="bg-gradient-to-r from-[#FFB800]/15 to-[#FF6B00]/10 border-b border-white/10 px-6 py-5 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">

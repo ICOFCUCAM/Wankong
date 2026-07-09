@@ -238,7 +238,7 @@ export default function WatchPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
         <Loader2 className="w-8 h-8 text-[#00D9FF] animate-spin" />
       </div>
     );
@@ -246,7 +246,7 @@ export default function WatchPage() {
 
   if (!entry) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex flex-col items-center justify-center gap-4 text-white">
+      <div className="min-h-screen bg-[#0B0814] flex flex-col items-center justify-center gap-4 text-white">
         <div className="text-5xl">🎤</div>
         <p className="text-xl font-bold">Entry not found</p>
         <button
@@ -265,7 +265,7 @@ export default function WatchPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="min-h-screen bg-[#0B0814] text-white">
       <Header />
 
       <div className="max-w-6xl mx-auto px-4 lg:px-8 py-8">
@@ -310,7 +310,7 @@ export default function WatchPage() {
                   onClick={() => setActiveClipIdx(-1)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
                     activeClipIdx === -1
-                      ? 'bg-[#00D9FF] text-[#0A1128]'
+                      ? 'bg-[#00D9FF] text-[#0B0814]'
                       : 'bg-white/5 text-gray-400 hover:text-white border border-white/10'
                   }`}
                 >
@@ -322,7 +322,7 @@ export default function WatchPage() {
                     onClick={() => setActiveClipIdx(i)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
                       activeClipIdx === i
-                        ? 'bg-[#00D9FF] text-[#0A1128]'
+                        ? 'bg-[#00D9FF] text-[#0B0814]'
                         : 'bg-white/5 text-gray-400 hover:text-white border border-white/10'
                     }`}
                   >
@@ -440,7 +440,7 @@ export default function WatchPage() {
                 className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all ${
                   voted
                     ? 'bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/20 cursor-default'
-                    : 'bg-gradient-to-r from-[#FF6B00] to-[#FFB800] text-[#0A1128] hover:opacity-90 shadow-lg shadow-orange-500/20'
+                    : 'bg-gradient-to-r from-[#FF6B00] to-[#FFB800] text-[#0B0814] hover:opacity-90 shadow-lg shadow-orange-500/20'
                 }`}
               >
                 {voted ? '♥ Voted! Thank you' : voting ? 'Casting vote…' : '♡ Vote for this performance'}

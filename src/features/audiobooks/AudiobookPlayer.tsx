@@ -139,7 +139,7 @@ export function AudiobookPlayer({ audiobookId }: AudiobookPlayerProps) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64 bg-[#0A1128] rounded-2xl">
+      <div className="flex items-center justify-center h-64 bg-[#0B0814] rounded-2xl">
         <div className="w-8 h-8 border-2 border-[#00D9FF] border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -147,7 +147,7 @@ export function AudiobookPlayer({ audiobookId }: AudiobookPlayerProps) {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-32 bg-[#0A1128] rounded-2xl">
+      <div className="flex items-center justify-center h-32 bg-[#0B0814] rounded-2xl">
         <p className="text-red-400 text-sm">{error}</p>
       </div>
     );
@@ -155,14 +155,14 @@ export function AudiobookPlayer({ audiobookId }: AudiobookPlayerProps) {
 
   if (chapters.length === 0) {
     return (
-      <div className="flex items-center justify-center h-32 bg-[#0A1128] rounded-2xl">
+      <div className="flex items-center justify-center h-32 bg-[#0B0814] rounded-2xl">
         <p className="text-gray-400 text-sm">No chapters available yet.</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#0A1128] rounded-2xl border border-white/10 overflow-hidden">
+    <div className="bg-[#0B0814] rounded-2xl border border-white/10 overflow-hidden">
       {/* Hidden audio element */}
       <audio ref={audioRef} preload="metadata" muted={muted} />
 
@@ -264,7 +264,7 @@ export function AudiobookPlayer({ audiobookId }: AudiobookPlayerProps) {
 
             <button
               onClick={togglePlay}
-              className="w-14 h-14 rounded-full bg-[#00D9FF] hover:bg-[#00D9FF]/80 text-[#0A1128] flex items-center justify-center shadow-lg shadow-[#00D9FF]/20 transition-all active:scale-95"
+              className="w-14 h-14 rounded-full bg-[#00D9FF] hover:bg-[#00D9FF]/80 text-[#0B0814] flex items-center justify-center shadow-lg shadow-[#00D9FF]/20 transition-all active:scale-95"
               aria-label={isPlaying ? 'Pause' : 'Play'}
             >
               {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" />}

@@ -114,7 +114,7 @@ export default function AlbumPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-[#00D9FF] border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -122,7 +122,7 @@ export default function AlbumPage() {
 
   if (!album) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex flex-col items-center justify-center text-center px-6">
+      <div className="min-h-screen bg-[#0B0814] flex flex-col items-center justify-center text-center px-6">
         <Music className="w-12 h-12 text-white/20 mb-4" />
         <h1 className="text-white text-xl font-bold mb-2">Album not found</h1>
         <Link to="/" className="text-[#00D9FF] text-sm hover:underline">Back to Home</Link>
@@ -134,12 +134,12 @@ export default function AlbumPage() {
   const isAlbumPlaying = isPlaying && album.tracks.some(t => t.id === currentTrack?.id);
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="min-h-screen bg-[#0B0814] text-white">
       <Header />
 
       {/* Gradient header */}
       <div className="relative pt-16 pb-0 overflow-hidden"
-        style={{ background: 'linear-gradient(180deg,rgba(157,78,221,0.25) 0%,#0A1128 100%)' }}>
+        style={{ background: 'linear-gradient(180deg,rgba(157,78,221,0.25) 0%,#0B0814 100%)' }}>
         <div className="max-w-5xl mx-auto px-4 lg:px-8 pt-8 pb-10">
 
           {/* Breadcrumb */}

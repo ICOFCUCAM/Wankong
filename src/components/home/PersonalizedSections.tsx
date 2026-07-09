@@ -151,7 +151,7 @@ export default function PersonalizedSections() {
     }
     setPrefs(userPrefs);
 
-    const defaultGenres = ['gospel', 'afrobeats', 'worship'];
+    const defaultGenres = ['pop', 'afrobeats', 'hip-hop'];
     const genres = userPrefs?.genres?.length ? userPrefs.genres : defaultGenres;
     const langs  = userPrefs?.languages?.length ? userPrefs.languages : ['en'];
 
@@ -199,7 +199,7 @@ export default function PersonalizedSections() {
     }
 
     // 4. "Trending in [top genre]"
-    const topGenre = genres[0] ?? 'gospel';
+    const topGenre = genres[0] ?? 'pop';
     const { data: trendData } = await supabase
       .from('ecom_products')
       .select('id, title, vendor, cover_image_url, audio_url, genre, language, price, product_type, creator_id, stream_count')

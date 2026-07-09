@@ -1,8 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
+import { asArray } from '@/lib/utils';
+import Seo from '@/components/Seo';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import PremiumBackground from '@/components/PremiumBackground';
+import TiltCard from '@/components/TiltCard';
+import { Reveal } from '@/components/ui/premium';
 import { SUPPORTED_LANGUAGES } from '@/pipelines/translation/LanguageMapping';
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -40,7 +45,7 @@ interface Book {
   hardcover_visible?: boolean | null;
 }
 
-const BOOK_GENRES = ['All', 'Fiction', 'Non-Fiction', 'Christian Living', 'Theology', 'Biography', 'Children', 'Poetry', 'Self-Help', 'History'];
+const BOOK_GENRES = ['All', 'Fiction', 'Non-Fiction', 'Romance', 'Thriller', 'Sci-Fi & Fantasy', 'Biography', 'Business', 'Self-Help', 'Children', 'Poetry', 'History', 'Religion & Spirituality'];
 type PriceFilter  = 'all' | 'free' | 'paid';
 type FormatFilter = 'all' | 'ebook' | 'audiobook' | 'softcover' | 'hardcover';
 
@@ -96,7 +101,7 @@ function BookCard({ book, onAction }: { book: Book; onAction: (book: Book, actio
   const hasFormatData = book.has_ebook || book.has_audiobook || book.has_softcover || book.has_hardcover;
 
   return (
-    <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all group flex flex-col">
+    <div className="h-full bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all group flex flex-col">
       <div className="aspect-[3/4] relative overflow-hidden bg-white/5">
         {book.cover_url ? (
           <img
@@ -116,7 +121,7 @@ function BookCard({ book, onAction }: { book: Book; onAction: (book: Book, actio
 
         {/* Price badge */}
         <div className="absolute top-2 right-2">
-          <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${book.price === 0 ? 'bg-[#00F5A0] text-[#0A1128]' : 'bg-[#FFB800] text-[#0A1128]'}`}>
+          <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${book.price === 0 ? 'bg-[#00F5A0] text-[#0B0814]' : 'bg-[#FFB800] text-[#0B0814]'}`}>
             {book.price === 0 ? 'FREE' : `$${book.price.toFixed(2)}`}
           </span>
         </div>
@@ -236,10 +241,11 @@ export default function BooksCollectionPage() {
     if (formatFilter === 'hardcover') query = query.eq('has_hardcover', true);
 
     const { data, error } = await query;
-    if (!error && data) {
-      if (reset) setBooks(data as Book[]);
-      else setBooks(prev => [...prev, ...(data as Book[])]);
-      setHasMore(data.length === PAGE_SIZE);
+    if (!error) {
+      const rows = asArray<Book>(data);
+      if (reset) setBooks(rows);
+      else setBooks(prev => [...prev, ...rows]);
+      setHasMore(rows.length === PAGE_SIZE);
       if (!reset) setPage(p => p + 1);
     }
     setLoading(false);
@@ -269,24 +275,29 @@ export default function BooksCollectionPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="relative min-h-screen bg-[#0B0814] text-white">
+      <Seo title="Books" description="Discover ebooks, audiobooks, softcover and hardcover titles from independent authors worldwide." />
+      <PremiumBackground />
       <Header />
 
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#0A1128] via-[#100D2E] to-[#0A1128] border-b border-white/5 py-12">
+      <div className="relative z-10 border-b border-white/5 py-16 overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-[360px] -z-10 pointer-events-none bg-[radial-gradient(ellipse_at_30%_0%,rgba(157,78,221,0.16),transparent_65%)]" />
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <Reveal>
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#9D4EDD] to-[#FFB800] flex items-center justify-center text-xl">📚</div>
             <span className="text-[#9D4EDD] text-sm font-medium uppercase tracking-widest">Books</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black text-white mb-3">
+          <h1 className="text-5xl sm:text-6xl font-black tracking-tight text-white mb-3">
             Explore <span className="bg-gradient-to-r from-[#9D4EDD] to-[#FFB800] bg-clip-text text-transparent">Books</span>
           </h1>
-          <p className="text-gray-400 text-lg max-w-xl">Discover African literature, Christian books, poetry and more — available in eBook, audiobook, softcover and hardcover.</p>
+          <p className="text-white/55 text-lg max-w-xl">Discover fiction, non-fiction, poetry and more from independent authors worldwide — available in eBook, audiobook, softcover and hardcover.</p>
+          </Reveal>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 lg:px-8 py-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 lg:px-8 py-8">
 
         {/* Search */}
         <div className="relative mb-6">
@@ -392,7 +403,9 @@ export default function BooksCollectionPage() {
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5">
               {books.map(book => (
-                <BookCard key={book.id} book={book} onAction={handleAction} />
+                <TiltCard key={book.id} className="rounded-2xl" max={6} glow="rgba(157,78,221,0.30)">
+                  <BookCard book={book} onAction={handleAction} />
+                </TiltCard>
               ))}
             </div>
 

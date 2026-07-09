@@ -69,7 +69,7 @@ export default function ReportContentPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white flex flex-col">
+    <div className="min-h-screen bg-[#0B0814] text-white flex flex-col">
       <Header />
 
       <main className="flex-1">
@@ -146,9 +146,9 @@ export default function ReportContentPage() {
                     onChange={(e) => setReportType(e.target.value)}
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#FF6B00]/50 transition-colors appearance-none"
                   >
-                    <option value="" className="bg-[#0A1128]">Select report type…</option>
+                    <option value="" className="bg-[#0B0814]">Select report type…</option>
                     {REPORT_TYPES.map((t) => (
-                      <option key={t} value={t} className="bg-[#0A1128]">{t}</option>
+                      <option key={t} value={t} className="bg-[#0B0814]">{t}</option>
                     ))}
                   </select>
                 </div>

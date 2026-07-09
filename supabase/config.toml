@@ -1,0 +1,12 @@
+project_id = "kwvjxinrjjzfzxbkvfsc"
+
+# Polished Pages publishing bridge. Called server-to-server (not by browsers)
+# and authenticated with the WANKONG_BRIDGE_SECRET shared secret, so Supabase
+# JWT verification must be off.
+#
+# Required function secrets (set with `supabase secrets set`):
+#   WANKONG_BRIDGE_SECRET  shared secret, must match Polished Pages' copy
+#   WANKONG_SITE_URL       public store URL, for the returned product link
+#   (SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are injected automatically)
+[functions.wankong-publish-book]
+verify_jwt = false

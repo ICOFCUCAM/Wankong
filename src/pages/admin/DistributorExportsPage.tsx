@@ -191,7 +191,7 @@ export default function DistributorExportsPage() {
 
   if (!user || !isAdmin) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0A1128]">
+      <div className="min-h-screen flex items-center justify-center bg-[#0B0814]">
         <div className="text-center">
           <p className="text-4xl mb-4">🔒</p>
           <h2 className="text-2xl font-bold text-white mb-2">Access Denied</h2>

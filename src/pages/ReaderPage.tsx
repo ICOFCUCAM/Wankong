@@ -40,13 +40,13 @@ interface BookmarkItem {
 type Theme = 'dark' | 'light' | 'sepia';
 
 const THEME_CLASSES: Record<Theme, string> = {
-  dark:  'bg-[#0A0A0F] text-gray-100',
+  dark:  'bg-[#0B0814] text-gray-100',
   light: 'bg-white text-gray-900',
   sepia: 'bg-[#F4E8D0] text-[#3D2B1F]',
 };
 
 const THEME_TOPBAR: Record<Theme, string> = {
-  dark:  'bg-[#0A0A0F]/95 border-white/10 text-gray-100',
+  dark:  'bg-[#0B0814]/95 border-white/10 text-gray-100',
   light: 'bg-white/95 border-gray-200 text-gray-900',
   sepia: 'bg-[#F4E8D0]/95 border-[#C9A87C]/30 text-[#3D2B1F]',
 };
@@ -241,7 +241,7 @@ export default function ReaderPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-[#00D9FF] border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -249,7 +249,7 @@ export default function ReaderPage() {
 
   if (accessDenied) {
     return (
-      <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[#0B0814] flex items-center justify-center px-4">
         <div className="text-center max-w-sm">
           <div className="w-16 h-16 rounded-full bg-[#9D4EDD]/20 flex items-center justify-center mx-auto mb-5">
             <BookOpen className="w-8 h-8 text-[#9D4EDD]" />
@@ -283,7 +283,7 @@ export default function ReaderPage() {
 
   if (!book) {
     return (
-      <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
         <div className="text-center">
           <BookOpen className="w-12 h-12 text-gray-600 mx-auto mb-4" />
           <p className="text-gray-400 text-lg mb-4">Book not found</p>

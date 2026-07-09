@@ -599,13 +599,13 @@ function NowPlayingModal() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-stretch overflow-hidden"
-      style={{ background: `linear-gradient(150deg, ${bgColor}dd 0%, #0A1128 55%)` }}>
+      style={{ background: `linear-gradient(150deg, ${bgColor}dd 0%, #0B0814 55%)` }}>
       {/* Spotify Canvas looping video */}
       {currentTrack.canvasUrl && (
         <video src={currentTrack.canvasUrl} autoPlay muted loop playsInline
           className="absolute inset-0 w-full h-full object-cover opacity-15 pointer-events-none" />
       )}
-      <div className="absolute inset-0" style={{ background: `linear-gradient(150deg,${bgColor}88 0%,#0A112888 100%)`, backdropFilter: 'blur(40px)' }} />
+      <div className="absolute inset-0" style={{ background: `linear-gradient(150deg,${bgColor}88 0%,#0B081488 100%)`, backdropFilter: 'blur(40px)' }} />
 
       <div className="relative flex-1 flex flex-col items-center justify-between py-10 px-6 max-w-sm mx-auto w-full">
         {/* Top */}
@@ -671,8 +671,8 @@ function NowPlayingModal() {
           <button onClick={togglePlay}
             className="w-16 h-16 rounded-full bg-white shadow-2xl shadow-black/40 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform">
             {isPlaying
-              ? <Pause className="w-7 h-7 text-[#0A1128]" />
-              : <Play className="w-7 h-7 text-[#0A1128] ml-1" />}
+              ? <Pause className="w-7 h-7 text-[#0B0814]" />
+              : <Play className="w-7 h-7 text-[#0B0814] ml-1" />}
           </button>
           <button onClick={next} className="text-white/60 hover:text-white transition-colors"><SkipForward className="w-7 h-7" /></button>
           <button onClick={cycleRepeat} className={`transition-colors ${repeat !== 'off' ? 'text-[#00D9FF]' : 'text-white/30 hover:text-white'}`}>
@@ -687,7 +687,7 @@ function NowPlayingModal() {
             <button key={r} onClick={() => setPlaybackRate(r)}
               className={`px-2 py-1 rounded-full text-[11px] font-bold transition-all ${
                 playbackRate === r
-                  ? 'bg-[#00D9FF] text-[#0A1128]'
+                  ? 'bg-[#00D9FF] text-[#0B0814]'
                   : 'bg-white/10 text-white/50 hover:bg-white/20 hover:text-white'
               }`}>
               {r}×
@@ -730,23 +730,30 @@ export default function GlobalPlayer() {
       <QueueSidebar />
 
       {currentTrack && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 h-20 bg-[#07101F]/96 backdrop-blur-2xl border-t border-white/10">
+        <div className="fixed bottom-0 left-0 right-0 z-40 h-20 bg-[#0B0814]/96 backdrop-blur-2xl border-t border-white/10">
+          {/* premium top edge — sheen + glowing gradient progress hairline */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          <div className="pointer-events-none absolute top-0 left-0 h-[3px] rounded-r-full bg-gradient-to-r from-[#00D9FF] via-[#9D4EDD] to-[#FF006E] shadow-[0_0_10px_rgba(157,78,221,0.55)] transition-[width] duration-300" style={{ width: `${progress}%` }} />
           <div className="h-full max-w-7xl mx-auto px-4 flex items-center gap-4">
 
             {/* Track info (click → Now Playing) */}
             <div onClick={() => setShowNowPlaying(true)}
               className="flex items-center gap-3 w-52 shrink-0 cursor-pointer group min-w-0">
-              <div className="relative w-12 h-12 rounded-xl overflow-hidden shrink-0 shadow-lg">
-                {art
-                  ? <img src={art} alt="" className="w-full h-full object-cover" />
-                  : <div className="w-full h-full bg-gradient-to-br from-[#9D4EDD] to-[#00D9FF] flex items-center justify-center"><Music className="w-5 h-5 text-white/40" /></div>}
-                {isPlaying && (
-                  <div className="absolute inset-0 bg-black/20 flex items-end justify-center gap-0.5 pb-1">
-                    {[3, 5, 4, 6].map((h, i) => (
-                      <div key={i} className="w-0.5 bg-white rounded-full animate-pulse" style={{ height: h * 2 + 'px', animationDelay: i * 80 + 'ms' }} />
-                    ))}
-                  </div>
-                )}
+              <div className="relative shrink-0">
+                {/* ambient breathing glow behind the art while playing */}
+                {isPlaying && <div className="absolute -inset-1.5 rounded-2xl blur-lg opacity-60 wk-breathe bg-gradient-to-br from-[#00D9FF] to-[#9D4EDD]" aria-hidden />}
+                <div className="relative w-12 h-12 rounded-xl overflow-hidden shadow-lg">
+                  {art
+                    ? <img src={art} alt="" className="w-full h-full object-cover" />
+                    : <div className="w-full h-full bg-gradient-to-br from-[#9D4EDD] to-[#00D9FF] flex items-center justify-center"><Music className="w-5 h-5 text-white/40" /></div>}
+                  {isPlaying && (
+                    <div className="absolute inset-0 bg-black/20 flex items-end justify-center gap-0.5 pb-1">
+                      {[3, 5, 4, 6].map((h, i) => (
+                        <div key={i} className="w-0.5 bg-white rounded-full animate-pulse" style={{ height: h * 2 + 'px', animationDelay: i * 80 + 'ms' }} />
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-white text-sm font-semibold truncate group-hover:text-[#00D9FF] transition-colors">{currentTrack.title}</p>
@@ -765,7 +772,7 @@ export default function GlobalPlayer() {
                 </button>
                 <button onClick={prev} className="text-white/50 hover:text-white transition-colors"><SkipBack className="w-5 h-5" /></button>
                 <button onClick={togglePlay}
-                  className="w-9 h-9 rounded-full bg-gradient-to-br from-[#00D9FF] to-[#9D4EDD] flex items-center justify-center hover:scale-105 active:scale-95 transition-transform shadow-lg shadow-cyan-500/20">
+                  className={`w-9 h-9 rounded-full bg-gradient-to-br from-[#00D9FF] to-[#9D4EDD] flex items-center justify-center hover:scale-105 active:scale-95 transition-all ${isPlaying ? 'wk-beat-glow shadow-[0_0_16px_rgba(0,217,255,0.55)]' : 'shadow-lg shadow-cyan-500/20'}`}>
                   {isPlaying ? <Pause className="w-4 h-4 text-white" /> : <Play className="w-4 h-4 text-white ml-0.5" />}
                 </button>
                 <button onClick={next} className="text-white/50 hover:text-white transition-colors"><SkipForward className="w-5 h-5" /></button>
@@ -814,7 +821,7 @@ export default function GlobalPlayer() {
                 className={`p-1.5 rounded-lg transition-all relative ${showQueue ? 'text-[#00D9FF] bg-[#00D9FF]/10' : 'text-white/30 hover:text-white'}`}>
                 <ListMusic className="w-4 h-4" />
                 {queue.length > 0 && (
-                  <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-[#00D9FF] text-[#0A1128] text-[8px] font-black flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-[#00D9FF] text-[#0B0814] text-[8px] font-black flex items-center justify-center">
                     {queue.length > 9 ? '9+' : queue.length}
                   </span>
                 )}

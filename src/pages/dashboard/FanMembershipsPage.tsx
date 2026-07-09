@@ -46,7 +46,7 @@ function TierForm({ initial, onSave, onCancel }: {
     onSave({ name, price_usd: num, description: desc, perks: perks.filter(Boolean), color });
   };
 
-  const inputCls = "w-full bg-[#0A1128] border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#9D4EDD]/50 transition-colors";
+  const inputCls = "w-full bg-[#0B0814] border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#9D4EDD]/50 transition-colors";
 
   return (
     <form onSubmit={handleSubmit} className="bg-white/3 border border-white/10 rounded-2xl p-5 space-y-4">
@@ -186,7 +186,7 @@ export default function FanMembershipsPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
         <div className="text-center">
           <p className="text-white/50 mb-4">Sign in to manage your fan memberships.</p>
           <a href="/auth/login" className="px-6 py-3 rounded-xl font-bold text-sm text-white"
@@ -241,7 +241,7 @@ export default function FanMembershipsPage() {
   const totalMRR = tiers.filter(t => t.is_active).reduce((s, t) => s + t.price_usd * t.subscriber_count, 0);
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="min-h-screen bg-[#0B0814] text-white">
       <Header />
 
       <div className="max-w-3xl mx-auto px-4 lg:px-8 py-12">

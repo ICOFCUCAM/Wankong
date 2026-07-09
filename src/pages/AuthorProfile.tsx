@@ -92,7 +92,7 @@ export default function AuthorProfile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A0A0F]">
+      <div className="min-h-screen bg-[#0B0814]">
         <Header />
         <div className="max-w-5xl mx-auto px-4 py-16">
           <div className="animate-pulse space-y-6">
@@ -117,11 +117,11 @@ export default function AuthorProfile() {
 
   if (!author) {
     return (
-      <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
         <Header />
         <div className="text-center">
           <h2 className="text-2xl font-bold text-white mb-2">Author not found</h2>
-          <Link to="/" className="text-indigo-400 hover:text-indigo-300">Back to homepage</Link>
+          <Link to="/" className="text-[#B794F4] hover:text-[#C9B3F5]">Back to homepage</Link>
         </div>
       </div>
     );
@@ -133,11 +133,11 @@ export default function AuthorProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
 
       {/* Cover Banner */}
-      <div className="h-48 sm:h-64 bg-gradient-to-br from-amber-900/40 via-gray-900 to-indigo-900/30 relative">
+      <div className="h-48 sm:h-64 bg-gradient-to-br from-amber-900/40 via-gray-900 to-[#1E1235]/30 relative">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0djZoNnYtNmgtNnptMC0xMnY2aDZ2LTZoLTZ6bS0xMiAxMnY2aDZ2LTZoLTZ6bTAtMTJ2Nmg2di02aC02eiIvPjwvZz48L2c+PC9zdmc+')] opacity-20" />
       </div>
 
@@ -147,7 +147,7 @@ export default function AuthorProfile() {
           <img
             src={author.avatar}
             alt={author.displayName}
-            className="w-32 h-32 rounded-2xl border-4 border-[#0A0A0F] object-cover bg-gray-800 flex-shrink-0"
+            className="w-32 h-32 rounded-2xl border-4 border-[#0B0814] object-cover bg-gray-800 flex-shrink-0"
             onError={e => { (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${author.displayName}`; }}
           />
           <div className="flex-1 pb-2">

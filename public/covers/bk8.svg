@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="900" viewBox="0 0 600 900" font-family="Georgia, 'Times New Roman', serif">
+<defs>
+  <linearGradient id="g" x1="0.2" y1="0" x2="0.8" y2="1"><stop offset="0" stop-color="#3A0E28"/><stop offset="1" stop-color="#140510"/></linearGradient>
+  <radialGradient id="glow" cx="0.5" cy="0.62" r="0.55"><stop offset="0" stop-color="#FF5DA2" stop-opacity="0.30"/><stop offset="1" stop-color="#FF5DA2" stop-opacity="0"/></radialGradient>
+  <linearGradient id="vig" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity="0.0"/><stop offset="0.78" stop-color="#000" stop-opacity="0.0"/><stop offset="1" stop-color="#000" stop-opacity="0.55"/></linearGradient>
+</defs>
+<rect width="600" height="900" fill="url(#g)"/>
+<rect width="600" height="900" fill="url(#glow)"/>
+<ellipse cx="370" cy="510" rx="56" ry="26" fill="#FF5DA2" opacity="0.30" transform="rotate(0 370 510)"/>
+<ellipse cx="335" cy="571" rx="56" ry="26" fill="#FF5DA2" opacity="0.30" transform="rotate(60 335 571)"/>
+<ellipse cx="265" cy="571" rx="56" ry="26" fill="#FF5DA2" opacity="0.30" transform="rotate(120 265 571)"/>
+<ellipse cx="230" cy="510" rx="56" ry="26" fill="#FF5DA2" opacity="0.30" transform="rotate(180 230 510)"/>
+<ellipse cx="265" cy="449" rx="56" ry="26" fill="#FF5DA2" opacity="0.30" transform="rotate(240 265 449)"/>
+<ellipse cx="335" cy="449" rx="56" ry="26" fill="#FF5DA2" opacity="0.30" transform="rotate(300 335 449)"/>
+<circle cx="300" cy="510" r="34" fill="#FFA3CE" opacity="0.9"/>
+<rect width="600" height="900" fill="url(#vig)"/>
+<rect x="28" y="28" width="544" height="844" rx="12" fill="none" stroke="#FFA3CE" stroke-width="1.5" opacity="0.35"/>
+<text x="300" y="116" fill="#FFA3CE" font-size="17" letter-spacing="6" text-anchor="middle" font-family="Arial, sans-serif" opacity="0.9">ROMANCE</text>
+<text x="300" y="228" fill="#ffffff" font-size="60" font-weight="bold" text-anchor="middle" style="paint-order:stroke"><tspan x="300" dy="0">Paris After</tspan><tspan x="300" dy="66">Dark</tspan></text>
+<rect x="262" y="334" width="76" height="3" rx="1.5" fill="#FFA3CE" opacity="0.9"/>
+<text x="300" y="812" fill="#ffffff" font-size="25" text-anchor="middle" opacity="0.82" font-family="Arial, sans-serif">Camille Laurent</text>
+<text x="300" y="852" fill="#FFA3CE" font-size="13" letter-spacing="5" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" opacity="0.75">WANKONG BOOKS</text>
+</svg>

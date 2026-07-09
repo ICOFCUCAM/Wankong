@@ -47,7 +47,7 @@ export default function ApiAccessPage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'endpoints' | 'tiers'>('overview');
 
   return (
-    <div className="min-h-screen bg-[#0A1128]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
 
       <div className="max-w-5xl mx-auto px-4 lg:px-8 py-16">
@@ -187,7 +187,7 @@ export default function ApiAccessPage() {
           </p>
           <a
             href="mailto:api@wankong.com?subject=API Access Application"
-            className="inline-flex px-6 py-2.5 bg-[#00D9FF] text-[#0A1128] rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity"
+            className="inline-flex px-6 py-2.5 bg-[#00D9FF] text-[#0B0814] rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity"
           >
             Email api@wankong.com
           </a>

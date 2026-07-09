@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
+import { asArray } from '@/lib/utils';
+import Seo from '@/components/Seo';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -20,7 +22,7 @@ interface VideoEntry {
   created_at: string;
 }
 
-const VIDEO_CATEGORIES = ['All', 'Worship', 'Gospel', 'Competition Highlights', 'Live Sessions'];
+const VIDEO_CATEGORIES = ['All', 'Music Videos', 'Live Sessions', 'Competition Highlights', 'Behind the Scenes'];
 const PAGE_SIZE = 20;
 
 function fmt(n: number): string {
@@ -73,7 +75,7 @@ function VideoCard({ entry, onClick }: { entry: VideoEntry; onClick: () => void 
 
         {/* Winner badge */}
         {entry.status === 'winner' && (
-          <div className="absolute top-2 left-2 bg-[#FFB800] text-[#0A1128] text-[10px] font-bold px-2 py-0.5 rounded-full">
+          <div className="absolute top-2 left-2 bg-[#FFB800] text-[#0B0814] text-[10px] font-bold px-2 py-0.5 rounded-full">
             🏆 WINNER
           </div>
         )}
@@ -130,8 +132,8 @@ export default function VideosCollectionPage() {
       const catMap: Record<string, string> = {
         'Competition Highlights': 'competition',
         'Live Sessions': 'live',
-        'Worship': 'worship',
-        'Gospel': 'gospel',
+        'Music Videos': 'music',
+        'Behind the Scenes': 'bts',
       };
       const dbCat = catMap[selectedCategory] ?? selectedCategory.toLowerCase();
       query = query.ilike('category', `%${dbCat}%`);
@@ -140,13 +142,14 @@ export default function VideosCollectionPage() {
     if (search.trim()) query = query.ilike('title', `%${search.trim()}%`);
 
     const { data, error } = await query;
-    if (!error && data) {
+    if (!error) {
+      const rows = asArray<VideoEntry>(data);
       if (reset) {
-        setVideos(data as VideoEntry[]);
+        setVideos(rows);
       } else {
-        setVideos(prev => [...prev, ...(data as VideoEntry[])]);
+        setVideos(prev => [...prev, ...rows]);
       }
-      setHasMore(data.length === PAGE_SIZE);
+      setHasMore(rows.length === PAGE_SIZE);
       if (!reset) setPage(p => p + 1);
     }
     setLoading(false);
@@ -168,11 +171,12 @@ export default function VideosCollectionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="min-h-screen bg-[#0B0814] text-white">
+      <Seo title="Videos" description="Watch and support original videos and music videos from global creators." type="video.other" />
       <Header />
 
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#0A1128] via-[#100D2E] to-[#0A1128] border-b border-white/5 py-12">
+      <div className="bg-gradient-to-br from-[#0B0814] via-[#100D2E] to-[#0B0814] border-b border-white/5 py-12">
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF6B00] to-[#FFB800] flex items-center justify-center text-xl">🎬</div>
@@ -181,7 +185,7 @@ export default function VideosCollectionPage() {
           <h1 className="text-4xl sm:text-5xl font-black text-white mb-3">
             Videos &amp; <span className="bg-gradient-to-r from-[#FF6B00] to-[#FFB800] bg-clip-text text-transparent">Performances</span>
           </h1>
-          <p className="text-gray-400 text-lg max-w-xl">Watch competition entries, live worship sessions and gospel performances.</p>
+          <p className="text-white/55 text-lg max-w-xl">Watch music videos, live performances and competition entries from creators worldwide.</p>
         </div>
       </div>
 

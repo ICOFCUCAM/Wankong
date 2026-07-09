@@ -163,7 +163,7 @@ export default function HelpCenterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white flex flex-col">
+    <div className="min-h-screen bg-[#0B0814] text-white flex flex-col">
       <Header />
 
       <main className="flex-1">
@@ -241,7 +241,7 @@ export default function HelpCenterPage() {
             <div className="flex flex-wrap gap-3 justify-center">
               <a
                 href="mailto:support@wankong.com"
-                className="px-6 py-2.5 bg-[#00D9FF] text-[#0A1128] rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity"
+                className="px-6 py-2.5 bg-[#00D9FF] text-[#0B0814] rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity"
               >
                 Email Support
               </a>

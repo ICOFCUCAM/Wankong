@@ -57,7 +57,7 @@ const LANGUAGES = [
   { code: 'es', name: 'Spanish' }, { code: 'pt', name: 'Portuguese' }, { code: 'ar', name: 'Arabic' },
 ];
 
-const inp = 'w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm';
+const inp = 'w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD] text-sm';
 const label = 'block text-sm font-medium text-gray-300 mb-1';
 
 // ── component ─────────────────────────────────────────────────────────────────
@@ -318,7 +318,7 @@ export default function UploadMusicSingle({ onSuccess }: Props) {
         <p className="text-xs text-gray-400">Minimum 3000×3000 px · Square · JPG or PNG</p>
         <div
           onClick={() => artworkRef.current?.click()}
-          className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${artworkFile ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-gray-700 hover:border-indigo-500'}`}
+          className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${artworkFile ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-gray-700 hover:border-[#9D4EDD]'}`}
         >
           <input ref={artworkRef} type="file" className="hidden" accept="image/jpeg,image/png"
             onChange={e => { const f = e.target.files?.[0]; if (f) handleArtwork(f); }} />
@@ -347,7 +347,7 @@ export default function UploadMusicSingle({ onSuccess }: Props) {
         <p className="text-xs text-gray-400">WAV preferred · MP3 accepted</p>
         <div
           onClick={() => audioRef.current?.click()}
-          className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${audioFile ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-gray-700 hover:border-indigo-500'}`}
+          className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${audioFile ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-gray-700 hover:border-[#9D4EDD]'}`}
         >
           <input ref={audioRef} type="file" className="hidden" accept=".wav,.mp3,audio/wav,audio/mpeg"
             onChange={e => { const f = e.target.files?.[0]; if (f) handleAudio(f); }} />
@@ -399,12 +399,12 @@ export default function UploadMusicSingle({ onSuccess }: Props) {
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold text-gray-200 uppercase tracking-wider">Distribution Platforms</h3>
           <button type="button" onClick={() => setPlatforms(Object.fromEntries(PLATFORMS.map(p => [p.id, true])))}
-            className="text-xs text-indigo-400 hover:text-indigo-300">Select All</button>
+            className="text-xs text-[#B794F4] hover:text-[#C9B3F5]">Select All</button>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
           {PLATFORMS.map(p => (
             <button key={p.id} type="button" onClick={() => togglePlatform(p.id)}
-              className={`py-2.5 px-3 rounded-xl text-xs font-medium border transition-all ${platforms[p.id] ? 'bg-indigo-600/20 border-indigo-500/50 text-indigo-300' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:border-gray-600'}`}>
+              className={`py-2.5 px-3 rounded-xl text-xs font-medium border transition-all ${platforms[p.id] ? 'bg-[#9D4EDD]/20 border-[#9D4EDD]/50 text-[#C9B3F5]' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:border-gray-600'}`}>
               {p.name}
             </button>
           ))}
@@ -416,16 +416,16 @@ export default function UploadMusicSingle({ onSuccess }: Props) {
         <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
           <div className="flex justify-between mb-2">
             <span className="text-sm text-white">Submitting release...</span>
-            <span className="text-sm text-indigo-400">{Math.round(progress)}%</span>
+            <span className="text-sm text-[#B794F4]">{Math.round(progress)}%</span>
           </div>
           <div className="w-full bg-gray-800 rounded-full h-2">
-            <div className="bg-indigo-600 h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
+            <div className="bg-[#9D4EDD] h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
           </div>
         </div>
       )}
 
       <button type="submit" disabled={submitting || !releaseTitle || !primaryArtist}
-        className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-xl transition-colors text-base">
+        className="w-full bg-[#9D4EDD] hover:bg-[#7C3AED] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-xl transition-colors text-base">
         {submitting ? 'Submitting to Ditto...' : 'Submit Single for Distribution'}
       </button>
     </form>

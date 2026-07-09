@@ -22,7 +22,7 @@ const LANGUAGES = [
 ];
 
 const inputCls =
-  'w-full bg-[#0A1128] border border-white/10 rounded-xl px-4 py-3 text-white text-sm ' +
+  'w-full bg-[#0B0814] border border-white/10 rounded-xl px-4 py-3 text-white text-sm ' +
   'placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD]/40 ' +
   'focus:border-[#9D4EDD]/40 transition-colors';
 
@@ -343,7 +343,7 @@ export default function UploadAlbumPage() {
 
   if (savedAsDraft) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex flex-col">
+      <div className="min-h-screen bg-[#0B0814] flex flex-col">
         <Header />
         <div className="flex-1 flex items-center justify-center px-4">
           <div className="text-center max-w-sm">
@@ -380,7 +380,7 @@ export default function UploadAlbumPage() {
 
   if (done) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex flex-col">
+      <div className="min-h-screen bg-[#0B0814] flex flex-col">
         <Header />
         <div className="flex-1 flex items-center justify-center px-4">
           <div className="text-center max-w-sm">
@@ -418,7 +418,7 @@ export default function UploadAlbumPage() {
   // ── Main form ─────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-[#0A1128] flex flex-col">
+    <div className="min-h-screen bg-[#0B0814] flex flex-col">
       <Header />
 
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-12">
@@ -472,7 +472,7 @@ export default function UploadAlbumPage() {
                       ? 'border-[#9D4EDD]/60 bg-[#9D4EDD]/10'
                       : albumArtFile
                       ? 'border-[#9D4EDD]/40 bg-[#9D4EDD]/5'
-                      : 'border-white/10 hover:border-[#9D4EDD]/40 bg-[#0D1B3E]',
+                      : 'border-white/10 hover:border-[#9D4EDD]/40 bg-[#0B0814]',
                   ].join(' ')}
                 >
                   <input
@@ -670,11 +670,11 @@ export default function UploadAlbumPage() {
                       value={track.title}
                       onChange={e => updateTrack(track.id, 'title', e.target.value)}
                       placeholder={`Track ${track.trackNum} title`}
-                      className="flex-1 min-w-0 bg-[#0A1128] border border-white/10 rounded-lg px-3 py-2 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-[#9D4EDD]/40"
+                      className="flex-1 min-w-0 bg-[#0B0814] border border-white/10 rounded-lg px-3 py-2 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-[#9D4EDD]/40"
                     />
 
                     {/* Audio file pick */}
-                    <label className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg border border-white/10 bg-[#0A1128] cursor-pointer hover:border-[#00D9FF]/40 transition-colors shrink-0">
+                    <label className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg border border-white/10 bg-[#0B0814] cursor-pointer hover:border-[#00D9FF]/40 transition-colors shrink-0">
                       <input
                         ref={el => { trackAudioRefs.current[track.id] = el; }}
                         type="file"

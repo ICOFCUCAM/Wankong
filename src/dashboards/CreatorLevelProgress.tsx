@@ -148,14 +148,14 @@ const CreatorLevelProgress: React.FC<Props> = ({ userId }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
         <Loader2 className="w-10 h-10 text-[#00D9FF] animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white p-6">
+    <div className="min-h-screen bg-[#0B0814] text-white p-6">
       <div className="max-w-3xl mx-auto flex flex-col gap-6">
 
         {/* Header */}
@@ -170,7 +170,7 @@ const CreatorLevelProgress: React.FC<Props> = ({ userId }) => {
         </div>
 
         {/* Level card — current level name colour-coded */}
-        <div className="bg-[#1A2240] rounded-2xl p-6 flex flex-col gap-5">
+        <div className="bg-[#120C22] rounded-2xl p-6 flex flex-col gap-5">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-400 text-xs uppercase tracking-widest mb-1">Current Level</p>
@@ -214,7 +214,7 @@ const CreatorLevelProgress: React.FC<Props> = ({ userId }) => {
                 <span style={{ color: levelColor }} className="font-semibold">Max Level!</span>
               )}
             </div>
-            <div className="h-3 bg-[#0A1128] rounded-full overflow-hidden">
+            <div className="h-3 bg-[#0B0814] rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-700"
                 style={{
@@ -239,7 +239,7 @@ const CreatorLevelProgress: React.FC<Props> = ({ userId }) => {
         </div>
 
         {/* Recent XP section — last 10 creator_earnings */}
-        <div className="bg-[#1A2240] rounded-2xl p-6 flex flex-col gap-4">
+        <div className="bg-[#120C22] rounded-2xl p-6 flex flex-col gap-4">
           <h2 className="text-white font-semibold flex items-center gap-2">
             <Zap className="w-4 h-4 text-[#FFB800]" />
             Recent XP Activity
@@ -260,7 +260,7 @@ const CreatorLevelProgress: React.FC<Props> = ({ userId }) => {
                 return (
                   <div
                     key={earning.id}
-                    className="flex items-center justify-between bg-[#0A1128] rounded-xl px-4 py-3"
+                    className="flex items-center justify-between bg-[#0B0814] rounded-xl px-4 py-3"
                   >
                     <div className="flex items-center gap-3">
                       <div
@@ -285,7 +285,7 @@ const CreatorLevelProgress: React.FC<Props> = ({ userId }) => {
         </div>
 
         {/* "How to earn XP" section — all 7 actions */}
-        <div className="bg-[#1A2240] rounded-2xl p-6 flex flex-col gap-4">
+        <div className="bg-[#120C22] rounded-2xl p-6 flex flex-col gap-4">
           <h2 className="text-white font-semibold flex items-center gap-2">
             <Star className="w-4 h-4 text-[#00D9FF]" />
             How to Earn XP
@@ -298,7 +298,7 @@ const CreatorLevelProgress: React.FC<Props> = ({ userId }) => {
               return (
                 <div
                   key={cat}
-                  className="flex items-center justify-between bg-[#0A1128] rounded-xl px-4 py-3"
+                  className="flex items-center justify-between bg-[#0B0814] rounded-xl px-4 py-3"
                 >
                   <div className="flex items-center gap-3">
                     <div
@@ -317,7 +317,7 @@ const CreatorLevelProgress: React.FC<Props> = ({ userId }) => {
         </div>
 
         {/* Level thresholds reference */}
-        <div className="bg-[#1A2240] rounded-2xl p-6 flex flex-col gap-3">
+        <div className="bg-[#120C22] rounded-2xl p-6 flex flex-col gap-3">
           <h2 className="text-white font-semibold">Level Thresholds</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {LEVEL_THRESHOLDS.map(t => (

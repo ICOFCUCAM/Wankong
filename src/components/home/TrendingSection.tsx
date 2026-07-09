@@ -101,7 +101,7 @@ export default function TrendingSection() {
         </div>
         <div className="flex items-center gap-2 overflow-x-auto pb-2">
           {CATEGORIES.map(cat => (
-            <button key={cat} onClick={() => setActiveCategory(cat)} className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${activeCategory === cat ? 'bg-indigo-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'}`}>
+            <button key={cat} onClick={() => setActiveCategory(cat)} className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${activeCategory === cat ? 'bg-[#9D4EDD] text-white' : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'}`}>
               {cat}
             </button>
           ))}
@@ -117,23 +117,23 @@ export default function TrendingSection() {
               key={item.id}
               onMouseEnter={() => setHoveredCard(item.id)}
               onMouseLeave={() => setHoveredCard(null)}
-              className="group bg-gray-900/50 border border-gray-800 rounded-2xl overflow-hidden hover:border-indigo-500/30 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/5 cursor-pointer"
+              className="group bg-gray-900/50 border border-gray-800 rounded-2xl overflow-hidden hover:border-[#9D4EDD]/30 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-[#9D4EDD]/5 cursor-pointer"
             >
               <div className="relative aspect-[4/3] overflow-hidden">
                 <img src={item.thumbnail} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-black/60 backdrop-blur-sm rounded-full px-3 py-1">
-                  <svg className="w-3.5 h-3.5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={typeIcon(item.type)} /></svg>
+                  <svg className="w-3.5 h-3.5 text-[#B794F4]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={typeIcon(item.type)} /></svg>
                   <span className="text-xs text-white capitalize">{item.type}</span>
                 </div>
                 <div className="absolute top-3 right-3">
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${item.isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30'}`}>
+                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${item.isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-[#9D4EDD]/20 text-[#B794F4] border border-[#9D4EDD]/30'}`}>
                     {item.isPaid ? formatCurrency(item.price) : 'Free'}
                   </span>
                 </div>
                 {hoveredCard === item.id && (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-14 h-14 bg-indigo-600/90 rounded-full flex items-center justify-center shadow-lg shadow-indigo-500/30 animate-pulse">
+                    <div className="w-14 h-14 bg-[#9D4EDD]/90 rounded-full flex items-center justify-center shadow-lg shadow-[#9D4EDD]/30 animate-pulse">
                       <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                     </div>
                   </div>

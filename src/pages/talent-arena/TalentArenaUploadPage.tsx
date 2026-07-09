@@ -4,12 +4,13 @@ import { supabase } from '@/lib/supabase';
 import Header from '@/components/Header';
 import { extractVideoMetadata, validateVideoDuration } from '@/services/competition/previewClipService';
 import { scoreCompetitionEntry } from '@/services/competition/aiScoringService';
+import { getCurrentDrop, dropPhase } from '@/services/competition/arenaDrops';
 import { Upload, Video, Image as ImageIcon, CheckCircle, Loader2, AlertCircle, ChevronRight, Trophy } from 'lucide-react';
 
-const CATEGORIES = ['Gospel','Worship','Praise','Contemporary','Traditional','Choir','Solo','Duo','Group'];
+const CATEGORIES = ['Singing','Rap / Hip-Hop','Dance','Instrumental','Producer','Songwriting','Comedy','Spoken Word','Band / Group'];
 const LANGUAGES  = ['English','French','Yoruba','Igbo','Hausa','Swahili','Zulu','Pidgin','Spanish','Portuguese'];
 
-const inputCls  = "w-full bg-[#0A1128] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#FFB800]/40 focus:border-[#FFB800]/40 transition-colors";
+const inputCls  = "w-full bg-[#0B0814] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#FFB800]/40 focus:border-[#FFB800]/40 transition-colors";
 const selectCls = inputCls + " cursor-pointer";
 
 export default function TalentArenaUploadPage() {
@@ -91,10 +92,18 @@ export default function TalentArenaUploadPage() {
       // Extract duration
       const { duration, resolution } = await extractVideoMetadata(videoFile);
 
+      // Attach to the current Arena Drop while its submission window is open
+      let dropId: string | null = null;
+      try {
+        const drop = await getCurrentDrop();
+        if (drop && dropPhase(drop) === 'live') dropId = drop.id;
+      } catch { /* entry still valid without a drop */ }
+
       // Insert entry
       const { data: entry, error: entryErr } = await supabase
         .from('competition_entries_v2')
         .insert([{
+          drop_id:          dropId,
           user_id:          user.id,
           room_id:          form.room_id || null,
           title:            form.title,
@@ -126,15 +135,19 @@ export default function TalentArenaUploadPage() {
   };
 
   if (done) return (
-    <div className="min-h-screen bg-[#0A1128] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#0B0814] flex items-center justify-center px-4">
       <div className="text-center max-w-sm">
         <div className="w-20 h-20 rounded-full bg-[#FFB800]/20 flex items-center justify-center mx-auto mb-6">
           <CheckCircle className="w-10 h-10 text-[#FFB800]" />
         </div>
         <h2 className="text-2xl font-bold text-white mb-2">Entry Submitted!</h2>
-        <p className="text-gray-400 text-sm mb-6">
-          Your performance is under review. You'll be notified once it goes live for public voting.
+        <p className="text-gray-400 text-sm mb-4">
+          Your performance is under review. Once approved, it's auto-published to WANKONG's official social
+          channels first, then to your own connected accounts, and then it goes live on the home page for voting.
         </p>
+        <Link to="/dashboard?view=settings" className="inline-flex items-center gap-1.5 text-[#FFB800] text-sm font-semibold hover:underline mb-6">
+          Connect your social accounts →
+        </Link>
         <div className="flex gap-3 justify-center">
           <Link to="/talent-arena" className="px-5 py-2.5 bg-[#FFB800] text-black font-bold rounded-xl hover:opacity-90 transition-opacity">Talent Arena</Link>
           <button onClick={() => { setDone(false); setVideoFile(null); setThumbFile(null); setThumbPreview(''); setDurationInfo(''); setAgreed(false); setForm({ title: '', performer_name: '', category: '', language: 'English', song_title: '', source_type: 'independent', is_original: false, room_id: '' }); }}
@@ -147,7 +160,7 @@ export default function TalentArenaUploadPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#0A1128]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
       <div className="max-w-2xl mx-auto px-4 py-12">
 
@@ -175,7 +188,7 @@ export default function TalentArenaUploadPage() {
             <div
               onClick={() => videoRef.current?.click()}
               className={`p-8 rounded-2xl border-2 border-dashed cursor-pointer transition-colors text-center ${
-                videoFile ? 'border-[#FFB800]/40 bg-[#FFB800]/5' : 'border-white/10 hover:border-white/20 bg-[#0D1B3E]'
+                videoFile ? 'border-[#FFB800]/40 bg-[#FFB800]/5' : 'border-white/10 hover:border-white/20 bg-[#0B0814]'
               }`}
             >
               <input ref={videoRef} type="file" className="hidden" accept=".mp4,.mov" onChange={handleVideo} />
@@ -198,7 +211,7 @@ export default function TalentArenaUploadPage() {
             <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Thumbnail <span className="normal-case text-gray-600">(optional)</span></p>
             <div
               onClick={() => thumbRef.current?.click()}
-              className="p-5 rounded-xl border border-dashed border-white/10 hover:border-white/20 cursor-pointer bg-[#0D1B3E] flex items-center gap-4 transition-colors group"
+              className="p-5 rounded-xl border border-dashed border-white/10 hover:border-white/20 cursor-pointer bg-[#0B0814] flex items-center gap-4 transition-colors group"
             >
               <input ref={thumbRef} type="file" className="hidden" accept="image/*"
                 onChange={e => {
@@ -267,7 +280,7 @@ export default function TalentArenaUploadPage() {
                 className={`px-4 py-2 rounded-xl text-sm font-semibold border capitalize transition-all ${
                   (v === 'original') === form.is_original
                     ? 'bg-[#FFB800]/20 border-[#FFB800]/40 text-[#FFB800]'
-                    : 'bg-[#0D1B3E] border-white/10 text-gray-400 hover:border-white/20'
+                    : 'bg-[#0B0814] border-white/10 text-gray-400 hover:border-white/20'
                 }`}>
                 {v === 'original' ? 'Original Song' : 'Cover Song'}
               </button>
@@ -275,7 +288,7 @@ export default function TalentArenaUploadPage() {
           </div>
 
           {/* Agreement */}
-          <div className="flex items-start gap-3 p-4 bg-[#0D1B3E] border border-white/10 rounded-xl">
+          <div className="flex items-start gap-3 p-4 bg-[#0B0814] border border-white/10 rounded-xl">
             <button type="button" onClick={() => setAgreed(p => !p)}
               className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${agreed ? 'bg-[#FFB800] border-[#FFB800]' : 'border-gray-600 bg-transparent'}`}>
               {agreed && <span className="text-black text-xs font-black">✓</span>}

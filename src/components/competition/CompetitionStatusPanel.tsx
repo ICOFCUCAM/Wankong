@@ -30,7 +30,7 @@ export default function CompetitionStatusPanel({ userId }: { userId?: string }) 
       {entries.map(e => {
         const cfg = STATUS_CFG[e.status] ?? STATUS_CFG['pending_review'];
         return (
-          <div key={e.id} className="p-4 bg-[#0D1B3E] border border-white/5 rounded-xl hover:border-white/10 transition-colors">
+          <div key={e.id} className="p-4 bg-[#0B0814] border border-white/5 rounded-xl hover:border-white/10 transition-colors">
             {/* Header */}
             <div className="flex items-start justify-between gap-2 mb-3">
               <div className="flex-1 min-w-0">

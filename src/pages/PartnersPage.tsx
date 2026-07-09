@@ -41,7 +41,7 @@ const PARTNER_TYPES: Record<string, PartnerType> = {
     title: 'WANKONG for Universities',
     subtitle: 'Educational audiobooks, multilingual content, and student creator support',
     color: '#9D4EDD',
-    description: 'WANKONG partners with universities and higher education institutions to build multilingual digital libraries, support student creators, and publish academic and educational audiobooks accessible to students across Africa and the diaspora. Our platform helps universities reach students in their native languages.',
+    description: 'WANKONG partners with universities and higher education institutions to build multilingual digital libraries, support student creators, and publish academic and educational audiobooks accessible to students worldwide. Our platform helps universities reach students in their native languages.',
     benefits: [
       'Educational audiobook hosting and distribution to enrolled students',
       'Student creator programme — upload, distribute, and earn from original work',
@@ -85,7 +85,7 @@ const PARTNER_TYPES: Record<string, PartnerType> = {
     title: 'WANKONG for Publishers',
     subtitle: 'Book distribution, translation pipeline, and audiobook conversion',
     color: '#00F5A0',
-    description: 'WANKONG is the leading platform for African and diaspora literary content. We partner with publishers to distribute eBooks and audiobooks globally, offering translation pipeline services and AI-assisted audiobook conversion to help publishers scale their multilingual catalogue.',
+    description: 'WANKONG is a leading global platform for literary content across every language and region. We partner with publishers to distribute eBooks and audiobooks worldwide, offering translation pipeline services and AI-assisted audiobook conversion to help publishers scale their multilingual catalogue.',
     benefits: [
       'Global eBook and audiobook distribution via WANKONG marketplace',
       'Translation pipeline — human-verified translation into supported languages',
@@ -149,7 +149,7 @@ export default function PartnersPage() {
   const partner = (type && PARTNER_TYPES[type]) ? PARTNER_TYPES[type] : DEFAULT_TYPE;
 
   return (
-    <div className="min-h-screen bg-[#0A1128]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
 
       <div className="max-w-4xl mx-auto px-4 lg:px-8 py-16">
@@ -171,7 +171,7 @@ export default function PartnersPage() {
               href={`/partners/${key}`}
               className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all border ${
                 type === key
-                  ? 'text-[#0A1128] border-transparent'
+                  ? 'text-[#0B0814] border-transparent'
                   : 'bg-white/5 border-white/10 text-gray-300 hover:border-white/20'
               }`}
               style={type === key ? { backgroundColor: p.color, borderColor: p.color } : {}}
@@ -226,7 +226,7 @@ export default function PartnersPage() {
           </p>
           <a
             href={`mailto:${partner.email}?subject=${encodeURIComponent(partner.cta)}`}
-            className="inline-flex px-6 py-2.5 rounded-xl text-sm font-semibold text-[#0A1128] hover:opacity-90 transition-opacity"
+            className="inline-flex px-6 py-2.5 rounded-xl text-sm font-semibold text-[#0B0814] hover:opacity-90 transition-opacity"
             style={{ backgroundColor: partner.color }}
           >
             Email {partner.email}

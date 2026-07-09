@@ -107,7 +107,7 @@ const CreatorRevenueDashboard: React.FC<CreatorRevenueDashboardProps> = ({ userI
   const total = earnings.reduce((s, e) => s + e.amount, 0);
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white p-6">
+    <div className="min-h-screen bg-[#0B0814] text-white p-6">
       <div className="max-w-4xl mx-auto flex flex-col gap-6">
 
         {/* Header */}
@@ -123,7 +123,7 @@ const CreatorRevenueDashboard: React.FC<CreatorRevenueDashboardProps> = ({ userI
           </div>
 
           {/* Period tabs: 'month' | 'quarter' | 'all' */}
-          <div className="flex gap-1 bg-[#1A2240] rounded-xl p-1">
+          <div className="flex gap-1 bg-[#120C22] rounded-xl p-1">
             {(Object.keys(PERIOD_LABELS) as Period[]).map(p => (
               <button
                 key={p}
@@ -131,7 +131,7 @@ const CreatorRevenueDashboard: React.FC<CreatorRevenueDashboardProps> = ({ userI
                 className={[
                   'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200',
                   period === p
-                    ? 'bg-[#FFB800] text-[#0A1128]'
+                    ? 'bg-[#FFB800] text-[#0B0814]'
                     : 'text-gray-400 hover:text-white',
                 ].join(' ')}
               >
@@ -142,7 +142,7 @@ const CreatorRevenueDashboard: React.FC<CreatorRevenueDashboardProps> = ({ userI
         </div>
 
         {/* Total earnings card — large gold text */}
-        <div className="bg-[#1A2240] rounded-2xl p-6 flex items-center justify-between">
+        <div className="bg-[#120C22] rounded-2xl p-6 flex items-center justify-between">
           <div>
             <p className="text-gray-400 text-sm font-medium">Total Earnings</p>
             <p className="text-[#FFB800] text-5xl font-bold mt-1 tracking-tight">
@@ -156,7 +156,7 @@ const CreatorRevenueDashboard: React.FC<CreatorRevenueDashboardProps> = ({ userI
         </div>
 
         {/* 7 category rows */}
-        <div className="bg-[#1A2240] rounded-2xl p-6 flex flex-col gap-4">
+        <div className="bg-[#120C22] rounded-2xl p-6 flex flex-col gap-4">
           <h2 className="text-white font-semibold text-base">Earnings by Category</h2>
 
           {loading ? (
@@ -199,7 +199,7 @@ const CreatorRevenueDashboard: React.FC<CreatorRevenueDashboardProps> = ({ userI
                       </div>
                     </div>
                     {/* CSS width % bar */}
-                    <div className="h-1.5 bg-[#0A1128] rounded-full overflow-hidden">
+                    <div className="h-1.5 bg-[#0B0814] rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full transition-all duration-500"
                         style={{ width: `${pct}%`, background: meta.color }}

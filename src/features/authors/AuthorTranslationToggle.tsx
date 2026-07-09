@@ -62,7 +62,7 @@ export function AuthorTranslationToggle({ userId }: AuthorTranslationToggleProps
   };
 
   return (
-    <div className="bg-[#0A1128] rounded-2xl border border-white/10 p-6 space-y-5">
+    <div className="bg-[#0B0814] rounded-2xl border border-white/10 p-6 space-y-5">
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-xl bg-[#9D4EDD]/20 flex items-center justify-center">

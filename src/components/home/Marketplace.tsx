@@ -136,7 +136,7 @@ export default function Marketplace() {
           <p className="text-gray-400 mt-1">{loading ? 'Loading…' : `${filtered.length} items found`}</p>
         </div>
         <div className="flex items-center gap-3">
-          <button onClick={() => setShowCreators(!showCreators)} className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${showCreators ? 'bg-indigo-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>
+          <button onClick={() => setShowCreators(!showCreators)} className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${showCreators ? 'bg-[#9D4EDD] text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>
             {showCreators ? 'Show Content' : 'Show Creators'}
           </button>
           <div className="flex bg-gray-800 rounded-lg p-1">
@@ -153,7 +153,7 @@ export default function Marketplace() {
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="flex items-center gap-2 overflow-x-auto pb-1 flex-1">
           {CATEGORIES.map(cat => (
-            <button key={cat} onClick={() => setSelectedCategory(cat)} className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${selectedCategory === cat ? 'bg-indigo-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>{cat}</button>
+            <button key={cat} onClick={() => setSelectedCategory(cat)} className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${selectedCategory === cat ? 'bg-[#9D4EDD] text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>{cat}</button>
           ))}
         </div>
         <div className="flex items-center gap-2">
@@ -185,7 +185,7 @@ export default function Marketplace() {
       ) : showCreators ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {creators.map(creator => (
-            <div key={creator.id} className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 hover:border-indigo-500/20 transition-all">
+            <div key={creator.id} className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 hover:border-[#9D4EDD]/20 transition-all">
               <div className="flex items-center gap-3 mb-3">
                 <img src={creator.avatar} alt="" className="w-12 h-12 rounded-full object-cover" />
                 <div>
@@ -207,7 +207,7 @@ export default function Marketplace() {
       ) : viewMode === 'grid' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filtered.map(item => (
-            <div key={item.id} className="group bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden hover:border-indigo-500/20 transition-all hover:-translate-y-0.5">
+            <div key={item.id} className="group bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden hover:border-[#9D4EDD]/20 transition-all hover:-translate-y-0.5">
               <div className="relative aspect-[4/3] overflow-hidden">
                 <img src={item.thumbnail} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -218,7 +218,7 @@ export default function Marketplace() {
                   </span>
                 </div>
                 <div className="absolute top-2 right-2">
-                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${item.isPaid ? 'bg-emerald-500/80 text-white' : 'bg-indigo-500/80 text-white'}`}>
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${item.isPaid ? 'bg-emerald-500/80 text-white' : 'bg-[#9D4EDD]/80 text-white'}`}>
                     {item.isPaid ? formatCurrency(item.price) : 'Free'}
                   </span>
                 </div>
@@ -239,13 +239,13 @@ export default function Marketplace() {
       ) : (
         <div className="space-y-2">
           {filtered.map(item => (
-            <div key={item.id} className="flex items-center gap-4 p-3 bg-gray-900/50 border border-gray-800 rounded-xl hover:border-indigo-500/20 transition-all">
+            <div key={item.id} className="flex items-center gap-4 p-3 bg-gray-900/50 border border-gray-800 rounded-xl hover:border-[#9D4EDD]/20 transition-all">
               <img src={item.thumbnail} alt="" className="w-16 h-12 rounded-lg object-cover" />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-white truncate">{item.title}</p>
                 <p className="text-xs text-gray-400">{item.creator} · {item.category}</p>
               </div>
-              <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${item.isPaid ? 'bg-emerald-500/20 text-emerald-400' : 'bg-indigo-500/20 text-indigo-400'}`}>
+              <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${item.isPaid ? 'bg-emerald-500/20 text-emerald-400' : 'bg-[#9D4EDD]/20 text-[#B794F4]'}`}>
                 {item.isPaid ? formatCurrency(item.price) : 'Free'}
               </span>
             </div>
@@ -257,7 +257,7 @@ export default function Marketplace() {
         <div className="text-center py-20">
           <svg className="w-16 h-16 text-gray-600 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
           <p className="text-gray-400">No content found matching your criteria</p>
-          <button onClick={() => { setSearchQuery(''); setSelectedCategory('All'); setPriceFilter('all'); }} className="text-indigo-400 hover:text-indigo-300 text-sm mt-2">Clear filters</button>
+          <button onClick={() => { setSearchQuery(''); setSelectedCategory('All'); setPriceFilter('all'); }} className="text-[#B794F4] hover:text-[#C9B3F5] text-sm mt-2">Clear filters</button>
         </div>
       )}
     </div>

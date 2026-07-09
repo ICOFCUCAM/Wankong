@@ -121,7 +121,7 @@ export default function AdminCompetitionPanel({ roomId }: { roomId?: string }) {
 
       <div className="space-y-2">
         {entries.map(e => (
-          <div key={e.id} className="flex items-center gap-4 p-4 bg-[#0D1B3E] border border-white/5 rounded-xl">
+          <div key={e.id} className="flex items-center gap-4 p-4 bg-[#0B0814] border border-white/5 rounded-xl">
             <div
               className="w-20 h-14 rounded-lg overflow-hidden shrink-0 bg-gradient-to-br from-[#9D4EDD] to-[#00D9FF] flex items-center justify-center cursor-pointer"
               onClick={() => setPreview(e)}
@@ -156,7 +156,7 @@ export default function AdminCompetitionPanel({ roomId }: { roomId?: string }) {
       {/* Preview modal */}
       {preview && (
         <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4" onClick={() => setPreview(null)}>
-          <div className="bg-[#0D1B3E] border border-white/10 rounded-2xl w-full max-w-2xl p-6 space-y-4" onClick={e => e.stopPropagation()}>
+          <div className="bg-[#0B0814] border border-white/10 rounded-2xl w-full max-w-2xl p-6 space-y-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between">
               <h4 className="text-white font-bold">{preview.title}</h4>
               <button onClick={() => setPreview(null)} className="text-gray-400 hover:text-white text-xl">✕</button>

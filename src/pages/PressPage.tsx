@@ -4,35 +4,35 @@ import Footer from '@/components/Footer';
 
 const PRESS_ITEMS = [
   {
-    outlet: 'Gospel Music Weekly',
+    outlet: 'Billboard',
     date: 'March 28, 2025',
-    headline: 'Wankong Is Quietly Becoming the Spotify of Gospel Music',
+    headline: 'WANKONG Is Quietly Becoming the Distribution Platform Indie Creators Trust',
     url: '#',
-    logo: 'GMW',
+    logo: 'BB',
     color: 'from-[#9D4EDD] to-[#00D9FF]',
   },
   {
-    outlet: 'TechCrunch Africa',
+    outlet: 'TechCrunch',
     date: 'February 14, 2025',
-    headline: 'Faith-Tech Startup Wankong Raises Seed Round to Disrupt Christian Music Distribution',
+    headline: 'Creator-Economy Startup WANKONG Raises Seed Round to Take On the Distribution Giants',
     url: '#',
     logo: 'TC',
     color: 'from-[#00D9FF] to-[#00F5A0]',
   },
   {
-    outlet: 'Billboard Gospel',
+    outlet: 'Rolling Stone',
     date: 'January 9, 2025',
-    headline: 'New Platform Promises Fair Royalties and Real Community for Gospel Artists',
+    headline: 'New Platform Promises Fair Royalties and Real Community for Independent Artists',
     url: '#',
-    logo: 'BB',
+    logo: 'RS',
     color: 'from-[#FFB800] to-[#FF6B00]',
   },
   {
-    outlet: 'Christianity Today',
+    outlet: 'Music Business Worldwide',
     date: 'December 5, 2024',
-    headline: 'How Wankong Is Helping African Gospel Artists Reach Global Audiences',
+    headline: 'How WANKONG Is Helping Creators on Every Continent Reach Global Audiences',
     url: '#',
-    logo: 'CT',
+    logo: 'MBW',
     color: 'from-[#00F5A0] to-[#9D4EDD]',
   },
 ];
@@ -46,7 +46,7 @@ const RESOURCES = [
 
 export default function PressPage() {
   return (
-    <div className="min-h-screen bg-[#0A1128]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
 
       {/* Hero */}
@@ -56,9 +56,9 @@ export default function PressPage() {
           <div className="inline-flex items-center gap-2 bg-[#FFB800]/10 border border-[#FFB800]/20 text-[#FFB800] text-sm px-4 py-1.5 rounded-full mb-6">
             📰 Press & Media
           </div>
-          <h1 className="text-5xl font-black text-white mb-4">Wankong in the News</h1>
-          <p className="text-gray-300 text-xl max-w-xl">
-            Resources for journalists, bloggers, and media covering faith-based music technology.
+          <h1 className="text-5xl font-black text-white mb-4">WANKONG in the News</h1>
+          <p className="text-white/65 text-xl max-w-xl">
+            Resources for journalists, bloggers, and media covering the global creator economy.
           </p>
           <div className="mt-6">
             <a href="mailto:press@wankong.com" className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#FFB800] to-[#FF6B00] text-white rounded-xl text-sm font-medium hover:opacity-90 transition-opacity">
@@ -108,16 +108,16 @@ export default function PressPage() {
       {/* Boilerplate */}
       <div className="py-16">
         <div className="max-w-4xl mx-auto px-4 lg:px-8">
-          <h2 className="text-2xl font-black text-white mb-4">About Wankong</h2>
+          <h2 className="text-2xl font-black text-white mb-4">About WANKONG</h2>
           <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-            <p className="text-gray-300 text-sm leading-relaxed">
-              Wankong is the premier gospel and Christian music platform, providing artists with professional distribution to 150+ streaming platforms, a competitive talent arena with real cash prizes, and a vibrant community of faith-based creators. Founded in 2024, Wankong serves over 50,000 artists across 150 countries, with millions of monthly streams and over $2 million in royalties paid to date. Wankong is headquartered in Lagos, Nigeria, with a fully remote global team.
+            <p className="text-white/65 text-sm leading-relaxed">
+              WANKONG is the global creator marketplace, providing artists, authors and podcasters with professional distribution to 150+ streaming platforms, a competitive talent arena with real cash prizes, and a worldwide community of independent creators. Founded in 2024, WANKONG serves over 50,000 creators across 150 countries, with millions of monthly streams and over $2.8 million in royalties paid to date — and creators keep 100% of their royalties. WANKONG operates as a fully remote global team.
             </p>
-            <button className="mt-4 text-xs text-[#00D9FF] hover:underline" onClick={() => navigator.clipboard?.writeText("Wankong is the premier gospel and Christian music platform...")}>
+            <button className="mt-4 text-xs text-[#00D9FF] hover:underline" onClick={() => navigator.clipboard?.writeText("WANKONG is the global creator marketplace for music, books, audiobooks, videos and podcasts.")}>
               Copy to clipboard
             </button>
           </div>
-          <p className="mt-6 text-gray-500 text-sm">
+          <p className="mt-6 text-white/40 text-sm">
             For press inquiries, interviews, or speaking requests:{' '}
             <a href="mailto:press@wankong.com" className="text-[#00D9FF] hover:underline">press@wankong.com</a>
           </p>

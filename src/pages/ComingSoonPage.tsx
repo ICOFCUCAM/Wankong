@@ -13,7 +13,7 @@ interface Props {
  */
 export default function ComingSoonPage({ feature = 'This feature' }: Props) {
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white flex flex-col">
+    <div className="min-h-screen bg-[#0B0814] text-white flex flex-col">
       <Header />
 
       <main className="flex-1 flex items-center justify-center px-4 py-20">

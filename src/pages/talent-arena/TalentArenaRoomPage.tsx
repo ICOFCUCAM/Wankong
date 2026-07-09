@@ -53,7 +53,7 @@ function EntryCard({ entry, rank }: { entry: Entry; rank: number }) {
   const [playing, setPlaying] = useState(false);
 
   return (
-    <div className={`bg-[#0D1B3E] border rounded-2xl overflow-hidden transition-all ${
+    <div className={`bg-[#0B0814] border rounded-2xl overflow-hidden transition-all ${
       entry.is_winner ? 'border-[#FFB800]/40 shadow-[0_0_24px_rgba(255,184,0,0.08)]' : 'border-white/5 hover:border-white/10'
     }`}>
       {/* Thumbnail / preview */}
@@ -166,19 +166,19 @@ export default function TalentArenaRoomPage() {
     : [...entries].sort((a, b) => new Date(b.created_at ?? b.id).getTime() - new Date(a.created_at ?? a.id).getTime());
 
   if (loading) return (
-    <div className="min-h-screen bg-[#0A1128] flex items-center justify-center">
+    <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
       <Loader2 className="w-8 h-8 text-[#FFB800] animate-spin" />
     </div>
   );
 
   if (!room) return (
-    <div className="min-h-screen bg-[#0A1128] flex items-center justify-center text-gray-400">
+    <div className="min-h-screen bg-[#0B0814] flex items-center justify-center text-gray-400">
       Competition room not found.
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#0A1128]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
 
       {/* Room hero */}
@@ -186,7 +186,7 @@ export default function TalentArenaRoomPage() {
         {room.cover_url && (
           <img src={room.cover_url} alt="" className="absolute inset-0 w-full h-full object-cover opacity-20" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0A1128]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0B0814]" />
         <div className="relative max-w-7xl mx-auto px-4 py-14">
           <div className="flex items-center gap-2 text-xs text-gray-500 mb-4">
             <Link to="/talent-arena" className="hover:text-white transition-colors">Talent Arena</Link>
@@ -228,7 +228,7 @@ export default function TalentArenaRoomPage() {
 
       <div className="max-w-7xl mx-auto px-4 py-10">
         {/* Tab toggle */}
-        <div className="flex gap-1 bg-[#0D1B3E] border border-white/10 rounded-xl p-1 w-fit mb-8">
+        <div className="flex gap-1 bg-[#0B0814] border border-white/10 rounded-xl p-1 w-fit mb-8">
           {(['leaderboard', 'latest'] as const).map(t => (
             <button key={t} onClick={() => setTab(t)}
               className={`px-4 py-1.5 rounded-lg text-sm font-semibold capitalize transition-colors ${
@@ -248,7 +248,7 @@ export default function TalentArenaRoomPage() {
                 <div key={e.id} className={`text-center p-4 rounded-2xl border ${
                   realRank === 1
                     ? 'bg-[#FFB800]/10 border-[#FFB800]/30 order-first md:-mt-4'
-                    : 'bg-[#0D1B3E] border-white/5'
+                    : 'bg-[#0B0814] border-white/5'
                 }`}>
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg font-black mx-auto mb-2 ${
                     realRank === 1 ? 'bg-[#FFB800] text-black' :

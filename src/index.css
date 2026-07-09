@@ -126,3 +126,183 @@ input[type="range"]::-webkit-slider-thumb {
   margin-top: -4px;
   cursor: pointer;
 }
+
+/* ── Aurora background drift ─────────────────────────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  .wk-aurora   { animation: wk-drift-a 26s ease-in-out infinite alternate; }
+  .wk-aurora-2 { animation: wk-drift-b 32s ease-in-out infinite alternate; }
+  .wk-aurora-3 { animation: wk-drift-c 38s ease-in-out infinite alternate; }
+}
+@keyframes wk-drift-a { from { transform: translate(0,0) scale(1); }   to { transform: translate(8vw,6vh) scale(1.15); } }
+@keyframes wk-drift-b { from { transform: translate(0,0) scale(1.1); } to { transform: translate(-7vw,4vh) scale(1); } }
+@keyframes wk-drift-c { from { transform: translate(0,0) scale(1); }   to { transform: translate(5vw,-6vh) scale(1.2); } }
+
+/* ── Globe explorer ──────────────────────────────────────────────────────── */
+.wk-globe { animation: wk-globe-spin 16s linear infinite; }
+@keyframes wk-globe-spin { from { background-position: 0 0; } to { background-position: 300px 0; } }
+.wk-orbit { animation: wk-orbit 9s linear infinite; }
+@keyframes wk-orbit {
+  from { transform: rotate(0deg) translateX(120px) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(120px) rotate(-360deg); }
+}
+.wk-fade-up { opacity: 0; animation: wk-fade-up .5s ease-out forwards; }
+@keyframes wk-fade-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+/* ── 3D bookshelf ────────────────────────────────────────────────────────── */
+.wk-book {
+  transform: rotateY(-26deg) translateZ(0);
+  transform-origin: left center;
+  transition: transform .5s cubic-bezier(.2,.7,.2,1), box-shadow .5s ease;
+  will-change: transform;
+}
+.group:hover .wk-book {
+  transform: rotateY(0deg) translateY(-12px) scale(1.06);
+  box-shadow: 0 26px 50px rgba(0,0,0,.6);
+}
+/* page-catching-light sheen sweeps across the cover as the book turns */
+.wk-book::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 32%, rgba(255,255,255,0.28) 48%, transparent 62%);
+  transform: translateX(-130%);
+  transition: transform .8s cubic-bezier(.2,.7,.2,1);
+  pointer-events: none;
+  z-index: 5;
+}
+.group:hover .wk-book::after { transform: translateX(130%); }
+
+/* breathing live indicator — pulsing glow ring */
+.wk-live { animation: wk-live 2s ease-in-out infinite; }
+@keyframes wk-live {
+  0%,100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.55); }
+  70%     { box-shadow: 0 0 0 7px rgba(239,68,68,0); }
+}
+
+/* ── Animated gradient border spin ───────────────────────────────────────── */
+.wk-spin { animation: wk-spin 3s linear infinite; }
+@keyframes wk-spin { to { transform: rotate(360deg); } }
+
+/* ── Distribution network ────────────────────────────────────────────────── */
+.wk-flow { animation: wk-flow .9s linear infinite; }
+@keyframes wk-flow { to { stroke-dashoffset: -14; } }
+.wk-engine-pulse { animation: wk-engine-pulse 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes wk-engine-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+.wk-sonar { transform-box: fill-box; transform-origin: center; animation: wk-sonar 2.6s ease-out infinite; }
+@keyframes wk-sonar { 0% { transform: scale(1); opacity: .55; } 100% { transform: scale(2.3); opacity: 0; } }
+
+/* ── Live waveform bars ──────────────────────────────────────────────────── */
+.wk-eqbar { height: 25%; transform-origin: bottom; animation-name: wk-eqbar; animation-iteration-count: infinite; animation-direction: alternate; animation-timing-function: ease-in-out; }
+@keyframes wk-eqbar { from { height: 12%; opacity: .45; } to { height: 100%; opacity: 1; } }
+
+/* ── Footer constellation ────────────────────────────────────────────────── */
+.wk-stars {
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, #ffffff, transparent),
+    radial-gradient(1px 1px at 70% 62%, #ffffff, transparent),
+    radial-gradient(1.6px 1.6px at 40% 80%, #9D4EDD, transparent),
+    radial-gradient(1px 1px at 85% 22%, #00D9FF, transparent),
+    radial-gradient(1px 1px at 55% 45%, #ffffff, transparent),
+    radial-gradient(1px 1px at 12% 70%, #ffffff, transparent),
+    radial-gradient(1.6px 1.6px at 90% 78%, #9D4EDD, transparent),
+    radial-gradient(1px 1px at 33% 18%, #00D9FF, transparent);
+  background-size: 420px 320px;
+  background-repeat: repeat;
+  opacity: .4;
+  animation: wk-twinkle 6s ease-in-out infinite alternate;
+}
+@keyframes wk-twinkle { from { opacity: .22; } to { opacity: .5; } }
+
+/* ── Dotted world globe spin ─────────────────────────────────────────────── */
+.wk-worldspin { animation: wk-worldspin 26s linear infinite; }
+@keyframes wk-worldspin { from { background-position-x: 0; } to { background-position-x: -416px; } }
+
+/* ── Globe orbital rings + particles ─────────────────────────────────────── */
+.wk-rings { animation: wk-rings 40s linear infinite; transform-box: fill-box; }
+@keyframes wk-rings { to { transform: rotate(360deg); } }
+.wk-float { animation: wk-float 6s ease-in-out infinite; }
+@keyframes wk-float { 0%,100% { transform: translateY(0) scale(1); opacity:.5; } 50% { transform: translateY(-10px) scale(1.4); opacity:1; } }
+
+/* ── Globe hotspots ──────────────────────────────────────────────────────── */
+.wk-pulse-dot { transform-box: fill-box; transform-origin: center; animation: wk-pulse-dot 2.4s ease-out infinite; }
+@keyframes wk-pulse-dot { 0% { transform: scale(0.6); opacity: .5; } 70% { opacity: 0; } 100% { transform: scale(2.4); opacity: 0; } }
+
+/* ── Globe hotspot ping ──────────────────────────────────────────────────── */
+.wk-ping { transform-box: fill-box; transform-origin: center; animation: wk-ping 2.6s ease-out infinite; }
+@keyframes wk-ping { 0% { transform: scale(0.5); opacity: .85; } 80%, 100% { transform: scale(3.4); opacity: 0; } }
+
+/* ── Spinning globe strip + city pins ────────────────────────────────────── */
+.wk-spin-strip { animation: wk-spin-strip 36s linear infinite; will-change: transform; }
+@keyframes wk-spin-strip { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.wk-pin { position: absolute; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: var(--c); box-shadow: 0 0 6px var(--c); }
+.wk-pin::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; border: 1.5px solid var(--c); transform-origin: center; animation: wk-ping 2.6s ease-out infinite; animation-delay: inherit; }
+
+/* ── Page transition + skeleton shimmer ──────────────────────────────────── */
+.wk-page-in { animation: wk-page-in .45s ease-out; }
+@keyframes wk-page-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.wk-shimmer { position: relative; overflow: hidden; }
+.wk-shimmer::after { content: ''; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent); animation: wk-shimmer 1.6s infinite; }
+@keyframes wk-shimmer { 100% { transform: translateX(100%); } }
+/* ── Premium atmosphere: 4th aurora, grain, breathe, float ───────────────── */
+.wk-aurora-4 { animation: wk-drift-d 30s ease-in-out infinite alternate; }
+@keyframes wk-drift-d { from { transform: translate(0,0) scale(1.05); } to { transform: translate(-6vw,-5vh) scale(1.22); } }
+
+.wk-noise {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  opacity: .04;
+  mix-blend-mode: overlay;
+}
+
+/* gentle "breathing" for icons/badges */
+.wk-breathe { animation: wk-breathe 5s ease-in-out infinite; }
+@keyframes wk-breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+
+/* gentle vertical float for cover art */
+.wk-coverfloat { animation: wk-coverfloat 7s ease-in-out infinite; }
+@keyframes wk-coverfloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+
+/* live activity ticker marquee */
+.wk-ticker { animation: wk-ticker 38s linear infinite; }
+@keyframes wk-ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* globe orbital light ring — slow rotation */
+.wk-orbit { animation: wk-orbit 26s linear infinite; }
+@keyframes wk-orbit { to { transform: rotate(360deg); } }
+
+/* ── THE PULSE — the page dances to the music ─────────────────────────────────
+   AudioPulse.tsx writes --wk-bass / --wk-high / --wk-beat (0..1) on <html>
+   while a track plays. Everything below is compositor-only (opacity, filter,
+   transform), so the whole page reacts at 60fps with zero re-renders. */
+
+/* bass-driven ambient glow layered into the atmosphere */
+.wk-pulse-glow {
+  opacity: calc(var(--wk-bass, 0) * 0.55);
+  background:
+    radial-gradient(ellipse at 22% 28%, rgba(157,78,221,0.38), transparent 55%),
+    radial-gradient(ellipse at 78% 62%, rgba(0,217,255,0.32), transparent 55%),
+    radial-gradient(ellipse at 50% 95%, rgba(255,0,110,0.20), transparent 60%);
+  transition: opacity 90ms linear;
+  will-change: opacity;
+}
+
+/* starfield twinkles with the highs */
+.wk-stars { filter: brightness(calc(1 + var(--wk-high, 0) * 0.9)); }
+
+/* live badges + play affordances kick on the beat */
+.wk-live { transform: scale(calc(1 + var(--wk-beat, 0) * 0.1)); }
+.wk-beat-glow { filter: saturate(calc(1 + var(--wk-beat, 0) * 0.6)) brightness(calc(1 + var(--wk-beat, 0) * 0.25)); }
+
+/* talent arena stage spotlights — slow sway + flicker */
+.wk-spotlight { transform-origin: top center; animation: wk-spotlight 6s ease-in-out infinite; }
+@keyframes wk-spotlight {
+  0%,100% { transform: rotate(var(--tw-rotate,0)) translateX(0); opacity: 0.30; }
+  50%     { transform: rotate(var(--tw-rotate,0)) translateX(14px); opacity: 0.42; }
+}
+
+/* sticky header: frosted shrink on scroll */
+.wk-nav-scrolled { backdrop-filter: blur(18px) saturate(1.4); background: rgba(11,8,20,0.72) !important; border-bottom-color: rgba(255,255,255,0.10) !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .wk-page-in, .wk-shimmer::after, .wk-spin-strip, .wk-aurora, .wk-aurora-2, .wk-aurora-3, .wk-aurora-4, .wk-float, .wk-ping, .wk-eqbar, .wk-spin, .wk-stars, .wk-breathe, .wk-coverfloat, .wk-ticker, .wk-spotlight, .wk-live, .wk-orbit { animation: none !important; }
+}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
+import { asArray } from '@/lib/utils';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { usePlayer } from '@/components/GlobalPlayer';
@@ -31,20 +32,20 @@ const LANGUAGE_META: Record<string, { name: string; flag: string }> = {
 };
 
 const GENRES = [
-  'All', 'Gospel', 'Afrobeats', 'Hip-Hop', 'Classical',
-  'Jazz', 'R&B', 'Praise', 'Worship', 'Contemporary',
+  'All', 'Pop', 'Afrobeats', 'Hip-Hop', 'Classical',
+  'Jazz', 'R&B', 'Electronic', 'K-Pop', 'Latin',
 ];
 
 const GENRE_GRADIENTS: Record<string, string> = {
-  Gospel:       'from-[#9D4EDD]/40 to-[#00D9FF]/20',
+  Pop:          'from-[#9D4EDD]/40 to-[#00D9FF]/20',
   Afrobeats:    'from-[#FF6B00]/40 to-[#FFB800]/20',
   'Hip-Hop':    'from-gray-700/60 to-gray-900/40',
   Classical:    'from-[#FFB800]/30 to-amber-900/20',
   Jazz:         'from-[#00D9FF]/30 to-blue-900/20',
   'R&B':        'from-pink-900/40 to-[#9D4EDD]/20',
-  Praise:       'from-[#00F5A0]/20 to-[#9D4EDD]/20',
-  Worship:      'from-[#00D9FF]/20 to-indigo-900/20',
-  Contemporary: 'from-[#9D4EDD]/30 to-[#FF6B00]/20',
+  Electronic:   'from-[#00F5A0]/20 to-[#9D4EDD]/20',
+  'K-Pop':      'from-[#FF006E]/30 to-[#00D9FF]/20',
+  Latin:        'from-[#9D4EDD]/30 to-[#FF6B00]/20',
 };
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -153,7 +154,7 @@ function ReleaseCard({
 
         {/* Free badge */}
         <div className="absolute top-2 right-2">
-          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-[#00F5A0] text-[#0A1128]">FREE</span>
+          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-[#00F5A0] text-[#0B0814]">FREE</span>
         </div>
 
         {/* Play overlay */}
@@ -380,7 +381,7 @@ export default function LanguageMusicPage() {
     buildQuery(0).then(({ data, error, count }) => {
       if (cancelled) return;
 
-      const rows: Release[] = (!error && data) ? (data as unknown as Release[]) : [];
+      const rows: Release[] = error ? [] : asArray<Release>(data);
 
       setReleases(rows);
       setTotalCount(count ?? rows.length);
@@ -410,8 +411,8 @@ export default function LanguageMusicPage() {
       .order('created_at', { ascending: false })
       .limit(3)
       .then(({ data, error }) => {
-        if (!error && data) {
-          setTrending(data as unknown as Release[]);
+        if (!error) {
+          setTrending(asArray<Release>(data));
         }
       });
   }, [langKey]);
@@ -422,9 +423,10 @@ export default function LanguageMusicPage() {
     setLoadingMore(true);
     const nextPage = page + 1;
     const { data, error } = await buildQuery(nextPage * PAGE_SIZE);
-    if (!error && data && data.length > 0) {
-      setReleases(prev => [...prev, ...(data as unknown as Release[])]);
-      setHasMore(data.length === PAGE_SIZE);
+    const moreRows = error ? [] : asArray<Release>(data);
+    if (moreRows.length > 0) {
+      setReleases(prev => [...prev, ...moreRows]);
+      setHasMore(moreRows.length === PAGE_SIZE);
       setPage(nextPage);
     } else {
       setHasMore(false);
@@ -479,7 +481,7 @@ export default function LanguageMusicPage() {
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="min-h-screen bg-[#0B0814] text-white">
       <Header />
 
       {/* ── SECTION 1: Language Hero ──────────────────────────────────────── */}
@@ -671,7 +673,7 @@ export default function LanguageMusicPage() {
                           ? p === 'free'
                             ? 'bg-[#00F5A0]/20 text-[#00F5A0] border border-[#00F5A0]/30'
                             : p === 'paid'
-                              ? 'bg-indigo-600/20 text-indigo-400 border border-indigo-500/30'
+                              ? 'bg-[#9D4EDD]/20 text-[#B794F4] border border-[#9D4EDD]/30'
                               : 'bg-[#9D4EDD] text-white border border-[#9D4EDD]'
                           : 'bg-white/5 text-gray-400 border border-white/10 hover:text-white'
                       }`}

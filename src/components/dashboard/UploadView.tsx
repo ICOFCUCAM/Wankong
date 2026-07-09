@@ -104,7 +104,7 @@ export default function UploadView() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <button
             onClick={() => setCurrentPage('distribution')}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors"
+            className="bg-[#9D4EDD] hover:bg-[#7C3AED] text-white font-semibold px-6 py-3 rounded-xl transition-colors"
           >
             View Distribution Status
           </button>
@@ -133,17 +133,17 @@ export default function UploadView() {
             <button
               key={type.id}
               onClick={() => setReleaseType(type.id)}
-              className="relative text-left bg-gray-900/50 border border-gray-800 hover:border-indigo-500/60 hover:bg-gray-900/80 rounded-2xl p-6 transition-all group"
+              className="relative text-left bg-gray-900/50 border border-gray-800 hover:border-[#9D4EDD]/60 hover:bg-gray-900/80 rounded-2xl p-6 transition-all group"
             >
               {type.badge && (
-                <span className="absolute top-4 right-4 bg-indigo-600/20 text-indigo-300 text-xs font-medium px-2 py-0.5 rounded-full border border-indigo-500/30">
+                <span className="absolute top-4 right-4 bg-[#9D4EDD]/20 text-[#C9B3F5] text-xs font-medium px-2 py-0.5 rounded-full border border-[#9D4EDD]/30">
                   {type.badge}
                 </span>
               )}
               <div className="text-3xl mb-4">{type.icon}</div>
-              <h3 className="text-white font-semibold text-lg group-hover:text-indigo-300 transition-colors">{type.label}</h3>
+              <h3 className="text-white font-semibold text-lg group-hover:text-[#C9B3F5] transition-colors">{type.label}</h3>
               <p className="text-gray-400 text-sm mt-1 leading-relaxed">{type.description}</p>
-              <div className="mt-4 flex items-center gap-1 text-xs text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="mt-4 flex items-center gap-1 text-xs text-[#B794F4] opacity-0 group-hover:opacity-100 transition-opacity">
                 <span>Get started</span>
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
               </div>
@@ -152,10 +152,10 @@ export default function UploadView() {
         </div>
 
         {/* Info callout */}
-        <div className="bg-indigo-500/5 border border-indigo-500/20 rounded-2xl p-5 flex gap-4">
+        <div className="bg-[#9D4EDD]/5 border border-[#9D4EDD]/20 rounded-2xl p-5 flex gap-4">
           <div className="text-2xl shrink-0">ℹ️</div>
           <div>
-            <p className="text-sm font-semibold text-indigo-300">All releases include</p>
+            <p className="text-sm font-semibold text-[#C9B3F5]">All releases include</p>
             <ul className="text-xs text-gray-400 mt-1 space-y-0.5">
               <li>• Auto ISRC generation if you don't have one</li>
               <li>• Royalty split management (artist, producer, label, and more)</li>

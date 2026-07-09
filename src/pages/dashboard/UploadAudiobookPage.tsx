@@ -13,7 +13,7 @@ const GENRES    = ['Self-Help', 'Biography', 'Fiction', 'Non-Fiction', 'Business
 const LANGUAGES = ['English', 'French', 'Spanish', 'Arabic', 'Swahili', 'Yoruba', 'Igbo', 'Hausa', 'Zulu', 'Portuguese'];
 
 const inputCls =
-  'w-full bg-[#0A1128] border border-white/10 rounded-xl px-4 py-3 text-white text-sm ' +
+  'w-full bg-[#0B0814] border border-white/10 rounded-xl px-4 py-3 text-white text-sm ' +
   'placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD]/40 ' +
   'focus:border-[#9D4EDD]/40 transition-colors';
 const selectCls = inputCls + ' cursor-pointer';
@@ -176,7 +176,7 @@ export default function UploadAudiobookPage() {
 
   if (done) {
     return (
-      <div className="min-h-screen bg-[#0A1128] text-white flex flex-col">
+      <div className="min-h-screen bg-[#0B0814] text-white flex flex-col">
         <Header />
         <div className="flex-1 flex items-center justify-center p-8">
           <div className="text-center max-w-md">
@@ -207,7 +207,7 @@ export default function UploadAudiobookPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white flex flex-col">
+    <div className="min-h-screen bg-[#0B0814] text-white flex flex-col">
       <Header />
       <div className="flex-1 max-w-3xl mx-auto w-full px-4 lg:px-8 py-10">
 
@@ -341,14 +341,14 @@ export default function UploadAudiobookPage() {
                       value={ch.title}
                       onChange={e => updateChapter(ch.id, { title: e.target.value })}
                       placeholder={`Chapter ${idx + 1} title`}
-                      className="flex-1 bg-[#0A1128] border border-white/8 rounded-lg px-3 py-2 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-[#9D4EDD]/40 transition-colors"
+                      className="flex-1 bg-[#0B0814] border border-white/8 rounded-lg px-3 py-2 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-[#9D4EDD]/40 transition-colors"
                     />
                     <input
                       type="text"
                       value={ch.duration}
                       onChange={e => updateChapter(ch.id, { duration: e.target.value })}
                       placeholder="HH:MM:SS"
-                      className="w-24 bg-[#0A1128] border border-white/8 rounded-lg px-3 py-2 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-[#9D4EDD]/40 transition-colors"
+                      className="w-24 bg-[#0B0814] border border-white/8 rounded-lg px-3 py-2 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-[#9D4EDD]/40 transition-colors"
                     />
                     <input
                       ref={fileRef}

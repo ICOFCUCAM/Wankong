@@ -138,7 +138,7 @@ export default function DistributionView() {
         </div>
         <Link
           to="/dashboard/distribution/upload-release"
-          className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-5 py-2.5 rounded-xl transition-colors flex items-center gap-2"
+          className="bg-[#9D4EDD] hover:bg-[#7C3AED] text-white font-medium px-5 py-2.5 rounded-xl transition-colors flex items-center gap-2"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -157,7 +157,7 @@ export default function DistributionView() {
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
           {[
-            { label: 'Total Releases', value: String(totalStats.releases), color: 'text-indigo-400' },
+            { label: 'Total Releases', value: String(totalStats.releases), color: 'text-[#B794F4]' },
             { label: 'Total Streams',  value: fmtNum(totalStats.streams),  color: 'text-purple-400' },
             { label: 'Distribution Revenue', value: fmtUSD(totalStats.revenue), color: 'text-emerald-400' },
           ].map(s => (
@@ -190,7 +190,7 @@ export default function DistributionView() {
         ) : releases.length === 0 ? (
           <div className="text-center py-12 text-gray-500 text-sm">
             <p>No releases yet.</p>
-            <Link to="/dashboard/distribution/upload-release" className="text-indigo-400 hover:underline mt-2 inline-block">
+            <Link to="/dashboard/distribution/upload-release" className="text-[#B794F4] hover:underline mt-2 inline-block">
               Upload your first release →
             </Link>
           </div>
@@ -201,7 +201,7 @@ export default function DistributionView() {
                 {r.cover_url ? (
                   <img src={r.cover_url} alt="" className="w-14 h-14 rounded-xl object-cover shrink-0" />
                 ) : (
-                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center shrink-0">
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#9D4EDD] to-purple-600 flex items-center justify-center shrink-0">
                     <svg className="w-6 h-6 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                     </svg>

@@ -111,7 +111,7 @@ export default function CreatorDashboardPage() {
   const winnerEntries  = entries.filter(e => e.status === 'winner').length;
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white flex flex-col">
+    <div className="min-h-screen bg-[#0B0814] text-white flex flex-col">
       <Header />
 
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 lg:px-8 py-10 space-y-10">
@@ -166,14 +166,14 @@ export default function CreatorDashboardPage() {
               <Star className="w-5 h-5 text-[#FFB800]" /> My Performances
               {entries.length > 0 && <span className="text-sm font-normal text-gray-500">({entries.length})</span>}
             </h2>
-            <Link to="/talent-arena" className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors">
+            <Link to="/talent-arena" className="text-sm text-[#B794F4] hover:text-[#C9B3F5] transition-colors">
               Explore arena →
             </Link>
           </div>
 
           {loading ? (
             <div className="py-12 flex justify-center">
-              <Loader2 className="w-6 h-6 text-indigo-400 animate-spin" />
+              <Loader2 className="w-6 h-6 text-[#B794F4] animate-spin" />
             </div>
           ) : entries.length === 0 ? (
             <div className="py-12 text-center bg-white/3 border border-white/8 rounded-2xl border-dashed">

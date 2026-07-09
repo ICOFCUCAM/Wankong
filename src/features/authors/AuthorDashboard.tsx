@@ -150,7 +150,7 @@ export function AuthorDashboard() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
         <p className="text-gray-400">Please sign in to view your dashboard.</p>
       </div>
     );
@@ -158,7 +158,7 @@ export function AuthorDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
         <div className="w-10 h-10 border-2 border-[#00D9FF] border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -166,7 +166,7 @@ export function AuthorDashboard() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
         <p className="text-red-400 text-sm">{error}</p>
       </div>
     );
@@ -174,7 +174,7 @@ export function AuthorDashboard() {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
         <p className="text-gray-400 text-sm">No author profile found for this account.</p>
       </div>
     );
@@ -183,7 +183,7 @@ export function AuthorDashboard() {
   const totalEarnings = earnings.reduce((s, r) => s + r.amount, 0);
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="min-h-screen bg-[#0B0814] text-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 space-y-8">
 
         {/* ── Header ── */}

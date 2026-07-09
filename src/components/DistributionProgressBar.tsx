@@ -34,7 +34,7 @@ const DistributionProgressBar: React.FC<DistributionProgressBarProps> = ({ steps
                   className={[
                     'relative flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300',
                     isCompleted
-                      ? 'bg-[#00D9FF] text-[#0A1128]'
+                      ? 'bg-[#00D9FF] text-[#0B0814]'
                       : isCurrent
                         ? 'bg-transparent ring-2 ring-[#00D9FF] text-[#00D9FF]'
                         : 'bg-transparent ring-2 ring-[#2d3a5a] text-gray-500',

@@ -45,7 +45,7 @@ export function AudiobookChapterList({
 
   if (loading) {
     return (
-      <div className="bg-[#0A1128] rounded-2xl border border-white/10 p-6">
+      <div className="bg-[#0B0814] rounded-2xl border border-white/10 p-6">
         <div className="space-y-3">
           {Array.from({ length: 4 }).map((_, i) => (
             <div
@@ -61,7 +61,7 @@ export function AudiobookChapterList({
 
   if (error) {
     return (
-      <div className="bg-[#0A1128] rounded-2xl border border-red-500/20 p-6 text-center">
+      <div className="bg-[#0B0814] rounded-2xl border border-red-500/20 p-6 text-center">
         <p className="text-red-400 text-sm">{error}</p>
       </div>
     );
@@ -69,7 +69,7 @@ export function AudiobookChapterList({
 
   if (chapters.length === 0) {
     return (
-      <div className="bg-[#0A1128] rounded-2xl border border-white/10 p-8 text-center">
+      <div className="bg-[#0B0814] rounded-2xl border border-white/10 p-8 text-center">
         <Music2 size={36} className="mx-auto mb-3 text-gray-600" />
         <p className="text-gray-400 text-sm font-medium">No chapters yet</p>
         <p className="text-gray-600 text-xs mt-1">
@@ -80,7 +80,7 @@ export function AudiobookChapterList({
   }
 
   return (
-    <div className="bg-[#0A1128] rounded-2xl border border-white/10 overflow-hidden">
+    <div className="bg-[#0B0814] rounded-2xl border border-white/10 overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
         <div>
@@ -115,7 +115,7 @@ export function AudiobookChapterList({
                 <span
                   className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-colors ${
                     isSelected
-                      ? 'bg-[#00D9FF] text-[#0A1128]'
+                      ? 'bg-[#00D9FF] text-[#0B0814]'
                       : 'bg-white/8 text-gray-400 group-hover:bg-white/12'
                   }`}
                 >

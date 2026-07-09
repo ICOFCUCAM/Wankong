@@ -130,7 +130,7 @@ export default function CompetitionsView() {
 
       <div className="flex items-center gap-2 overflow-x-auto pb-2">
         {(['all', 'open', 'judging', 'completed'] as const).map(tab => (
-          <button key={tab} onClick={() => setActiveTab(tab)} className={`px-4 py-2 rounded-xl text-sm font-medium capitalize whitespace-nowrap transition-colors ${activeTab === tab ? 'bg-indigo-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>
+          <button key={tab} onClick={() => setActiveTab(tab)} className={`px-4 py-2 rounded-xl text-sm font-medium capitalize whitespace-nowrap transition-colors ${activeTab === tab ? 'bg-[#9D4EDD] text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>
             {tab}
           </button>
         ))}
@@ -153,12 +153,12 @@ export default function CompetitionsView() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {filtered.map(room => (
-            <div key={room.id} className="bg-gray-900/50 border border-gray-800 rounded-2xl overflow-hidden hover:border-indigo-500/20 transition-all group">
+            <div key={room.id} className="bg-gray-900/50 border border-gray-800 rounded-2xl overflow-hidden hover:border-[#9D4EDD]/20 transition-all group">
               <div className="relative h-40 overflow-hidden">
                 {room.cover_url ? (
                   <img src={room.cover_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-indigo-600/30 to-purple-600/30" />
+                  <div className="w-full h-full bg-gradient-to-br from-[#9D4EDD]/30 to-purple-600/30" />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent" />
                 <div className="absolute top-3 right-3">
@@ -179,7 +179,7 @@ export default function CompetitionsView() {
                     <p className="text-[10px] text-gray-500">Prize Pool</p>
                   </div>
                   <div className="text-center p-2 bg-gray-800/50 rounded-lg">
-                    <p className="text-lg font-bold text-indigo-400">{room.entry_count}</p>
+                    <p className="text-lg font-bold text-[#B794F4]">{room.entry_count}</p>
                     <p className="text-[10px] text-gray-500">Entries</p>
                   </div>
                 </div>
@@ -190,7 +190,7 @@ export default function CompetitionsView() {
                 )}
                 <div className="flex gap-3">
                   {room.status === 'open' && !joinedRooms.has(room.id) ? (
-                    <button onClick={() => handleJoin(room.id)} className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-xl transition-colors">Join Competition</button>
+                    <button onClick={() => handleJoin(room.id)} className="flex-1 bg-[#9D4EDD] hover:bg-[#7C3AED] text-white font-medium py-2.5 rounded-xl transition-colors">Join Competition</button>
                   ) : room.status === 'open' && joinedRooms.has(room.id) ? (
                     <button className="flex-1 bg-emerald-600/20 text-emerald-400 font-medium py-2.5 rounded-xl border border-emerald-500/30 cursor-default">Joined</button>
                   ) : room.status === 'draft' ? (
@@ -240,13 +240,13 @@ export default function CompetitionsView() {
                       </div>
                     </td>
                     <td className="p-4 text-right">
-                      <span className="text-sm font-medium text-indigo-400">{entry.ai_score != null ? entry.ai_score.toFixed(1) : '—'}</span>
+                      <span className="text-sm font-medium text-[#B794F4]">{entry.ai_score != null ? entry.ai_score.toFixed(1) : '—'}</span>
                     </td>
                     <td className="p-4 text-right">
                       <span className="text-sm text-gray-300">{entry.votes_count.toLocaleString()}</span>
                     </td>
                     <td className="p-4 text-right">
-                      <button onClick={() => handleVote(entry.id)} className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${voteState[entry.id] ? 'bg-indigo-600/20 text-indigo-400 border border-indigo-500/30' : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'}`}>
+                      <button onClick={() => handleVote(entry.id)} className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${voteState[entry.id] ? 'bg-[#9D4EDD]/20 text-[#B794F4] border border-[#9D4EDD]/30' : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'}`}>
                         {voteState[entry.id] ? 'Voted' : 'Vote'}
                       </button>
                     </td>
@@ -265,7 +265,7 @@ export default function CompetitionsView() {
             {selectedRoom.cover_url ? (
               <img src={selectedRoom.cover_url} alt="" className="w-full h-48 object-cover" />
             ) : (
-              <div className="w-full h-48 bg-gradient-to-br from-indigo-600/30 to-purple-600/30" />
+              <div className="w-full h-48 bg-gradient-to-br from-[#9D4EDD]/30 to-purple-600/30" />
             )}
             <div className="p-6">
               <div className="flex items-center justify-between mb-2">
@@ -280,7 +280,7 @@ export default function CompetitionsView() {
                 </div>
                 <div className="bg-gray-800/50 rounded-xl p-3">
                   <p className="text-xs text-gray-500">Entries</p>
-                  <p className="text-lg font-bold text-indigo-400">{selectedRoom.entry_count}</p>
+                  <p className="text-lg font-bold text-[#B794F4]">{selectedRoom.entry_count}</p>
                 </div>
               </div>
               <div className="bg-gray-800/50 rounded-xl p-4 mb-6">
@@ -288,7 +288,7 @@ export default function CompetitionsView() {
                 <div className="space-y-1 text-xs text-gray-400">
                   {[['AI Performance Score','40%'],['Public Votes','20%'],['Engagement Score','20%'],['Judge Score','20%']].map(([label, pct]) => (
                     <div key={label} className="flex justify-between">
-                      <span>{label}</span><span className="text-indigo-400">{pct}</span>
+                      <span>{label}</span><span className="text-[#B794F4]">{pct}</span>
                     </div>
                   ))}
                 </div>

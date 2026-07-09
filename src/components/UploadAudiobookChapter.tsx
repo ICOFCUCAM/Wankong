@@ -152,7 +152,7 @@ const UploadAudiobookChapter: React.FC<UploadAudiobookChapterProps> = ({
 
   if (success) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 p-8 bg-[#1A2240] rounded-2xl">
+      <div className="flex flex-col items-center justify-center gap-4 p-8 bg-[#120C22] rounded-2xl">
         <CheckCircle className="w-10 h-10 text-[#00F5A0]" />
         <p className="text-white font-semibold">Chapter {chapterNum} uploaded successfully!</p>
       </div>
@@ -162,7 +162,7 @@ const UploadAudiobookChapter: React.FC<UploadAudiobookChapterProps> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-[#1A2240] rounded-2xl p-6 flex flex-col gap-5 w-full max-w-lg"
+      className="bg-[#120C22] rounded-2xl p-6 flex flex-col gap-5 w-full max-w-lg"
     >
       {/* Header */}
       <div className="flex items-center gap-3">
@@ -190,7 +190,7 @@ const UploadAudiobookChapter: React.FC<UploadAudiobookChapterProps> = ({
           onChange={e => setChapterTitle(e.target.value)}
           placeholder={`e.g. Chapter ${chapterNum}: The Beginning`}
           required
-          className="bg-[#0A1128] border border-[#2d3a5a] rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[#00D9FF] transition-colors text-sm"
+          className="bg-[#0B0814] border border-[#2d3a5a] rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[#00D9FF] transition-colors text-sm"
         />
       </div>
 
@@ -239,7 +239,7 @@ const UploadAudiobookChapter: React.FC<UploadAudiobookChapterProps> = ({
 
       {/* Upload progress (0-100%) */}
       {uploading && (
-        <div className="flex flex-col gap-2 bg-[#0A1128] rounded-xl p-4">
+        <div className="flex flex-col gap-2 bg-[#0B0814] rounded-xl p-4">
           <div className="flex items-center justify-between text-xs text-gray-400">
             <span>Uploading audio...</span>
             <span>{progress}%</span>
@@ -257,7 +257,7 @@ const UploadAudiobookChapter: React.FC<UploadAudiobookChapterProps> = ({
       <button
         type="submit"
         disabled={uploading}
-        className="w-full flex items-center justify-center gap-2 bg-[#00D9FF] hover:bg-[#00b8d9] disabled:opacity-50 disabled:cursor-not-allowed text-[#0A1128] font-bold py-3 rounded-xl transition-colors text-sm"
+        className="w-full flex items-center justify-center gap-2 bg-[#00D9FF] hover:bg-[#00b8d9] disabled:opacity-50 disabled:cursor-not-allowed text-[#0B0814] font-bold py-3 rounded-xl transition-colors text-sm"
       >
         {uploading ? (
           <><Loader2 className="w-5 h-5 animate-spin" /> Uploading {progress > 0 ? `${progress}%` : '...'}</>

@@ -204,7 +204,7 @@ const UploadBookForm: React.FC<UploadBookFormProps> = ({ authorId, onSuccess }) 
 
   if (success) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 p-10 bg-[#1A2240] rounded-2xl">
+      <div className="flex flex-col items-center justify-center gap-4 p-10 bg-[#120C22] rounded-2xl">
         <CheckCircle className="w-12 h-12 text-[#00F5A0]" />
         <h3 className="text-white text-xl font-bold">Book Published!</h3>
         <p className="text-gray-400 text-sm text-center">Your book has been uploaded successfully.</p>
@@ -215,7 +215,7 @@ const UploadBookForm: React.FC<UploadBookFormProps> = ({ authorId, onSuccess }) 
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-[#1A2240] rounded-2xl p-6 flex flex-col gap-5 w-full max-w-2xl"
+      className="bg-[#120C22] rounded-2xl p-6 flex flex-col gap-5 w-full max-w-2xl"
     >
       <div className="flex items-center gap-3 mb-1">
         <BookOpen className="w-6 h-6 text-[#00D9FF]" />
@@ -238,7 +238,7 @@ const UploadBookForm: React.FC<UploadBookFormProps> = ({ authorId, onSuccess }) 
           onChange={handleFormChange}
           placeholder="Book title"
           required
-          className="bg-[#0A1128] border border-[#2d3a5a] rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[#00D9FF] transition-colors text-sm"
+          className="bg-[#0B0814] border border-[#2d3a5a] rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[#00D9FF] transition-colors text-sm"
         />
       </div>
 
@@ -251,7 +251,7 @@ const UploadBookForm: React.FC<UploadBookFormProps> = ({ authorId, onSuccess }) 
           onChange={handleFormChange}
           placeholder="Brief description of your book..."
           rows={4}
-          className="bg-[#0A1128] border border-[#2d3a5a] rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[#00D9FF] transition-colors text-sm resize-none"
+          className="bg-[#0B0814] border border-[#2d3a5a] rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[#00D9FF] transition-colors text-sm resize-none"
         />
       </div>
 
@@ -264,7 +264,7 @@ const UploadBookForm: React.FC<UploadBookFormProps> = ({ authorId, onSuccess }) 
             value={form.genre}
             onChange={handleFormChange}
             required
-            className="bg-[#0A1128] border border-[#2d3a5a] rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[#00D9FF] transition-colors text-sm appearance-none cursor-pointer"
+            className="bg-[#0B0814] border border-[#2d3a5a] rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[#00D9FF] transition-colors text-sm appearance-none cursor-pointer"
           >
             <option value="">Select genre...</option>
             {GENRES.map(g => (
@@ -278,7 +278,7 @@ const UploadBookForm: React.FC<UploadBookFormProps> = ({ authorId, onSuccess }) 
             name="language"
             value={form.language}
             onChange={handleFormChange}
-            className="bg-[#0A1128] border border-[#2d3a5a] rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[#00D9FF] transition-colors text-sm appearance-none cursor-pointer"
+            className="bg-[#0B0814] border border-[#2d3a5a] rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[#00D9FF] transition-colors text-sm appearance-none cursor-pointer"
           >
             {LANGUAGES.map(l => (
               <option key={l.code} value={l.code}>{l.name}</option>
@@ -301,7 +301,7 @@ const UploadBookForm: React.FC<UploadBookFormProps> = ({ authorId, onSuccess }) 
               value={form.price}
               onChange={handleFormChange}
               placeholder="0.00"
-              className="bg-[#0A1128] border border-[#2d3a5a] rounded-lg pl-7 pr-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[#00D9FF] transition-colors text-sm w-full"
+              className="bg-[#0B0814] border border-[#2d3a5a] rounded-lg pl-7 pr-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[#00D9FF] transition-colors text-sm w-full"
             />
           </div>
           <span className="text-[11px] text-gray-500">Set 0 for free</span>
@@ -315,7 +315,7 @@ const UploadBookForm: React.FC<UploadBookFormProps> = ({ authorId, onSuccess }) 
             value={form.pages}
             onChange={handleFormChange}
             placeholder="e.g. 320"
-            className="bg-[#0A1128] border border-[#2d3a5a] rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[#00D9FF] transition-colors text-sm"
+            className="bg-[#0B0814] border border-[#2d3a5a] rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[#00D9FF] transition-colors text-sm"
           />
         </div>
       </div>
@@ -406,7 +406,7 @@ const UploadBookForm: React.FC<UploadBookFormProps> = ({ authorId, onSuccess }) 
 
       {/* Upload progress summary */}
       {uploading && (
-        <div className="flex flex-col gap-2 bg-[#0A1128] rounded-xl p-4">
+        <div className="flex flex-col gap-2 bg-[#0B0814] rounded-xl p-4">
           <div className="flex items-center justify-between text-xs text-gray-400">
             <span>Cover image</span>
             <span>{coverProgress}%</span>
@@ -434,7 +434,7 @@ const UploadBookForm: React.FC<UploadBookFormProps> = ({ authorId, onSuccess }) 
       <button
         type="submit"
         disabled={uploading}
-        className="w-full flex items-center justify-center gap-2 bg-[#00D9FF] hover:bg-[#00b8d9] disabled:opacity-50 disabled:cursor-not-allowed text-[#0A1128] font-bold py-3 rounded-xl transition-colors text-sm mt-1"
+        className="w-full flex items-center justify-center gap-2 bg-[#00D9FF] hover:bg-[#00b8d9] disabled:opacity-50 disabled:cursor-not-allowed text-[#0B0814] font-bold py-3 rounded-xl transition-colors text-sm mt-1"
       >
         {uploading ? (
           <>

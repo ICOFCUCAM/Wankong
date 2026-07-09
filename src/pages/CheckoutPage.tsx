@@ -52,9 +52,9 @@ function CardInputFallback({
   return (
     <div className="space-y-3">
       <div>
-        <label className="block text-xs text-gray-400 mb-1">Card Number</label>
+        <label className="block text-xs text-white/55 mb-1">Card Number</label>
         <div className="relative">
-          <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+          <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
           <input
             type="text"
             inputMode="numeric"
@@ -62,13 +62,13 @@ function CardInputFallback({
             value={card.number}
             onChange={e => setCard(c => ({ ...c, number: fmtNumber(e.target.value) }))}
             maxLength={19}
-            className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-10 pr-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-mono tracking-wider"
+            className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD] text-sm font-mono tracking-wider"
           />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs text-gray-400 mb-1">Expiry</label>
+          <label className="block text-xs text-white/55 mb-1">Expiry</label>
           <input
             type="text"
             inputMode="numeric"
@@ -76,11 +76,11 @@ function CardInputFallback({
             value={card.expiry}
             onChange={e => setCard(c => ({ ...c, expiry: fmtExpiry(e.target.value) }))}
             maxLength={5}
-            className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-mono"
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD] text-sm font-mono"
           />
         </div>
         <div>
-          <label className="block text-xs text-gray-400 mb-1">CVC</label>
+          <label className="block text-xs text-white/55 mb-1">CVC</label>
           <input
             type="text"
             inputMode="numeric"
@@ -88,7 +88,7 @@ function CardInputFallback({
             value={card.cvc}
             onChange={e => setCard(c => ({ ...c, cvc: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
             maxLength={4}
-            className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-mono"
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD] text-sm font-mono"
           />
         </div>
       </div>
@@ -278,7 +278,7 @@ export default function CheckoutPage() {
 
   return (
     <>
-    <div className="min-h-screen bg-[#0A0A0F] py-8 px-4">
+    <div className="min-h-screen bg-[#0B0814] py-8 px-4">
       <div className="max-w-4xl mx-auto">
 
         {/* Header */}
@@ -298,18 +298,18 @@ export default function CheckoutPage() {
                 onClick={() => s === 'payment' ? billingComplete && setStep(s) : setStep(s)}
                 className={`flex items-center gap-2 text-sm font-medium px-3 py-1.5 rounded-lg transition-colors ${
                   step === s
-                    ? 'bg-indigo-600 text-white'
+                    ? 'bg-[#9D4EDD] text-white'
                     : billingComplete || s === 'billing'
-                      ? 'text-gray-300 hover:text-white'
-                      : 'text-gray-600 cursor-not-allowed'
+                      ? 'text-white/70 hover:text-white'
+                      : 'text-white/35 cursor-not-allowed'
                 }`}
               >
                 <span className={`w-5 h-5 rounded-full text-xs flex items-center justify-center font-bold ${
-                  step === s ? 'bg-white/20' : 'bg-gray-800'
+                  step === s ? 'bg-white/20' : 'bg-white/10'
                 }`}>{i + 1}</span>
                 {s === 'billing' ? 'Billing Info' : 'Payment'}
               </button>
-              {i === 0 && <span className="text-gray-700">→</span>}
+              {i === 0 && <span className="text-white/25">→</span>}
             </React.Fragment>
           ))}
         </div>
@@ -318,7 +318,7 @@ export default function CheckoutPage() {
           <form onSubmit={step === 'payment' ? handleSubmit : e => { e.preventDefault(); setStep('payment'); }}>
 
             {step === 'billing' ? (
-              <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6 space-y-4">
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 space-y-4">
                 <h3 className="text-white font-semibold">Billing Information</h3>
                 {[
                   { label: 'Full Name',          key: 'name',    type: 'text',  placeholder: 'John Doe'         },
@@ -328,30 +328,30 @@ export default function CheckoutPage() {
                   { label: 'ZIP / Postal Code',  key: 'zip',     type: 'text',  placeholder: '100001'           },
                 ].map(f => (
                   <div key={f.key}>
-                    <label className="block text-sm text-gray-300 mb-1">{f.label}</label>
+                    <label className="block text-sm text-white/70 mb-1">{f.label}</label>
                     <input
                       type={f.type}
                       required
                       value={form[f.key as keyof typeof form]}
                       onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))}
                       placeholder={f.placeholder}
-                      className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#9D4EDD]"
                     />
                   </div>
                 ))}
                 <button
                   type="submit"
                   disabled={!billingComplete}
-                  className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 text-white font-semibold py-3 rounded-xl transition-colors mt-2"
+                  className="w-full bg-[#9D4EDD] hover:bg-[#7C3AED] disabled:opacity-40 text-white font-semibold py-3 rounded-xl transition-colors mt-2"
                 >
                   Continue to Payment →
                 </button>
               </div>
             ) : (
-              <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6 space-y-5">
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 space-y-5">
                 <div className="flex items-center justify-between">
                   <h3 className="text-white font-semibold">Payment Details</h3>
-                  <div className="flex items-center gap-1 text-gray-500 text-xs">
+                  <div className="flex items-center gap-1 text-white/40 text-xs">
                     <Lock className="w-3 h-3" />
                     <span>Encrypted</span>
                   </div>
@@ -370,8 +370,8 @@ export default function CheckoutPage() {
                       onClick={() => setPayMethod(m.id)}
                       className={`flex flex-col items-center gap-1 py-2.5 rounded-xl border text-xs font-semibold transition-all ${
                         payMethod === m.id
-                          ? 'border-indigo-500 bg-indigo-500/10 text-white'
-                          : 'border-gray-700 text-gray-400 hover:border-gray-600'
+                          ? 'border-[#9D4EDD] bg-[#9D4EDD]/10 text-white'
+                          : 'border-white/10 text-white/55 hover:border-white/25'
                       }`}
                     >
                       {m.Icon ? <m.Icon className="w-4 h-4" /> : <span className="font-black text-[#003087]">P</span>}
@@ -385,7 +385,7 @@ export default function CheckoutPage() {
                     <CardInputFallback card={card} setCard={setCard} />
                     <div className="flex items-center gap-2">
                       {['Visa', 'MC', 'Amex'].map(b => (
-                        <span key={b} className="px-2.5 py-1 bg-gray-800 border border-gray-700 rounded text-xs text-gray-400 font-medium">
+                        <span key={b} className="px-2.5 py-1 bg-white/5 border border-white/10 rounded text-xs text-white/55 font-medium">
                           {b}
                         </span>
                       ))}
@@ -394,10 +394,10 @@ export default function CheckoutPage() {
                 )}
 
                 {payMethod === 'mobile_money' && (
-                  <div className="rounded-xl bg-[#0A1128] border border-white/10 p-4 text-center space-y-3">
+                  <div className="rounded-xl bg-[#0B0814] border border-white/10 p-4 text-center space-y-3">
                     <div className="flex justify-center gap-3 text-2xl">🟢 🟡 🔴</div>
                     <p className="text-white/60 text-sm">
-                      Supports M-Pesa, MTN MoMo, and Airtel Money across Africa.
+                      Supports mobile money worldwide — M-Pesa, MTN MoMo, Airtel Money, Pix and more.
                     </p>
                     <button
                       type="button"
@@ -436,7 +436,7 @@ export default function CheckoutPage() {
                 )}
 
                 {payMethod === 'paypal' && (
-                  <div className="rounded-xl bg-[#0A1128] border border-white/10 p-4 text-center space-y-3">
+                  <div className="rounded-xl bg-[#0B0814] border border-white/10 p-4 text-center space-y-3">
                     <div className="text-3xl font-bold text-[#003087]">
                       <span className="text-[#009CDE]">Pay</span><span className="text-[#003087]">Pal</span>
                     </div>
@@ -527,14 +527,14 @@ export default function CheckoutPage() {
                     <button
                       type="button"
                       onClick={() => setStep('billing')}
-                      className="px-4 py-3 border border-gray-700 text-gray-400 hover:text-white rounded-xl transition-colors text-sm"
+                      className="px-4 py-3 border border-white/10 text-white/55 hover:text-white rounded-xl transition-colors text-sm"
                     >
                       ← Back
                     </button>
                     <button
                       type="submit"
                       disabled={loading}
-                      className="flex-1 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
+                      className="flex-1 bg-[#9D4EDD] hover:bg-[#7C3AED] disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
                     >
                       {loading ? (
                         <>
@@ -555,7 +555,7 @@ export default function CheckoutPage() {
           </form>
 
           {/* Order summary */}
-          <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6 h-fit">
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 h-fit">
             <h3 className="text-white font-semibold mb-4">Order Summary</h3>
             <div className="space-y-3 mb-4">
               {items.map(item => (
@@ -565,13 +565,13 @@ export default function CheckoutPage() {
                   )}
                   <div className="flex-1">
                     <p className="text-sm text-white">{item.title}</p>
-                    <p className="text-xs text-gray-400">Qty: {item.quantity}</p>
+                    <p className="text-xs text-white/55">Qty: {item.quantity}</p>
                   </div>
                   <p className="text-sm text-white">${(item.price * item.quantity).toFixed(2)}</p>
                 </div>
               ))}
             </div>
-            <div className="border-t border-gray-800 pt-3 space-y-1.5 text-sm">
+            <div className="border-t border-white/10 pt-3 space-y-1.5 text-sm">
               <div className="flex justify-between text-white font-bold text-base pt-1">
                 <span>Total</span>
                 <span>${total.toFixed(2)}</span>
@@ -579,7 +579,7 @@ export default function CheckoutPage() {
             </div>
 
             {/* Trust badges */}
-            <div className="mt-5 pt-4 border-t border-gray-800 flex items-center gap-4 text-gray-600 text-xs">
+            <div className="mt-5 pt-4 border-t border-white/10 flex items-center gap-4 text-white/35 text-xs">
               <div className="flex items-center gap-1">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>Secure</span>

@@ -39,7 +39,7 @@ export default function OrderConfirmation() {
   }, [orderId]);
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#0B0814] flex items-center justify-center px-4">
       <div className="max-w-md w-full text-center">
 
         {/* Success icon */}

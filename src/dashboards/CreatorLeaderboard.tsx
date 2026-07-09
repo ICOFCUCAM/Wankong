@@ -30,7 +30,7 @@ function getRankRowClass(rank: number): string {
   if (rank === 1) return 'bg-[#FFB800]/10 border border-[#FFB800]/30';
   if (rank === 2) return 'bg-[#C0C0C0]/10 border border-[#C0C0C0]/30';
   if (rank === 3) return 'bg-[#CD7F32]/10 border border-[#CD7F32]/30';
-  return 'bg-[#0A1128] border border-[#1a2540]';
+  return 'bg-[#0B0814] border border-[#1a2540]';
 }
 
 function getRankNumberStyle(rank: number): string {
@@ -141,7 +141,7 @@ const CreatorLeaderboard: React.FC = () => {
   }, [user?.id]);
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white p-6">
+    <div className="min-h-screen bg-[#0B0814] text-white p-6">
       <div className="max-w-3xl mx-auto flex flex-col gap-6">
 
         {/* Header */}
@@ -203,7 +203,7 @@ const CreatorLeaderboard: React.FC = () => {
         )}
 
         {/* Full table */}
-        <div className="bg-[#1A2240] rounded-2xl overflow-hidden">
+        <div className="bg-[#120C22] rounded-2xl overflow-hidden">
           {/* Table header */}
           <div className="grid grid-cols-[48px_1fr_auto_auto] gap-2 px-4 py-3 border-b border-[#2d3a5a]">
             <span className="text-gray-500 text-xs font-semibold">#</span>
@@ -281,7 +281,7 @@ const CreatorLeaderboard: React.FC = () => {
 
         {/* "Your Rank" section at bottom if userId known */}
         {user?.id && userRank !== null && (
-          <div className="bg-[#1A2240] border border-[#00D9FF]/20 rounded-2xl px-6 py-4 flex items-center justify-between">
+          <div className="bg-[#120C22] border border-[#00D9FF]/20 rounded-2xl px-6 py-4 flex items-center justify-between">
             <div>
               <p className="text-gray-400 text-xs uppercase tracking-widest mb-1">Your Rank</p>
               <p className="text-[#00D9FF] text-2xl font-black">#{userRank}</p>

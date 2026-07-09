@@ -1,5 +1,5 @@
 import { Suspense, lazy } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import GlobalPlayer from './components/GlobalPlayer';
 import ProtectedRoute from './components/ProtectedRoute';
 import AddToPlaylistModal from './components/playlist/AddToPlaylistModal';
@@ -19,6 +19,7 @@ const ArtistProfile      = lazy(() => import('./pages/ArtistProfile'));
 const AuthorProfile      = lazy(() => import('./pages/AuthorProfile'));
 const DistributePage     = lazy(() => import('./pages/DistributePage'));
 const TalentArenaPage    = lazy(() => import('./pages/TalentArenaPage'));
+const SocialOAuthCallback = lazy(() => import('./pages/social/SocialOAuthCallback'));
 const AboutPage          = lazy(() => import('./pages/AboutPage'));
 const CareersPage        = lazy(() => import('./pages/CareersPage'));
 const PressPage          = lazy(() => import('./pages/PressPage'));
@@ -65,6 +66,7 @@ const CallbackPage    = lazy(() => import('./pages/auth/CallbackPage'));
 const SelectRolePage  = lazy(() => import('./pages/auth/SelectRolePage'));
 const RegisterPage    = lazy(() => import('./pages/auth/RegisterPage'));
 const LoginPage       = lazy(() => import('./pages/auth/LoginPage'));
+const ResetPasswordPage = lazy(() => import('./pages/auth/ResetPasswordPage'));
 
 // ── New feature pages ─────────────────────────────────────────────────────────
 const PricingPage                = lazy(() => import('./pages/PricingPage'));
@@ -103,7 +105,7 @@ const LibraryPage = lazy(() => import('./pages/LibraryPage'));
 // ── Spinner ────────────────────────────────────────────────────────────────────
 
 const Spinner = () => (
-  <div className="min-h-screen bg-[#0A1128] flex items-center justify-center">
+  <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
     <div className="w-8 h-8 border-2 border-[#00D9FF] border-t-transparent rounded-full animate-spin" />
   </div>
 );
@@ -111,18 +113,21 @@ const Spinner = () => (
 // ── App ────────────────────────────────────────────────────────────────────────
 
 export default function App() {
+  const location = useLocation();
   return (
     <>
       <GlobalPlayer />
       <MobileBottomNav />
       <AddToPlaylistModal />
       <Suspense fallback={<Spinner />}>
+        <div key={location.pathname} className="wk-page-in">
         <Routes>
           {/* ── Public ─────────────────────────────────────────────────────── */}
           <Route path="/"                         element={<Index />} />
           <Route path="/cart"                     element={<CartPage />} />
           <Route path="/checkout"                 element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
           <Route path="/order-confirmation"       element={<OrderConfirmation />} />
+          <Route path="/settings/social/callback" element={<SocialOAuthCallback />} />
           <Route path="/search"                   element={<SearchPage />} />
           <Route path="/collections/:handle"      element={<CollectionPage />} />
           <Route path="/products/:handle"         element={<ProductPage />} />
@@ -165,6 +170,7 @@ export default function App() {
 
           {/* ── Auth (Phase 4) ─────────────────────────────────────────────── */}
           <Route path="/auth/login"               element={<LoginPage />} />
+          <Route path="/auth/reset-password"      element={<ResetPasswordPage />} />
           <Route path="/auth/callback"            element={<CallbackPage />} />
           <Route path="/auth/register"            element={<RegisterPage />} />
           <Route path="/auth/select-role"         element={
@@ -239,6 +245,7 @@ export default function App() {
 
           <Route path="*"                   element={<NotFound />} />
         </Routes>
+        </div>
       </Suspense>
     </>
   );

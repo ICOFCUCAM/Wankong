@@ -293,13 +293,13 @@ export default function TalentArenaPage() {
   });
 
   const heroBgs = [
-    'from-[#9D4EDD]/30 via-[#0A1128] to-[#00D9FF]/20',
-    'from-[#FFB800]/25 via-[#0A1128] to-[#9D4EDD]/20',
-    'from-[#00D9FF]/25 via-[#0A1128] to-[#00F5A0]/20',
+    'from-[#9D4EDD]/30 via-[#0B0814] to-[#00D9FF]/20',
+    'from-[#FFB800]/25 via-[#0B0814] to-[#9D4EDD]/20',
+    'from-[#00D9FF]/25 via-[#0B0814] to-[#00F5A0]/20',
   ];
 
   return (
-    <div className="min-h-screen bg-[#0A1128]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
 
       {/* ── VIDEO MODAL with SubtitleSelector ── */}
@@ -309,7 +309,7 @@ export default function TalentArenaPage() {
           onClick={() => { setVideoModal(null); setActiveVttUrl(null); }}
         >
           <div
-            className="w-full max-w-2xl bg-[#0D1733] rounded-2xl overflow-hidden shadow-2xl"
+            className="w-full max-w-2xl bg-[#0B0814] rounded-2xl overflow-hidden shadow-2xl"
             onClick={e => e.stopPropagation()}
           >
             {/* Modal header */}
@@ -367,8 +367,8 @@ export default function TalentArenaPage() {
               Win Prizes.
             </span>
           </h1>
-          <p className="text-gray-400 text-lg max-w-lg mb-8 leading-relaxed">
-            The global stage for gospel artists. Compete in live arenas, earn real prizes, and get discovered by millions.
+          <p className="text-white/55 text-lg max-w-lg mb-8 leading-relaxed">
+            The global stage for creators of every kind. Compete in live arenas, earn real prizes, and get discovered by millions.
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <Link
@@ -402,7 +402,7 @@ export default function TalentArenaPage() {
       </section>
 
       {/* ── FILTER BAR ── */}
-      <div className="sticky top-0 z-20 bg-[#0A1128]/95 backdrop-blur-md border-b border-white/5">
+      <div className="sticky top-0 z-20 bg-[#0B0814]/95 backdrop-blur-md border-b border-white/5">
         <div className="max-w-6xl mx-auto px-4 lg:px-8 py-3 flex items-center gap-2 overflow-x-auto">
           {CATEGORY_FILTERS.map(cat => (
             <button
@@ -555,7 +555,7 @@ export default function TalentArenaPage() {
                   {/* Thumbnail */}
                   <div className="relative h-36 overflow-hidden">
                     <DefaultPerformanceThumbnail gradient={comp.gradient} label={comp.title} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A1128]/80 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B0814]/80 to-transparent" />
                     <div className="absolute top-2 left-2 px-2 py-0.5 bg-[#00D9FF]/20 border border-[#00D9FF]/30 text-[#00D9FF] text-[9px] font-bold rounded-full">
                       UPCOMING
                     </div>
@@ -620,7 +620,7 @@ export default function TalentArenaPage() {
                 {/* Thumbnail */}
                 <div className="relative h-32 overflow-hidden">
                   <DefaultPerformanceThumbnail gradient={w.gradient ?? 'from-[#FFB800]/40 to-[#FF6B00]/20'} label={w.artistName} />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A1128]/80 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B0814]/80 to-transparent" />
                   {/* Gold winner badge */}
                   <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 bg-[#FFB800] text-black text-[9px] font-black rounded-full">
                     <Trophy className="w-2.5 h-2.5" /> WINNER

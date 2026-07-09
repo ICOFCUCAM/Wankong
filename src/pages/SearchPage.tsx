@@ -41,8 +41,8 @@ const TYPE_FILTERS: { label: string; value: ContentType; icon: string }[] = [
 ];
 
 const GENRES = [
-  'Gospel', 'Afrobeats', 'Highlife', 'Worship', 'Afro-Gospel',
-  'Pidgin', 'R&B', 'Hip-Hop', 'Jazz', 'Classical', 'Reggae',
+  'Pop', 'Afrobeats', 'Hip-Hop', 'K-Pop', 'Latin', 'R&B',
+  'EDM', 'Jazz', 'Classical', 'Reggae', 'Rock', 'Gospel',
 ];
 
 // Trending terms are loaded from the top-streamed content titles at runtime
@@ -202,7 +202,7 @@ export default function SearchPage() {
   const setSort = (s: SortOption)   => setFilters(f => ({ ...f, sort: s }));
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
       <div className="max-w-7xl mx-auto px-4 lg:px-8 py-10">
 
@@ -263,7 +263,7 @@ export default function SearchPage() {
               <button key={f.value} onClick={() => setType(f.value)}
                 className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all shrink-0 ${
                   filters.type === f.value
-                    ? 'bg-[#00D9FF] text-[#0A1128]'
+                    ? 'bg-[#00D9FF] text-[#0B0814]'
                     : 'bg-white/5 text-white/60 hover:bg-white/10 border border-white/10'
                 }`}>
                 <span>{f.icon}</span>
@@ -293,7 +293,7 @@ export default function SearchPage() {
               <SlidersHorizontal className="w-4 h-4" />
               Filters
               {(filters.genre || filters.maxPrice > 0 || filters.verified) && (
-                <span className="w-4 h-4 rounded-full bg-[#00D9FF] text-[#0A1128] text-[9px] font-black flex items-center justify-center">
+                <span className="w-4 h-4 rounded-full bg-[#00D9FF] text-[#0B0814] text-[9px] font-black flex items-center justify-center">
                   {[!!filters.genre, filters.maxPrice > 0, filters.verified].filter(Boolean).length}
                 </span>
               )}

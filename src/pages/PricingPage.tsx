@@ -60,7 +60,7 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="min-h-screen bg-[#0B0814] text-white">
       <Header />
 
       <div className="max-w-5xl mx-auto px-4 lg:px-8 py-16">
@@ -111,7 +111,7 @@ export default function PricingPage() {
                 }`}>
 
                 {isPopular && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[11px] font-black text-[#0A1128]"
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[11px] font-black text-[#0B0814]"
                     style={{ background: 'linear-gradient(135deg,#00D9FF,#9D4EDD)' }}>
                     MOST POPULAR
                   </div>

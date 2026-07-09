@@ -107,7 +107,7 @@ export function AuthorProfilePage() {
   // ── Loading ──
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0B0814] flex items-center justify-center">
         <div className="w-10 h-10 border-2 border-[#00D9FF] border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -116,7 +116,7 @@ export function AuthorProfilePage() {
   // ── Error ──
   if (error || !author) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex flex-col items-center justify-center gap-3">
+      <div className="min-h-screen bg-[#0B0814] flex flex-col items-center justify-center gap-3">
         <p className="text-red-400 text-sm">{error || 'Author not found.'}</p>
         <Link to="/" className="text-[#00D9FF] text-sm hover:underline">
           Back to home
@@ -128,7 +128,7 @@ export function AuthorProfilePage() {
   const audiobooks = books.map((b) => audiobooksMap[b.id]).filter(Boolean) as Audiobook[];
 
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white">
+    <div className="min-h-screen bg-[#0B0814] text-white">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12 space-y-12">
 
         {/* ── Hero / Profile header ── */}
@@ -242,7 +242,7 @@ function BookCard({ book }: { book: Book }) {
       to={`/product/${book.handle ?? book.id}`}
       className="group block bg-white/4 border border-white/10 rounded-xl overflow-hidden hover:border-[#00D9FF]/30 hover:-translate-y-0.5 transition-all duration-200"
     >
-      <div className="aspect-[2/3] bg-gradient-to-br from-[#9D4EDD]/40 to-[#0A1128] overflow-hidden">
+      <div className="aspect-[2/3] bg-gradient-to-br from-[#9D4EDD]/40 to-[#0B0814] overflow-hidden">
         {book.cover_url ? (
           <img
             src={book.cover_url}

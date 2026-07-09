@@ -37,7 +37,7 @@ const PODCAST_PLATFORMS = [
   { id: 'iheartradio',name: 'iHeartRadio' },
 ];
 
-const inp = 'w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm';
+const inp = 'w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD] text-sm';
 const lbl = 'block text-sm font-medium text-gray-300 mb-1';
 
 interface Props { onSuccess: () => void; }
@@ -187,7 +187,7 @@ export default function UploadPodcast({ onSuccess }: Props) {
         {/* Podcast audio */}
         <div>
           <label className={lbl}>Episode Audio (MP3, WAV, M4A, OGG, AAC)</label>
-          <div onClick={() => audioRef.current?.click()} className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${audioFile ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-gray-700 hover:border-indigo-500'}`}>
+          <div onClick={() => audioRef.current?.click()} className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${audioFile ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-gray-700 hover:border-[#9D4EDD]'}`}>
             <input ref={audioRef} type="file" className="hidden" accept=".mp3,.wav,.m4a,.ogg,.aac,audio/*" onChange={e => { const f = e.target.files?.[0]; if (f) handleAudio(f); }} />
             {audioFile
               ? <div className="flex items-center justify-center gap-3"><svg className="w-8 h-8 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg><div className="text-left"><p className="text-white text-sm font-medium">{audioFile.name}</p><p className="text-gray-400 text-xs">{(audioFile.size / 1024 / 1024).toFixed(2)} MB</p></div><button type="button" onClick={e => { e.stopPropagation(); setAudioFile(null); }} className="ml-4 text-xs text-red-400">Remove</button></div>
@@ -200,7 +200,7 @@ export default function UploadPodcast({ onSuccess }: Props) {
         <div>
           <label className={lbl}>Podcast Cover Art</label>
           <p className="text-xs text-gray-500 mb-2">Minimum 3000×3000 px · Square · JPG or PNG</p>
-          <div onClick={() => coverRef.current?.click()} className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${coverFile ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-gray-700 hover:border-indigo-500'}`}>
+          <div onClick={() => coverRef.current?.click()} className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${coverFile ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-gray-700 hover:border-[#9D4EDD]'}`}>
             <input ref={coverRef} type="file" className="hidden" accept="image/jpeg,image/png" onChange={e => { const f = e.target.files?.[0]; if (f) handleCover(f); }} />
             {coverFile
               ? <div className="flex items-center justify-center gap-3"><svg className="w-7 h-7 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg><p className="text-white text-sm">{coverFile.name}</p><button type="button" onClick={e => { e.stopPropagation(); setCoverFile(null); }} className="text-xs text-red-400 ml-2">Remove</button></div>
@@ -214,12 +214,12 @@ export default function UploadPodcast({ onSuccess }: Props) {
       <section className="bg-gray-900/40 border border-gray-800 rounded-2xl p-6 space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold text-gray-200 uppercase tracking-wider">Podcast Platforms</h3>
-          <button type="button" onClick={() => setPlatforms(Object.fromEntries(PODCAST_PLATFORMS.map(p => [p.id, true])))} className="text-xs text-indigo-400 hover:text-indigo-300">Select All</button>
+          <button type="button" onClick={() => setPlatforms(Object.fromEntries(PODCAST_PLATFORMS.map(p => [p.id, true])))} className="text-xs text-[#B794F4] hover:text-[#C9B3F5]">Select All</button>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
           {PODCAST_PLATFORMS.map(p => (
             <button key={p.id} type="button" onClick={() => setPlatforms(prev => ({ ...prev, [p.id]: !prev[p.id] }))}
-              className={`py-2.5 px-3 rounded-xl text-xs font-medium border transition-all ${platforms[p.id] ? 'bg-indigo-600/20 border-indigo-500/50 text-indigo-300' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:border-gray-600'}`}>
+              className={`py-2.5 px-3 rounded-xl text-xs font-medium border transition-all ${platforms[p.id] ? 'bg-[#9D4EDD]/20 border-[#9D4EDD]/50 text-[#C9B3F5]' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:border-gray-600'}`}>
               {p.name}
             </button>
           ))}
@@ -228,13 +228,13 @@ export default function UploadPodcast({ onSuccess }: Props) {
 
       {submitting && (
         <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
-          <div className="flex justify-between mb-2"><span className="text-sm text-white">Publishing podcast episode...</span><span className="text-sm text-indigo-400">{Math.round(progress)}%</span></div>
-          <div className="w-full bg-gray-800 rounded-full h-2"><div className="bg-indigo-600 h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} /></div>
+          <div className="flex justify-between mb-2"><span className="text-sm text-white">Publishing podcast episode...</span><span className="text-sm text-[#B794F4]">{Math.round(progress)}%</span></div>
+          <div className="w-full bg-gray-800 rounded-full h-2"><div className="bg-[#9D4EDD] h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} /></div>
         </div>
       )}
 
       <button type="submit" disabled={submitting || !episodeTitle || !showName || !host}
-        className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-xl transition-colors text-base">
+        className="w-full bg-[#9D4EDD] hover:bg-[#7C3AED] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-xl transition-colors text-base">
         {submitting ? 'Publishing Episode...' : 'Publish Podcast Episode'}
       </button>
     </form>

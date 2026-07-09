@@ -22,7 +22,7 @@ const LANGUAGES = [
 ];
 
 const inputCls =
-  'w-full bg-[#0A1128] border border-white/10 rounded-xl px-4 py-3 text-white text-sm ' +
+  'w-full bg-[#0B0814] border border-white/10 rounded-xl px-4 py-3 text-white text-sm ' +
   'placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD]/40 ' +
   'focus:border-[#9D4EDD]/40 transition-colors';
 
@@ -271,7 +271,7 @@ export default function UploadMusicPage() {
 
   if (savedAsDraft) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex flex-col">
+      <div className="min-h-screen bg-[#0B0814] flex flex-col">
         <Header />
         <div className="flex-1 flex items-center justify-center px-4">
           <div className="text-center max-w-sm">
@@ -308,7 +308,7 @@ export default function UploadMusicPage() {
 
   if (done) {
     return (
-      <div className="min-h-screen bg-[#0A1128] flex flex-col">
+      <div className="min-h-screen bg-[#0B0814] flex flex-col">
         <Header />
         <div className="flex-1 flex items-center justify-center px-4">
           <div className="text-center max-w-sm">
@@ -344,7 +344,7 @@ export default function UploadMusicPage() {
   // ── Main form ─────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-[#0A1128] flex flex-col">
+    <div className="min-h-screen bg-[#0B0814] flex flex-col">
       <Header />
 
       <main className="flex-1 max-w-2xl mx-auto w-full px-4 py-12">
@@ -395,7 +395,7 @@ export default function UploadMusicPage() {
                     ? 'border-[#00D9FF]/60 bg-[#00D9FF]/10'
                     : audioFile
                     ? 'border-[#00D9FF]/40 bg-[#00D9FF]/5'
-                    : 'border-white/10 hover:border-white/20 bg-[#0D1B3E]',
+                    : 'border-white/10 hover:border-white/20 bg-[#0B0814]',
                 ].join(' ')}
               >
                 <input
@@ -450,7 +450,7 @@ export default function UploadMusicPage() {
                   'min-h-[160px] rounded-2xl border-2 border-dashed cursor-pointer overflow-hidden flex items-center justify-center transition-all',
                   artDragging
                     ? 'border-[#9D4EDD]/60 bg-[#9D4EDD]/10'
-                    : 'border-white/10 hover:border-[#9D4EDD]/40 bg-[#0D1B3E]',
+                    : 'border-white/10 hover:border-[#9D4EDD]/40 bg-[#0B0814]',
                 ].join(' ')}
               >
                 <input

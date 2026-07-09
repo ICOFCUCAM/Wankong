@@ -5,6 +5,7 @@ import { useApp } from '@/store/AppContext';
 import { supabase } from '@/lib/supabase';
 import { getAllCountries } from '@/lib/countries';
 import { SUPPORTED_LANGUAGES, applyLangDir } from '@/lib/i18n';
+import SocialConnectionsPanel from '@/components/social/SocialConnectionsPanel';
 
 // Lazy-compute country list (runs once)
 const COUNTRY_LIST = getAllCountries();
@@ -13,7 +14,7 @@ export default function SettingsView() {
   const { t, i18n } = useTranslation();
   const { user } = useApp();
 
-  const [activeTab,    setActiveTab]    = useState<'profile' | 'payments' | 'security' | 'notifications'>('profile');
+  const [activeTab,    setActiveTab]    = useState<'profile' | 'connections' | 'payments' | 'security' | 'notifications'>('profile');
   const [displayName,  setDisplayName]  = useState(user?.displayName ?? '');
   const [bio,          setBio]          = useState('');
   const [country,      setCountry]      = useState(user?.country ?? 'NG');
@@ -55,6 +56,7 @@ export default function SettingsView() {
 
   const tabs = [
     { id: 'profile'       as const, label: t('settings.profile') },
+    { id: 'connections'   as const, label: 'Connections' },
     { id: 'payments'      as const, label: t('settings.payments') },
     { id: 'security'      as const, label: t('settings.security') },
     { id: 'notifications' as const, label: t('settings.notifications') },
@@ -71,13 +73,16 @@ export default function SettingsView() {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-colors ${
-              activeTab === tab.id ? 'bg-indigo-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'
+              activeTab === tab.id ? 'bg-[#9D4EDD] text-white' : 'bg-gray-800 text-gray-400 hover:text-white'
             }`}
           >
             {tab.label}
           </button>
         ))}
       </div>
+
+      {/* ── Connections tab ──────────────────────────────────────────────────── */}
+      {activeTab === 'connections' && <SocialConnectionsPanel />}
 
       {/* ── Profile tab ──────────────────────────────────────────────────────── */}
       {activeTab === 'profile' && (
@@ -88,10 +93,10 @@ export default function SettingsView() {
             <img
               src={user?.avatar ?? `https://api.dicebear.com/7.x/initials/svg?seed=${user?.displayName}`}
               alt=""
-              className="w-20 h-20 rounded-full object-cover border-2 border-indigo-500"
+              className="w-20 h-20 rounded-full object-cover border-2 border-[#9D4EDD]"
             />
             <div>
-              <button className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+              <button className="bg-[#9D4EDD] hover:bg-[#7C3AED] text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
                 {t('settings.changeAvatar')}
               </button>
               <p className="text-xs text-gray-500 mt-1">{t('settings.avatarHint')}</p>
@@ -107,7 +112,7 @@ export default function SettingsView() {
                 type="text"
                 value={displayName}
                 onChange={e => setDisplayName(e.target.value)}
-                className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#9D4EDD]"
               />
             </div>
 
@@ -128,7 +133,7 @@ export default function SettingsView() {
               <select
                 value={country}
                 onChange={e => setCountry(e.target.value)}
-                className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#9D4EDD]"
               >
                 {COUNTRY_LIST.map(c => (
                   <option key={c.code} value={c.code}>{c.name}</option>
@@ -142,7 +147,7 @@ export default function SettingsView() {
               <select
                 value={language}
                 onChange={e => handleLanguageChange(e.target.value)}
-                className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#9D4EDD]"
               >
                 {SUPPORTED_LANGUAGES.map(lang => (
                   <option key={lang.code} value={lang.code}>
@@ -160,14 +165,14 @@ export default function SettingsView() {
               value={bio}
               onChange={e => setBio(e.target.value)}
               rows={3}
-              className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+              className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#9D4EDD] resize-none"
             />
           </div>
 
           <button
             onClick={handleSave}
             disabled={saving}
-            className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white font-medium px-6 py-3 rounded-xl transition-colors"
+            className="bg-[#9D4EDD] hover:bg-[#7C3AED] disabled:opacity-60 text-white font-medium px-6 py-3 rounded-xl transition-colors"
           >
             {saving ? t('common.loading') : t('settings.saveChanges')}
           </button>
@@ -257,7 +262,7 @@ export default function SettingsView() {
                 </div>
                 <button
                   onClick={() => setNotifPrefs(prev => ({ ...prev, [key]: !prev[key as keyof typeof prev] }))}
-                  className={`w-12 h-6 rounded-full transition-colors relative ${value ? 'bg-indigo-600' : 'bg-gray-700'}`}
+                  className={`w-12 h-6 rounded-full transition-colors relative ${value ? 'bg-[#9D4EDD]' : 'bg-gray-700'}`}
                 >
                   <div className={`w-5 h-5 bg-white rounded-full absolute top-0.5 transition-transform ${value ? 'translate-x-6' : 'translate-x-0.5'}`} />
                 </button>

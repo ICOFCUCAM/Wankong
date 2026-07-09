@@ -1,3 +1,12 @@
-# Allow all crawlers
+# WANKONG — global creator marketplace
 User-agent: *
-Disallow:
+Allow: /
+
+# Keep auth / commerce / dashboard flows out of the index
+Disallow: /dashboard
+Disallow: /checkout
+Disallow: /cart
+Disallow: /auth
+Disallow: /admin
+
+Sitemap: https://wankong.app/sitemap.xml

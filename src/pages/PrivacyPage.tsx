@@ -64,7 +64,7 @@ export default function PrivacyPage() {
   const [active, setActive] = useState<string | null>(null);
 
   return (
-    <div className="min-h-screen bg-[#0A1128]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
 
       <div className="max-w-4xl mx-auto px-4 lg:px-8 py-16">

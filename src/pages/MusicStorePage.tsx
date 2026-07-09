@@ -51,7 +51,7 @@ function TrackCard({ track, liked, onLike, onPlay }: {
   const isFree = track.price === 0;
 
   return (
-    <div className="group relative bg-[#0D1B3E] border border-white/5 rounded-2xl overflow-hidden hover:border-[#00D9FF]/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,217,255,0.12)]">
+    <div className="group relative bg-[#0B0814] border border-white/5 rounded-2xl overflow-hidden hover:border-[#00D9FF]/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,217,255,0.12)]">
       {/* Cover art */}
       <div className="relative aspect-square overflow-hidden">
         {track.coverUrl ? (
@@ -248,7 +248,7 @@ export default function MusicStorePage() {
   const paidCount  = tracks.filter(t => t.price > 0).length;
 
   return (
-    <div className="min-h-screen bg-[#0A1128]">
+    <div className="min-h-screen bg-[#0B0814]">
       <Header />
 
       {/* Hero banner */}
@@ -270,11 +270,11 @@ export default function MusicStorePage() {
           <h1 className="text-4xl md:text-5xl font-black text-white mb-3">
             Discover & Stream<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00D9FF] to-[#9D4EDD]">
-              African Sounds
+              Sounds From Everywhere
             </span>
           </h1>
-          <p className="text-gray-400 text-lg max-w-xl mb-8">
-            Gospel, Afrobeats, Highlife, Jazz and more — straight from independent African creators.
+          <p className="text-white/55 text-lg max-w-xl mb-8">
+            Afrobeats, K-pop, hip-hop, pop, jazz, gospel and more — straight from independent creators worldwide.
           </p>
 
           {/* Stats pills */}
@@ -303,7 +303,7 @@ export default function MusicStorePage() {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search tracks, artists, genres…"
-              className="w-full bg-[#0D1B3E] border border-white/10 rounded-xl pl-10 pr-9 py-2.5 text-white text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#00D9FF]/40"
+              className="w-full bg-[#0B0814] border border-white/10 rounded-xl pl-10 pr-9 py-2.5 text-white text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#00D9FF]/40"
             />
             {search && (
               <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white">
@@ -313,7 +313,7 @@ export default function MusicStorePage() {
           </div>
 
           {/* Price filter */}
-          <div className="flex gap-1 bg-[#0D1B3E] border border-white/10 rounded-xl p-1">
+          <div className="flex gap-1 bg-[#0B0814] border border-white/10 rounded-xl p-1">
             {(['all', 'free', 'paid'] as const).map(v => (
               <button
                 key={v}
@@ -333,13 +333,13 @@ export default function MusicStorePage() {
           <div className="relative">
             <button
               onClick={() => setShowSort(p => !p)}
-              className="flex items-center gap-2 bg-[#0D1B3E] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 hover:text-white transition-colors whitespace-nowrap"
+              className="flex items-center gap-2 bg-[#0B0814] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 hover:text-white transition-colors whitespace-nowrap"
             >
               {currentSortLabel}
               <ChevronDown className={`w-4 h-4 transition-transform ${showSort ? 'rotate-180' : ''}`} />
             </button>
             {showSort && (
-              <div className="absolute right-0 top-full mt-1 bg-[#0D1B3E] border border-white/10 rounded-xl shadow-xl z-20 py-1 min-w-[160px]">
+              <div className="absolute right-0 top-full mt-1 bg-[#0B0814] border border-white/10 rounded-xl shadow-xl z-20 py-1 min-w-[160px]">
                 {SORT_OPTIONS.map(o => (
                   <button
                     key={o.value}
@@ -365,7 +365,7 @@ export default function MusicStorePage() {
               className={`shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
                 genre === g
                   ? 'bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] text-white shadow-lg shadow-[#9D4EDD]/20'
-                  : 'bg-[#0D1B3E] border border-white/10 text-gray-400 hover:text-white hover:border-white/20'
+                  : 'bg-[#0B0814] border border-white/10 text-gray-400 hover:text-white hover:border-white/20'
               }`}
             >
               {g}
@@ -389,7 +389,7 @@ export default function MusicStorePage() {
         {loading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
             {[...Array(12)].map((_, i) => (
-              <div key={i} className="bg-[#0D1B3E] rounded-2xl overflow-hidden animate-pulse">
+              <div key={i} className="bg-[#0B0814] rounded-2xl overflow-hidden animate-pulse">
                 <div className="aspect-square bg-white/5" />
                 <div className="p-4 space-y-2">
                   <div className="h-3 bg-white/5 rounded w-3/4" />
@@ -400,7 +400,7 @@ export default function MusicStorePage() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-24">
-            <div className="w-16 h-16 rounded-2xl bg-[#0D1B3E] flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 rounded-2xl bg-[#0B0814] flex items-center justify-center mx-auto mb-4">
               <Music className="w-8 h-8 text-gray-600" />
             </div>
             <p className="text-gray-400 mb-2">No tracks found</p>

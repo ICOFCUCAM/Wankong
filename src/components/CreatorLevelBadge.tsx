@@ -11,7 +11,7 @@ const LEVEL_STYLES: Record<string, { bg: string; text: string; gradient?: boolea
   Silver: { bg: '#C0C0C0', text: '#1a1a1a' },
   Gold: { bg: '#FFB800', text: '#1a1a1a' },
   Platinum: { bg: '#E5E4E2', text: '#1a1a1a' },
-  Diamond: { bg: '#00D9FF', text: '#0A1128' },
+  Diamond: { bg: '#00D9FF', text: '#0B0814' },
   GlobalAmbassador: { bg: 'linear-gradient(135deg, #9D4EDD, #FFB800)', text: '#fff', gradient: true },
 };
 

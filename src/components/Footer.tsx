@@ -123,9 +123,35 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#070D24] border-t border-white/5">
+    <footer className="relative overflow-hidden bg-gradient-to-b from-[#0B0814] to-[#06040c] border-t border-white/5">
+      {/* Constellation background */}
+      <div className="pointer-events-none absolute inset-0 wk-stars" aria-hidden />
+      <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-[120%] h-56 bg-[radial-gradient(ellipse_at_center,rgba(157,78,221,0.14),transparent_70%)]" aria-hidden />
+
+      {/* ── Brand + newsletter band ──────────────────────────────────── */}
+      <div className="relative max-w-7xl mx-auto px-4 lg:px-8 pt-14">
+        <div className="rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-7 md:p-9 flex flex-col lg:flex-row items-center justify-between gap-6 mb-12">
+          <div className="flex items-center gap-4">
+            <img src="/wankong-mark.png" alt="WANKONG" className="w-16 h-16 object-contain shrink-0" />
+            <div>
+              <p className="text-white font-black text-2xl tracking-wide leading-none mb-1">WANKONG</p>
+              <p className="text-white/50 text-sm">Create. Distribute. Get Paid — worldwide.</p>
+            </div>
+          </div>
+          <form onSubmit={e => e.preventDefault()} className="flex w-full lg:w-auto gap-2">
+            <input
+              type="email"
+              aria-label="Email for creator updates"
+              placeholder="Your email for creator updates"
+              className="flex-1 lg:w-72 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm focus:outline-none focus:ring-2 focus:ring-[#9D4EDD]"
+            />
+            <button className="px-5 py-3 rounded-xl bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] text-white text-sm font-bold whitespace-nowrap hover:opacity-90 transition-opacity">Subscribe</button>
+          </form>
+        </div>
+      </div>
+
       {/* ── Main columns ─────────────────────────────────────────────── */}
-      <div className="max-w-7xl mx-auto px-4 lg:px-8 pt-16 pb-10">
+      <div className="relative max-w-7xl mx-auto px-4 lg:px-8 pb-10">
 
         {/* Desktop 7-col grid */}
         <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-7 gap-8 mb-12">
@@ -133,9 +159,7 @@ export default function Footer() {
           {/* Col 1 — Brand (spans 2 on lg) */}
           <div className="md:col-span-1 lg:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#00D9FF] to-[#9D4EDD] flex items-center justify-center shrink-0">
-                <span className="text-white font-black text-sm">W</span>
-              </div>
+              <img src="/wankong-mark.png" alt="WANKONG" className="w-9 h-9 object-contain shrink-0" />
               <span className="text-white font-black text-xl">WANKONG</span>
             </div>
             <p className="text-white/40 text-sm leading-relaxed mb-5">

@@ -169,7 +169,7 @@ export default function SleepTimer({ onStop }: SleepTimerProps) {
       {isOpen && (
         <div
           className="absolute bottom-full mb-2 right-0 z-50 w-52
-                     bg-[#0D1733]/95 border border-white/10 rounded-xl shadow-2xl
+                     bg-[#0B0814]/95 border border-white/10 rounded-xl shadow-2xl
                      backdrop-blur-sm overflow-hidden"
         >
           {/* Header */}

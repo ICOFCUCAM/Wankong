@@ -56,8 +56,8 @@ export default function MembershipGate({
 
       {/* Lock overlay */}
       <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm rounded-xl p-6 text-center">
-        <div className="w-12 h-12 rounded-full bg-indigo-500/20 flex items-center justify-center mb-3">
-          <Lock className="w-6 h-6 text-indigo-400" />
+        <div className="w-12 h-12 rounded-full bg-[#9D4EDD]/20 flex items-center justify-center mb-3">
+          <Lock className="w-6 h-6 text-[#B794F4]" />
         </div>
         <p className="text-white font-semibold mb-1">
           {tierName ? `${tierName} exclusive` : 'Members only'}
@@ -70,14 +70,14 @@ export default function MembershipGate({
         {user ? (
           <Link
             to={`/artists/${artistId}`}
-            className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold transition-colors"
+            className="px-4 py-2 rounded-lg bg-[#9D4EDD] hover:bg-[#9D4EDD] text-white text-sm font-semibold transition-colors"
           >
             View Membership Tiers
           </Link>
         ) : (
           <Link
             to="/auth/login"
-            className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold transition-colors"
+            className="px-4 py-2 rounded-lg bg-[#9D4EDD] hover:bg-[#9D4EDD] text-white text-sm font-semibold transition-colors"
           >
             Sign In
           </Link>

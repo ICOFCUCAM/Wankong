@@ -83,7 +83,7 @@ export function CompetitionVideoPlayer({
               {selectedLang ? selectedLang.toUpperCase() : 'CC'}
             </button>
             {showSubMenu && (
-              <div className="absolute bottom-8 right-0 bg-[#0A1128] border border-white/10 rounded-lg p-2 min-w-[100px] z-10">
+              <div className="absolute bottom-8 right-0 bg-[#0B0814] border border-white/10 rounded-lg p-2 min-w-[100px] z-10">
                 <button onClick={() => selectSubtitle('')} className="block w-full text-left text-xs text-gray-400 hover:text-white px-2 py-1">Off</button>
                 {subtitles.map(s => (
                   <button key={s.language} onClick={() => selectSubtitle(s.language)}

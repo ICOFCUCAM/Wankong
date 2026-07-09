@@ -156,7 +156,7 @@ export default function PerformanceCard({ onPlay, compact, ...card }: Props) {
 
           {/* Top-right week badge */}
           {card.weekBadge && (
-            <div className="absolute top-2 right-2 bg-[#FFB800] text-[#0A1128] text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wide">
+            <div className="absolute top-2 right-2 bg-[#FFB800] text-[#0B0814] text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wide">
               {card.weekBadge}
             </div>
           )}

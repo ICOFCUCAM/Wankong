@@ -98,7 +98,7 @@ export function AudiobookUploader({ bookId, authorId, onSuccess }: AudiobookUplo
 
   if (success) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 py-12 bg-[#0A1128] rounded-2xl border border-[#00F5A0]/30">
+      <div className="flex flex-col items-center justify-center gap-4 py-12 bg-[#0B0814] rounded-2xl border border-[#00F5A0]/30">
         <div className="w-14 h-14 rounded-full bg-[#00F5A0]/10 flex items-center justify-center">
           <BookOpen size={28} className="text-[#00F5A0]" />
         </div>
@@ -111,7 +111,7 @@ export function AudiobookUploader({ bookId, authorId, onSuccess }: AudiobookUplo
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-[#0A1128] rounded-2xl border border-white/10 p-6 space-y-5"
+      className="bg-[#0B0814] rounded-2xl border border-white/10 p-6 space-y-5"
     >
       <div>
         <h2 className="text-lg font-bold text-white">Create Audiobook Record</h2>
@@ -176,7 +176,7 @@ export function AudiobookUploader({ bookId, authorId, onSuccess }: AudiobookUplo
             className="w-full bg-white/5 border border-white/10 rounded-lg pl-9 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-[#00D9FF]/60 transition-colors appearance-none"
           >
             {LANGUAGES.map((l) => (
-              <option key={l.code} value={l.code} className="bg-[#0A1128]">
+              <option key={l.code} value={l.code} className="bg-[#0B0814]">
                 {l.label}
               </option>
             ))}
@@ -231,11 +231,11 @@ export function AudiobookUploader({ bookId, authorId, onSuccess }: AudiobookUplo
       <button
         type="submit"
         disabled={submitting}
-        className="w-full flex items-center justify-center gap-2 bg-[#00D9FF] hover:bg-[#00D9FF]/85 disabled:opacity-50 disabled:cursor-not-allowed text-[#0A1128] font-semibold py-3 px-6 rounded-xl transition-all active:scale-[0.98]"
+        className="w-full flex items-center justify-center gap-2 bg-[#00D9FF] hover:bg-[#00D9FF]/85 disabled:opacity-50 disabled:cursor-not-allowed text-[#0B0814] font-semibold py-3 px-6 rounded-xl transition-all active:scale-[0.98]"
       >
         {submitting ? (
           <>
-            <div className="w-4 h-4 border-2 border-[#0A1128] border-t-transparent rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-[#0B0814] border-t-transparent rounded-full animate-spin" />
             Creating…
           </>
         ) : (

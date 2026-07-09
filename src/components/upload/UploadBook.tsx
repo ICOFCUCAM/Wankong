@@ -26,15 +26,15 @@ const LANGUAGES = [
 
 type SourceType = 'wankong' | 'amazon' | 'external' | 'none';
 
-const inp = 'w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm';
-const inpSm = 'w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm';
+const inp = 'w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD] text-sm';
+const inpSm = 'w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD] text-sm';
 const lbl = 'block text-sm font-medium text-gray-300 mb-1';
 
 function Toggle({ on, onToggle, label, sublabel }: { on: boolean; onToggle: () => void; label: string; sublabel?: string }) {
   return (
     <div className="flex items-center justify-between bg-gray-800/50 rounded-xl px-4 py-3">
       <div><p className="text-sm font-medium text-white">{label}</p>{sublabel && <p className="text-xs text-gray-400">{sublabel}</p>}</div>
-      <button type="button" onClick={onToggle} className={`w-12 h-6 rounded-full relative transition-colors ${on ? 'bg-indigo-600' : 'bg-gray-700'}`}>
+      <button type="button" onClick={onToggle} className={`w-12 h-6 rounded-full relative transition-colors ${on ? 'bg-[#9D4EDD]' : 'bg-gray-700'}`}>
         <div className={`w-5 h-5 bg-white rounded-full absolute top-0.5 transition-transform ${on ? 'translate-x-6' : 'translate-x-0.5'}`} />
       </button>
     </div>
@@ -64,7 +64,7 @@ function FormatSection({
         <h4 className="text-sm font-semibold text-white">{formatLabel}</h4>
         <div className="flex items-center gap-3">
           <span className="text-xs text-gray-400">Public</span>
-          <button type="button" onClick={() => setVisible(!visible)} className={`w-10 h-5 rounded-full relative transition-colors ${visible ? 'bg-indigo-600' : 'bg-gray-700'}`}>
+          <button type="button" onClick={() => setVisible(!visible)} className={`w-10 h-5 rounded-full relative transition-colors ${visible ? 'bg-[#9D4EDD]' : 'bg-gray-700'}`}>
             <div className={`w-4 h-4 bg-white rounded-full absolute top-0.5 transition-transform ${visible ? 'translate-x-5' : 'translate-x-0.5'}`} />
           </button>
           <span className="text-xs text-gray-400">Admin visible</span>
@@ -77,7 +77,7 @@ function FormatSection({
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
         {sources.map(s => (
           <button key={s.value} type="button" onClick={() => setSource(s.value)}
-            className={`py-2 px-3 rounded-lg text-xs font-medium border transition-all ${source === s.value ? 'bg-indigo-600/20 border-indigo-500/50 text-indigo-300' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:border-gray-600'}`}>
+            className={`py-2 px-3 rounded-lg text-xs font-medium border transition-all ${source === s.value ? 'bg-[#9D4EDD]/20 border-[#9D4EDD]/50 text-[#C9B3F5]' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:border-gray-600'}`}>
             {s.label}
           </button>
         ))}
@@ -255,7 +255,7 @@ export default function UploadBook({ onSuccess }: Props) {
       <section className="bg-gray-900/40 border border-gray-800 rounded-2xl p-6 space-y-3">
         <h3 className="text-sm font-semibold text-gray-200 uppercase tracking-wider">Book Cover</h3>
         <p className="text-xs text-gray-400">Minimum 3000×3000 px · Square · JPG or PNG</p>
-        <div onClick={() => coverRef.current?.click()} className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${coverFile ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-gray-700 hover:border-indigo-500'}`}>
+        <div onClick={() => coverRef.current?.click()} className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${coverFile ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-gray-700 hover:border-[#9D4EDD]'}`}>
           <input ref={coverRef} type="file" className="hidden" accept="image/jpeg,image/png" onChange={e => { const f = e.target.files?.[0]; if (f) handleCover(f); }} />
           {coverFile
             ? <div className="flex items-center justify-center gap-3"><svg className="w-8 h-8 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg><p className="text-white text-sm">{coverFile.name}</p><button type="button" onClick={e => { e.stopPropagation(); setCoverFile(null); }} className="text-xs text-red-400 ml-2">Remove</button></div>
@@ -303,13 +303,13 @@ export default function UploadBook({ onSuccess }: Props) {
 
       {submitting && (
         <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
-          <div className="flex justify-between mb-2"><span className="text-sm text-white">Publishing book...</span><span className="text-sm text-indigo-400">{Math.round(progress)}%</span></div>
-          <div className="w-full bg-gray-800 rounded-full h-2"><div className="bg-indigo-600 h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} /></div>
+          <div className="flex justify-between mb-2"><span className="text-sm text-white">Publishing book...</span><span className="text-sm text-[#B794F4]">{Math.round(progress)}%</span></div>
+          <div className="w-full bg-gray-800 rounded-full h-2"><div className="bg-[#9D4EDD] h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} /></div>
         </div>
       )}
 
       <button type="submit" disabled={submitting || !title || !author}
-        className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-xl transition-colors text-base">
+        className="w-full bg-[#9D4EDD] hover:bg-[#7C3AED] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-xl transition-colors text-base">
         {submitting ? 'Publishing Book...' : 'Publish Book'}
       </button>
     </form>

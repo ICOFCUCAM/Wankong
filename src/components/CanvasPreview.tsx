@@ -50,7 +50,7 @@ const CanvasPreview: React.FC<CanvasPreviewProps> = ({ releaseId }) => {
 
   if (loading) {
     return (
-      <div className="relative rounded-xl overflow-hidden aspect-video bg-[#1A2240] flex items-center justify-center">
+      <div className="relative rounded-xl overflow-hidden aspect-video bg-[#120C22] flex items-center justify-center">
         <Loader2 className="w-8 h-8 text-[#00D9FF] animate-spin" />
       </div>
     );
@@ -58,7 +58,7 @@ const CanvasPreview: React.FC<CanvasPreviewProps> = ({ releaseId }) => {
 
   if (error || !asset) {
     return (
-      <div className="relative rounded-xl overflow-hidden aspect-video bg-[#1A2240] flex items-center justify-center">
+      <div className="relative rounded-xl overflow-hidden aspect-video bg-[#120C22] flex items-center justify-center">
         <span className="text-gray-500 text-sm">No canvas available</span>
       </div>
     );
@@ -67,7 +67,7 @@ const CanvasPreview: React.FC<CanvasPreviewProps> = ({ releaseId }) => {
   const isDone = asset.status === 'done';
 
   return (
-    <div className="relative rounded-xl overflow-hidden aspect-video bg-[#0A1128]">
+    <div className="relative rounded-xl overflow-hidden aspect-video bg-[#0B0814]">
       {asset.asset_type === 'canvas' ? (
         <video
           src={asset.asset_url}

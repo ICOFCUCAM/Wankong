@@ -114,7 +114,7 @@ export function CanvasAssetPreview({ releaseId }: CanvasAssetPreviewProps) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-14 bg-[#0A1128]">
+      <div className="flex items-center justify-center py-14 bg-[#0B0814]">
         <Spinner size={30} color="#9D4EDD" />
       </div>
     );

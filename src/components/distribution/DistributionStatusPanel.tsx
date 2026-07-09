@@ -24,7 +24,7 @@ function StatusBadge({ status }: { status: string }) {
 function ReleaseRow({ r }: { r: DistributionRelease }) {
   const fmt = (d?: string | null) => d ? new Date(d).toLocaleDateString() : '—';
   return (
-    <div className="flex items-start gap-4 p-4 bg-[#0D1B3E] border border-white/5 rounded-xl hover:border-white/10 transition-colors">
+    <div className="flex items-start gap-4 p-4 bg-[#0B0814] border border-white/5 rounded-xl hover:border-white/10 transition-colors">
       {/* Artwork */}
       <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-gradient-to-br from-[#9D4EDD] to-[#00D9FF] flex items-center justify-center">
         {r.track?.artwork_url

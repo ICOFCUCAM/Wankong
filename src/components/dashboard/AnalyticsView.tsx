@@ -49,7 +49,7 @@ function StreamsChart({ data, period }: { data: { date: string; count: number }[
         {data.map((d, i) => (
           <div key={d.date} className="group relative flex-1 flex flex-col justify-end" title={`${d.date}: ${d.count} streams`}>
             <div
-              className="bg-indigo-600/40 hover:bg-indigo-500/70 rounded-t-sm transition-colors cursor-pointer"
+              className="bg-[#9D4EDD]/40 hover:bg-[#9D4EDD]/70 rounded-t-sm transition-colors cursor-pointer"
               style={{ height: `${Math.max((d.count / max) * 100, d.count > 0 ? 2 : 0)}%` }}
             />
           </div>
@@ -140,14 +140,14 @@ export default function AnalyticsView() {
           <p className="text-gray-400 mt-1 text-sm">Live data from Supabase — streams, revenue, audience.</p>
         </div>
         <div className="flex items-center gap-2">
-          {d.loading && <Loader2 className="w-4 h-4 text-indigo-400 animate-spin" />}
+          {d.loading && <Loader2 className="w-4 h-4 text-[#B794F4] animate-spin" />}
           <div className="flex bg-gray-800 rounded-lg p-1">
             {(['7d', '30d', '90d', '1y'] as const).map(p => (
               <button
                 key={p}
                 onClick={() => setPeriod(p)}
                 className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
-                  period === p ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:text-white'
+                  period === p ? 'bg-[#9D4EDD] text-white' : 'text-gray-400 hover:text-white'
                 }`}
               >
                 {p}
@@ -187,10 +187,10 @@ export default function AnalyticsView() {
         <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
           <h3 className="font-semibold text-white mb-1">Streams Over Time</h3>
           <p className="text-[11px] text-gray-500 mb-4">
-            Source: <code className="text-indigo-400">stream_events</code> · filtered by your tracks
+            Source: <code className="text-[#B794F4]">stream_events</code> · filtered by your tracks
           </p>
           {d.loading
-            ? <div className="h-40 flex items-center justify-center"><Loader2 className="w-5 h-5 text-indigo-400 animate-spin" /></div>
+            ? <div className="h-40 flex items-center justify-center"><Loader2 className="w-5 h-5 text-[#B794F4] animate-spin" /></div>
             : <StreamsChart data={d.streamsByDay} period={period} />
           }
         </div>
@@ -199,10 +199,10 @@ export default function AnalyticsView() {
         <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
           <h3 className="font-semibold text-white mb-1">Revenue Breakdown</h3>
           <p className="text-[11px] text-gray-500 mb-4">
-            Source: <code className="text-indigo-400">creator_earnings</code> · grouped by category
+            Source: <code className="text-[#B794F4]">creator_earnings</code> · grouped by category
           </p>
           {d.loading ? (
-            <div className="h-40 flex items-center justify-center"><Loader2 className="w-5 h-5 text-indigo-400 animate-spin" /></div>
+            <div className="h-40 flex items-center justify-center"><Loader2 className="w-5 h-5 text-[#B794F4] animate-spin" /></div>
           ) : d.revenueBreakdown.length === 0 ? (
             <div className="py-8 text-center text-gray-600 text-sm">No revenue recorded yet for this period.</div>
           ) : (
@@ -239,11 +239,11 @@ export default function AnalyticsView() {
           <div className="p-4 border-b border-gray-800">
             <h3 className="font-semibold text-white">Top Performing Tracks</h3>
             <p className="text-[11px] text-gray-500 mt-0.5">
-              Source: <code className="text-indigo-400">stream_events</code> + <code className="text-indigo-400">artist_earnings</code>
+              Source: <code className="text-[#B794F4]">stream_events</code> + <code className="text-[#B794F4]">artist_earnings</code>
             </p>
           </div>
           {d.loading ? (
-            <div className="py-12 flex justify-center"><Loader2 className="w-5 h-5 text-indigo-400 animate-spin" /></div>
+            <div className="py-12 flex justify-center"><Loader2 className="w-5 h-5 text-[#B794F4] animate-spin" /></div>
           ) : d.topContent.length === 0 ? (
             <div className="py-10 text-center text-gray-600 text-sm">No tracks uploaded yet.</div>
           ) : (
@@ -257,7 +257,7 @@ export default function AnalyticsView() {
                     <div className="w-9 h-9 rounded-lg bg-gray-800 shrink-0 overflow-hidden">
                       {item.cover_url
                         ? <img src={item.cover_url} alt="" className="w-full h-full object-cover" />
-                        : <div className="w-full h-full bg-indigo-600/20 flex items-center justify-center text-[10px] text-indigo-400 font-bold">{item.title[0]}</div>}
+                        : <div className="w-full h-full bg-[#9D4EDD]/20 flex items-center justify-center text-[10px] text-[#B794F4] font-bold">{item.title[0]}</div>}
                     </div>
                     <div>
                       <p className="text-sm font-medium text-white line-clamp-1">{item.title}</p>
@@ -279,11 +279,11 @@ export default function AnalyticsView() {
           <div className="p-4 border-b border-gray-800">
             <h3 className="font-semibold text-white">Audience by Country</h3>
             <p className="text-[11px] text-gray-500 mt-0.5">
-              Source: <code className="text-indigo-400">stream_events.country</code> — stream counts only, not revenue
+              Source: <code className="text-[#B794F4]">stream_events.country</code> — stream counts only, not revenue
             </p>
           </div>
           {d.loading ? (
-            <div className="py-12 flex justify-center"><Loader2 className="w-5 h-5 text-indigo-400 animate-spin" /></div>
+            <div className="py-12 flex justify-center"><Loader2 className="w-5 h-5 text-[#B794F4] animate-spin" /></div>
           ) : d.audienceByCountry.length === 0 ? (
             <div className="py-10 text-center text-gray-600 text-sm">No geographic data available yet.</div>
           ) : (
@@ -300,7 +300,7 @@ export default function AnalyticsView() {
                       </div>
                       <div className="w-full bg-gray-800 rounded-full h-1.5">
                         <div
-                          className="h-1.5 rounded-full bg-indigo-500/60"
+                          className="h-1.5 rounded-full bg-[#9D4EDD]/60"
                           style={{ width: `${pct}%` }}
                         />
                       </div>

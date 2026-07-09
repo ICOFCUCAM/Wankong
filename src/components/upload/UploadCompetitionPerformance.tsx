@@ -12,7 +12,7 @@ const LANGUAGES = [
   { code: 'es', name: 'Spanish' }, { code: 'pt', name: 'Portuguese' },
 ];
 
-const inp = 'w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm';
+const inp = 'w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD] text-sm';
 const lbl = 'block text-sm font-medium text-gray-300 mb-1';
 
 interface Props { onSuccess: () => void; }
@@ -163,7 +163,7 @@ export default function UploadCompetitionPerformance({ onSuccess }: Props) {
         {scoreResult && (
           <div className="text-center">
             <p className="text-gray-400">AI Score</p>
-            <p className="text-4xl font-bold text-indigo-400">{scoreResult.total_score.toFixed(1)}<span className="text-lg text-gray-400">/100</span></p>
+            <p className="text-4xl font-bold text-[#B794F4]">{scoreResult.total_score.toFixed(1)}<span className="text-lg text-gray-400">/100</span></p>
           </div>
         )}
         <p className="text-gray-400 text-sm">Your performance is now live. Preview clips have been pushed to social platforms.</p>
@@ -184,7 +184,7 @@ export default function UploadCompetitionPerformance({ onSuccess }: Props) {
       <div className="flex items-center gap-2 text-xs">
         {['Upload', 'Preview Clip', 'AI Scoring', 'Social Push', 'Live'].map((step, i) => (
           <React.Fragment key={step}>
-            <div className={`flex items-center gap-1.5 ${i === 0 && stage !== 'idle' ? 'text-indigo-400' : i === 1 && (stage === 'scoring' || stage === 'social' || stage === 'done') ? 'text-indigo-400' : i === 2 && (stage === 'scoring' || stage === 'social' || stage === 'done') ? 'text-indigo-400' : i === 3 && (stage === 'social' || stage === 'done') ? 'text-indigo-400' : i === 4 && stage === 'done' ? 'text-emerald-400' : 'text-gray-600'}`}>
+            <div className={`flex items-center gap-1.5 ${i === 0 && stage !== 'idle' ? 'text-[#B794F4]' : i === 1 && (stage === 'scoring' || stage === 'social' || stage === 'done') ? 'text-[#B794F4]' : i === 2 && (stage === 'scoring' || stage === 'social' || stage === 'done') ? 'text-[#B794F4]' : i === 3 && (stage === 'social' || stage === 'done') ? 'text-[#B794F4]' : i === 4 && stage === 'done' ? 'text-emerald-400' : 'text-gray-600'}`}>
               <div className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold ${i === 4 && stage === 'done' ? 'bg-emerald-500/20' : 'bg-gray-800'}`}>{i + 1}</div>
               <span>{step}</span>
             </div>
@@ -225,7 +225,7 @@ export default function UploadCompetitionPerformance({ onSuccess }: Props) {
 
         {durationErr && <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-400 text-sm">{durationErr}</div>}
 
-        <div onClick={() => videoRef.current?.click()} className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all ${videoFile ? 'border-emerald-500/50 bg-emerald-500/5' : durationErr ? 'border-amber-500/50' : 'border-gray-700 hover:border-indigo-500'}`}>
+        <div onClick={() => videoRef.current?.click()} className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all ${videoFile ? 'border-emerald-500/50 bg-emerald-500/5' : durationErr ? 'border-amber-500/50' : 'border-gray-700 hover:border-[#9D4EDD]'}`}>
           <input ref={videoRef} type="file" className="hidden" accept=".mp4,.mov,.webm,video/mp4,video/quicktime,video/webm" onChange={e => { const f = e.target.files?.[0]; if (f) handleVideo(f); }} />
           {videoFile && videoMeta ? (
             <div className="space-y-2">
@@ -250,8 +250,8 @@ export default function UploadCompetitionPerformance({ onSuccess }: Props) {
         </div>
 
         {/* What happens after upload */}
-        <div className="bg-indigo-500/5 border border-indigo-500/20 rounded-xl p-4 space-y-2">
-          <p className="text-xs font-semibold text-indigo-300">After submission:</p>
+        <div className="bg-[#9D4EDD]/5 border border-[#9D4EDD]/20 rounded-xl p-4 space-y-2">
+          <p className="text-xs font-semibold text-[#C9B3F5]">After submission:</p>
           <ul className="text-xs text-gray-400 space-y-1">
             <li>• A 30-second preview clip will be auto-generated</li>
             <li>• Our AI will score your performance across 5 criteria</li>
@@ -266,10 +266,10 @@ export default function UploadCompetitionPerformance({ onSuccess }: Props) {
         <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 space-y-3">
           <div className="flex justify-between">
             <span className="text-sm text-white">{stageLabel}</span>
-            <span className="text-sm text-indigo-400">{Math.round(progress)}%</span>
+            <span className="text-sm text-[#B794F4]">{Math.round(progress)}%</span>
           </div>
           <div className="w-full bg-gray-800 rounded-full h-2">
-            <div className="bg-indigo-600 h-2 rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
+            <div className="bg-[#9D4EDD] h-2 rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
           </div>
           {scoreResult && (
             <div className="flex items-center gap-2 text-xs text-emerald-400">
@@ -281,7 +281,7 @@ export default function UploadCompetitionPerformance({ onSuccess }: Props) {
       )}
 
       <button type="submit" disabled={stage !== 'idle' || !title || !artistName || !videoFile}
-        className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-xl transition-colors text-base">
+        className="w-full bg-[#9D4EDD] hover:bg-[#7C3AED] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-xl transition-colors text-base">
         {stage !== 'idle' ? stageLabel : 'Submit Competition Performance'}
       </button>
     </form>
