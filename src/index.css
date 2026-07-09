@@ -270,6 +270,29 @@ input[type="range"]::-webkit-slider-thumb {
 .wk-orbit { animation: wk-orbit 26s linear infinite; }
 @keyframes wk-orbit { to { transform: rotate(360deg); } }
 
+/* ── THE PULSE — the page dances to the music ─────────────────────────────────
+   AudioPulse.tsx writes --wk-bass / --wk-high / --wk-beat (0..1) on <html>
+   while a track plays. Everything below is compositor-only (opacity, filter,
+   transform), so the whole page reacts at 60fps with zero re-renders. */
+
+/* bass-driven ambient glow layered into the atmosphere */
+.wk-pulse-glow {
+  opacity: calc(var(--wk-bass, 0) * 0.55);
+  background:
+    radial-gradient(ellipse at 22% 28%, rgba(157,78,221,0.38), transparent 55%),
+    radial-gradient(ellipse at 78% 62%, rgba(0,217,255,0.32), transparent 55%),
+    radial-gradient(ellipse at 50% 95%, rgba(255,0,110,0.20), transparent 60%);
+  transition: opacity 90ms linear;
+  will-change: opacity;
+}
+
+/* starfield twinkles with the highs */
+.wk-stars { filter: brightness(calc(1 + var(--wk-high, 0) * 0.9)); }
+
+/* live badges + play affordances kick on the beat */
+.wk-live { transform: scale(calc(1 + var(--wk-beat, 0) * 0.1)); }
+.wk-beat-glow { filter: saturate(calc(1 + var(--wk-beat, 0) * 0.6)) brightness(calc(1 + var(--wk-beat, 0) * 0.25)); }
+
 /* talent arena stage spotlights — slow sway + flicker */
 .wk-spotlight { transform-origin: top center; animation: wk-spotlight 6s ease-in-out infinite; }
 @keyframes wk-spotlight {

@@ -772,7 +772,7 @@ export default function GlobalPlayer() {
                 </button>
                 <button onClick={prev} className="text-white/50 hover:text-white transition-colors"><SkipBack className="w-5 h-5" /></button>
                 <button onClick={togglePlay}
-                  className={`w-9 h-9 rounded-full bg-gradient-to-br from-[#00D9FF] to-[#9D4EDD] flex items-center justify-center hover:scale-105 active:scale-95 transition-all ${isPlaying ? 'shadow-[0_0_16px_rgba(0,217,255,0.55)]' : 'shadow-lg shadow-cyan-500/20'}`}>
+                  className={`w-9 h-9 rounded-full bg-gradient-to-br from-[#00D9FF] to-[#9D4EDD] flex items-center justify-center hover:scale-105 active:scale-95 transition-all ${isPlaying ? 'wk-beat-glow shadow-[0_0_16px_rgba(0,217,255,0.55)]' : 'shadow-lg shadow-cyan-500/20'}`}>
                   {isPlaying ? <Pause className="w-4 h-4 text-white" /> : <Play className="w-4 h-4 text-white ml-0.5" />}
                 </button>
                 <button onClick={next} className="text-white/50 hover:text-white transition-colors"><SkipForward className="w-5 h-5" /></button>

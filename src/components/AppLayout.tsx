@@ -7,6 +7,7 @@ import ProductCard from './ProductCard';
 import TiltCard from './TiltCard';
 import { Play, Pause, Zap, Music, BookOpen, Video, Mic, Trophy, Globe, Users, DollarSign, TrendingUp, ArrowRight, Headphones, Radio, Star, ChevronRight, ChevronLeft, Clock, ShieldCheck, BarChart3, CreditCard, MoreVertical, Heart, Shuffle, SkipBack, SkipForward, Repeat, SlidersHorizontal, Megaphone, Palette, Scissors, Wand2, Quote, Check, ChevronDown, UploadCloud, Rocket, Youtube, Facebook, Disc, Sparkles, Languages } from 'lucide-react';
 import { usePlayer } from './GlobalPlayer';
+import AudioPulse from './AudioPulse';
 import { asArray } from '@/lib/utils';
 import { getCurrentDrop, dropPhase, phaseDeadlineSeconds, PHASE_LABEL, type ArenaDrop as ArenaDropRow } from '@/services/competition/arenaDrops';
 import FeaturedPerformancesGrid from './home/FeaturedPerformancesGrid';
@@ -742,6 +743,8 @@ export default function AppLayout() {
 
   return (
     <div className="relative min-h-screen bg-[#0B0814] pb-20">
+      {/* THE PULSE — while music plays, the page itself dances (see AudioPulse) */}
+      <AudioPulse />
       {/* Layered atmosphere — base vignette · drifting aurora · starfield · grain */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,rgba(157,78,221,0.14),transparent_55%)]" />
@@ -749,6 +752,8 @@ export default function AppLayout() {
         <div className="absolute top-1/3 -right-1/4 w-[55vw] h-[55vw] rounded-full blur-[130px] opacity-[0.18] wk-aurora-2" style={{ background: 'radial-gradient(circle, #00D9FF, transparent 60%)' }} />
         <div className="absolute bottom-0 left-1/4 w-[50vw] h-[50vw] rounded-full blur-[130px] opacity-[0.14] wk-aurora-3" style={{ background: 'radial-gradient(circle, #FF3B6B, transparent 60%)' }} />
         <div className="absolute top-1/2 left-1/3 w-[45vw] h-[45vw] rounded-full blur-[150px] opacity-[0.12] wk-aurora-4" style={{ background: 'radial-gradient(circle, #2D6BFF, transparent 60%)' }} />
+        {/* bass-reactive glow — silent (opacity 0) until a track plays */}
+        <div className="absolute inset-0 wk-pulse-glow" />
         <div className="absolute inset-0 wk-stars opacity-30" />
         <div className="absolute inset-0 wk-noise" />
       </div>
