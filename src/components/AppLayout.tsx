@@ -8,6 +8,7 @@ import TiltCard from './TiltCard';
 import { Play, Pause, Zap, Music, BookOpen, Video, Mic, Trophy, Globe, Users, DollarSign, TrendingUp, ArrowRight, Headphones, Radio, Star, ChevronRight, ChevronLeft, Clock, ShieldCheck, BarChart3, CreditCard, MoreVertical, Heart, Shuffle, SkipBack, SkipForward, Repeat, SlidersHorizontal, Megaphone, Palette, Scissors, Wand2, Quote, Check, ChevronDown, UploadCloud, Rocket, Youtube, Facebook, Disc, Sparkles, Languages } from 'lucide-react';
 import { usePlayer } from './GlobalPlayer';
 import { asArray } from '@/lib/utils';
+import { getCurrentDrop, dropPhase, phaseDeadlineSeconds, PHASE_LABEL, type ArenaDrop as ArenaDropRow } from '@/services/competition/arenaDrops';
 import FeaturedPerformancesGrid from './home/FeaturedPerformancesGrid';
 import DefaultBookCover from './home/DefaultBookCover';
 import AudiobookCard from './home/AudiobookCard';
@@ -397,6 +398,28 @@ export default function AppLayout() {
   const [votedEntry, setVotedEntry] = useState<string | null>(null);
   const [playingEntry, setPlayingEntry] = useState<string | null>(null); // which entry's YouTube is playing inline
   const [battleCountdown, setBattleCountdown] = useState(8073); // seconds remaining
+
+  // The Arena Drop — WANKONG's weekly ritual. When an admin has scheduled a
+  // drop, it drives the challenge card, prize pool and phase countdown; the
+  // showcase mock stays as the fallback.
+  const [arenaDrop, setArenaDrop] = useState<ArenaDropRow | null>(null);
+  useEffect(() => {
+    getCurrentDrop().then(d => {
+      if (!d) return;
+      setArenaDrop(d);
+      setBattleCountdown(phaseDeadlineSeconds(d));
+    }).catch(() => { /* keep mock */ });
+  }, []);
+  const arenaChallenge = arenaDrop
+    ? {
+        title: arenaDrop.song_title,
+        artist: arenaDrop.song_artist ?? 'WANKONG',
+        genre: arenaDrop.genre ?? '',
+        cover: ARENA_CHALLENGE.cover,
+        prize: `$${Math.round(arenaDrop.prize_pool_cents / 100).toLocaleString()}`,
+      }
+    : ARENA_CHALLENGE;
+  const arenaPhaseLabel = arenaDrop ? PHASE_LABEL[dropPhase(arenaDrop)] : 'Voting closes in';
 
   // Real published competition entries — only those that have gone live on the
   // home page (admin-approved → published to WANKONG channels first). Falls back
@@ -1572,7 +1595,7 @@ export default function AppLayout() {
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-500 text-white text-[10px] font-black rounded-full wk-live"><span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE NOW</span>
-                    <span className="text-[#FFB800] text-[11px] font-bold uppercase tracking-[0.25em]">Global Stage</span>
+                    <span className="text-[#FFB800] text-[11px] font-bold uppercase tracking-[0.25em]">Arena Drop · Every Friday</span>
                   </div>
                   <h2 className="text-3xl md:text-4xl font-black text-white leading-none tracking-tight">Talent Arena</h2>
                   <p className="text-white/45 text-sm mt-1.5 max-w-md">One song. Creators worldwide film their take — watch the performances and vote for the best.</p>
@@ -1581,7 +1604,7 @@ export default function AppLayout() {
               <div className="flex items-center gap-5 md:gap-6 md:pr-2">
                 <div className="text-left md:text-right">
                   <p className="text-white/40 text-[10px] uppercase tracking-widest">Prize pool</p>
-                  <p className="text-2xl md:text-3xl font-black bg-gradient-to-r from-[#FFB800] to-[#FF6B00] bg-clip-text text-transparent tabular-nums">{ARENA_CHALLENGE.prize}</p>
+                  <p className="text-2xl md:text-3xl font-black bg-gradient-to-r from-[#FFB800] to-[#FF6B00] bg-clip-text text-transparent tabular-nums">{arenaChallenge.prize}</p>
                 </div>
                 <div className="w-px h-10 bg-white/10 hidden md:block" />
                 <div className="text-left md:text-right">
@@ -1610,17 +1633,17 @@ export default function AppLayout() {
               {/* Challenge song + countdown */}
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-white/8">
                 <div className="flex items-center gap-4">
-                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${ARENA_CHALLENGE.cover} flex items-center justify-center shrink-0 shadow-lg`}>
+                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${arenaChallenge.cover} flex items-center justify-center shrink-0 shadow-lg`}>
                     <Music className="w-7 h-7 text-white/80" />
                   </div>
                   <div>
                     <span className="text-[#FFB800] text-[11px] font-bold uppercase tracking-widest">The Challenge</span>
-                    <p className="text-white font-black text-lg leading-tight">{ARENA_CHALLENGE.title}</p>
-                    <p className="text-white/45 text-sm">{ARENA_CHALLENGE.artist} · {arenaEntries.length} creators competing</p>
+                    <p className="text-white font-black text-lg leading-tight">{arenaChallenge.title}</p>
+                    <p className="text-white/45 text-sm">{arenaChallenge.artist} · {arenaEntries.length} creators competing</p>
                   </div>
                 </div>
                 <div className="flex flex-col items-start md:items-end">
-                  <span className="text-white/40 text-[11px] uppercase tracking-widest mb-1.5">Voting closes in</span>
+                  <span className="text-white/40 text-[11px] uppercase tracking-widest mb-1.5">{arenaPhaseLabel}</span>
                   <div className="flex items-center gap-1.5 font-black text-white text-xl tabular-nums">
                     <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10">{hh}</span><span className="text-white/30">:</span>
                     <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10">{mm}</span><span className="text-white/30">:</span>
@@ -1702,7 +1725,7 @@ export default function AppLayout() {
                   <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF6B00] to-[#FFB800] flex items-center justify-center shrink-0"><Mic className="w-5 h-5 text-white" /></div>
                   <div>
                     <p className="text-white font-bold text-sm">Think you can top this?</p>
-                    <p className="text-white/45 text-xs">Record your take on “{ARENA_CHALLENGE.title}” — we auto-publish it to YouTube, TikTok &amp; more, then it shows up right here.</p>
+                    <p className="text-white/45 text-xs">Record your take on “{arenaChallenge.title}” — we auto-publish it to YouTube, TikTok &amp; more, then it shows up right here.</p>
                   </div>
                 </div>
                 <Link to="/talent-arena/upload" className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#FF6B00] to-[#FFB800] text-white font-bold text-sm hover:opacity-90 transition-opacity whitespace-nowrap flex items-center gap-2"><UploadCloud className="w-4 h-4" /> Submit your entry</Link>

@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase';
 import { formatNumber, formatCurrency } from '@/lib/constants';
 import CompetitionApprovalQueue from './CompetitionApprovalQueue';
 import PlatformAccountsManager from './PlatformAccountsManager';
+import ArenaDropManager from './ArenaDropManager';
 
 interface Profile {
   id: string;
@@ -349,7 +350,12 @@ export default function AdminPanel() {
         </div>
       )}
 
-      {activeTab === 'competitions' && <CompetitionApprovalQueue />}
+      {activeTab === 'competitions' && (
+        <div className="space-y-4">
+          <ArenaDropManager />
+          <CompetitionApprovalQueue />
+        </div>
+      )}
 
       {activeTab === 'integrations' && <PlatformAccountsManager />}
     </div>

@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase';
 import Header from '@/components/Header';
 import { extractVideoMetadata, validateVideoDuration } from '@/services/competition/previewClipService';
 import { scoreCompetitionEntry } from '@/services/competition/aiScoringService';
+import { getCurrentDrop, dropPhase } from '@/services/competition/arenaDrops';
 import { Upload, Video, Image as ImageIcon, CheckCircle, Loader2, AlertCircle, ChevronRight, Trophy } from 'lucide-react';
 
 const CATEGORIES = ['Singing','Rap / Hip-Hop','Dance','Instrumental','Producer','Songwriting','Comedy','Spoken Word','Band / Group'];
@@ -91,10 +92,18 @@ export default function TalentArenaUploadPage() {
       // Extract duration
       const { duration, resolution } = await extractVideoMetadata(videoFile);
 
+      // Attach to the current Arena Drop while its submission window is open
+      let dropId: string | null = null;
+      try {
+        const drop = await getCurrentDrop();
+        if (drop && dropPhase(drop) === 'live') dropId = drop.id;
+      } catch { /* entry still valid without a drop */ }
+
       // Insert entry
       const { data: entry, error: entryErr } = await supabase
         .from('competition_entries_v2')
         .insert([{
+          drop_id:          dropId,
           user_id:          user.id,
           room_id:          form.room_id || null,
           title:            form.title,
