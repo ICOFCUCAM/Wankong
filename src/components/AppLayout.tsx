@@ -8,6 +8,7 @@ import TiltCard from './TiltCard';
 import { Play, Pause, Zap, Music, BookOpen, Video, Mic, Trophy, Globe, Users, DollarSign, TrendingUp, ArrowRight, Headphones, Radio, Star, ChevronRight, ChevronLeft, Clock, ShieldCheck, BarChart3, CreditCard, MoreVertical, Heart, Shuffle, SkipBack, SkipForward, Repeat, SlidersHorizontal, Megaphone, Palette, Scissors, Wand2, Quote, Check, ChevronDown, UploadCloud, Rocket, Youtube, Facebook, Disc, Sparkles, Languages } from 'lucide-react';
 import { usePlayer } from './GlobalPlayer';
 import AudioPulse from './AudioPulse';
+import Bloodstream from './home/Bloodstream';
 import { asArray } from '@/lib/utils';
 import { getCurrentDrop, dropPhase, phaseDeadlineSeconds, PHASE_LABEL, type ArenaDrop as ArenaDropRow } from '@/services/competition/arenaDrops';
 import FeaturedPerformancesGrid from './home/FeaturedPerformancesGrid';
@@ -175,6 +176,16 @@ const EDGE_FADE = {
 } as React.CSSProperties;
 
 function LiveActivityTicker() {
+  // Real bloodstream events (dispatched by Bloodstream.tsx) join the ambience
+  const [items, setItems] = useState(LIVE_ACTIVITY);
+  useEffect(() => {
+    const onPulse = (e: Event) => {
+      const d = (e as CustomEvent).detail;
+      if (d?.text) setItems(prev => [d, ...prev].slice(0, 16));
+    };
+    window.addEventListener('wk:ticker', onPulse);
+    return () => window.removeEventListener('wk:ticker', onPulse);
+  }, []);
   return (
     <div className="relative border-y border-white/8 bg-white/[0.02] backdrop-blur-sm">
       <div className="flex items-center gap-3 py-2.5 px-4 max-w-7xl mx-auto">
@@ -183,7 +194,7 @@ function LiveActivityTicker() {
         </span>
         <div className="relative flex-1 overflow-hidden" style={EDGE_FADE}>
           <div className="flex items-center gap-10 wk-ticker whitespace-nowrap w-max">
-            {[...LIVE_ACTIVITY, ...LIVE_ACTIVITY].map((a, i) => (
+            {[...items, ...items].map((a, i) => (
               <span key={i} className="inline-flex items-center gap-2 text-sm text-white/65">
                 <span className="text-base">{a.flag}</span>
                 <span><b className="text-white font-semibold">{a.who}</b> {a.text}</span>
@@ -745,6 +756,8 @@ export default function AppLayout() {
     <div className="relative min-h-screen bg-[#0B0814] pb-20">
       {/* THE PULSE — while music plays, the page itself dances (see AudioPulse) */}
       <AudioPulse />
+      {/* THE PULSE phase 2 — real platform events visibly travel through the page */}
+      <Bloodstream />
       {/* Layered atmosphere — base vignette · drifting aurora · starfield · grain */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,rgba(157,78,221,0.14),transparent_55%)]" />
@@ -1205,7 +1218,7 @@ export default function AppLayout() {
       )}
 
       {/* ── 4. NEW RELEASES — HORIZONTAL CAROUSEL ─────────────────────── */}
-      <section className="py-12 relative overflow-hidden">
+      <section id="sec-new-releases" className="py-12 relative overflow-hidden">
         <div className="absolute inset-x-0 top-0 h-[420px] -z-10 pointer-events-none bg-[radial-gradient(ellipse_at_50%_0%,rgba(0,217,255,0.09),transparent_70%)]" />
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between mb-6">
@@ -1577,7 +1590,7 @@ export default function AppLayout() {
       </section>
 
       {/* ── TALENT ARENA — LIVE COMPETITION (YouTube-embedded entries) ─────── */}
-      <section className="py-14 relative overflow-hidden">
+      <section id="sec-arena" className="py-14 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(255,107,0,0.10),transparent_70%)]" />
         <div className="relative max-w-7xl mx-auto px-4">
           {/* Cinematic stage banner */}
