@@ -108,7 +108,8 @@ export default function MarketAiSolverPage() {
             <button
               type="submit"
               disabled={loading || problem.trim().length < 8}
-              className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white font-semibold rounded-xl transition-colors"
+              className="flex items-center gap-2 px-6 py-2.5 disabled:opacity-40 text-white font-semibold rounded-xl shadow-lg shadow-violet-500/25 hover:opacity-95 transition-opacity"
+              style={{ background: 'var(--sk-aurora)' }}
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
               {loading ? 'Thinking…' : 'Find Solutions'}
