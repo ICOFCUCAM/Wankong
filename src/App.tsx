@@ -2,6 +2,7 @@ import { Suspense, lazy } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import GlobalPlayer from './components/GlobalPlayer';
 import ProtectedRoute from './components/ProtectedRoute';
+import { IS_MARKET_SITE } from '@/lib/site';
 import AddToPlaylistModal from './components/playlist/AddToPlaylistModal';
 import MobileBottomNav from './components/MobileBottomNav';
 
@@ -99,6 +100,16 @@ const UploadAudiobookPage    = lazy(() => import('./pages/dashboard/UploadAudiob
 const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage'));
 const AcceptInvitePage   = lazy(() => import('./pages/admin/AcceptInvitePage'));
 
+// ── Marketplace vendors ────────────────────────────────────────────────────────
+const VendorRegisterPage  = lazy(() => import('./pages/vendor/VendorRegisterPage'));
+const VendorDashboardPage = lazy(() => import('./pages/vendor/VendorDashboardPage'));
+
+// ── AI discovery ───────────────────────────────────────────────────────────────
+const AiSolverPage = lazy(() => import('./pages/AiSolverPage'));
+
+// ── smartkong.net (VITE_SITE_MODE=market) ──────────────────────────────────────
+const MarketHomePage = lazy(() => import('./pages/market/MarketHomePage'));
+
 // ── Library ────────────────────────────────────────────────────────────────────
 const LibraryPage = lazy(() => import('./pages/LibraryPage'));
 
@@ -123,12 +134,13 @@ export default function App() {
         <div key={location.pathname} className="wk-page-in">
         <Routes>
           {/* ── Public ─────────────────────────────────────────────────────── */}
-          <Route path="/"                         element={<Index />} />
+          <Route path="/"                         element={IS_MARKET_SITE ? <MarketHomePage /> : <Index />} />
           <Route path="/cart"                     element={<CartPage />} />
           <Route path="/checkout"                 element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
           <Route path="/order-confirmation"       element={<OrderConfirmation />} />
           <Route path="/settings/social/callback" element={<SocialOAuthCallback />} />
           <Route path="/search"                   element={<SearchPage />} />
+          <Route path="/ai-solver"                element={<AiSolverPage />} />
           <Route path="/collections/:handle"      element={<CollectionPage />} />
           <Route path="/products/:handle"         element={<ProductPage />} />
           <Route path="/artist/:id"               element={<ArtistProfile />} />
@@ -194,6 +206,8 @@ export default function App() {
           {/* ── Protected: any logged-in user ──────────────────────────────── */}
           <Route path="/dashboard"          element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
           <Route path="/dashboard/earnings" element={<ProtectedRoute><EarningsDashboardPage /></ProtectedRoute>} />
+          <Route path="/vendor/register"    element={<ProtectedRoute><VendorRegisterPage /></ProtectedRoute>} />
+          <Route path="/dashboard/vendor"   element={<ProtectedRoute><VendorDashboardPage /></ProtectedRoute>} />
           <Route path="/book-upload"        element={<ProtectedRoute><BookUploadPage /></ProtectedRoute>} />
           <Route path="/distribute"         element={<ProtectedRoute requiredRole={['artist']}><DistributePage /></ProtectedRoute>} />
           <Route path="/upload/distribute"  element={<ProtectedRoute><DistributeUploadPage /></ProtectedRoute>} />

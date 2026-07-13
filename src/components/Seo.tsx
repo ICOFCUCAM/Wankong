@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { SITE_NAME, SITE_TAGLINE, SITE_DESCRIPTION } from '@/lib/site';
 
 /**
  * Dependency-free per-route SEO. Updates document.title and the relevant
@@ -7,9 +8,8 @@ import { useEffect } from 'react';
  * page-specific titles, descriptions and share images.
  */
 
-const SITE = 'WANKONG';
-const DEFAULT_DESC =
-  'WANKONG — the global creator marketplace. Upload, distribute and monetize music, books, audiobooks, videos and podcasts to 30+ platforms worldwide.';
+const SITE = SITE_NAME;
+const DEFAULT_DESC = SITE_DESCRIPTION;
 const DEFAULT_IMAGE = '/og-image.jpg';
 
 function upsertMeta(attr: 'name' | 'property', key: string, content: string) {
@@ -51,7 +51,7 @@ export default function Seo({
   canonical,
 }: SeoProps) {
   useEffect(() => {
-    const fullTitle = title ? `${title} · ${SITE}` : `${SITE} — Global Creator Marketplace`;
+    const fullTitle = title ? `${title} · ${SITE}` : `${SITE} — ${SITE_TAGLINE}`;
     document.title = fullTitle;
 
     const origin = typeof window !== 'undefined' ? window.location.origin : '';

@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
+import { markPaidAndFulfill } from './_lib/fulfillment';
 
 // Safaricom posts the payment result to this endpoint after STK Push.
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -55,10 +56,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         .maybeSingle();
 
       if (tx?.order_id) {
-        await supabase
-          .from('ecom_orders')
-          .update({ financial_status: 'paid', mpesa_ref: mpesaRef })
-          .eq('id', tx.order_id);
+        // Marks the order paid and fulfills it (library access + earnings)
+        // server-side — the buyer's polling browser is no longer trusted.
+        await markPaidAndFulfill(supabase, tx.order_id, { mpesa_ref: mpesaRef ?? null });
       }
     }
 

@@ -95,7 +95,7 @@ export interface Notification {
 }
 
 // Categories
-export const CATEGORIES = ['All', 'Music', 'Video', 'Podcast', 'Book', 'Course', 'Article'];
+export const CATEGORIES = ['All', 'Music', 'Video', 'Podcast', 'Book', 'Course', 'Article', 'Product'];
 export const COUNTRIES = ['All', 'Nigeria', 'Kenya', 'Ghana', 'South Africa', 'USA', 'UK', 'Japan', 'Mexico', 'Senegal'];
 
 // Stats for dashboard

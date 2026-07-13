@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import Stripe from 'stripe';
+import { serviceClient, authoritativeOrderTotal } from './_lib/fulfillment';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -14,26 +15,37 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const stripe = new Stripe(key, { apiVersion: '2024-04-10' as any });
 
   try {
-    const { amount, currency = 'usd', orderId, customer_email } = req.body as {
-      amount: number;
-      currency?: string;
+    const { orderId, currency = 'usd', customer_email } = req.body as {
       orderId?: string;
+      currency?: string;
       customer_email?: string;
     };
 
-    if (!amount || amount < 50) {
+    if (!orderId) return res.status(400).json({ error: 'Missing orderId' });
+
+    // The charge amount is recomputed from catalog prices on the server —
+    // client-supplied amounts are ignored.
+    const supabase = serviceClient();
+    const { totalCents, customerEmail } = await authoritativeOrderTotal(supabase, orderId);
+
+    if (totalCents < 50) {
       return res.status(400).json({ error: 'Amount must be at least 50 cents.' });
     }
 
     const paymentIntent = await stripe.paymentIntents.create({
-      amount:       Math.round(amount),
-      currency:     currency.toLowerCase(),
-      metadata:     { orderId: orderId ?? '' },
-      receipt_email: customer_email,
+      amount:        totalCents,
+      currency:      currency.toLowerCase(),
+      metadata:      { orderId },
+      receipt_email: customer_email ?? customerEmail ?? undefined,
       automatic_payment_methods: { enabled: true },
     });
 
-    res.json({ clientSecret: paymentIntent.client_secret });
+    await supabase
+      .from('ecom_orders')
+      .update({ stripe_payment_intent_id: paymentIntent.id })
+      .eq('id', orderId);
+
+    res.json({ clientSecret: paymentIntent.client_secret, amount: totalCents });
   } catch (err: any) {
     console.error('[create-payment-intent]', err);
     res.status(400).json({ error: err.message });

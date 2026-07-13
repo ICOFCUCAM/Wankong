@@ -109,6 +109,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
 
+    // Link the checkout request to the order NOW — the Daraja callback only
+    // carries the CheckoutRequestID, so without this row the callback can
+    // never find (or mark paid) the order.
+    if (data.CheckoutRequestID && process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      const { serviceClient } = await import('./_lib/fulfillment');
+      const supabase = serviceClient();
+      await supabase.from('mpesa_transactions').upsert({
+        checkout_request_id: data.CheckoutRequestID,
+        order_id:            orderId,
+        amount:              Math.ceil(amount),
+        phone:               formatPhone(phone),
+        status:              'pending',
+        updated_at:          new Date().toISOString(),
+      }, { onConflict: 'checkout_request_id' });
+      await supabase
+        .from('ecom_orders')
+        .update({ mpesa_checkout_request_id: data.CheckoutRequestID })
+        .eq('id', orderId);
+    }
+
     res.json({
       checkoutRequestId: data.CheckoutRequestID,
       merchantRequestId: data.MerchantRequestID,

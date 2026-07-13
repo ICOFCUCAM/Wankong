@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { SITE_NAME, IS_MARKET_SITE } from '@/lib/site';
 
 // ── Column data ───────────────────────────────────────────────────────────────
 
@@ -12,9 +13,11 @@ const CREATORS_LINKS = [
   { label: 'Distribution Dashboard',  href: '/dashboard/distribution' },
   { label: 'Creator Earnings',        href: '/dashboard/earnings' },
   { label: 'Creator Memberships',     href: '/dashboard/memberships' },
+  { label: `Sell on ${SITE_NAME}`,      href: '/vendor/register' },
 ];
 
 const DISCOVERY_LINKS = [
+  { label: 'AI Problem Solver',   href: '/ai-solver' },
   { label: 'Music by Language',   href: '/collections/music' },
   { label: 'Browse Books',        href: '/collections/books' },
   { label: 'Audiobooks',          href: '/collections/audiobooks' },
@@ -134,8 +137,8 @@ export default function Footer() {
           <div className="flex items-center gap-4">
             <img src="/wankong-mark.png" alt="WANKONG" className="w-16 h-16 object-contain shrink-0" />
             <div>
-              <p className="text-white font-black text-2xl tracking-wide leading-none mb-1">WANKONG</p>
-              <p className="text-white/50 text-sm">Create. Distribute. Get Paid — worldwide.</p>
+              <p className="text-white font-black text-2xl tracking-wide leading-none mb-1">{SITE_NAME.toUpperCase()}</p>
+              <p className="text-white/50 text-sm">{IS_MARKET_SITE ? 'Shop the world. Sell to the world.' : 'Create. Distribute. Get Paid — worldwide.'}</p>
             </div>
           </div>
           <form onSubmit={e => e.preventDefault()} className="flex w-full lg:w-auto gap-2">
@@ -160,10 +163,10 @@ export default function Footer() {
           <div className="md:col-span-1 lg:col-span-2">
             <div className="flex items-center gap-2 mb-4">
               <img src="/wankong-mark.png" alt="WANKONG" className="w-9 h-9 object-contain shrink-0" />
-              <span className="text-white font-black text-xl">WANKONG</span>
+              <span className="text-white font-black text-xl">{SITE_NAME.toUpperCase()}</span>
             </div>
             <p className="text-white/40 text-sm leading-relaxed mb-5">
-              Global creator marketplace for music, books, audiobooks, videos, competitions and multilingual publishing.
+              {IS_MARKET_SITE ? 'The global marketplace powered by Wankong — music, books, courses and products from creators and trusted partners.' : 'Global creator marketplace for music, books, audiobooks, videos, competitions and multilingual publishing.'}
             </p>
             {/* Social icons */}
             <div className="flex flex-wrap gap-2">
@@ -241,10 +244,10 @@ export default function Footer() {
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00D9FF] to-[#9D4EDD] flex items-center justify-center">
                 <span className="text-white font-black text-sm">W</span>
               </div>
-              <span className="text-white font-black text-lg">WANKONG</span>
+              <span className="text-white font-black text-lg">{SITE_NAME.toUpperCase()}</span>
             </div>
             <p className="text-white/40 text-sm leading-relaxed mb-4">
-              Global creator marketplace for music, books, audiobooks, videos, competitions and multilingual publishing.
+              {IS_MARKET_SITE ? 'The global marketplace powered by Wankong — music, books, courses and products from creators and trusted partners.' : 'Global creator marketplace for music, books, audiobooks, videos, competitions and multilingual publishing.'}
             </p>
             <div className="flex flex-wrap gap-2">
               {SOCIAL.map(s => (
@@ -275,7 +278,7 @@ export default function Footer() {
         {/* ── Bottom strip ───────────────────────────────────────────── */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-6 border-t border-white/5">
           <div className="flex flex-wrap items-center gap-4">
-            <p className="text-xs text-white/30">© WANKONG {year}. All rights reserved.</p>
+            <p className="text-xs text-white/30">© {SITE_NAME.toUpperCase()} {year}. All rights reserved.</p>
             <div className="flex items-center gap-3">
               {[
                 { label: 'Privacy', href: '/privacy-policy' },

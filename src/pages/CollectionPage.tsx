@@ -5,6 +5,7 @@ import { asArray } from '@/lib/utils';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
+import Marketplace from '@/components/home/Marketplace';
 import { formatCurrency, formatNumber } from '@/lib/constants';
 import { usePlayer } from '@/components/GlobalPlayer';
 
@@ -94,6 +95,21 @@ export default function CollectionPage() {
     }
     fetchCollection();
   }, [handle, sortBy, selectedLanguage, selectedGenre, isTalentArena, isArtists]);
+
+  // Marketplace — render the full upgraded storefront (server-side filters,
+  // pagination, AI solver entry, partner products) instead of the generic
+  // collection grid.
+  if (isMarketplace) {
+    return (
+      <div className="min-h-screen bg-[#0B0814]">
+        <Header />
+        <div className="max-w-7xl mx-auto px-4 lg:px-8 py-10">
+          <Marketplace />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   // Talent Arena / Competitions
   if (isTalentArena) {

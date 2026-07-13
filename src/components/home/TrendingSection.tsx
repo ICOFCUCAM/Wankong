@@ -36,33 +36,51 @@ export default function TrendingSection() {
   const [loading,      setLoading]          = useState(true);
 
   useEffect(() => {
-    supabase
-      .from('ecom_products')
-      .select('id, title, product_type, price_cents, cover_url, created_at, vendor_id, profiles:vendor_id(display_name, username, avatar_url)')
-      .eq('status', 'active')
-      .order('created_at', { ascending: false })
-      .limit(24)
-      .then(({ data }) => {
-        if (data && data.length > 0) {
-          setProducts(data.map((p: any) => {
-            const profile = Array.isArray(p.profiles) ? p.profiles[0] : p.profiles;
-            const type    = (p.product_type ?? 'music').toLowerCase();
-            return {
-              id:            p.id,
-              title:         p.title ?? 'Untitled',
-              creator:       profile?.display_name ?? profile?.username ?? 'Creator',
-              creatorAvatar: profile?.avatar_url ?? `https://api.dicebear.com/7.x/initials/svg?seed=${p.vendor_id}`,
-              type,
-              thumbnail:     p.cover_url ?? `https://api.dicebear.com/7.x/shapes/svg?seed=${p.id}`,
-              price:         (p.price_cents ?? 0) / 100,
-              isPaid:        (p.price_cents ?? 0) > 0,
-              category:      p.product_type ?? 'Music',
-              createdAt:     p.created_at,
-            };
-          }));
-        }
-        setLoading(false);
-      });
+    (async () => {
+      // trending_score = clicks + 3×carts + 10×sales + streams/20, refreshed hourly
+      const { data } = await supabase
+        .from('ecom_products')
+        .select('id, title, product_type, price, cover_url, created_at, vendor_id, creator_id, vendor')
+        .eq('status', 'active')
+        .order('trending_score', { ascending: false })
+        .order('created_at', { ascending: false })
+        .limit(24);
+
+      const rows = data ?? [];
+
+      // vendor_id references auth.users, so PostgREST can't embed profiles —
+      // fetch the seller profiles separately.
+      const sellerIds = [...new Set(rows.map((p: any) => p.vendor_id ?? p.creator_id).filter(Boolean))];
+      const profilesById = new Map<string, any>();
+      if (sellerIds.length > 0) {
+        const { data: profs } = await supabase
+          .from('profiles')
+          .select('id, display_name, username, avatar_url')
+          .in('id', sellerIds);
+        (profs ?? []).forEach((p: any) => profilesById.set(p.id, p));
+      }
+
+      if (rows.length > 0) {
+        setProducts(rows.map((p: any) => {
+          const sellerId = p.vendor_id ?? p.creator_id;
+          const profile  = sellerId ? profilesById.get(sellerId) : undefined;
+          const type     = (p.product_type ?? 'music').toLowerCase();
+          return {
+            id:            p.id,
+            title:         p.title ?? 'Untitled',
+            creator:       profile?.display_name ?? profile?.username ?? p.vendor ?? 'Creator',
+            creatorAvatar: profile?.avatar_url ?? `https://api.dicebear.com/7.x/initials/svg?seed=${sellerId ?? p.id}`,
+            type,
+            thumbnail:     p.cover_url ?? `https://api.dicebear.com/7.x/shapes/svg?seed=${p.id}`,
+            price:         (p.price ?? 0) / 100,
+            isPaid:        (p.price ?? 0) > 0,
+            category:      p.product_type ?? 'Music',
+            createdAt:     p.created_at,
+          };
+        }));
+      }
+      setLoading(false);
+    })();
   }, []);
 
   const filtered = activeCategory === 'All'

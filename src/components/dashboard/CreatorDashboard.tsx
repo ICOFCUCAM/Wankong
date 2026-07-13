@@ -36,23 +36,32 @@ export default function CreatorDashboard() {
       const uid = session.user.id;
       getCreatorSocialStatus(uid).then(setSocialItems).catch(() => {});
 
-      // Recent content
+      // Recent content — the catalog column is `price` (cents)
       supabase
         .from('ecom_products')
-        .select('id, title, product_type, price_cents, cover_url, created_at')
+        .select('id, title, product_type, price_cents:price, cover_url, created_at')
         .eq('vendor_id', uid)
         .order('created_at', { ascending: false })
         .limit(5)
-        .then(({ data }) => { if (data) setRecentProducts(data as RecentProduct[]); });
+        .then(({ data }) => { if (data) setRecentProducts(data as unknown as RecentProduct[]); });
 
-      // Recent transactions
+      // Recent transactions — earnings rows carry `category` and USD `amount`
       supabase
         .from('creator_earnings')
-        .select('id, description, amount_cents, type, status, created_at')
+        .select('id, description, amount, type:category, created_at, paid')
         .eq('user_id', uid)
         .order('created_at', { ascending: false })
         .limit(5)
-        .then(({ data }) => { if (data) setRecentTxs(data as RecentTx[]); });
+        .then(({ data }) => {
+          if (data) setRecentTxs((data as any[]).map(tx => ({
+            id:           tx.id,
+            description:  tx.description,
+            amount_cents: Math.round((tx.amount ?? 0) * 100),
+            type:         tx.type,
+            status:       tx.paid ? 'completed' : 'pending',
+            created_at:   tx.created_at,
+          })));
+        });
     });
   }, []);
 
