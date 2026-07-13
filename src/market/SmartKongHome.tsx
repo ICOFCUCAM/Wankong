@@ -5,6 +5,7 @@ import MarketLayout from './MarketLayout';
 import MarketProductCard from './MarketProductCard';
 import { useMarketCatalog, type CatalogFilters } from './useMarketCatalog';
 import { MARKET_CATEGORIES, categoryBySlug } from './categories';
+import { Reveal } from './motion';
 import { Search, Sparkles, Loader2 } from 'lucide-react';
 
 // SmartKong catalog browser — /shop and /category/:slug. The premium hero
@@ -143,6 +144,30 @@ export default function SmartKongHome() {
         description="Search across global affiliate networks and trusted vendors. Find the best deals on digital and physical products with AI-powered recommendations."
       />
 
+      {/* Meridian shop band — editorial header for the catalog */}
+      <div className="relative border-b border-gray-100 bg-[var(--sk-mist)] overflow-hidden">
+        <div aria-hidden className="pointer-events-none absolute -top-24 -right-24 w-[420px] h-[420px] rounded-full opacity-20 blur-3xl" style={{ background: 'var(--sk-aurora)' }} />
+        <div className="relative max-w-7xl mx-auto px-4 lg:px-8 py-12 md:py-16">
+          <Reveal>
+            <span className="sk-eyebrow mb-4">
+              {urlQuery ? 'AI Search' : activeCategory ? activeCategory.label : 'The Catalog'}
+            </span>
+            <h1 className="text-4xl md:text-6xl font-black tracking-[-0.03em] leading-[0.98] text-[var(--sk-ink)]">
+              {urlQuery ? (
+                <>Results for <span className="sk-serif sk-aurora-text pr-1">“{urlQuery}”</span></>
+              ) : activeCategory ? (
+                <>{activeCategory.label.split(' ').slice(0, -1).join(' ')}{' '}<span className="sk-serif sk-aurora-text pr-1">{activeCategory.label.split(' ').slice(-1)}</span></>
+              ) : (
+                <>Every product. <span className="sk-serif sk-aurora-text pr-1">One search.</span></>
+              )}
+            </h1>
+            <p className="mt-4 max-w-xl text-base text-gray-500 leading-relaxed">
+              {loading ? 'Searching the world’s shelves…' : `${total.toLocaleString()} products from global affiliate networks and trusted vendors — filtered, ranked and ready to compare.`}
+            </p>
+          </Reveal>
+        </div>
+      </div>
+
       <div id="products" className="max-w-7xl mx-auto px-4 lg:px-8 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8 items-start">
           <FilterSidebar filters={filters} setFilters={setFilters} />
@@ -150,7 +175,7 @@ export default function SmartKongHome() {
           <div>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
               <div>
-                <h2 className="text-2xl font-extrabold text-gray-900">
+                <h2 className="text-lg font-bold text-gray-900">
                   {urlQuery ? `Results for “${urlQuery}”` : activeCategory ? activeCategory.label : 'All Products'}
                 </h2>
                 <p className="text-sm text-gray-500 mt-0.5">
@@ -199,7 +224,11 @@ export default function SmartKongHome() {
             ) : (
               <>
                 <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
-                  {products.map(p => <MarketProductCard key={p.id} product={p} />)}
+                  {products.map((p, i) => (
+                    <Reveal key={p.id} delay={Math.min(i, 7) * 45}>
+                      <MarketProductCard product={p} />
+                    </Reveal>
+                  ))}
                 </div>
                 {hasMore && (
                   <div className="text-center mt-10">
