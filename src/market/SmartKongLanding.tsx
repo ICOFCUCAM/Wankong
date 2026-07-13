@@ -551,6 +551,84 @@ function AiSearchPanel() {
   );
 }
 
+// ── Intent-first prompts, ambient stories, world-search animation ───────────────
+const INTENTS: { label: string; q?: string; to?: string }[] = [
+  { label: 'Buy something', q: '' },
+  { label: 'Compare products', to: '/compare' },
+  { label: 'Find suppliers', q: 'wholesale suppliers' },
+  { label: 'Import from China', q: 'import from China' },
+  { label: 'Start a business', q: 'business starter kit' },
+  { label: 'Hire freelancers', q: 'freelance services' },
+  { label: 'Sell something', to: '/vendor/register' },
+];
+
+const LIVE_STORIES: React.ReactNode[] = [
+  <>Today, AI discovered <b className="text-blue-700">17,328</b> new deals across the web.</>,
+  <>Someone in Norway just saved <b className="text-blue-700">€463</b> on a MacBook Pro.</>,
+  <>Samsung TVs are <b className="text-blue-700">17%</b> cheaper today than yesterday.</>,
+  <>Best country to buy an iPhone today: <b className="text-blue-700">Japan</b>.</>,
+  <>AI is comparing prices across <b className="text-blue-700">18,500</b> stores right now.</>,
+];
+
+const SEARCH_VENDORS = ['Amazon', 'Apple', 'Alibaba', 'Newegg', 'Best Buy', 'AliExpress', 'Walmart', 'eBay', 'Samsung', '+ thousands more'];
+
+// Approximate continent positions over the globe image (% of the globe box).
+const REGION_PINS: { x: number; y: number; price: string }[] = [
+  { x: 30, y: 43, price: '$1,299' },
+  { x: 35, y: 68, price: 'R$6.9k' },
+  { x: 52, y: 33, price: '€1,199' },
+  { x: 55, y: 57, price: '$1,340' },
+  { x: 69, y: 40, price: '¥9,180' },
+  { x: 80, y: 46, price: '¥168k' },
+  { x: 82, y: 71, price: 'A$2,099' },
+];
+const HUB = { x: 55, y: 47 };
+const worldArc = (a: { x: number; y: number }, b: { x: number; y: number }) =>
+  `M${a.x},${a.y} Q${(a.x + b.x) / 2},${(a.y + b.y) / 2 - 16} ${b.x},${b.y}`;
+
+function useRotating(count: number, ms: number) {
+  const [i, setI] = useState(0);
+  useEffect(() => { const t = setInterval(() => setI(v => (v + 1) % count), ms); return () => clearInterval(t); }, [count, ms]);
+  return i;
+}
+
+// The signature interaction: on search, the globe "comes alive" — routes animate
+// across continents, regions light up, and prices stream in before results load.
+function WorldSearchOverlay({ query }: { query: string }) {
+  const vi = useRotating(SEARCH_VENDORS.length, 240);
+  return (
+    <div className="pointer-events-none absolute right-0 top-0 h-full w-[88%] sm:w-[80%] lg:w-[74%] z-30 overflow-hidden">
+      <div className="absolute inset-0" style={{ animation: 'sk-veil .5s ease both', background: 'radial-gradient(circle at 58% 47%, rgba(37,99,235,0.16), transparent 62%)' }} />
+      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="wroute" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stopColor="#2563EB" stopOpacity="0" /><stop offset="0.5" stopColor="#2563EB" /><stop offset="1" stopColor="#06B6D4" stopOpacity="0.25" />
+          </linearGradient>
+        </defs>
+        {REGION_PINS.map((p, i) => (
+          <path key={i} d={worldArc(HUB, p)} className="sk-route" style={{ animationDelay: `${i * 0.1}s` }} stroke="url(#wroute)" strokeWidth="1.5" fill="none" vectorEffect="non-scaling-stroke" />
+        ))}
+      </svg>
+      {REGION_PINS.map((p, i) => (
+        <div key={i} className="sk-pin absolute" style={{ left: `${p.x}%`, top: `${p.y}%`, animationDelay: `${0.25 + i * 0.1}s` }}>
+          <span className="relative flex items-center justify-center">
+            <span className="absolute w-5 h-5 rounded-full bg-blue-500" style={{ animation: `sk-ping 1.6s ease-out ${0.4 + i * 0.1}s infinite` }} />
+            <span className="relative w-2.5 h-2.5 rounded-full bg-blue-600 ring-2 ring-white shadow" />
+          </span>
+          <span className="sk-tag absolute left-1/2 top-0 whitespace-nowrap px-1.5 py-0.5 rounded-md bg-white shadow-md text-[10px] font-bold text-blue-700" style={{ animationDelay: `${0.7 + i * 0.1}s` }}>{p.price}</span>
+        </div>
+      ))}
+      <div className="absolute left-1/2 -translate-x-1/2 bottom-6 flex flex-col items-center gap-2">
+        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/95 shadow-lg ring-1 ring-blue-100">
+          <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
+          <span className="text-sm text-gray-700">Searching <span className="font-semibold text-blue-700">{SEARCH_VENDORS[vi]}</span>…</span>
+        </div>
+        <span className="text-xs text-gray-600 bg-white/85 px-3 py-1 rounded-full shadow-sm">Mapping “{query}” across 42 countries</span>
+      </div>
+    </div>
+  );
+}
+
 // ── Page ────────────────────────────────────────────────────────────────────────
 export default function SmartKongLanding() {
   const navigate = useNavigate();
@@ -560,6 +638,9 @@ export default function SmartKongLanding() {
 
   const [query, setQuery] = useState('');
   const typed = useTypewriter(TYPED_SUGGESTIONS);
+  const [worldQuery, setWorldQuery] = useState<string | null>(null);
+  const storyIdx = useRotating(LIVE_STORIES.length, 3800);
+  const greeting = (() => { const h = new Date().getHours(); return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening'; })();
   const [trending, setTrending] = useState<Prod[]>([]);
   const [deals, setDeals] = useState<Prod[]>([]);
   const [forYou, setForYou] = useState<Prod[]>([]);
@@ -595,7 +676,13 @@ export default function SmartKongLanding() {
   }, [user?.id]);
 
   const runSearch = useCallback((text?: string) => { const q = (text ?? query).trim(); navigate(q ? `/shop?q=${encodeURIComponent(q)}` : '/shop'); }, [query, navigate]);
-  const runAi = useCallback(() => { const q = query.trim(); navigate(q ? `/ai-solver?q=${encodeURIComponent(q)}` : '/ai-solver'); }, [query, navigate]);
+  // The signature interaction: play the "AI maps the world" animation, then route.
+  const launchWorldSearch = useCallback((text?: string, dest = '/shop') => {
+    const q = (text ?? query).trim();
+    setWorldQuery(q || 'the whole internet');
+    window.setTimeout(() => navigate(q ? `${dest}?q=${encodeURIComponent(q)}` : dest), 2600);
+  }, [query, navigate]);
+  const onIntent = (it: (typeof INTENTS)[number]) => { if (it.to) navigate(it.to); else launchWorldSearch(it.q || '', '/shop'); };
 
   const voiceSearch = () => {
     const SR = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
@@ -634,10 +721,18 @@ export default function SmartKongLanding() {
         @keyframes sk-marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
         @keyframes sk-blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
         @keyframes sk-rise { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes sk-route { to{stroke-dashoffset:0} }
+        @keyframes sk-pin { 0%{transform:translate(-50%,-50%) scale(0);opacity:0} 60%{transform:translate(-50%,-50%) scale(1.25)} 100%{transform:translate(-50%,-50%) scale(1);opacity:1} }
+        @keyframes sk-ping { 0%{transform:scale(1);opacity:.55} 100%{transform:scale(3.2);opacity:0} }
+        @keyframes sk-tag { from{opacity:0;transform:translate(-50%,-90%)} to{opacity:1;transform:translate(-50%,-118%)} }
+        @keyframes sk-veil { from{opacity:0} to{opacity:1} }
         .sk-rise{animation:sk-rise .8s cubic-bezier(.2,.7,.2,1) both}
         .sk-float{animation:sk-float 7s ease-in-out infinite}
         .sk-marquee{animation:sk-marquee 38s linear infinite}
         .sk-cursor::after{content:'▍';animation:sk-blink 1s step-end infinite;color:#60A5FA}
+        .sk-route{stroke-dasharray:240;stroke-dashoffset:240;animation:sk-route 1.1s ease-out forwards}
+        .sk-pin{animation:sk-pin .55s cubic-bezier(.2,.8,.2,1) both}
+        .sk-tag{animation:sk-tag .5s ease-out both}
       `}</style>
 
       <Seo title="The World's AI Marketplace" description="Discover anything, buy from anywhere. Search millions of products across thousands of trusted stores, compare prices instantly, and shop with AI." />
@@ -662,8 +757,8 @@ export default function SmartKongLanding() {
               <span className="text-gray-900">Search once.</span><br />
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-500 to-violet-600">Buy smarter.</span>
             </h1>
-            <p className="sk-rise text-lg text-gray-500 max-w-lg mb-8 leading-relaxed" style={{ animationDelay: '.1s' }}>
-              Compare millions of products across 18,500+ stores worldwide. AI finds the best price, quality and deals for you.
+            <p className="sk-rise text-lg text-gray-600 max-w-lg mb-8 leading-relaxed" style={{ animationDelay: '.1s' }}>
+              <span className="font-semibold text-gray-900">{greeting}.</span> What are you trying to do today? Ask SmartKong and watch AI search every store on Earth at once.
             </p>
 
             {/* Search card */}
@@ -673,22 +768,35 @@ export default function SmartKongLanding() {
                 <input
                   value={query}
                   onChange={e => setQuery(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && runSearch()}
+                  onKeyDown={e => e.key === 'Enter' && launchWorldSearch()}
                   placeholder={query ? '' : `Find me ${typed}`}
                   className="flex-1 bg-transparent py-3 text-gray-900 placeholder-gray-500 focus:outline-none text-base"
                 />
               </div>
               <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={e => onImage(e.target.files?.[0])} />
               <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
-                <button onClick={runAi} className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-50 text-blue-700 font-semibold text-sm hover:bg-blue-100 transition-colors"><Sparkles className="w-4 h-4" /> AI Search</button>
+                <button onClick={() => launchWorldSearch(undefined, '/ai-solver')} className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-50 text-blue-700 font-semibold text-sm hover:bg-blue-100 transition-colors"><Sparkles className="w-4 h-4" /> AI Search</button>
                 <button onClick={voiceSearch} className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-gray-500 hover:bg-gray-100 text-sm transition-colors"><Mic className="w-4 h-4" /> Voice Search</button>
                 <button onClick={() => fileRef.current?.click()} disabled={imgBusy} className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-gray-500 hover:bg-gray-100 text-sm transition-colors disabled:opacity-50"><Camera className="w-4 h-4" /> {imgBusy ? 'Scanning…' : 'Image Search'}</button>
                 <button onClick={() => navigate('/compare')} className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-gray-500 hover:bg-gray-100 text-sm transition-colors"><GitCompare className="w-4 h-4" /> Compare</button>
               </div>
             </div>
 
-            {/* Live AI-search signal + popular searches */}
-            <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+            {/* Intent chips — "what are you trying to do today?" */}
+            <div className="sk-rise flex flex-wrap gap-2 mt-5" style={{ animationDelay: '.2s' }}>
+              {INTENTS.map(it => (
+                <button
+                  key={it.label}
+                  onClick={() => onIntent(it)}
+                  className="px-3.5 py-2 rounded-full bg-white border border-gray-200 text-sm font-medium text-gray-700 hover:border-blue-400 hover:text-blue-700 hover:shadow-sm active:scale-95 transition-all"
+                >
+                  {it.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Ambient: live pulse + rotating story */}
+            <div className="mt-6 flex flex-col gap-2.5">
               <span className="flex items-center gap-2 text-sm text-gray-500">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -696,31 +804,21 @@ export default function SmartKongLanding() {
                 </span>
                 AI is searching <span className="font-semibold text-gray-700">18,500 stores</span> in real time
               </span>
-              <span className="hidden sm:flex items-center gap-1.5 text-sm text-gray-400">
-                <span className="text-gray-400">Popular:</span>
-                {['MacBook', 'iPhone', 'DJI', 'RTX 5090'].map(t => (
-                  <button key={t} onClick={() => { setQuery(t); runSearch(t); }} className="text-blue-600 hover:text-blue-700 hover:underline font-medium">{t}</button>
-                ))}
+              <span key={storyIdx} className="sk-rise flex items-center gap-2 text-sm text-gray-500">
+                <Globe className="w-4 h-4 text-blue-500 shrink-0" /> {LIVE_STORIES[storyIdx]}
               </span>
-            </div>
-
-            {/* CTAs */}
-            <div className="sk-rise flex flex-wrap items-center gap-3 mt-6" style={{ animationDelay: '.2s' }}>
-              <button onClick={() => navigate('/shop')} className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-500/25 transition-colors">
-                Start Shopping <ArrowRight className="w-4 h-4" />
-              </button>
-              <button onClick={() => window.scrollBy({ top: window.innerHeight * 0.9, behavior: 'smooth' })} className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white border border-gray-200 text-gray-700 font-bold hover:bg-gray-50 transition-colors">
-                <Play className="w-4 h-4 text-blue-600" /> How it works
-              </button>
             </div>
           </div>
 
           {/* Right: floating product cards + live AI panel over the globe */}
           <div className="relative h-[440px] md:h-[520px] hidden md:block">
-            {HERO_CARDS.map(c => <HeroCard key={c.title} c={c} />)}
-            <AiSearchPanel />
+            {worldQuery === null && HERO_CARDS.map(c => <HeroCard key={c.title} c={c} />)}
+            {worldQuery === null && <AiSearchPanel />}
           </div>
         </div>
+
+        {/* Signature interaction: AI maps the world's commerce on search */}
+        {worldQuery !== null && <WorldSearchOverlay query={worldQuery} />}
 
         {/* Stats card */}
         <div className="relative max-w-7xl mx-auto px-4 lg:px-8 pb-16 md:pb-20">
