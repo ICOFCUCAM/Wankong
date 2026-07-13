@@ -1330,19 +1330,6 @@ export default function SmartKongLanding() {
         </div>
       </Spotlight>
 
-      {/* ── LIVING SHELF (gently moving category wall for discovery) ─────── */}
-      <section className={`${T.sectionB} py-6 border-y ${theme === 'light' ? 'border-gray-100' : 'border-white/[0.06]'}`}>
-        <div className="relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)]">
-          <div className="sk-marquee flex items-center gap-3 w-max">
-            {[...SHELF, ...SHELF].map((c, i) => (
-              <button key={i} onClick={() => navigate(`/shop?q=${encodeURIComponent(c.l)}`)} className={`shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold transition-transform hover:scale-105 ${T.chip}`}>
-                <span className="text-base">{c.e}</span> {c.l}
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ── AI COLLECTIONS (discovery signature — products that work together) */}
       <section className={`${T.sectionA} py-20 md:py-28`}>
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
@@ -1381,59 +1368,31 @@ export default function SmartKongLanding() {
         </div>
       </section>
 
-      {/* ── DISCOVER (Netflix-style rows for discovery shoppers) ─────────── */}
-      {pool.length >= 4 && (() => {
-        const byPopular = [...pool].sort((a, b) => (b.rating_count ?? 0) - (a.rating_count ?? 0));
+      {/* ── FEATURED (one rich product moment: magazine lead + Netflix rows) */}
+      {trending.length > 0 && (() => {
         const byRating = [...pool].sort((a, b) => (Number(b.rating_avg) || 0) - (Number(a.rating_avg) || 0));
-        const under50 = pool.filter(p => (p.price ?? 0) > 0 && (p.price ?? 0) <= 5000);
         return (
           <section className={`${T.sectionB} py-20 md:py-28`}>
             <div className="max-w-7xl mx-auto px-4 lg:px-8">
-              <SectionHead eyebrow="Because the world is shopping" title="Discover something new" tokens={T} sub="No search needed — SmartKong surfaces what people are loving right now, everywhere." />
-              <div className="mt-10">
-                <DiscoveryRow eyebrow="Right now" title="Trending Today" products={pool.slice(0, 14)} tokens={T} />
-                <DiscoveryRow eyebrow="Loved everywhere" title="Popular Worldwide" products={byPopular.slice(0, 14)} tokens={T} />
-                <DiscoveryRow eyebrow="Highest rated" title="AI Picks" products={byRating.slice(0, 14)} tokens={T} />
-                <DiscoveryRow eyebrow="Budget finds" title="Under €50" products={under50.slice(0, 14)} tokens={T} />
+              <div className="flex items-end justify-between mb-10">
+                <SectionHead eyebrow="What the world is buying" title="Featured today" tokens={T} sub="The products SmartKong shoppers are searching, comparing and buying right now." />
+                <Link to="/shop" className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-500">View all <ArrowRight className="w-4 h-4" /></Link>
               </div>
+              {trending[0] && <FeaturedDeal p={trending[0]} tokens={T} />}
+              {pool.length >= 4 && (
+                <div className="mt-6">
+                  <DiscoveryRow eyebrow="Right now" title="Trending Today" products={pool.slice(0, 14)} tokens={T} />
+                  <DiscoveryRow eyebrow="Highest rated" title="AI Picks" products={byRating.slice(0, 14)} tokens={T} />
+                  {forYou.length >= 4 && <DiscoveryRow eyebrow="Picked for you" title={firstName ? `For you, ${firstName}` : 'For you'} products={forYou.slice(0, 14)} tokens={T} />}
+                </div>
+              )}
             </div>
           </section>
         );
       })()}
 
-      {/* ── AI-FOUND DEALS (savings band) ────────────────────────────────── */}
+      {/* ── AI-FOUND DEALS (the one distinct savings band) ───────────────── */}
       {deals.length >= 4 && <DealBand deals={deals} />}
-
-      {/* ── FOR YOU (personalized) ───────────────────────────────────────── */}
-      {forYou.length >= 4 && (
-        <section className={`${T.sectionA} py-20 md:py-28`}>
-          <div className="max-w-7xl mx-auto px-4 lg:px-8">
-            <div className="flex items-end justify-between">
-              <SectionHead eyebrow="Picked for you" title={firstName ? `For you, ${firstName}` : 'For you'} tokens={T} />
-              <Link to="/shop" className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-500">View all <ArrowRight className="w-4 h-4" /></Link>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
-              {forYou.map(p => <ProductCard key={p.id} p={p} />)}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── TRENDING (featured deal breaks the grid) ─────────────────────── */}
-      {trending.length > 0 && (
-        <section className={`${T.sectionB} py-20 md:py-28`}>
-          <div className="max-w-7xl mx-auto px-4 lg:px-8">
-            <div className="flex items-end justify-between mb-10">
-              <SectionHead eyebrow="Right now" title="Trending this week" tokens={T} sub="The products SmartKong shoppers are buying and comparing most." />
-              <Link to="/shop" className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-500">View all <ArrowRight className="w-4 h-4" /></Link>
-            </div>
-            {trending[0] && <FeaturedDeal p={trending[0]} tokens={T} />}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {trending.slice(1).map(p => <ProductCard key={p.id} p={p} />)}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* ── CATEGORIES ───────────────────────────────────────────────────── */}
       <section className={`${T.sectionA} py-20 md:py-28`}>
