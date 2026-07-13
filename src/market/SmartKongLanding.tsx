@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
@@ -371,59 +371,6 @@ function Testimonials({ tokens }: { tokens: ReturnType<typeof themeTokens> }) {
   );
 }
 
-// ── Dotted globe (hero graphic) ─────────────────────────────────────────────────
-function DottedGlobe() {
-  const dots = useMemo(() => {
-    const pts: { x: number; y: number; z: number }[] = [];
-    const R = 150, lat = 26;
-    for (let i = 0; i <= lat; i++) {
-      const phi = -Math.PI / 2 + (Math.PI * i) / lat;
-      const r = Math.cos(phi);
-      const n = Math.max(1, Math.round(lat * 2 * r));
-      for (let j = 0; j < n; j++) {
-        const theta = (2 * Math.PI * j) / n + phi * 0.5; // slight twist
-        pts.push({ x: R * r * Math.sin(theta), y: R * Math.sin(phi), z: R * r * Math.cos(theta) });
-      }
-    }
-    return pts;
-  }, []);
-  return (
-    <div className="absolute inset-0 flex items-center justify-center" aria-hidden>
-      <div className="relative w-[min(120%,560px)] aspect-square">
-        <div className="absolute inset-[6%] rounded-full opacity-80 blur-3xl" style={{ background: 'radial-gradient(circle at 50% 45%, #93C5FD, #C7D9FE 40%, transparent 68%)' }} />
-        <div className="absolute inset-[24%] rounded-full opacity-70 blur-2xl" style={{ background: 'radial-gradient(circle at 45% 40%, #FFFFFFcc, #BFDBFE99 55%, transparent 75%)' }} />
-        {/* light streaks */}
-        <div className="absolute left-[8%] top-[30%] w-[84%] h-[3px] opacity-50 blur-[2px] rotate-[-14deg]" style={{ background: 'linear-gradient(90deg, transparent, #FFFFFF, #93C5FD, transparent)' }} />
-        <div className="absolute left-[4%] top-[58%] w-[92%] h-[2px] opacity-40 blur-[2px] rotate-[10deg]" style={{ background: 'linear-gradient(90deg, transparent, #A5B4FC, #FFFFFF, transparent)' }} />
-        <svg viewBox="-170 -170 340 340" className="relative w-full h-full">
-          <defs>
-            <linearGradient id="skArc1" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stopColor="#60A5FA" stopOpacity="0" /><stop offset="0.5" stopColor="#60A5FA" stopOpacity="0.9" /><stop offset="1" stopColor="#60A5FA" stopOpacity="0" />
-            </linearGradient>
-            <linearGradient id="skArc2" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stopColor="#A78BFA" stopOpacity="0" /><stop offset="0.5" stopColor="#A78BFA" stopOpacity="0.8" /><stop offset="1" stopColor="#A78BFA" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-          {dots.map((p, i) => {
-            const depth = (p.z + 150) / 300;
-            return <circle key={i} cx={p.x} cy={-p.y} r={0.7 + depth * 1.5} fill="#3B82F6" opacity={0.12 + depth * 0.5} />;
-          })}
-          {/* glowing network arcs */}
-          <path d="M -140 40 Q -30 -130 130 -50" fill="none" stroke="url(#skArc1)" strokeWidth="2.5" opacity="0.8" />
-          <path d="M -120 -70 Q 40 -20 135 60" fill="none" stroke="url(#skArc2)" strokeWidth="2" opacity="0.7" />
-          <path d="M -100 100 Q 10 40 120 110" fill="none" stroke="url(#skArc1)" strokeWidth="1.6" opacity="0.5" />
-          {/* connection nodes */}
-          <circle cx="-30" cy="-92" r="3" fill="#60A5FA" opacity="0.9" /><circle cx="-30" cy="-92" r="6.5" fill="#60A5FA" opacity="0.25" />
-          <circle cx="55" cy="8" r="2.5" fill="#A78BFA" opacity="0.9" /><circle cx="55" cy="8" r="5.5" fill="#A78BFA" opacity="0.25" />
-          {/* orbit arcs */}
-          <ellipse cx="0" cy="0" rx="150" ry="52" fill="none" stroke="#93C5FD" strokeWidth="1" opacity="0.4" transform="rotate(-18)" />
-          <path d="M -150 -30 A 150 150 0 0 1 150 30" fill="none" stroke="#FBBF24" strokeWidth="1.5" opacity="0.5" strokeDasharray="2 5" transform="rotate(24)" />
-        </svg>
-      </div>
-    </div>
-  );
-}
-
 // ── Floating hero product card (image left, details right — like the mock) ─────
 function HeroCard({ c }: { c: (typeof HERO_CARDS)[number] }) {
   const [photoOk, setPhotoOk] = useState(true);
@@ -551,11 +498,10 @@ export default function SmartKongLanding() {
       <MarketHeader />
 
       {/* ── HERO (light AI shopping engine) ──────────────────────────────── */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#EAF1FF] via-[#F6F9FF] to-white">
-        <div className="absolute inset-0" aria-hidden>
-          <div className="absolute top-[-10%] right-[-5%] w-[42rem] h-[42rem] rounded-full opacity-50 blur-[120px]" style={{ background: 'radial-gradient(circle,#BFDBFE,transparent 60%)' }} />
-          <div className="absolute bottom-[-20%] left-[-8%] w-[34rem] h-[34rem] rounded-full opacity-40 blur-[120px]" style={{ background: 'radial-gradient(circle,#DDD6FE,transparent 60%)' }} />
-        </div>
+      <section className="relative overflow-hidden bg-white">
+        {/* Global network globe background */}
+        <img src="/Smartkonghero.png" alt="" aria-hidden className="pointer-events-none select-none absolute inset-0 w-full h-full object-cover object-right" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white via-white/60 to-transparent md:via-white/20" aria-hidden />
 
         <div className="relative max-w-7xl mx-auto px-4 lg:px-8 pt-12 md:pt-16 pb-4 grid lg:grid-cols-2 gap-8 items-center">
           {/* Left: copy + search */}
@@ -597,9 +543,8 @@ export default function SmartKongLanding() {
             </div>
           </div>
 
-          {/* Right: globe + floating product cards */}
+          {/* Right: floating product cards over the globe */}
           <div className="relative h-[440px] md:h-[520px] hidden md:block">
-            <DottedGlobe />
             {HERO_CARDS.map(c => <HeroCard key={c.title} c={c} />)}
           </div>
         </div>
