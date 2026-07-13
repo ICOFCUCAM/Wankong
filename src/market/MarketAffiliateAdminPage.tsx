@@ -11,6 +11,7 @@ import {
 import {
   KeyRound, Search, Plus, Trash2, X, ExternalLink, Copy,
   CheckCircle2, Link2, Loader2, ShieldAlert, DownloadCloud, RefreshCw, Zap,
+  DollarSign, MousePointerClick, TrendingUp, Package,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -162,6 +163,9 @@ export default function MarketAffiliateAdminPage() {
             </div>
           )}
         </section>
+
+        {/* Earnings & performance */}
+        <EarningsPanel />
 
         {/* Import Engine: one-button bulk import + auto-sync */}
         {accounts.some(a => a.is_active) && (
@@ -558,6 +562,120 @@ function ImportEngine({ accounts, onChanged }: { accounts: Account[]; onChanged:
           </div>
         </div>
       )}
+    </section>
+  );
+}
+
+// ── Earnings & performance — commissions synced from networks + out-click
+// analytics across the imported affiliate catalog. ─────────────────────────────
+function EarningsPanel() {
+  const [commissions, setCommissions] = useState<any[]>([]);
+  const [catalog, setCatalog] = useState<{ count: number; clicks: number }>({ count: 0, clicks: 0 });
+  const [topProducts, setTopProducts] = useState<any[]>([]);
+  const [syncing, setSyncing] = useState(false);
+
+  const load = useCallback(async () => {
+    const [{ data: comms }, { count }, { data: top }] = await Promise.all([
+      supabase.from('affiliate_commissions')
+        .select('id, provider, advertiser_name, commission_amount, sale_amount, status, event_date')
+        .order('event_date', { ascending: false }).limit(50),
+      supabase.from('ecom_products').select('id', { count: 'exact', head: true }).eq('is_affiliate', true),
+      supabase.from('ecom_products')
+        .select('id, title, vendor, click_count, affiliate_source')
+        .eq('is_affiliate', true).order('click_count', { ascending: false }).limit(5),
+    ]);
+    setCommissions(comms ?? []);
+    const clicks = (top ?? []).reduce((s, p) => s + (p.click_count ?? 0), 0);
+    setCatalog({ count: count ?? 0, clicks });
+    setTopProducts((top ?? []).filter(p => (p.click_count ?? 0) > 0));
+  }, []);
+  useEffect(() => { load(); }, [load]);
+
+  const syncCommissions = async () => {
+    setSyncing(true);
+    try {
+      const r = await callEngine({ action: 'cj_sync_commissions' });
+      toast.success(`Synced ${r.synced} commission records (${r.from} → ${r.to})`);
+      load();
+    } catch (err: any) { toast.error(err.message); }
+    setSyncing(false);
+  };
+
+  const total   = commissions.reduce((s, c) => s + Number(c.commission_amount ?? 0), 0);
+  const pending = commissions.filter(c => !/paid|closed|locked/i.test(c.status ?? '')).reduce((s, c) => s + Number(c.commission_amount ?? 0), 0);
+  const sales   = commissions.reduce((s, c) => s + Number(c.sale_amount ?? 0), 0);
+  const money = (n: number) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  const TILES = [
+    { Icon: DollarSign,        label: 'Commissions earned', value: money(total),  tint: 'text-emerald-600 bg-emerald-50' },
+    { Icon: TrendingUp,        label: 'Pending payout',     value: money(pending), tint: 'text-amber-600 bg-amber-50' },
+    { Icon: Package,           label: 'Affiliate products', value: catalog.count.toLocaleString(), tint: 'text-blue-600 bg-blue-50' },
+    { Icon: MousePointerClick, label: 'Sales driven',       value: money(sales),  tint: 'text-violet-600 bg-violet-50' },
+  ];
+
+  return (
+    <section className="mt-10 bg-white border border-gray-200 rounded-2xl p-5">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide flex items-center gap-2">
+          <DollarSign className="w-4 h-4 text-emerald-600" /> Earnings & performance
+        </h2>
+        <button
+          onClick={syncCommissions} disabled={syncing}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-semibold hover:bg-emerald-100 disabled:opacity-40 transition-colors"
+        >
+          <RefreshCw className={`w-3.5 h-3.5 ${syncing ? 'animate-spin' : ''}`} /> Sync commissions
+        </button>
+      </div>
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {TILES.map(t => (
+          <div key={t.label} className="border border-gray-100 rounded-xl p-4">
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center mb-2 ${t.tint}`}><t.Icon className="w-4 h-4" /></div>
+            <p className="text-xl font-extrabold text-gray-900">{t.value}</p>
+            <p className="text-[11px] text-gray-400 mt-0.5">{t.label}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-5 mt-5">
+        <div>
+          <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Recent commissions</p>
+          {commissions.length === 0 ? (
+            <p className="text-xs text-gray-400 border border-dashed border-gray-200 rounded-xl p-4 text-center">
+              No commissions yet — they appear here after "Sync commissions" once your links start converting.
+            </p>
+          ) : (
+            <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
+              {commissions.slice(0, 10).map(c => (
+                <div key={c.id} className="flex items-center gap-2 text-xs bg-gray-50 rounded-lg px-3 py-2">
+                  <span className="font-semibold text-gray-700 truncate flex-1">{c.advertiser_name ?? c.provider}</span>
+                  <span className="text-gray-400">{c.event_date?.slice(0, 10)}</span>
+                  <span className={`px-1.5 py-0.5 rounded font-bold ${/paid|closed|locked/i.test(c.status ?? '') ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>{c.status}</span>
+                  <span className="font-extrabold text-gray-900 w-16 text-right">{money(Number(c.commission_amount ?? 0))}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <div>
+          <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Most-clicked affiliate products</p>
+          {topProducts.length === 0 ? (
+            <p className="text-xs text-gray-400 border border-dashed border-gray-200 rounded-xl p-4 text-center">
+              Out-click analytics build as shoppers hit "View Deal" on affiliate products.
+            </p>
+          ) : (
+            <div className="space-y-1.5">
+              {topProducts.map(p => (
+                <div key={p.id} className="flex items-center gap-2 text-xs bg-gray-50 rounded-lg px-3 py-2">
+                  <span className="font-semibold text-gray-700 truncate flex-1">{p.title}</span>
+                  <span className="text-gray-400">{p.affiliate_source}</span>
+                  <span className="flex items-center gap-1 font-bold text-blue-600"><MousePointerClick className="w-3 h-3" />{p.click_count}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     </section>
   );
 }
