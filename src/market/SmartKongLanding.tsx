@@ -514,6 +514,41 @@ function NetworkNodes() {
   return <canvas ref={ref} className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden />;
 }
 
+// ── Orbit layer: products circling the globe like satellites (ambient depth) ────
+const ORBIT_1 = ['🎧', '💻', '📱', '📷', '🎮', '⌚'];
+const ORBIT_2 = ['👟', '🖥️', '🔋', '🎒', '🕹️'];
+
+function OrbitLayer() {
+  return (
+    <div className="sk-orbit hidden md:block absolute left-[56%] top-[46%] -translate-x-1/2 -translate-y-1/2 w-[540px] h-[540px] pointer-events-none" aria-hidden>
+      <div className="absolute inset-[8%] rounded-full border border-blue-300/25" />
+      <div className="absolute inset-[26%] rounded-full border border-blue-300/20" />
+      {/* Outer ring (clockwise) */}
+      <div className="absolute inset-0" style={{ animation: 'sk-spin 64s linear infinite' }}>
+        {ORBIT_1.map((e, i) => {
+          const a = (360 / ORBIT_1.length) * i;
+          return (
+            <div key={i} className="absolute left-1/2 top-1/2 w-0 h-0" style={{ transform: `rotate(${a}deg) translateY(-248px)` }}>
+              <div style={{ animation: 'sk-spin-rev 64s linear infinite' }} className="-translate-x-1/2 -translate-y-1/2 w-11 h-11 rounded-2xl bg-white/85 backdrop-blur-sm shadow-lg ring-1 ring-black/5 flex items-center justify-center text-xl">{e}</div>
+            </div>
+          );
+        })}
+      </div>
+      {/* Inner ring (counter-clockwise) */}
+      <div className="absolute inset-0" style={{ animation: 'sk-spin-rev 88s linear infinite' }}>
+        {ORBIT_2.map((e, i) => {
+          const a = (360 / ORBIT_2.length) * i + 30;
+          return (
+            <div key={i} className="absolute left-1/2 top-1/2 w-0 h-0" style={{ transform: `rotate(${a}deg) translateY(-176px)` }}>
+              <div style={{ animation: 'sk-spin 88s linear infinite' }} className="-translate-x-1/2 -translate-y-1/2 w-9 h-9 rounded-xl bg-white/80 backdrop-blur-sm shadow ring-1 ring-black/5 flex items-center justify-center text-lg">{e}</div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // ── Live AI comparison panel (searches stores, recommends the best) ─────────────
 const AI_SEQ = [1500, 850, 850, 850, 2800]; // ms per step: search, reveal×3, recommend
 
@@ -858,6 +893,9 @@ export default function SmartKongLanding() {
         .sk-route{stroke-dasharray:240;stroke-dashoffset:240;animation:sk-route 1.1s ease-out forwards}
         .sk-pin{animation:sk-pin .55s cubic-bezier(.2,.8,.2,1) both}
         .sk-tag{animation:sk-tag .5s ease-out both}
+        @keyframes sk-spin { to{transform:rotate(360deg)} }
+        @keyframes sk-spin-rev { to{transform:rotate(-360deg)} }
+        @media (prefers-reduced-motion: reduce){ .sk-orbit, .sk-orbit * { animation:none !important } }
       `}</style>
 
       <Seo title="The World's AI Marketplace" description="Discover anything, buy from anywhere. Search millions of products across thousands of trusted stores, compare prices instantly, and shop with AI." />
@@ -869,6 +907,7 @@ export default function SmartKongLanding() {
         <div className="pointer-events-none select-none absolute right-0 top-0 h-full w-[88%] sm:w-[80%] lg:w-[74%]" aria-hidden>
           <img src="/Smartkonghero.png" alt="" className="w-full h-full object-cover object-right" />
           <NetworkNodes />
+          <OrbitLayer />
           <div className="absolute inset-y-0 left-0 w-2/5 bg-gradient-to-r from-white via-white/80 to-transparent" />
         </div>
 
