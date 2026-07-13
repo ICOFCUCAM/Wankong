@@ -14,10 +14,10 @@ import {
   Brain, Wrench, Store, Globe, Lock, RefreshCw, CheckCircle2,
   TrendingUp, MessageSquare, GitCompare, Heart, Truck,
   Package, Users, Scale, Tag, Play, ArrowUpRight, Loader2,
-  Monitor, Keyboard, Lightbulb, Gamepad2, Headphones, Briefcase, Plane, Speaker, BatteryCharging,
 } from 'lucide-react';
 import { ProductArt, VendorMark, type ArtKind } from './HeroProductArt';
 import { BrandLogo, BRAND_LIST } from './BrandLogos';
+import { COLLECTIONS } from './collectionsData';
 import { toast } from 'sonner';
 
 // Rotating natural-language search prompts (typewriter in the hero search box).
@@ -84,15 +84,6 @@ const HERO_STATS = [
   { Icon: Globe,       value: 230,   suffix: '+',  label: 'Countries' },
   { Icon: Users,       value: 1.8,   suffix: 'M+', label: 'Happy Customers' },
   { Icon: ShieldCheck, value: 100,   suffix: '%',  label: 'Secure & Safe' },
-];
-
-// AI Collections — products curated to work together (the discovery signature).
-const COLLECTIONS: { emoji: string; title: string; sub: string; from: string; grad: string; icons: React.ComponentType<{ className?: string }>[]; q: string; feature?: boolean }[] = [
-  { emoji: '🧳', title: 'The Perfect Home Office', sub: 'Laptop, monitor, chair, keyboard and webcam that just work together.', from: '1,200', grad: 'from-blue-500 to-cyan-500', icons: [Laptop, Monitor, Keyboard, Camera], q: 'home office setup', feature: true },
-  { emoji: '🎥', title: 'Creator Studio Under €2,000', sub: 'Camera, mic, lights and an editing machine for pro-grade content.', from: '1,800', grad: 'from-violet-500 to-purple-600', icons: [Camera, Mic, Lightbulb, Laptop], q: 'creator studio' },
-  { emoji: '🏡', title: 'Smart Home Essentials', sub: 'Hub, smart lighting, cameras and a speaker to automate your home.', from: '320', grad: 'from-emerald-500 to-green-600', icons: [HomeIcon, Lightbulb, Camera, Speaker], q: 'smart home essentials' },
-  { emoji: '🎮', title: 'Ultimate Gaming Setup', sub: 'A GPU rig, high-refresh monitor, chair and headset built to win.', from: '2,400', grad: 'from-rose-500 to-pink-600', icons: [Gamepad2, Monitor, Headphones, Keyboard], q: 'gaming setup' },
-  { emoji: '✈️', title: 'Travel Like a Pro', sub: 'Luggage, noise-cancelling headphones, a power bank and adapters.', from: '450', grad: 'from-amber-500 to-orange-600', icons: [Briefcase, Headphones, Plane, BatteryCharging], q: 'travel essentials' },
 ];
 
 // Living shelf — a gently moving wall of categories for discovery shoppers.
@@ -1056,7 +1047,7 @@ export default function SmartKongLanding() {
             {COLLECTIONS.map(col => (
               <button
                 key={col.title}
-                onClick={() => navigate(`/shop?q=${encodeURIComponent(col.q)}`)}
+                onClick={() => navigate(`/kit/${col.key}`)}
                 className={`group text-left rounded-3xl overflow-hidden transition-all hover:-translate-y-1.5 ${col.feature ? 'md:col-span-2 lg:col-span-1' : ''} ${T.card}`}
               >
                 <div className={`relative h-32 bg-gradient-to-br ${col.grad} overflow-hidden`}>
