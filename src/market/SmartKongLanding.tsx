@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
@@ -13,6 +13,7 @@ import {
   Laptop, Car, Home as HomeIcon, Shirt, BookOpen, HeartPulse,
   Brain, Wrench, Store, Globe, Lock, RefreshCw, CheckCircle2,
   TrendingUp, MessageSquare, GitCompare, Heart, Truck,
+  Package, Users, Scale, Tag, Play, Headphones, Smartphone, Monitor, Plane,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -32,23 +33,41 @@ const CATEGORY_TILES = [
   { label: 'AI Services', Icon: Brain,      to: '/ai-solver',            from: '#6366F1', to2: '#A855F7' },
 ];
 
-const STATS = [
-  { value: 20,    suffix: 'M+', label: 'Products indexed' },
-  { value: 18500, suffix: '',   label: 'Trusted vendors' },
-  { value: 230,   suffix: '',   label: 'Countries served' },
-  { value: 1.8,   suffix: 'M+', label: 'Happy customers' },
-];
-
 const VENDORS = [
   'Amazon', 'eBay', 'Temu', 'Alibaba', 'AliExpress', 'Best Buy', 'Walmart',
   'Newegg', 'B&H', 'Etsy', 'StockX', 'Nike', 'Adidas', 'Apple', 'Microsoft',
   'Dell', 'Lenovo', 'ASUS', 'Shopify', 'Target', 'Jumia', 'Rakuten', 'CJ',
 ];
 
-const WHY = [
-  { Icon: Sparkles,    title: 'AI finds better deals', body: 'Search thousands of vendors at once and surface the best price, instantly.' },
-  { Icon: TrendingUp,  title: 'Price intelligence',    body: 'Know whether to buy now or wait, with AI-driven price and demand signals.' },
-  { Icon: ShieldCheck, title: 'Only trusted vendors',  body: 'Verified sellers, buyer protection and AI fraud detection on every order.' },
+// Stats shown in the hero card (matches the SmartKong hero spec).
+const HERO_STATS = [
+  { Icon: Package,     value: 20,    suffix: 'M+', label: 'Products' },
+  { Icon: Store,       value: 18500, suffix: '+',  label: 'Stores' },
+  { Icon: Globe,       value: 230,   suffix: '+',  label: 'Countries' },
+  { Icon: Users,       value: 1.8,   suffix: 'M+', label: 'Happy Customers' },
+  { Icon: ShieldCheck, value: 100,   suffix: '%',  label: 'Secure & Safe' },
+];
+
+// Brand wordmarks for the "Trusted by millions" strip.
+const BRANDS = ['amazon', 'ebay', 'Walmart', 'BEST BUY', 'AliExpress', 'TEMU', 'Apple', 'Costco', 'Etsy', 'newegg', 'SAMSUNG'];
+
+// Six value props under the hero.
+const FEATURES = [
+  { Icon: Sparkles,    title: 'AI-Powered Search',  body: 'Natural language search that understands you',        tint: 'from-blue-500 to-cyan-400' },
+  { Icon: Scale,       title: 'Compare Everywhere', body: 'Compare prices across thousands of stores',            tint: 'from-violet-500 to-purple-400' },
+  { Icon: Tag,         title: 'Best Deals First',   body: 'AI finds the best deals and exclusive discounts',      tint: 'from-rose-500 to-pink-400' },
+  { Icon: TrendingUp,  title: 'Price Prediction',   body: 'Know when to buy with AI price predictions',           tint: 'from-amber-500 to-orange-400' },
+  { Icon: ShieldCheck, title: 'Trusted & Secure',   body: 'Verified sellers, secure payments, buyer protection',  tint: 'from-emerald-500 to-green-400' },
+  { Icon: Globe,       title: 'Global Shopping',    body: 'Shop from anywhere, we deliver everywhere',            tint: 'from-sky-500 to-blue-400' },
+];
+
+// Floating product cards orbiting the hero globe.
+const HERO_CARDS = [
+  { title: 'Sony WH-1000XM5', rating: 4.8, count: '8,842', price: '348',   vendor: 'Amazon',   Icon: Headphones, grad: 'from-slate-700 to-slate-900', pos: 'top-[6%] left-[26%]',  delay: '0s',   wide: false },
+  { title: 'iPhone 15 Pro',   rating: 4.9, count: '6,421', price: '999',   vendor: 'Apple',    Icon: Smartphone, grad: 'from-zinc-400 to-zinc-600',   pos: 'top-[19%] right-[1%]', delay: '.6s',  wide: false },
+  { title: 'MacBook Pro M4',  rating: 4.9, count: '2,843', price: '1,599', vendor: 'Best Buy', Icon: Laptop,     grad: 'from-slate-500 to-slate-800',  pos: 'top-[40%] left-[0%]',  delay: '.3s',  wide: true  },
+  { title: 'DJI Air 3S Drone',rating: 4.7, count: '1,235', price: '1,099', vendor: 'Amazon',   Icon: Plane,      grad: 'from-neutral-500 to-neutral-800', pos: 'top-[54%] right-[-2%]', delay: '1s', wide: false },
+  { title: 'Samsung 65" OLED',rating: 4.8, count: '952',   price: '1,299', vendor: 'Walmart',  Icon: Monitor,    grad: 'from-indigo-600 to-purple-800', pos: 'bottom-[2%] left-[16%]', delay: '1.3s', wide: true },
 ];
 
 const TRUST = [
@@ -59,36 +78,6 @@ const TRUST = [
   { Icon: Zap, label: 'Secure payments' },
   { Icon: RefreshCw, label: 'Instant refunds' },
 ];
-
-// ── Constellation canvas (hero) ─────────────────────────────────────────────────
-function Constellation() {
-  const ref = useRef<HTMLCanvasElement | null>(null);
-  useEffect(() => {
-    const canvas = ref.current; if (!canvas) return;
-    const ctx = canvas.getContext('2d'); if (!ctx) return;
-    let raf = 0, w = 0, h = 0;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const COUNT = window.innerWidth < 768 ? 34 : 64;
-    const pts: { x: number; y: number; vx: number; vy: number }[] = [];
-    const resize = () => { w = canvas.clientWidth; h = canvas.clientHeight; canvas.width = w * dpr; canvas.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
-    resize();
-    for (let i = 0; i < COUNT; i++) pts.push({ x: Math.random() * w, y: Math.random() * h, vx: (Math.random() - 0.5) * 0.25, vy: (Math.random() - 0.5) * 0.25 });
-    const draw = () => {
-      ctx.clearRect(0, 0, w, h);
-      for (const p of pts) { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > w) p.vx *= -1; if (p.y < 0 || p.y > h) p.vy *= -1; }
-      for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) {
-        const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y, dist = Math.hypot(dx, dy);
-        if (dist < 130) { ctx.strokeStyle = `rgba(96,165,250,${0.14 * (1 - dist / 130)})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y); ctx.stroke(); }
-      }
-      for (const p of pts) { ctx.fillStyle = 'rgba(147,197,253,0.7)'; ctx.beginPath(); ctx.arc(p.x, p.y, 1.4, 0, Math.PI * 2); ctx.fill(); }
-      raf = requestAnimationFrame(draw);
-    };
-    draw();
-    window.addEventListener('resize', resize);
-    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
-  }, []);
-  return <canvas ref={ref} className="absolute inset-0 w-full h-full" aria-hidden />;
-}
 
 // ── Count-up ────────────────────────────────────────────────────────────────────
 function CountUp({ value, suffix }: { value: number; suffix: string }) {
@@ -374,6 +363,66 @@ function Testimonials({ tokens }: { tokens: ReturnType<typeof themeTokens> }) {
   );
 }
 
+// ── Dotted globe (hero graphic) ─────────────────────────────────────────────────
+function DottedGlobe() {
+  const dots = useMemo(() => {
+    const pts: { x: number; y: number; z: number }[] = [];
+    const R = 150, lat = 26;
+    for (let i = 0; i <= lat; i++) {
+      const phi = -Math.PI / 2 + (Math.PI * i) / lat;
+      const r = Math.cos(phi);
+      const n = Math.max(1, Math.round(lat * 2 * r));
+      for (let j = 0; j < n; j++) {
+        const theta = (2 * Math.PI * j) / n + phi * 0.5; // slight twist
+        pts.push({ x: R * r * Math.sin(theta), y: R * Math.sin(phi), z: R * r * Math.cos(theta) });
+      }
+    }
+    return pts;
+  }, []);
+  return (
+    <div className="absolute inset-0 flex items-center justify-center" aria-hidden>
+      <div className="relative w-[min(120%,560px)] aspect-square">
+        <div className="absolute inset-[8%] rounded-full opacity-60 blur-3xl" style={{ background: 'radial-gradient(circle at 50% 45%, #BFDBFE, #DBEAFE 45%, transparent 70%)' }} />
+        <svg viewBox="-170 -170 340 340" className="relative w-full h-full">
+          {dots.map((p, i) => {
+            const depth = (p.z + 150) / 300;
+            return <circle key={i} cx={p.x} cy={-p.y} r={0.7 + depth * 1.5} fill="#3B82F6" opacity={0.12 + depth * 0.5} />;
+          })}
+          {/* two orbit arcs */}
+          <ellipse cx="0" cy="0" rx="150" ry="52" fill="none" stroke="#93C5FD" strokeWidth="1" opacity="0.4" transform="rotate(-18)" />
+          <path d="M -150 -30 A 150 150 0 0 1 150 30" fill="none" stroke="#FBBF24" strokeWidth="1.5" opacity="0.5" strokeDasharray="2 5" transform="rotate(24)" />
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+// ── Floating hero product card ──────────────────────────────────────────────────
+function HeroCard({ c }: { c: (typeof HERO_CARDS)[number] }) {
+  return (
+    <div
+      className={`sk-float absolute z-10 rounded-2xl bg-white shadow-[0_20px_50px_-15px_rgba(30,58,138,0.35)] ring-1 ring-black/[0.04] p-3 ${c.pos} ${c.wide ? 'w-56' : 'w-44'}`}
+      style={{ animationDelay: c.delay }}
+    >
+      <div className={c.wide ? 'flex items-center gap-3' : ''}>
+        <div className={`rounded-xl bg-gradient-to-br ${c.grad} flex items-center justify-center shrink-0 ${c.wide ? 'w-20 h-16' : 'w-full h-16 mb-2'}`}>
+          <c.Icon className="w-7 h-7 text-white/90" />
+        </div>
+        <div className="min-w-0">
+          <p className="text-xs font-bold text-gray-900 truncate">{c.title}</p>
+          <div className="flex items-center gap-1 mt-0.5">
+            <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+            <span className="text-[10px] font-semibold text-gray-500">{c.rating}</span>
+            <span className="text-[10px] text-gray-400">({c.count})</span>
+          </div>
+          <p className="text-sm font-extrabold text-blue-600 mt-0.5">From ${c.price}</p>
+          <p className="text-[10px] text-gray-400 mt-0.5">{c.vendor}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Page ────────────────────────────────────────────────────────────────────────
 export default function SmartKongLanding() {
   const navigate = useNavigate();
@@ -465,68 +514,100 @@ export default function SmartKongLanding() {
       <Seo title="The World's AI Marketplace" description="Discover anything, buy from anywhere. Search millions of products across thousands of trusted stores, compare prices instantly, and shop with AI." />
       <MarketHeader />
 
-      {/* ── HERO (dark band in every theme) ──────────────────────────────── */}
-      <section className="relative overflow-hidden bg-[#070810]">
+      {/* ── HERO (light AI shopping engine) ──────────────────────────────── */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#EAF1FF] via-[#F6F9FF] to-white">
         <div className="absolute inset-0" aria-hidden>
-          <div className="absolute top-[-20%] left-[10%] w-[46rem] h-[46rem] rounded-full opacity-40 blur-[120px]" style={{ background: 'radial-gradient(circle,#2563EB,transparent 60%)', animation: 'sk-drift 20s ease-in-out infinite' }} />
-          <div className="absolute bottom-[-30%] right-[5%] w-[42rem] h-[42rem] rounded-full opacity-30 blur-[120px]" style={{ background: 'radial-gradient(circle,#7C3AED,transparent 60%)', animation: 'sk-drift 26s ease-in-out infinite reverse' }} />
+          <div className="absolute top-[-10%] right-[-5%] w-[42rem] h-[42rem] rounded-full opacity-50 blur-[120px]" style={{ background: 'radial-gradient(circle,#BFDBFE,transparent 60%)' }} />
+          <div className="absolute bottom-[-20%] left-[-8%] w-[34rem] h-[34rem] rounded-full opacity-40 blur-[120px]" style={{ background: 'radial-gradient(circle,#DDD6FE,transparent 60%)' }} />
         </div>
-        <Constellation />
 
-        <div className="pointer-events-none absolute inset-0 hidden lg:block" aria-hidden>
-          {[
-            { t: '14%', l: '6%', d: '0s', label: 'MacBook Pro M4', price: '$1,599' },
-            { t: '58%', l: '3%', d: '1.4s', label: 'Sony WH-1000XM6', price: '$348' },
-            { t: '20%', r: '5%', d: '.7s', label: 'iPhone 18 Pro', price: '$1,199' },
-            { t: '64%', r: '8%', d: '2s', label: 'RTX 5090 Rig', price: '$2,899' },
-          ].map((c, i) => (
-            <div key={i} className="sk-float absolute w-44 rounded-2xl bg-white/[0.06] border border-white/10 backdrop-blur-md p-3 shadow-2xl" style={{ top: c.t, left: (c as any).l, right: (c as any).r, animationDelay: c.d }}>
-              <div className="h-16 rounded-xl bg-gradient-to-br from-blue-500/30 to-cyan-400/10 mb-2" />
-              <p className="text-xs font-semibold text-white/90 truncate">{c.label}</p>
-              <p className="text-xs text-blue-300">{c.price} · best price</p>
+        <div className="relative max-w-7xl mx-auto px-4 lg:px-8 pt-12 md:pt-16 pb-4 grid lg:grid-cols-2 gap-8 items-center">
+          {/* Left: copy + search */}
+          <div>
+            <div className="sk-rise inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-100/70 border border-blue-200 text-sm font-semibold text-blue-700 mb-6">
+              <Sparkles className="w-4 h-4" /> The World’s AI Shopping Engine
             </div>
-          ))}
-        </div>
+            <h1 className="sk-rise text-5xl md:text-7xl font-black tracking-tight leading-[1.02] mb-5" style={{ animationDelay: '.05s' }}>
+              <span className="text-gray-900">Search once.</span><br />
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-500 to-violet-600">Buy smarter.</span>
+            </h1>
+            <p className="sk-rise text-lg text-gray-500 max-w-lg mb-8 leading-relaxed" style={{ animationDelay: '.1s' }}>
+              Compare millions of products across 18,500+ stores worldwide. AI finds the best price, quality and deals for you.
+            </p>
 
-        <div className="relative max-w-5xl mx-auto px-4 lg:px-8 pt-20 pb-24 md:pt-28 md:pb-32 text-center">
-          <div className="sk-rise inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.06] border border-white/10 backdrop-blur-md text-sm text-white/80 mb-8">
-            <Sparkles className="w-4 h-4 text-blue-400" /> The world’s AI marketplace
-          </div>
-          <h1 className="sk-rise text-5xl md:text-7xl font-black tracking-tight leading-[1.05] mb-6 text-white" style={{ animationDelay: '.05s' }}>
-            Discover Anything.<br />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-cyan-300 to-violet-400">Buy From Anywhere.</span>
-          </h1>
-          <p className="sk-rise text-lg md:text-xl text-white/55 max-w-2xl mx-auto mb-10" style={{ animationDelay: '.1s' }}>
-            Search millions of products across thousands of trusted stores, compare prices instantly, chat with AI experts, and buy from the best source — all in one place.
-          </p>
-
-          <div className="sk-rise max-w-2xl mx-auto" style={{ animationDelay: '.15s' }}>
-            <div className="rounded-2xl bg-white/[0.06] border border-white/12 backdrop-blur-xl p-2 shadow-2xl">
+            {/* Search card */}
+            <div className="sk-rise max-w-xl bg-white rounded-2xl shadow-[0_24px_60px_-20px_rgba(30,58,138,0.35)] ring-1 ring-black/[0.04] p-2.5" style={{ animationDelay: '.15s' }}>
               <div className="flex items-center gap-2 px-3">
-                <Search className="w-5 h-5 text-white/40 shrink-0" />
-                <input value={query} onChange={e => setQuery(e.target.value)} onKeyDown={e => e.key === 'Enter' && runSearch()} placeholder="What are you looking for today?" className="flex-1 bg-transparent py-3.5 text-white placeholder-white/35 focus:outline-none text-base" />
+                <Search className="w-5 h-5 text-gray-400 shrink-0" />
+                <input value={query} onChange={e => setQuery(e.target.value)} onKeyDown={e => e.key === 'Enter' && runSearch()} placeholder="What are you looking for?" className="flex-1 bg-transparent py-3 text-gray-900 placeholder-gray-400 focus:outline-none text-base" />
               </div>
-              <div className="flex items-center gap-2 mt-1 px-1">
-                <button onClick={voiceSearch} className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.06] text-sm transition-colors"><Mic className="w-4 h-4" /> Voice</button>
-                <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={e => onImage(e.target.files?.[0])} />
-                <button onClick={() => fileRef.current?.click()} disabled={imgBusy} className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.06] text-sm transition-colors disabled:opacity-50"><Camera className="w-4 h-4" /> {imgBusy ? 'Scanning…' : 'Image'}</button>
-                <button onClick={runAi} className="ml-auto flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-semibold text-sm hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/25"><Sparkles className="w-4 h-4" /> AI Search</button>
+              <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={e => onImage(e.target.files?.[0])} />
+              <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+                <button onClick={runAi} className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-50 text-blue-700 font-semibold text-sm hover:bg-blue-100 transition-colors"><Sparkles className="w-4 h-4" /> AI Search</button>
+                <button onClick={voiceSearch} className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-gray-500 hover:bg-gray-100 text-sm transition-colors"><Mic className="w-4 h-4" /> Voice Search</button>
+                <button onClick={() => fileRef.current?.click()} disabled={imgBusy} className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-gray-500 hover:bg-gray-100 text-sm transition-colors disabled:opacity-50"><Camera className="w-4 h-4" /> {imgBusy ? 'Scanning…' : 'Image Search'}</button>
+                <button onClick={() => navigate('/compare')} className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-gray-500 hover:bg-gray-100 text-sm transition-colors"><GitCompare className="w-4 h-4" /> Compare</button>
               </div>
             </div>
-            <div className="flex flex-wrap justify-center gap-2 mt-5">
-              {['headphones', 'gaming laptop', 'running shoes', 'home office'].map(t => (
-                <button key={t} onClick={() => { setQuery(t); runSearch(t); }} className="px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-white/55 hover:text-white hover:border-white/25 text-xs transition-colors">{t}</button>
-              ))}
+
+            {/* CTAs */}
+            <div className="sk-rise flex flex-wrap items-center gap-3 mt-6" style={{ animationDelay: '.2s' }}>
+              <button onClick={() => navigate('/shop')} className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-500/25 transition-colors">
+                Start Shopping <ArrowRight className="w-4 h-4" />
+              </button>
+              <button onClick={() => window.scrollBy({ top: window.innerHeight * 0.9, behavior: 'smooth' })} className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white border border-gray-200 text-gray-700 font-bold hover:bg-gray-50 transition-colors">
+                <Play className="w-4 h-4 text-blue-600" /> How it works
+              </button>
             </div>
+          </div>
+
+          {/* Right: globe + floating product cards */}
+          <div className="relative h-[440px] md:h-[520px] hidden md:block">
+            <DottedGlobe />
+            {HERO_CARDS.map(c => <HeroCard key={c.title} c={c} />)}
           </div>
         </div>
 
-        <div className="relative border-t border-white/[0.06] bg-white/[0.02]">
-          <div className="max-w-6xl mx-auto px-4 lg:px-8 py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
-            {STATS.map(s => (
-              <div key={s.label} className="text-center">
-                <p className="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60"><CountUp value={s.value} suffix={s.suffix} /></p>
-                <p className="text-xs md:text-sm text-white/40 mt-1">{s.label}</p>
+        {/* Stats card */}
+        <div className="relative max-w-7xl mx-auto px-4 lg:px-8 pb-16 md:pb-20">
+          <div className="rounded-2xl bg-white shadow-[0_20px_50px_-24px_rgba(30,58,138,0.35)] ring-1 ring-black/[0.04] grid grid-cols-2 md:grid-cols-5 divide-x divide-gray-100">
+            {HERO_STATS.map(s => (
+              <div key={s.label} className="flex items-center justify-center gap-3 px-4 py-6">
+                <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center shrink-0"><s.Icon className="w-5 h-5 text-blue-600" /></div>
+                <div>
+                  <p className="text-xl md:text-2xl font-black text-gray-900 leading-none"><CountUp value={s.value} suffix={s.suffix} /></p>
+                  <p className="text-xs text-gray-400 mt-1">{s.label}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── TRUSTED BY (brand strip) ─────────────────────────────────────── */}
+      <section className="bg-white py-10 border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <p className="text-center text-sm text-gray-400 mb-7">Trusted by millions. Powered by thousands of stores.</p>
+          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-5">
+            {BRANDS.map(b => (
+              <span key={b} className="text-lg md:text-xl font-extrabold text-gray-400 hover:text-gray-700 transition-colors tracking-tight">{b}</span>
+            ))}
+            <Link to="/shop" className="text-gray-300 hover:text-blue-600 transition-colors"><ArrowRight className="w-5 h-5" /></Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FEATURE STRIP (6 value props) ────────────────────────────────── */}
+      <section className={`${T.sectionA} py-14`}>
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-8">
+            {FEATURES.map(f => (
+              <div key={f.title} className="flex items-start gap-4">
+                <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${f.tint} flex items-center justify-center shrink-0 shadow-md`}><f.Icon className="w-5 h-5 text-white" /></div>
+                <div>
+                  <h3 className={`text-base font-bold ${T.cardTitle}`}>{f.title}</h3>
+                  <p className={`text-sm mt-0.5 leading-relaxed ${T.cardMeta}`}>{f.body}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -603,22 +684,6 @@ export default function SmartKongLanding() {
                 <span className="sk-cursor">Great pick for ML on a budget. Top 3: a 32GB RAM ultrabook with a discrete GPU, a refurbished workstation with CUDA support, and a cloud-GPU bundle. Comparing prices across 6 vendors now</span>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── WHY SMARTKONG ────────────────────────────────────────────────── */}
-      <section className={`${T.sectionB} py-20 md:py-28`}>
-        <div className="max-w-7xl mx-auto px-4 lg:px-8">
-          <SectionHead center eyebrow="Why SmartKong" title="Shopping, upgraded by AI" tokens={T} />
-          <div className="grid md:grid-cols-3 gap-6 mt-10">
-            {WHY.map(w => (
-              <div key={w.title} className={`rounded-2xl p-7 ${T.card}`}>
-                <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-5"><w.Icon className="w-6 h-6 text-blue-600" /></div>
-                <h3 className={`text-lg font-bold mb-2 ${T.cardTitle}`}>{w.title}</h3>
-                <p className={`text-sm leading-relaxed ${T.body}`}>{w.body}</p>
-              </div>
-            ))}
           </div>
         </div>
       </section>
