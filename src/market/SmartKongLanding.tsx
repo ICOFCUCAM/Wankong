@@ -1080,7 +1080,6 @@ export default function SmartKongLanding() {
             <button onClick={() => navigate('/cart')} className="mt-8 inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-bold shadow-lg shadow-blue-500/25 hover:opacity-90 transition-opacity">
               See it in your cart <ArrowRight className="w-4 h-4" />
             </button>
-            <p className="mt-4 text-xs text-white/40 max-w-sm">SmartKong earns a small commission from partner stores — you never pay more.</p>
           </div>
 
           <div className="relative">
