@@ -618,14 +618,22 @@ function AiSearchPanel({ product }: { product?: { title: string; priceUsd: numbe
 }
 
 // ── Intent-first prompts, ambient stories, world-search animation ───────────────
-const INTENTS: { label: string; q?: string; to?: string }[] = [
+// Intent chips are split by mindset — a shopper and a wholesaler want
+// different things, and mixing them makes SmartKong read like seven
+// companies. The hero mode switch gates which set shows.
+type Intent = { label: string; q?: string; to?: string };
+const SHOP_INTENTS: Intent[] = [
   { label: 'Buy something', q: '' },
-  { label: 'Compare products', to: '/compare' },
+  { label: 'Compare prices', to: '/compare' },
+  { label: 'Find a gift', q: 'gift ideas' },
+  { label: 'Track a price', to: '/wishlist' },
+];
+const BUSINESS_INTENTS: Intent[] = [
   { label: 'Find suppliers', q: 'wholesale suppliers' },
   { label: 'Import from China', q: 'import from China' },
-  { label: 'Start a business', q: 'business starter kit' },
-  { label: 'Hire freelancers', q: 'freelance services' },
-  { label: 'Sell something', to: '/vendor/register' },
+  { label: 'Request a quote', q: 'bulk quote' },
+  { label: 'Bulk pricing', q: 'wholesale bulk pricing' },
+  { label: 'Sell on SmartKong', to: '/vendor/register' },
 ];
 
 const LIVE_STORIES: React.ReactNode[] = [
@@ -894,6 +902,8 @@ export default function SmartKongLanding() {
   const T = themeTokens(theme);
 
   const [query, setQuery] = useState('');
+  const [heroMode, setHeroMode] = useState<'shop' | 'business'>('shop');
+  const isBiz = heroMode === 'business';
   const typed = useTypewriter(TYPED_SUGGESTIONS);
   const [worldQuery, setWorldQuery] = useState<string | null>(null);
   const [regionHovering, setRegionHovering] = useState(false);
@@ -968,7 +978,7 @@ export default function SmartKongLanding() {
     setWorldQuery(q || 'the whole internet');
     window.setTimeout(() => navigate(q ? `${dest}?q=${encodeURIComponent(q)}` : dest), 2600);
   }, [query, navigate]);
-  const onIntent = (it: (typeof INTENTS)[number]) => { if (it.to) navigate(it.to); else launchWorldSearch(it.q || '', '/shop'); };
+  const onIntent = (it: Intent) => { if (it.to) navigate(it.to); else launchWorldSearch(it.q || '', '/shop'); };
 
   const voiceSearch = () => {
     const SR = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
@@ -1040,15 +1050,32 @@ export default function SmartKongLanding() {
         <div className="relative max-w-7xl mx-auto px-4 lg:px-8 pt-12 md:pt-16 pb-4 grid lg:grid-cols-2 gap-8 items-center">
           {/* Left: copy + search */}
           <div>
-            <div className="sk-rise mb-7">
-              <span className="sk-eyebrow">The World’s Shopping Layer</span>
+            {/* Intent switch — Shop vs Source & Business are different mindsets */}
+            <div className="sk-rise inline-flex items-center gap-1 p-1 rounded-full bg-gray-100 mb-6">
+              {([['shop', '🛍', 'Shop'], ['business', '🏭', 'Source & Business']] as const).map(([m, emoji, label]) => (
+                <button
+                  key={m}
+                  onClick={() => setHeroMode(m)}
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all ${heroMode === m ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                >
+                  <span aria-hidden>{emoji}</span> {label}
+                </button>
+              ))}
             </div>
-            <h1 className="sk-rise text-6xl md:text-[5.5rem] font-black tracking-[-0.03em] leading-[0.98] mb-6" style={{ animationDelay: '.05s' }}>
-              <span className="text-gray-900">Every store.</span><br />
-              <span className="sk-serif sk-aurora-text pr-2">One cart.</span>
+            <div className="mb-7">
+              <span className="sk-eyebrow">{isBiz ? 'The World’s Sourcing Layer' : 'The World’s Shopping Layer'}</span>
+            </div>
+            <h1 className="text-6xl md:text-[5.5rem] font-black tracking-[-0.03em] leading-[0.98] mb-6">
+              {isBiz ? (
+                <><span className="text-gray-900">Every supplier.</span><br /><span className="sk-serif sk-aurora-text pr-2">One request.</span></>
+              ) : (
+                <><span className="text-gray-900">Every store.</span><br /><span className="sk-serif sk-aurora-text pr-2">One cart.</span></>
+              )}
             </h1>
-            <p className="sk-rise text-lg text-gray-600 max-w-lg mb-8 leading-relaxed" style={{ animationDelay: '.1s' }}>
-              One search across Amazon, Apple, Best Buy, Temu, eBay, AliExpress and thousands more. SmartKong compares every price — you check out once.
+            <p className="text-lg text-gray-600 max-w-lg mb-8 leading-relaxed">
+              {isBiz
+                ? 'Source from 18,500+ stores, factories and wholesalers worldwide. Compare bulk pricing, request quotes and import with confidence — all in one place.'
+                : 'One search across Amazon, Apple, Best Buy, Temu, eBay, AliExpress and thousands more. SmartKong compares every price — you check out once.'}
             </p>
 
             {/* Search card */}
@@ -1059,7 +1086,7 @@ export default function SmartKongLanding() {
                   value={query}
                   onChange={e => setQuery(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && launchWorldSearch()}
-                  placeholder={query ? '' : `Find me ${typed}`}
+                  placeholder={query ? '' : isBiz ? 'e.g. 5,000 LED bulbs, request a bulk quote…' : `Find me ${typed}`}
                   className="flex-1 bg-transparent py-3 text-gray-900 placeholder-gray-500 focus:outline-none text-base"
                 />
               </div>
@@ -1072,9 +1099,9 @@ export default function SmartKongLanding() {
               </div>
             </div>
 
-            {/* Intent chips — "what are you trying to do today?" */}
-            <div className="sk-rise flex flex-wrap gap-2 mt-5" style={{ animationDelay: '.2s' }}>
-              {INTENTS.map(it => (
+            {/* Intent chips — gated by the Shop / Business mindset switch */}
+            <div className="flex flex-wrap gap-2 mt-5">
+              {(isBiz ? BUSINESS_INTENTS : SHOP_INTENTS).map(it => (
                 <button
                   key={it.label}
                   onClick={() => onIntent(it)}
