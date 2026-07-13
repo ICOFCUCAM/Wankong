@@ -902,7 +902,12 @@ export default function SmartKongLanding() {
   const T = themeTokens(theme);
 
   const [query, setQuery] = useState('');
-  const [heroMode, setHeroMode] = useState<'shop' | 'business'>('shop');
+  // Remember whether this visitor shops or sources, so a returning wholesaler
+  // lands straight in Source & Business mode.
+  const [heroMode, setHeroMode] = useState<'shop' | 'business'>(() => {
+    try { return localStorage.getItem('sk_hero_mode') === 'business' ? 'business' : 'shop'; } catch { return 'shop'; }
+  });
+  const setMode = (m: 'shop' | 'business') => { setHeroMode(m); try { localStorage.setItem('sk_hero_mode', m); } catch { /* ignore */ } };
   const isBiz = heroMode === 'business';
   const typed = useTypewriter(TYPED_SUGGESTIONS);
   const [worldQuery, setWorldQuery] = useState<string | null>(null);
@@ -1055,7 +1060,7 @@ export default function SmartKongLanding() {
               {([['shop', '🛍', 'Shop'], ['business', '🏭', 'Source & Business']] as const).map(([m, emoji, label]) => (
                 <button
                   key={m}
-                  onClick={() => setHeroMode(m)}
+                  onClick={() => setMode(m)}
                   className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all ${heroMode === m ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                 >
                   <span aria-hidden>{emoji}</span> {label}
