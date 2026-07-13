@@ -68,12 +68,41 @@ if you prefer a single trigger.
 
 ## What changes in market mode
 
-- Brand: header/footer/SEO switch to **SmartKong** with the gradient wordmark.
-- Homepage: marketplace-first (hero + full catalog with server-side filters),
-  instead of the Wankong creator "PULSE" homepage.
-- Nav: Home · Books · Music · All Products · AI Solver · Sell.
-- Everything else (product pages, cart, checkout, vendor dashboard, admin,
-  library, auth) is the same app and stays reachable.
+`VITE_SITE_MODE=market` swaps in the **SmartKong "Meridian"** brand — an
+editorial design system positioning SmartKong as *the world's shopping layer*,
+not another store.
+
+**Design language** (`src/market/brand.css`, scoped to `.sk-market`):
+
+- One aurora gradient (`--sk-aurora`), an italic-serif accent word in every
+  headline (`.sk-serif` + `.sk-aurora-text`), the horizon-arc eyebrow
+  (`.sk-eyebrow`), giant outlined display type, film-grain dark bands, and
+  scroll-reveal choreography.
+- Motion primitives in `src/market/motion.tsx`: `Reveal`, `Magnetic`, `Tilt`,
+  `Spotlight` (cursor glow on dark bands), `ScrollProgress` (top aurora bar),
+  `ArcSeam`. All `prefers-reduced-motion` aware.
+
+**Market-only pages/components** (rendered only when `IS_MARKET_SITE`):
+
+- Landing (`SmartKongLanding`), catalog (`SmartKongHome`), product
+  (`MarketProductPage`), AI solver, compare, wishlist, collection/kit,
+  affiliate backend.
+- Light SmartKong **cart** (`MarketCartPage`), **404** (`MarketNotFoundPage`),
+  **About** (`MarketAboutPage`) — routed via `IS_MARKET_SITE` ternaries in
+  `App.tsx`, leaving the WANKONG versions untouched.
+- Global **⌘K command palette** (`CommandPalette`) mounted in `MarketLayout` —
+  searches the catalog, jumps to any section, or hands a query to the AI.
+- Auth screens and checkout show SmartKong logo/copy in market mode.
+
+**Build-time rebrand** (`vite.config.ts`, `brandHtml` plugin): rewrites the
+static `index.html` title/description/OG/theme-color and the PWA
+`manifest.json` (name, shortcuts) for the SmartKong install — the WANKONG
+build is left byte-for-byte unchanged.
+
+- Nav: Categories · Deals · Compare · AI Assistant · Sell on SmartKong ·
+  Track Order.
+- Everything else (vendor dashboard, admin, library) is the same app and stays
+  reachable.
 
 ## Local testing
 
