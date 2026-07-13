@@ -4,6 +4,7 @@ import {
   buildAffiliateLink, cjSearchProducts, cjGetCommissions,
   type AffiliateAccount, type AffiliateProvider, type CjConfig,
 } from './_lib/affiliates';
+import { runAccountSync } from './_lib/affiliateEngine';
 
 // Admin-only affiliate operations. The caller sends their Supabase JWT; we
 // verify it and require an admin_roles row before touching credentials.
@@ -169,6 +170,55 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           if (!error) synced += 1;
         }
         return res.json({ synced, from: start, to: end });
+      }
+
+      // ── Engine v2: one-button bulk import for a connected account ───────────
+      case 'bulk_import': {
+        const { accountId, maxProducts } = req.body as { accountId?: string; maxProducts?: number };
+        if (!accountId) return res.status(400).json({ error: 'accountId required' });
+        const { data: account } = await supabase
+          .from('affiliate_accounts').select('*').eq('id', accountId).maybeSingle();
+        if (!account) return res.status(404).json({ error: 'Account not found' });
+        const result = await runAccountSync(supabase, account, { trigger: 'manual', maxProducts });
+        return res.status(result.error ? 500 : 200).json(result);
+      }
+
+      // ── Engine v2: sync every auto-sync account now ─────────────────────────
+      case 'sync_all': {
+        const { data: accounts } = await supabase
+          .from('affiliate_accounts').select('*').eq('is_active', true).eq('auto_sync', true);
+        const results = [];
+        for (const account of accounts ?? []) {
+          results.push({ account: account.label, provider: account.provider,
+            ...(await runAccountSync(supabase, account, { trigger: 'manual' })) });
+        }
+        return res.json({ accounts: results.length, results });
+      }
+
+      // ── Engine v2: update an account's sync configuration ───────────────────
+      case 'update_sync_config': {
+        const { accountId, auto_sync, sync_keywords, sync_advertisers, feed_url, import_limit } = req.body as any;
+        if (!accountId) return res.status(400).json({ error: 'accountId required' });
+        const patch: Record<string, any> = {};
+        if (auto_sync !== undefined)        patch.auto_sync = !!auto_sync;
+        if (sync_keywords !== undefined)    patch.sync_keywords = sync_keywords || null;
+        if (sync_advertisers !== undefined) patch.sync_advertisers = sync_advertisers || null;
+        if (feed_url !== undefined)         patch.feed_url = feed_url || null;
+        if (import_limit !== undefined)     patch.import_limit = Math.max(1, Math.min(5000, Number(import_limit) || 1000));
+        const { error } = await supabase.from('affiliate_accounts').update(patch).eq('id', accountId);
+        if (error) return res.status(500).json({ error: error.message });
+        return res.json({ ok: true });
+      }
+
+      // ── Engine v2: recent sync runs (audit log) ─────────────────────────────
+      case 'sync_runs': {
+        const { accountId, limit } = req.body as { accountId?: string; limit?: number };
+        let q = supabase.from('affiliate_sync_runs')
+          .select('id, account_id, provider, trigger, found, imported, updated, skipped, error, started_at, finished_at')
+          .order('started_at', { ascending: false }).limit(Math.min(limit ?? 20, 100));
+        if (accountId) q = q.eq('account_id', accountId);
+        const { data } = await q;
+        return res.json({ runs: data ?? [] });
       }
 
       default:

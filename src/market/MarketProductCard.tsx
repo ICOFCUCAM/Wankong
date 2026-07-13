@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Star, ExternalLink, ShoppingCart, GitCompare } from 'lucide-react';
+import { Star, ExternalLink, ShoppingCart, GitCompare, Heart } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import type { MarketProduct } from './useMarketCatalog';
 import { useCompare } from './useCompare';
+import { useWishlist } from './useWishlist';
+import { confettiBurst } from './confetti';
 
 export function Stars({ value, count }: { value: number; count?: number }) {
   return (
@@ -23,7 +25,9 @@ export function Stars({ value, count }: { value: number; count?: number }) {
 export default function MarketProductCard({ product }: { product: MarketProduct }) {
   const { addToCart } = useCart();
   const { has, toggle, isFull } = useCompare();
+  const { has: saved, toggle: toggleSave } = useWishlist();
   const inCompare = has(product.id);
+  const isSaved = saved(product.id);
 
   const priceUsd = (product.price ?? 0) / 100;
   const compareUsd = product.compare_at_price ? product.compare_at_price / 100 : null;
@@ -57,10 +61,27 @@ export default function MarketProductCard({ product }: { product: MarketProduct 
           {product.is_affiliate ? (product.vendor ?? 'Partner') : (product.product_type ?? 'Product')}
         </span>
         {compareUsd && compareUsd > priceUsd && (
-          <span className="absolute top-2 right-2 px-2 py-0.5 bg-red-500 text-white rounded-full text-[10px] font-bold">
+          <span className="absolute top-2 left-2 mt-6 px-2 py-0.5 bg-red-500 text-white rounded-full text-[10px] font-bold">
             -{Math.round((1 - priceUsd / compareUsd) * 100)}%
           </span>
         )}
+        <button
+          onClick={e => {
+            e.preventDefault();
+            const nowSaved = toggleSave(product.id);
+            if (nowSaved) {
+              const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+              confettiBurst(r.left + r.width / 2, r.top + r.height / 2);
+              toast.success('Saved to your wishlist');
+            }
+          }}
+          title={isSaved ? 'Remove from wishlist' : 'Save to wishlist'}
+          className={`absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full backdrop-blur-sm border transition-all active:scale-90 ${
+            isSaved ? 'bg-rose-500 text-white border-rose-500' : 'bg-white/90 text-gray-500 border-gray-200 hover:text-rose-500'
+          }`}
+        >
+          <Heart className={`w-4 h-4 ${isSaved ? 'fill-white' : ''}`} />
+        </button>
         <button
           onClick={e => {
             e.preventDefault();

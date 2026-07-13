@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { MARKET_CATEGORIES } from './categories';
 import {
-  Search, Sparkles, ShoppingCart, User, Store, Globe,
+  Search, Sparkles, ShoppingCart, Store, Globe, Heart, Menu, ChevronDown,
   Facebook, Twitter, Instagram, Linkedin, GitCompare, X,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useCompare } from './useCompare';
+import { useWishlist } from './useWishlist';
 import { ThemeToggle, useMarketTheme, themeTokens } from './theme';
+import FloatingAssistant from './FloatingAssistant';
 import './market-theme.css';
 
 // Floating compare bar — appears on every market page when the shopper has
@@ -35,15 +36,24 @@ export function CompareBar() {
 // SmartKongMarket (Replit) app: big AI search bar, category rail, trust
 // footer. Wraps every market-mode page.
 
-const BLUE = '#2563EB';
-
 const POWERED_BY = ['Amazon', 'AutoTrader', 'Carvana', 'Caterpillar', 'CJ Affiliate'];
+
+const NAV: { label: string; to: string }[] = [
+  { label: 'Categories', to: '/shop' },
+  { label: 'Deals', to: '/shop?sort=price_low' },
+  { label: 'Compare', to: '/compare' },
+  { label: 'AI Assistant', to: '/ai-solver' },
+  { label: 'Sell on SmartKong', to: '/vendor/register' },
+  { label: 'Track Order', to: '/dashboard' },
+];
 
 export function MarketHeader() {
   const navigate = useNavigate();
   const { cartCount } = useCart();
   const { user } = useAuth();
+  const { count: wishCount } = useWishlist();
   const [query, setQuery] = useState('');
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,51 +62,62 @@ export function MarketHeader() {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-white shadow-sm">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100">
       {/* Top bar: logo · search · actions */}
       <div className="max-w-7xl mx-auto px-4 lg:px-8">
         <div className="flex items-center gap-4 h-16">
-          <Link to="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-9 h-9 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center overflow-hidden">
-              <img src="/wankong-mark.png" alt="SmartKong" className="w-6 h-6 object-contain" />
+          <Link to="/" className="flex items-center gap-2.5 shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center shadow-md shadow-violet-500/20 overflow-hidden">
+              <img src="/wankong-mark.png" alt="SmartKong" className="w-5 h-5 object-contain brightness-0 invert" />
             </div>
-            <span className="text-xl font-extrabold tracking-tight" style={{ color: BLUE }}>
-              SmartKong
-            </span>
+            <span className="text-xl font-extrabold tracking-tight text-gray-900">SmartKong</span>
           </Link>
 
           {/* Global product search */}
-          <form onSubmit={submitSearch} className="flex-1 max-w-2xl mx-auto relative hidden sm:block">
+          <form onSubmit={submitSearch} className="flex-1 max-w-2xl mx-auto relative hidden md:block">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="search"
               value={query}
               onChange={e => setQuery(e.target.value)}
-              placeholder="Search for any product…"
-              className="w-full border border-gray-300 rounded-full pl-11 pr-24 py-2.5 text-sm text-gray-900 placeholder-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="What are you shopping for today?"
+              className="w-full border border-gray-200 rounded-full pl-11 pr-28 py-2.5 text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
             />
             <button
               type="button"
               onClick={() => navigate(query.trim() ? `/ai-solver?q=${encodeURIComponent(query.trim())}` : '/ai-solver')}
               title="Ask AI to find products for your problem"
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-full text-xs font-semibold transition-colors"
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1.5 px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-xs font-semibold transition-colors shadow-sm"
             >
-              <Sparkles className="w-3 h-3" /> AI
+              <Sparkles className="w-3.5 h-3.5" /> AI Search
             </button>
           </form>
 
-          <div className="flex items-center gap-2 ml-auto shrink-0">
-            <div className="hidden sm:block"><ThemeToggle /></div>
+          <div className="flex items-center gap-1 ml-auto shrink-0">
+            <div className="hidden lg:block mr-1"><ThemeToggle /></div>
             <button
-              onClick={() => toast.info('SmartKong ships worldwide — prices in USD.')}
-              className="p-2.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
-              title="Global marketplace"
+              onClick={() => toast.info('More languages coming soon — SmartKong ships worldwide.')}
+              className="hidden sm:flex items-center gap-1 px-2.5 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+              title="Language"
             >
-              <Globe className="w-5 h-5" />
+              <Globe className="w-4 h-4" /> EN <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
             </button>
             <Link
+              to="/wishlist"
+              className="relative hidden sm:flex items-center gap-1.5 px-2.5 py-2 text-sm font-medium text-gray-600 hover:text-rose-500 hover:bg-gray-100 rounded-lg transition-colors"
+              title="Wishlist"
+            >
+              <Heart className={`w-5 h-5 ${wishCount > 0 ? 'text-rose-500 fill-rose-500' : ''}`} />
+              <span className="hidden lg:inline">Wishlist</span>
+              {wishCount > 0 && (
+                <span className="absolute top-1 left-4 min-w-[16px] h-4 px-1 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                  {wishCount}
+                </span>
+              )}
+            </Link>
+            <Link
               to="/cart"
-              className="relative p-2.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
+              className="relative p-2.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
               title="Cart"
             >
               <ShoppingCart className="w-5 h-5" />
@@ -107,47 +128,60 @@ export function MarketHeader() {
               )}
             </Link>
             <Link
-              to={user ? '/dashboard/vendor' : '/auth/login'}
-              className="p-2.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
-              title={user ? 'My account' : 'Sign in'}
+              to={user ? '/dashboard' : '/auth/login'}
+              className="ml-1 hidden sm:flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm"
             >
-              <User className="w-5 h-5" />
+              {user ? 'Account' : 'Sign in'}
             </Link>
+            <button
+              onClick={() => setMenuOpen(o => !o)}
+              className="md:hidden p-2.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              title="Menu"
+            >
+              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Category rail */}
-      <div className="border-t border-gray-100 bg-gray-50">
+      {/* Primary nav */}
+      <div className="border-t border-gray-100 hidden md:block">
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
-          <div className="flex items-center gap-2 h-12 overflow-x-auto scrollbar-none">
-            <Link
-              to="/ai-solver"
-              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-xs font-semibold whitespace-nowrap transition-colors shrink-0"
-            >
-              <Sparkles className="w-3.5 h-3.5" /> AI Problem Solver
-            </Link>
-            <span className="flex items-center gap-1.5 px-3.5 py-1.5 bg-white border border-gray-200 text-gray-600 rounded-full text-xs font-semibold whitespace-nowrap shrink-0">
-              <Store className="w-3.5 h-3.5" /> 20K+ Brands
-            </span>
-            <Link
-              to="/"
-              className="px-3 py-1.5 text-sm font-semibold text-gray-900 hover:text-blue-600 whitespace-nowrap transition-colors"
-            >
-              Homepage
-            </Link>
-            {MARKET_CATEGORIES.map(c => (
-              <Link
-                key={c.slug}
-                to={`/category/${c.slug}`}
-                className="px-3 py-1.5 text-sm text-gray-500 hover:text-blue-600 whitespace-nowrap transition-colors"
-              >
-                {c.label}
+          <nav className="flex items-center justify-center gap-8 h-11">
+            {NAV.map(n => (
+              <Link key={n.label} to={n.to} className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors whitespace-nowrap">
+                {n.label}
               </Link>
             ))}
-          </div>
+          </nav>
         </div>
       </div>
+
+      {/* Mobile menu */}
+      {menuOpen && (
+        <div className="md:hidden border-t border-gray-100 bg-white">
+          <form onSubmit={submitSearch} className="p-3">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="search" value={query} onChange={e => setQuery(e.target.value)}
+                placeholder="What are you shopping for today?"
+                className="w-full border border-gray-200 rounded-full pl-11 pr-4 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </form>
+          <nav className="flex flex-col pb-2">
+            {NAV.map(n => (
+              <Link key={n.label} to={n.to} onClick={() => setMenuOpen(false)} className="px-5 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                {n.label}
+              </Link>
+            ))}
+            <Link to={user ? '/dashboard' : '/auth/login'} onClick={() => setMenuOpen(false)} className="mx-5 my-2 text-center px-4 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg">
+              {user ? 'Account' : 'Sign in'}
+            </Link>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
@@ -207,6 +241,7 @@ export function MarketFooter() {
 
   return (
     <>
+    <FloatingAssistant />
     <CompareBar />
     <footer className="bg-[#05060A] border-t border-white/10 text-white">
       <div className="max-w-7xl mx-auto px-4 lg:px-8 py-16">

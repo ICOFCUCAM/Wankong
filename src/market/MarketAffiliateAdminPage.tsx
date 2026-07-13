@@ -10,7 +10,8 @@ import {
 } from '@/lib/affiliateNetworks';
 import {
   KeyRound, Search, Plus, Trash2, X, ExternalLink, Copy,
-  CheckCircle2, Link2, Loader2, ShieldAlert,
+  CheckCircle2, Link2, Loader2, ShieldAlert, DownloadCloud, RefreshCw, Zap,
+  DollarSign, MousePointerClick, TrendingUp, Package,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -21,6 +22,25 @@ interface Account {
   credentials: Record<string, string> | null;
   is_active: boolean;
   created_at: string;
+  auto_sync?: boolean;
+  sync_keywords?: string | null;
+  feed_url?: string | null;
+  import_limit?: number | null;
+  last_synced_at?: string | null;
+  last_sync_status?: string | null;
+}
+
+// Call the affiliate-admin API with the signed-in admin's JWT.
+async function callEngine(body: Record<string, any>) {
+  const { data: { session } } = await supabase.auth.getSession();
+  const res = await fetch('/api/affiliate-admin', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token ?? ''}` },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error ?? 'Request failed');
+  return data;
 }
 
 // SmartKong affiliate backend — connect any of the 30+ supported networks.
@@ -37,7 +57,7 @@ export default function MarketAffiliateAdminPage() {
   const load = useCallback(async () => {
     const { data } = await supabase
       .from('affiliate_accounts')
-      .select('id, provider, label, credentials, is_active, created_at')
+      .select('id, provider, label, credentials, is_active, created_at, auto_sync, sync_keywords, feed_url, import_limit, last_synced_at, last_sync_status')
       .order('created_at', { ascending: false });
     setAccounts((data as Account[]) ?? []);
     setLoading(false);
@@ -143,6 +163,14 @@ export default function MarketAffiliateAdminPage() {
             </div>
           )}
         </section>
+
+        {/* Earnings & performance */}
+        <EarningsPanel />
+
+        {/* Import Engine: one-button bulk import + auto-sync */}
+        {accounts.some(a => a.is_active) && (
+          <ImportEngine accounts={accounts.filter(a => a.is_active)} onChanged={load} />
+        )}
 
         {/* Link tester */}
         {accounts.some(a => a.is_active) && <LinkTester accounts={accounts.filter(a => a.is_active)} />}
@@ -353,6 +381,301 @@ function LinkTester({ accounts }: { accounts: Account[] }) {
           </button>
         </div>
       )}
+    </section>
+  );
+}
+
+// ── Import Engine — one button imports a network's whole catalog; auto-sync
+// keeps registering new products as they appear on the network. ────────────────
+function ImportEngine({ accounts, onChanged }: { accounts: Account[]; onChanged: () => void }) {
+  const [busy, setBusy] = useState<string | null>(null);
+  const [runs, setRuns] = useState<any[]>([]);
+  const [editing, setEditing] = useState<Record<string, { sync_keywords: string; feed_url: string; import_limit: string }>>({});
+
+  const loadRuns = useCallback(async () => {
+    try { const { runs } = await callEngine({ action: 'sync_runs', limit: 8 }); setRuns(runs); } catch { /* first load */ }
+  }, []);
+  useEffect(() => { loadRuns(); }, [loadRuns]);
+
+  const cfg = (a: Account) => editing[a.id] ?? {
+    sync_keywords: a.sync_keywords ?? '',
+    feed_url: a.feed_url ?? '',
+    import_limit: String(a.import_limit ?? 1000),
+  };
+  const setCfg = (a: Account, patch: Partial<{ sync_keywords: string; feed_url: string; import_limit: string }>) =>
+    setEditing(prev => ({ ...prev, [a.id]: { ...cfg(a), ...patch } }));
+
+  const saveCfg = async (a: Account) => {
+    const c = cfg(a);
+    setBusy(`cfg-${a.id}`);
+    try {
+      await callEngine({ action: 'update_sync_config', accountId: a.id, sync_keywords: c.sync_keywords, feed_url: c.feed_url, import_limit: Number(c.import_limit) });
+      toast.success('Sync settings saved');
+      onChanged();
+    } catch (err: any) { toast.error(err.message); }
+    setBusy(null);
+  };
+
+  const toggleAuto = async (a: Account) => {
+    setBusy(`auto-${a.id}`);
+    try {
+      await callEngine({ action: 'update_sync_config', accountId: a.id, auto_sync: !a.auto_sync });
+      toast.success(!a.auto_sync ? 'Auto-sync ON — new products register automatically' : 'Auto-sync off');
+      onChanged();
+    } catch (err: any) { toast.error(err.message); }
+    setBusy(null);
+  };
+
+  const importAll = async (a: Account) => {
+    setBusy(`import-${a.id}`);
+    const t = toast.loading(`Importing the ${a.label} catalog — this can take a minute…`);
+    try {
+      const r = await callEngine({ action: 'bulk_import', accountId: a.id });
+      toast.dismiss(t);
+      if (r.error) toast.error(`Import stopped: ${r.error}`);
+      else toast.success(`Done — ${r.imported} new products, ${r.updated} updated (${r.found} found)`);
+      onChanged(); loadRuns();
+    } catch (err: any) { toast.dismiss(t); toast.error(err.message); }
+    setBusy(null);
+  };
+
+  const syncAll = async () => {
+    setBusy('sync-all');
+    const t = toast.loading('Syncing every auto-sync account…');
+    try {
+      const r = await callEngine({ action: 'sync_all' });
+      toast.dismiss(t);
+      toast.success(`Synced ${r.accounts} account${r.accounts === 1 ? '' : 's'}`);
+      onChanged(); loadRuns();
+    } catch (err: any) { toast.dismiss(t); toast.error(err.message); }
+    setBusy(null);
+  };
+
+  return (
+    <section className="mt-10 bg-white border border-gray-200 rounded-2xl p-5">
+      <div className="flex items-center justify-between mb-1">
+        <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide flex items-center gap-2">
+          <DownloadCloud className="w-4 h-4 text-blue-600" /> Import engine
+        </h2>
+        <button
+          onClick={syncAll} disabled={busy !== null}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-semibold hover:bg-blue-100 disabled:opacity-40 transition-colors"
+        >
+          <RefreshCw className={`w-3.5 h-3.5 ${busy === 'sync-all' ? 'animate-spin' : ''}`} /> Sync all now
+        </button>
+      </div>
+      <p className="text-xs text-gray-400 mb-4">
+        One click imports a connected network's catalog (Amazon, CJ, eBay and Rakuten via API — every other network via its product-feed URL). Auto-sync re-runs on a schedule so new products register themselves as they appear.
+      </p>
+
+      <div className="space-y-3">
+        {accounts.map(a => {
+          const c = cfg(a);
+          const network = networkById(a.provider);
+          return (
+            <div key={a.id} className="border border-gray-200 rounded-xl p-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex-1 min-w-[160px]">
+                  <p className="text-sm font-semibold text-gray-900">{network?.name ?? a.provider} <span className="text-gray-400 font-normal">· {a.label}</span></p>
+                  <p className="text-[11px] text-gray-400">
+                    {a.last_synced_at ? `Last sync ${a.last_synced_at.slice(0, 16).replace('T', ' ')} — ${a.last_sync_status ?? ''}` : 'Never synced'}
+                  </p>
+                </div>
+                <button
+                  onClick={() => toggleAuto(a)} disabled={busy !== null}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition-colors ${a.auto_sync ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-400 hover:text-gray-600'}`}
+                  title="Automatically register new products on a schedule"
+                >
+                  <Zap className="w-3 h-3" /> Auto-sync {a.auto_sync ? 'ON' : 'OFF'}
+                </button>
+                <button
+                  onClick={() => importAll(a)} disabled={busy !== null}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold disabled:opacity-40 transition-colors"
+                >
+                  {busy === `import-${a.id}` ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <DownloadCloud className="w-3.5 h-3.5" />}
+                  Import all products
+                </button>
+              </div>
+
+              <div className="grid sm:grid-cols-[1fr_1fr_110px_auto] gap-2 mt-3">
+                <input
+                  value={c.sync_keywords}
+                  onChange={e => setCfg(a, { sync_keywords: e.target.value })}
+                  placeholder="Keywords filter (optional — e.g. electronics)"
+                  className="border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+                <input
+                  value={c.feed_url}
+                  onChange={e => setCfg(a, { feed_url: e.target.value })}
+                  placeholder="Product feed URL (CSV/JSON — for networks without an API)"
+                  className="border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+                <input
+                  type="number" min={1} max={5000}
+                  value={c.import_limit}
+                  onChange={e => setCfg(a, { import_limit: e.target.value })}
+                  title="Max products per run"
+                  className="border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+                <button
+                  onClick={() => saveCfg(a)} disabled={busy !== null}
+                  className="px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold disabled:opacity-40 transition-colors"
+                >
+                  {busy === `cfg-${a.id}` ? 'Saving…' : 'Save'}
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {runs.length > 0 && (
+        <div className="mt-5">
+          <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Recent runs</p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="text-left text-gray-400">
+                  <th className="py-1.5 pr-4 font-medium">When</th>
+                  <th className="py-1.5 pr-4 font-medium">Network</th>
+                  <th className="py-1.5 pr-4 font-medium">Trigger</th>
+                  <th className="py-1.5 pr-4 font-medium">Found</th>
+                  <th className="py-1.5 pr-4 font-medium">New</th>
+                  <th className="py-1.5 pr-4 font-medium">Updated</th>
+                  <th className="py-1.5 font-medium">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {runs.map(r => (
+                  <tr key={r.id} className="border-t border-gray-100 text-gray-600">
+                    <td className="py-1.5 pr-4 whitespace-nowrap">{r.started_at?.slice(0, 16).replace('T', ' ')}</td>
+                    <td className="py-1.5 pr-4">{r.provider}</td>
+                    <td className="py-1.5 pr-4">{r.trigger}</td>
+                    <td className="py-1.5 pr-4">{r.found}</td>
+                    <td className="py-1.5 pr-4 font-semibold text-emerald-600">{r.imported}</td>
+                    <td className="py-1.5 pr-4">{r.updated}</td>
+                    <td className="py-1.5">{r.error ? <span className="text-red-500">{String(r.error).slice(0, 60)}</span> : <span className="text-emerald-600">ok</span>}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
+// ── Earnings & performance — commissions synced from networks + out-click
+// analytics across the imported affiliate catalog. ─────────────────────────────
+function EarningsPanel() {
+  const [commissions, setCommissions] = useState<any[]>([]);
+  const [catalog, setCatalog] = useState<{ count: number; clicks: number }>({ count: 0, clicks: 0 });
+  const [topProducts, setTopProducts] = useState<any[]>([]);
+  const [syncing, setSyncing] = useState(false);
+
+  const load = useCallback(async () => {
+    const [{ data: comms }, { count }, { data: top }] = await Promise.all([
+      supabase.from('affiliate_commissions')
+        .select('id, provider, advertiser_name, commission_amount, sale_amount, status, event_date')
+        .order('event_date', { ascending: false }).limit(50),
+      supabase.from('ecom_products').select('id', { count: 'exact', head: true }).eq('is_affiliate', true),
+      supabase.from('ecom_products')
+        .select('id, title, vendor, click_count, affiliate_source')
+        .eq('is_affiliate', true).order('click_count', { ascending: false }).limit(5),
+    ]);
+    setCommissions(comms ?? []);
+    const clicks = (top ?? []).reduce((s, p) => s + (p.click_count ?? 0), 0);
+    setCatalog({ count: count ?? 0, clicks });
+    setTopProducts((top ?? []).filter(p => (p.click_count ?? 0) > 0));
+  }, []);
+  useEffect(() => { load(); }, [load]);
+
+  const syncCommissions = async () => {
+    setSyncing(true);
+    try {
+      const r = await callEngine({ action: 'cj_sync_commissions' });
+      toast.success(`Synced ${r.synced} commission records (${r.from} → ${r.to})`);
+      load();
+    } catch (err: any) { toast.error(err.message); }
+    setSyncing(false);
+  };
+
+  const total   = commissions.reduce((s, c) => s + Number(c.commission_amount ?? 0), 0);
+  const pending = commissions.filter(c => !/paid|closed|locked/i.test(c.status ?? '')).reduce((s, c) => s + Number(c.commission_amount ?? 0), 0);
+  const sales   = commissions.reduce((s, c) => s + Number(c.sale_amount ?? 0), 0);
+  const money = (n: number) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  const TILES = [
+    { Icon: DollarSign,        label: 'Commissions earned', value: money(total),  tint: 'text-emerald-600 bg-emerald-50' },
+    { Icon: TrendingUp,        label: 'Pending payout',     value: money(pending), tint: 'text-amber-600 bg-amber-50' },
+    { Icon: Package,           label: 'Affiliate products', value: catalog.count.toLocaleString(), tint: 'text-blue-600 bg-blue-50' },
+    { Icon: MousePointerClick, label: 'Sales driven',       value: money(sales),  tint: 'text-violet-600 bg-violet-50' },
+  ];
+
+  return (
+    <section className="mt-10 bg-white border border-gray-200 rounded-2xl p-5">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide flex items-center gap-2">
+          <DollarSign className="w-4 h-4 text-emerald-600" /> Earnings & performance
+        </h2>
+        <button
+          onClick={syncCommissions} disabled={syncing}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-semibold hover:bg-emerald-100 disabled:opacity-40 transition-colors"
+        >
+          <RefreshCw className={`w-3.5 h-3.5 ${syncing ? 'animate-spin' : ''}`} /> Sync commissions
+        </button>
+      </div>
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {TILES.map(t => (
+          <div key={t.label} className="border border-gray-100 rounded-xl p-4">
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center mb-2 ${t.tint}`}><t.Icon className="w-4 h-4" /></div>
+            <p className="text-xl font-extrabold text-gray-900">{t.value}</p>
+            <p className="text-[11px] text-gray-400 mt-0.5">{t.label}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-5 mt-5">
+        <div>
+          <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Recent commissions</p>
+          {commissions.length === 0 ? (
+            <p className="text-xs text-gray-400 border border-dashed border-gray-200 rounded-xl p-4 text-center">
+              No commissions yet — they appear here after "Sync commissions" once your links start converting.
+            </p>
+          ) : (
+            <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
+              {commissions.slice(0, 10).map(c => (
+                <div key={c.id} className="flex items-center gap-2 text-xs bg-gray-50 rounded-lg px-3 py-2">
+                  <span className="font-semibold text-gray-700 truncate flex-1">{c.advertiser_name ?? c.provider}</span>
+                  <span className="text-gray-400">{c.event_date?.slice(0, 10)}</span>
+                  <span className={`px-1.5 py-0.5 rounded font-bold ${/paid|closed|locked/i.test(c.status ?? '') ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>{c.status}</span>
+                  <span className="font-extrabold text-gray-900 w-16 text-right">{money(Number(c.commission_amount ?? 0))}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <div>
+          <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Most-clicked affiliate products</p>
+          {topProducts.length === 0 ? (
+            <p className="text-xs text-gray-400 border border-dashed border-gray-200 rounded-xl p-4 text-center">
+              Out-click analytics build as shoppers hit "View Deal" on affiliate products.
+            </p>
+          ) : (
+            <div className="space-y-1.5">
+              {topProducts.map(p => (
+                <div key={p.id} className="flex items-center gap-2 text-xs bg-gray-50 rounded-lg px-3 py-2">
+                  <span className="font-semibold text-gray-700 truncate flex-1">{p.title}</span>
+                  <span className="text-gray-400">{p.affiliate_source}</span>
+                  <span className="flex items-center gap-1 font-bold text-blue-600"><MousePointerClick className="w-3 h-3" />{p.click_count}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     </section>
   );
 }

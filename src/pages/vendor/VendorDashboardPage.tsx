@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-const PRODUCT_TYPES = ['Music', 'Book', 'Audiobook', 'Video', 'Podcast', 'Course', 'Article'] as const;
+const PRODUCT_TYPES = ['Product', 'Music', 'Book', 'Audiobook', 'Video', 'Podcast', 'Course', 'Article'] as const;
 
 type Tab = 'overview' | 'products' | 'revenue' | 'payouts';
 
@@ -437,7 +437,7 @@ function AddProductModal({ userId, vendorName, onClose, onCreated }: {
   const [saving, setSaving] = useState(false);
   const [cover,  setCover]  = useState<File | null>(null);
   const [form,   setForm]   = useState({
-    title: '', product_type: 'Music', price: '', description: '', genre: '',
+    title: '', product_type: 'Product', price: '', description: '', genre: '',
   });
 
   const submit = async (e: React.FormEvent) => {
