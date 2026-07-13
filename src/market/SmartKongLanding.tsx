@@ -18,6 +18,7 @@ import {
 import { ProductArt, VendorMark, type ArtKind } from './HeroProductArt';
 import { BrandLogo, BRAND_LIST } from './BrandLogos';
 import { COLLECTIONS } from './collectionsData';
+import { Reveal, Magnetic, Tilt, ArcSeam } from './motion';
 import { toast } from 'sonner';
 
 // Rotating natural-language search prompts (typewriter in the hero search box).
@@ -943,12 +944,12 @@ export default function SmartKongLanding() {
         <div className="relative max-w-7xl mx-auto px-4 lg:px-8 pt-12 md:pt-16 pb-4 grid lg:grid-cols-2 gap-8 items-center">
           {/* Left: copy + search */}
           <div>
-            <div className="sk-rise inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-100/70 border border-blue-200 text-sm font-semibold text-blue-700 mb-6">
-              <Sparkles className="w-4 h-4" /> The World’s Shopping Layer
+            <div className="sk-rise mb-7">
+              <span className="sk-eyebrow">The World’s Shopping Layer</span>
             </div>
-            <h1 className="sk-rise text-5xl md:text-7xl font-black tracking-tight leading-[1.02] mb-5" style={{ animationDelay: '.05s' }}>
+            <h1 className="sk-rise text-6xl md:text-[5.5rem] font-black tracking-[-0.03em] leading-[0.98] mb-6" style={{ animationDelay: '.05s' }}>
               <span className="text-gray-900">Every store.</span><br />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-500 to-violet-600">One cart.</span>
+              <span className="sk-serif sk-aurora-text pr-2">One cart.</span>
             </h1>
             <p className="sk-rise text-lg text-gray-600 max-w-lg mb-8 leading-relaxed" style={{ animationDelay: '.1s' }}>
               One search across Amazon, Apple, Best Buy, Temu, eBay, AliExpress and thousands more. SmartKong compares every price — you check out once.
