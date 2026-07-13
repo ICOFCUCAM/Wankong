@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { useApp } from '@/store/AppContext';
 import { CATEGORIES } from '@/lib/constants';
@@ -14,6 +15,7 @@ interface Product {
   thumbnail: string;
   price: number;
   isPaid: boolean;
+  isAffiliate: boolean;
   category: string;
   tags: string[];
   createdAt: string;
@@ -44,6 +46,7 @@ function typeIcon(type: string) {
 
 export default function Marketplace() {
   const { searchQuery, setSearchQuery, isAuthenticated, setShowAuthModal, setAuthMode } = useApp();
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy]     = useState<'popular' | 'newest' | 'price_low' | 'price_high'>('newest');
   const [priceFilter, setPriceFilter] = useState<'all' | 'free' | 'paid'>('all');
@@ -63,7 +66,7 @@ export default function Marketplace() {
   const fetchProducts = useCallback(async (pageIndex: number): Promise<{ items: Product[]; count: number }> => {
     let query = supabase
       .from('ecom_products')
-      .select('id, title, product_type, price, cover_url, created_at, vendor_id, creator_id, vendor', { count: 'exact' })
+      .select('id, title, product_type, price, cover_url, created_at, vendor_id, creator_id, vendor, is_affiliate', { count: 'exact' })
       .eq('status', 'active');
 
     if (selectedCategory !== 'All') query = query.eq('product_type', selectedCategory);
@@ -106,6 +109,7 @@ export default function Marketplace() {
         thumbnail:     p.cover_url ?? `https://api.dicebear.com/7.x/shapes/svg?seed=${p.id}`,
         price:         (p.price ?? 0) / 100,
         isPaid:        (p.price ?? 0) > 0,
+        isAffiliate:   !!p.is_affiliate,
         category:      p.product_type ?? 'Music',
         tags:          [],
         createdAt:     p.created_at,
@@ -249,7 +253,7 @@ export default function Marketplace() {
       ) : viewMode === 'grid' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filtered.map(item => (
-            <div key={item.id} className="group bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden hover:border-[#9D4EDD]/20 transition-all hover:-translate-y-0.5">
+            <div key={item.id} onClick={() => navigate(`/products/${item.id}`)} className="group cursor-pointer bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden hover:border-[#9D4EDD]/20 transition-all hover:-translate-y-0.5">
               <div className="relative aspect-[4/3] overflow-hidden">
                 <img src={item.thumbnail} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -259,12 +263,17 @@ export default function Marketplace() {
                     {item.type}
                   </span>
                 </div>
-                <div className="absolute top-2 right-2">
+                <div className="absolute top-2 right-2 flex flex-col items-end gap-1">
                   <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${item.isPaid ? 'bg-emerald-500/80 text-white' : 'bg-[#9D4EDD]/80 text-white'}`}>
                     {item.isPaid ? formatCurrency(item.price) : 'Free'}
                   </span>
+                  {item.isAffiliate && (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#00D9FF]/80 text-black">
+                      Partner
+                    </span>
+                  )}
                 </div>
-                <button onClick={() => toggleFavorite(item.id)} className="absolute bottom-2 right-2 w-8 h-8 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/70 transition-colors">
+                <button onClick={e => { e.stopPropagation(); toggleFavorite(item.id); }} className="absolute bottom-2 right-2 w-8 h-8 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/70 transition-colors">
                   <svg className={`w-4 h-4 ${favorites.has(item.id) ? 'text-red-400 fill-red-400' : 'text-white'}`} fill={favorites.has(item.id) ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
                 </button>
               </div>
@@ -281,7 +290,7 @@ export default function Marketplace() {
       ) : (
         <div className="space-y-2">
           {filtered.map(item => (
-            <div key={item.id} className="flex items-center gap-4 p-3 bg-gray-900/50 border border-gray-800 rounded-xl hover:border-[#9D4EDD]/20 transition-all">
+            <div key={item.id} onClick={() => navigate(`/products/${item.id}`)} className="flex items-center gap-4 p-3 cursor-pointer bg-gray-900/50 border border-gray-800 rounded-xl hover:border-[#9D4EDD]/20 transition-all">
               <img src={item.thumbnail} alt="" className="w-16 h-12 rounded-lg object-cover" />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-white truncate">{item.title}</p>

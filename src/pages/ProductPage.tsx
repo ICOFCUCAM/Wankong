@@ -168,13 +168,28 @@ export default function ProductPage() {
     });
   };
 
+  const isAffiliate = !!(product.is_affiliate && product.affiliate_url);
+
+  const trackEvent = (event: 'click' | 'cart') => {
+    supabase.rpc('track_product_event', { p_product_id: product.id, p_event: event }).then(() => {});
+  };
+
   const handleAddToCart = () => {
+    trackEvent('cart');
     addToCart({ id: product.id, title: product.title, price, image: image || '', variant: selectedVariant?.title });
   };
 
   const handleBuyNow = () => {
+    trackEvent('cart');
     addToCart({ id: product.id, title: product.title, price, image: image || '', variant: selectedVariant?.title });
     navigate('/cart');
+  };
+
+  // Affiliate products are bought on the partner's store through a
+  // commission-tracked link — no Wankong checkout.
+  const handleAffiliateBuy = () => {
+    trackEvent('click');
+    window.open(product.affiliate_url, '_blank', 'noopener,noreferrer');
   };
 
   const handleDownload = () => {
@@ -374,8 +389,18 @@ export default function ProductPage() {
                 </button>
               )}
 
-              {/* Already owned → access button replaces purchase */}
-              {isOwned ? (
+              {/* Affiliate product → buy on the partner store */}
+              {isAffiliate ? (
+                <button
+                  onClick={handleAffiliateBuy}
+                  className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] hover:opacity-90 text-white font-semibold rounded-xl transition-opacity"
+                >
+                  Buy from {product.vendor || 'Partner Store'}
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </button>
+              ) : isOwned ? (
                 <button
                   onClick={() => {
                     const t = rawType;

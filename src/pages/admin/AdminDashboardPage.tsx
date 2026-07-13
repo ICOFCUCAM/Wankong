@@ -5,7 +5,7 @@ import {
   DollarSign, AlertTriangle, Settings, BarChart2,
   ChevronRight, Shield, LogOut, Mail, Copy, RefreshCw,
   Trash2, UserPlus, CheckCircle, Clock, XCircle,
-  Package, Archive, Store,
+  Package, Archive, Store, Link2,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
@@ -13,6 +13,7 @@ import AdminCompetitionPanel from '@/components/competition/AdminCompetitionPane
 import AdminDistributionPanel from '@/components/distribution/AdminDistributionPanel';
 import AdminReleaseQueuePage from '@/pages/admin/AdminReleaseQueuePage';
 import DistributorExportsPage from '@/pages/admin/DistributorExportsPage';
+import AdminAffiliatesPage from '@/pages/admin/AdminAffiliatesPage';
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -43,6 +44,7 @@ const NAV: SidebarItem[] = [
   { path: '/admin/exports',          label: 'Export History', icon: <Archive className="w-4 h-4" /> },
   { path: '/admin/books',            label: 'Books',          icon: <BookOpen className="w-4 h-4" /> },
   { path: '/admin/vendors',          label: 'Vendors',        icon: <Store className="w-4 h-4" /> },
+  { path: '/admin/affiliates',       label: 'Affiliates',     icon: <Link2 className="w-4 h-4" /> },
   { path: '/admin/earnings',         label: 'Earnings',       icon: <DollarSign className="w-4 h-4" /> },
   { path: '/admin/reports',          label: 'Reports',        icon: <AlertTriangle className="w-4 h-4" /> },
   { path: '/admin/settings',         label: 'Settings',       icon: <Settings className="w-4 h-4" /> },
@@ -1534,6 +1536,7 @@ export default function AdminDashboardPage() {
             <Route path="/exports"       element={<DistributorExportsPage />} />
             <Route path="/books"         element={<AdminBooks />} />
             <Route path="/vendors"      element={<AdminVendors />} />
+            <Route path="/affiliates"   element={<AdminAffiliatesPage />} />
             <Route path="/earnings"     element={<AdminEarnings />} />
             <Route path="/reports"      element={<AdminReports />} />
             <Route path="/settings"     element={<AdminSettings />} />
