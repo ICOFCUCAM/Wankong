@@ -1440,14 +1440,16 @@ export default function SmartKongLanding() {
       <section className={`${T.sectionA} py-20 md:py-28`}>
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
           <SectionHead center eyebrow="Peace of mind" title="Built for trust" tokens={T} />
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mt-10">
-            {TRUST.map(t => (
-              <div key={t.label} className={`rounded-2xl p-5 text-center transition-colors hover:border-emerald-400/40 ${T.card}`}>
-                <t.Icon className="w-7 h-7 text-emerald-500 mx-auto mb-3" />
-                <p className={`text-xs font-medium ${T.body}`}>{t.label}</p>
+          <Reveal className={`mt-12 rounded-[2rem] border ${theme === 'light' ? 'border-gray-200 bg-white' : 'border-white/10 bg-white/[0.03]'} px-6 py-2 divide-y ${theme === 'light' ? 'divide-gray-100' : 'divide-white/[0.06]'} md:divide-y-0 md:flex md:items-stretch md:divide-x`}>
+            {TRUST.map((t, i) => (
+              <div key={t.label} className="flex-1 flex items-center justify-center gap-3 py-5 md:py-7 md:px-2">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0">
+                  <t.Icon className="w-5 h-5 text-emerald-500" />
+                </div>
+                <p className={`text-sm font-semibold leading-tight ${T.cardTitle}`}>{t.label}</p>
               </div>
             ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
