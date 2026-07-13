@@ -62,16 +62,20 @@ const FEATURES = [
   { Icon: Globe,       title: 'Global Shopping',    body: 'Shop from anywhere, we deliver everywhere',            tint: 'from-sky-500 to-blue-400' },
 ];
 
-// Floating product cards orbiting the hero globe — all art is coded SVG.
+// Floating product cards orbiting the hero globe. Each card tries a real
+// product photo (royalty-free Unsplash CDN) and falls back to coded SVG art
+// if the photo can't load, so the hero never renders broken.
+const UNSPLASH = (id: string) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=300&h=240&q=80`;
+
 const HERO_CARDS: {
   title: string; rating: number; count: string; price: string; vendor: string;
-  art: ArtKind; pos: string; delay: string; big?: boolean;
+  art: ArtKind; photo: string; pos: string; delay: string; big?: boolean; titleMark?: boolean;
 }[] = [
-  { title: 'Sony WH-1000XM5',    rating: 4.8, count: '8,842', price: '348',   vendor: 'Amazon',   art: 'headphones', pos: 'top-[3%] left-[20%]',      delay: '0s'   },
-  { title: 'iPhone 15 Pro',      rating: 4.9, count: '6,421', price: '999',   vendor: 'Apple',    art: 'phone',      pos: 'top-[17%] right-[-2%]',    delay: '.6s'  },
-  { title: 'MacBook Pro M4',     rating: 4.9, count: '2,843', price: '1,599', vendor: 'Best Buy', art: 'laptop',     pos: 'top-[39%] left-[-4%]',     delay: '.3s', big: true },
-  { title: 'DJI Air 3S Drone',   rating: 4.7, count: '1,235', price: '1,099', vendor: 'Amazon',   art: 'drone',      pos: 'top-[56%] right-[-4%]',    delay: '1s'   },
-  { title: 'Samsung 65" OLED TV',rating: 4.8, count: '952',   price: '1,299', vendor: 'Walmart',  art: 'tv',         pos: 'bottom-[1%] left-[13%]',   delay: '1.3s', big: true },
+  { title: 'Sony WH-1000XM5',    rating: 4.8, count: '8,842', price: '348',   vendor: 'Amazon',   art: 'headphones', photo: UNSPLASH('1505740420928-5e560c06d30e'), pos: 'top-[3%] left-[20%]',    delay: '0s'   },
+  { title: 'iPhone 15 Pro',      rating: 4.9, count: '6,421', price: '999',   vendor: 'Apple',    art: 'phone',      photo: UNSPLASH('1592750475338-74b7b21085ab'), pos: 'top-[17%] right-[-2%]',  delay: '.6s'  },
+  { title: 'MacBook Pro M4',     rating: 4.9, count: '2,843', price: '1,599', vendor: 'Best Buy', art: 'laptop',     photo: UNSPLASH('1517336714731-489689fd1ca8'), pos: 'top-[39%] left-[-4%]',   delay: '.3s', big: true, titleMark: true },
+  { title: 'DJI Air 3S Drone',   rating: 4.7, count: '1,235', price: '1,099', vendor: 'Amazon',   art: 'drone',      photo: UNSPLASH('1473968512647-3e447244af8f'), pos: 'top-[56%] right-[-4%]',  delay: '1s'   },
+  { title: 'Samsung 65" OLED TV',rating: 4.8, count: '952',   price: '1,299', vendor: 'Walmart',  art: 'tv',         photo: UNSPLASH('1593784991095-a205069470b6'), pos: 'bottom-[1%] left-[13%]', delay: '1.3s', big: true },
 ];
 
 const TRUST = [
@@ -386,7 +390,11 @@ function DottedGlobe() {
   return (
     <div className="absolute inset-0 flex items-center justify-center" aria-hidden>
       <div className="relative w-[min(120%,560px)] aspect-square">
-        <div className="absolute inset-[8%] rounded-full opacity-60 blur-3xl" style={{ background: 'radial-gradient(circle at 50% 45%, #BFDBFE, #DBEAFE 45%, transparent 70%)' }} />
+        <div className="absolute inset-[6%] rounded-full opacity-80 blur-3xl" style={{ background: 'radial-gradient(circle at 50% 45%, #93C5FD, #C7D9FE 40%, transparent 68%)' }} />
+        <div className="absolute inset-[24%] rounded-full opacity-70 blur-2xl" style={{ background: 'radial-gradient(circle at 45% 40%, #FFFFFFcc, #BFDBFE99 55%, transparent 75%)' }} />
+        {/* light streaks */}
+        <div className="absolute left-[8%] top-[30%] w-[84%] h-[3px] opacity-50 blur-[2px] rotate-[-14deg]" style={{ background: 'linear-gradient(90deg, transparent, #FFFFFF, #93C5FD, transparent)' }} />
+        <div className="absolute left-[4%] top-[58%] w-[92%] h-[2px] opacity-40 blur-[2px] rotate-[10deg]" style={{ background: 'linear-gradient(90deg, transparent, #A5B4FC, #FFFFFF, transparent)' }} />
         <svg viewBox="-170 -170 340 340" className="relative w-full h-full">
           <defs>
             <linearGradient id="skArc1" x1="0" y1="0" x2="1" y2="0">
@@ -418,17 +426,23 @@ function DottedGlobe() {
 
 // ── Floating hero product card (image left, details right — like the mock) ─────
 function HeroCard({ c }: { c: (typeof HERO_CARDS)[number] }) {
+  const [photoOk, setPhotoOk] = useState(true);
   return (
     <div
-      className={`sk-float absolute z-10 rounded-2xl bg-white shadow-[0_22px_55px_-18px_rgba(30,58,138,0.4)] ring-1 ring-black/[0.05] p-2.5 ${c.pos} ${c.big ? 'w-64' : 'w-56'}`}
+      className={`sk-float absolute z-10 rounded-2xl bg-white shadow-[0_22px_55px_-18px_rgba(30,58,138,0.4)] ring-1 ring-black/[0.05] p-2.5 ${c.pos} ${c.big ? 'w-72' : 'w-56'}`}
       style={{ animationDelay: c.delay }}
     >
       <div className="flex items-center gap-3">
-        <div className={`rounded-xl overflow-hidden shrink-0 ${c.big ? 'w-24 h-[4.75rem]' : 'w-[4.5rem] h-[4.5rem]'}`}>
-          <ProductArt kind={c.art} />
+        <div className={`rounded-xl overflow-hidden shrink-0 bg-gray-100 ${c.big ? 'w-24 h-[4.75rem]' : 'w-[4.5rem] h-[4.5rem]'}`}>
+          {photoOk
+            ? <img src={c.photo} alt={c.title} loading="eager" className="w-full h-full object-cover" onError={() => setPhotoOk(false)} />
+            : <ProductArt kind={c.art} />}
         </div>
         <div className="min-w-0 py-0.5">
-          <p className={`font-bold text-gray-900 truncate ${c.big ? 'text-sm' : 'text-xs'}`}>{c.title}</p>
+          <p className={`flex items-center gap-1 font-bold text-gray-900 truncate ${c.big ? 'text-sm' : 'text-xs'}`}>
+            <span className="truncate">{c.title}</span>
+            {c.titleMark && <VendorMark vendor="Apple" />}
+          </p>
           <div className="flex items-center gap-1 mt-0.5">
             {[1, 2, 3, 4].map(n => <Star key={n} className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />)}
             <Star className="w-2.5 h-2.5 fill-amber-400/50 text-amber-400" />
