@@ -117,6 +117,7 @@ const MarketComparePage       = lazy(() => import('./market/MarketComparePage'))
 const MarketWishlistPage      = lazy(() => import('./market/MarketWishlistPage'));
 const MarketCollectionPage    = lazy(() => import('./market/MarketCollectionPage'));
 const MarketAffiliateAdminPage = lazy(() => import('./market/MarketAffiliateAdminPage'));
+const MarketNotFoundPage      = lazy(() => import('./market/MarketNotFoundPage'));
 
 // ── Library ────────────────────────────────────────────────────────────────────
 const LibraryPage = lazy(() => import('./pages/LibraryPage'));
@@ -271,7 +272,7 @@ export default function App() {
             <ProtectedRoute requiredRole="admin"><AdminDashboardPage /></ProtectedRoute>
           } />
 
-          <Route path="*"                   element={<NotFound />} />
+          <Route path="*"                   element={IS_MARKET_SITE ? <MarketNotFoundPage /> : <NotFound />} />
         </Routes>
         </div>
       </Suspense>
