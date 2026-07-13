@@ -108,7 +108,10 @@ const VendorDashboardPage = lazy(() => import('./pages/vendor/VendorDashboardPag
 const AiSolverPage = lazy(() => import('./pages/AiSolverPage'));
 
 // ── smartkong.net (VITE_SITE_MODE=market) ──────────────────────────────────────
-const MarketHomePage = lazy(() => import('./pages/market/MarketHomePage'));
+// SmartKong pages (light, blue design ported from the original SmartKongMarket app)
+const SmartKongHome      = lazy(() => import('./market/SmartKongHome'));
+const MarketProductPage  = lazy(() => import('./market/MarketProductPage'));
+const MarketAiSolverPage = lazy(() => import('./market/MarketAiSolverPage'));
 
 // ── Library ────────────────────────────────────────────────────────────────────
 const LibraryPage = lazy(() => import('./pages/LibraryPage'));
@@ -128,21 +131,22 @@ export default function App() {
   return (
     <>
       <GlobalPlayer />
-      <MobileBottomNav />
+      {!IS_MARKET_SITE && <MobileBottomNav />}
       <AddToPlaylistModal />
       <Suspense fallback={<Spinner />}>
         <div key={location.pathname} className="wk-page-in">
         <Routes>
           {/* ── Public ─────────────────────────────────────────────────────── */}
-          <Route path="/"                         element={IS_MARKET_SITE ? <MarketHomePage /> : <Index />} />
+          <Route path="/"                         element={IS_MARKET_SITE ? <SmartKongHome /> : <Index />} />
+          {IS_MARKET_SITE && <Route path="/category/:slug" element={<SmartKongHome />} />}
           <Route path="/cart"                     element={<CartPage />} />
           <Route path="/checkout"                 element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
           <Route path="/order-confirmation"       element={<OrderConfirmation />} />
           <Route path="/settings/social/callback" element={<SocialOAuthCallback />} />
           <Route path="/search"                   element={<SearchPage />} />
-          <Route path="/ai-solver"                element={<AiSolverPage />} />
+          <Route path="/ai-solver"                element={IS_MARKET_SITE ? <MarketAiSolverPage /> : <AiSolverPage />} />
           <Route path="/collections/:handle"      element={<CollectionPage />} />
-          <Route path="/products/:handle"         element={<ProductPage />} />
+          <Route path="/products/:handle"         element={IS_MARKET_SITE ? <MarketProductPage /> : <ProductPage />} />
           <Route path="/artist/:id"               element={<ArtistProfile />} />
           <Route path="/author/:id"               element={<AuthorProfile />} />
           <Route path="/talent-arena"             element={<TalentArenaPage />} />
