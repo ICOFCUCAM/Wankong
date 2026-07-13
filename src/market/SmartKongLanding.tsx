@@ -706,6 +706,25 @@ function RegionGlobe({ onHover, onPick }: { onHover: (a: boolean) => void; onPic
   );
 }
 
+// ── Discovery row (Netflix-style horizontal scroller of products) ───────────────
+function DiscoveryRow({ eyebrow, title, products, tokens }: { eyebrow: string; title: string; products: Prod[]; tokens: ReturnType<typeof themeTokens> }) {
+  if (products.length < 4) return null;
+  return (
+    <div className="mb-14 last:mb-0">
+      <div className="flex items-end justify-between mb-6">
+        <div>
+          <p className="text-xs font-semibold text-blue-600 uppercase tracking-widest">{eyebrow}</p>
+          <h3 className={`text-2xl md:text-3xl font-black mt-1 ${tokens.heading}`}>{title}</h3>
+        </div>
+        <Link to="/shop" className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-500 shrink-0">View all <ArrowRight className="w-4 h-4" /></Link>
+      </div>
+      <div className="flex gap-5 overflow-x-auto pb-4 scrollbar-none -mx-4 px-4 lg:mx-0 lg:px-0 snap-x">
+        {products.map(p => <div key={p.id} className="snap-start shrink-0 w-56 md:w-64"><ProductCard p={p} /></div>)}
+      </div>
+    </div>
+  );
+}
+
 // ── Page ────────────────────────────────────────────────────────────────────────
 export default function SmartKongLanding() {
   const navigate = useNavigate();
@@ -722,6 +741,7 @@ export default function SmartKongLanding() {
   const [trending, setTrending] = useState<Prod[]>([]);
   const [deals, setDeals] = useState<Prod[]>([]);
   const [forYou, setForYou] = useState<Prod[]>([]);
+  const [pool, setPool] = useState<Prod[]>([]);
   const firstName = (user?.user_metadata?.display_name || user?.email?.split('@')[0] || '').split(' ')[0];
 
   useEffect(() => {
@@ -729,6 +749,14 @@ export default function SmartKongLanding() {
       .select('id, title, handle, price, compare_at_price, cover_url, vendor, product_type, is_affiliate, rating_avg, rating_count')
       .eq('status', 'active').order('trending_score', { ascending: false }).order('created_at', { ascending: false }).limit(8)
       .then(({ data }) => { if (Array.isArray(data)) setTrending(data as unknown as Prod[]); });
+  }, []);
+
+  // Discovery pool — a broad set of active products powering the Netflix-style rows.
+  useEffect(() => {
+    supabase.from('ecom_products')
+      .select('id, title, handle, price, compare_at_price, cover_url, vendor, product_type, is_affiliate, rating_avg, rating_count')
+      .eq('status', 'active').order('trending_score', { ascending: false }).limit(48)
+      .then(({ data }) => { if (Array.isArray(data)) setPool(data as unknown as Prod[]); });
   }, []);
 
   // AI-Found Deals — biggest markdowns, ranked by absolute savings.
@@ -1015,6 +1043,26 @@ export default function SmartKongLanding() {
           </div>
         </div>
       </section>
+
+      {/* ── DISCOVER (Netflix-style rows for discovery shoppers) ─────────── */}
+      {pool.length >= 4 && (() => {
+        const byPopular = [...pool].sort((a, b) => (b.rating_count ?? 0) - (a.rating_count ?? 0));
+        const byRating = [...pool].sort((a, b) => (Number(b.rating_avg) || 0) - (Number(a.rating_avg) || 0));
+        const under50 = pool.filter(p => (p.price ?? 0) > 0 && (p.price ?? 0) <= 5000);
+        return (
+          <section className={`${T.sectionB} py-20 md:py-28`}>
+            <div className="max-w-7xl mx-auto px-4 lg:px-8">
+              <SectionHead eyebrow="Because the world is shopping" title="Discover something new" tokens={T} sub="No search needed — SmartKong surfaces what people are loving right now, everywhere." />
+              <div className="mt-10">
+                <DiscoveryRow eyebrow="Right now" title="Trending Today" products={pool.slice(0, 14)} tokens={T} />
+                <DiscoveryRow eyebrow="Loved everywhere" title="Popular Worldwide" products={byPopular.slice(0, 14)} tokens={T} />
+                <DiscoveryRow eyebrow="Highest rated" title="AI Picks" products={byRating.slice(0, 14)} tokens={T} />
+                <DiscoveryRow eyebrow="Budget finds" title="Under €50" products={under50.slice(0, 14)} tokens={T} />
+              </div>
+            </div>
+          </section>
+        );
+      })()}
 
       {/* ── AI-FOUND DEALS (savings band) ────────────────────────────────── */}
       {deals.length >= 4 && <DealBand deals={deals} />}
