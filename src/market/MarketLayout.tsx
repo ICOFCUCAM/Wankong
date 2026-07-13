@@ -194,42 +194,44 @@ export function MarketHeader() {
   );
 }
 
+// Grouped by mindset — Shop / Business / AI — so SmartKong reads as one
+// focused platform, not seven products stacked together.
 const FOOTER_COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
   {
-    title: 'Marketplace',
+    title: 'Shop',
     links: [
-      { label: 'All Products', href: '/shop' },
-      { label: 'AI Problem Solver', href: '/ai-solver' },
-      { label: 'Trending', href: '/shop?sort=popular' },
-      { label: 'Categories', href: '/category/electronics' },
+      { label: 'Discover products', href: '/shop' },
+      { label: 'Compare prices', href: '/compare' },
       { label: 'Deals', href: '/shop?sort=price_low' },
+      { label: 'Categories', href: '/category/electronics' },
+      { label: 'Wishlist', href: '/wishlist' },
     ],
   },
   {
-    title: 'Sell & Partner',
+    title: 'Business',
     links: [
-      { label: 'Become a Vendor', href: '/vendor/register' },
-      { label: 'Vendor Dashboard', href: '/dashboard/vendor' },
-      { label: 'Affiliate Backend', href: '/admin/affiliates' },
-      { label: 'Partner Networks', href: '/admin/affiliates' },
+      { label: 'Find suppliers', href: '/shop?q=wholesale%20suppliers' },
+      { label: 'Import globally', href: '/shop?q=import%20from%20China' },
+      { label: 'Sell products', href: '/vendor/register' },
+      { label: 'Vendor dashboard', href: '/dashboard/vendor' },
+      { label: 'Affiliate backend', href: '/admin/affiliates' },
+    ],
+  },
+  {
+    title: 'AI',
+    links: [
+      { label: 'Ask the AI', href: '/ai-solver' },
+      { label: 'Compare with AI', href: '/compare' },
+      { label: 'AI Collections', href: '/#collections' },
     ],
   },
   {
     title: 'Company',
     links: [
       { label: 'About', href: '/about' },
-      { label: 'Careers', href: '/careers' },
-      { label: 'Press', href: '/press' },
-      { label: 'Blog', href: '/help' },
-    ],
-  },
-  {
-    title: 'Resources',
-    links: [
       { label: 'Help Center', href: '/help' },
-      { label: 'Contact Us', href: '/contact' },
-      { label: 'FAQ', href: '/faq' },
-      { label: 'API Access', href: '/api-access' },
+      { label: 'Contact', href: '/contact' },
+      { label: 'Press', href: '/press' },
     ],
   },
   {
