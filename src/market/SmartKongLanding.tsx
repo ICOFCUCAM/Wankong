@@ -1526,6 +1526,47 @@ export default function SmartKongLanding() {
         </div>
       </section>
 
+      {/* ── SELL ON SMARTKONG (the two-sided marketplace, for account holders) */}
+      <section className={`${T.sectionA} py-20 md:py-28`}>
+        <div className="max-w-7xl mx-auto px-4 lg:px-8 grid lg:grid-cols-[1.1fr_1fr] gap-12 items-center">
+          <Reveal>
+            <span className="sk-eyebrow">For sellers</span>
+            <h2 className={`text-4xl md:text-6xl font-black tracking-[-0.03em] mt-3 leading-[1.0] ${T.heading}`}>
+              Put your products in front of <span className="sk-serif sk-aurora-text">the whole world.</span>
+            </h2>
+            <p className={`mt-5 max-w-lg text-lg leading-relaxed ${T.body}`}>
+              Any SmartKong account can open a store. List your products once and
+              they surface inside every AI search, comparison and collection — in
+              front of millions of shoppers across 230 countries.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Magnetic>
+                <button onClick={() => navigate('/vendor/register')} className="flex items-center gap-2 px-6 py-3.5 rounded-xl text-white font-bold shadow-lg shadow-violet-500/25 hover:opacity-95 transition-opacity" style={{ background: 'var(--sk-aurora)' }}>
+                  <Store className="w-4 h-4" /> Start selling
+                </button>
+              </Magnetic>
+              <button onClick={() => navigate('/admin/affiliates')} className={`flex items-center gap-2 px-6 py-3.5 rounded-xl border font-bold transition-colors ${theme === 'light' ? 'border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600' : 'border-white/15 text-white hover:bg-white/[0.06]'}`}>
+                Bring affiliate products <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </Reveal>
+          <Reveal delay={120} className="grid grid-cols-2 gap-4">
+            {[
+              { k: 'List once', v: 'Surface everywhere — search, compare, collections.', Icon: Package },
+              { k: '230 countries', v: 'Reach shoppers worldwide from day one.', Icon: Globe },
+              { k: 'AI-matched', v: 'Our AI recommends you to the right buyers.', Icon: Sparkles },
+              { k: 'Keep control', v: 'Your prices, your brand, your fulfilment.', Icon: ShieldCheck },
+            ].map(b => (
+              <div key={b.k} className={`rounded-2xl border p-5 transition-all duration-300 hover:-translate-y-1 ${theme === 'light' ? 'border-gray-200 bg-white' : 'border-white/10 bg-white/[0.03]'}`}>
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white mb-3 shadow-md shadow-blue-500/20" style={{ background: 'var(--sk-aurora)' }}><b.Icon className="w-5 h-5" /></div>
+                <p className={`font-bold ${T.cardTitle}`}>{b.k}</p>
+                <p className={`text-sm mt-0.5 leading-relaxed ${T.cardMeta}`}>{b.v}</p>
+              </div>
+            ))}
+          </Reveal>
+        </div>
+      </section>
+
       {/* ── FINALE (grain aurora band, magnetic CTAs, giant type) ────────── */}
       <Spotlight className="sk-grain relative overflow-hidden" color="rgba(6,182,212,0.16)">
         <div className="absolute inset-0 -z-[1]" style={{ background: 'var(--sk-ink)' }} aria-hidden />
