@@ -1,0 +1,93 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   SmartKong "Meridian" design language.
+
+   The brand idea: SmartKong is the layer that wraps the world's commerce —
+   so the recurring motif is the MERIDIAN: a horizon arc that appears as
+   section seams, under eyebrows, and behind headlines. Typography is
+   editorial: heavy geometric sans for statements, an italic serif accent
+   for the "human" word in every headline. One aurora gradient, everywhere.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+.sk-market {
+  --sk-ink:    #070A14;   /* near-black navy — dark bands */
+  --sk-ink-2:  #0C1020;
+  --sk-paper:  #FFFFFF;
+  --sk-mist:   #F4F7FE;   /* cool paper tint */
+  --sk-blue:   #2563EB;
+  --sk-violet: #7C3AED;
+  --sk-cyan:   #06B6D4;
+  --sk-aurora: linear-gradient(100deg, #2563EB 0%, #7C3AED 55%, #06B6D4 120%);
+}
+
+/* Brand details people feel before they can name */
+.sk-market ::selection { background: #2563EB; color: #fff; }
+.sk-market { scrollbar-width: thin; scrollbar-color: #C7D2FE transparent; }
+.sk-market ::-webkit-scrollbar { width: 10px; height: 10px; }
+.sk-market ::-webkit-scrollbar-thumb { background: #C7D2FE; border-radius: 8px; border: 3px solid transparent; background-clip: content-box; }
+.sk-market ::-webkit-scrollbar-thumb:hover { background: #818CF8; border: 3px solid transparent; background-clip: content-box; }
+
+/* Editorial serif accent — the signature word in every headline */
+.sk-serif {
+  font-family: Georgia, 'Times New Roman', 'Songti SC', serif;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.sk-aurora-text {
+  background: var(--sk-aurora);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Giant outlined type (brand marquee, footer wordmark) */
+.sk-outline-text {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(37, 99, 235, 0.35);
+}
+.sk-outline-text-dark {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.14);
+}
+
+/* Film-grain for dark bands — texture nobody else in commerce uses */
+.sk-grain { position: relative; isolation: isolate; }
+.sk-grain::after {
+  content: '';
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  opacity: 0.5; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.28'/%3E%3C/svg%3E");
+}
+.sk-grain > * { position: relative; z-index: 2; }
+
+/* Scroll choreography — sections rise as the story unfolds */
+.sk-reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); }
+.sk-reveal.sk-in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .sk-reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* Meridian eyebrow — every section label carries the arc */
+.sk-eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--sk-blue);
+}
+.sk-eyebrow::before {
+  content: ''; width: 26px; height: 13px; flex: none;
+  border: 2px solid currentColor; border-bottom: none;
+  border-radius: 26px 26px 0 0; opacity: .8;
+}
+
+/* Live ticker (commerce pulse) */
+@keyframes sk-ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.sk-ticker { animation: sk-ticker 42s linear infinite; }
+.sk-ticker:hover { animation-play-state: paused; }
+@keyframes sk-bar-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.sk-bar { transform-origin: left; animation: sk-bar-grow 1.2s cubic-bezier(.2,.7,.2,1) both; }
+
+/* Magnetic buttons get a soft spring back */
+.sk-magnet { transition: transform .25s cubic-bezier(.2,.7,.2,1); will-change: transform; }
+
+/* Tilt cards */
+.sk-tilt { transform-style: preserve-3d; transition: transform .3s cubic-bezier(.2,.7,.2,1); }

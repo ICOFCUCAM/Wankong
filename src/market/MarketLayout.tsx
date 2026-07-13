@@ -12,6 +12,7 @@ import { useWishlist } from './useWishlist';
 import { ThemeToggle, useMarketTheme, themeTokens } from './theme';
 import FloatingAssistant from './FloatingAssistant';
 import './market-theme.css';
+import './brand.css';
 
 // Floating compare bar — appears on every market page when the shopper has
 // products in their comparison tray.
