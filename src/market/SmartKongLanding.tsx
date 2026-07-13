@@ -379,10 +379,8 @@ function DealBand({ deals }: { deals: Prod[] }) {
       <div className="relative max-w-7xl mx-auto px-4 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
           <div>
-            <p className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-400 uppercase tracking-widest mb-2">
-              <Sparkles className="w-4 h-4" /> AI-Found Deals
-            </p>
-            <h2 className="text-3xl md:text-4xl font-black text-white">Biggest markdowns right now</h2>
+            <span className="sk-eyebrow !text-emerald-400 mb-2">AI-Found Deals</span>
+            <h2 className="text-3xl md:text-5xl font-black tracking-tight text-white">Biggest markdowns <span className="sk-serif sk-aurora-text">right now</span></h2>
             <p className="mt-2 text-white/50 max-w-xl">
               Our AI scans price drops across the catalog. These picks save you a combined{' '}
               <span className="font-bold text-emerald-300">${totalSave.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>.
@@ -1216,9 +1214,9 @@ export default function SmartKongLanding() {
       <section className="bg-[#070810] py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
           <div>
-            <p className="text-sm font-semibold text-blue-400 uppercase tracking-widest">Compare · Buy · One cart</p>
-            <h2 className="text-4xl md:text-5xl font-black text-white mt-3 leading-[1.05]">
-              One cart across<br /><span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-cyan-300 to-violet-400">every store on Earth.</span>
+            <span className="sk-eyebrow !text-cyan-300">Compare · Buy · One cart</span>
+            <h2 className="text-4xl md:text-6xl font-black tracking-tight text-white mt-3 leading-[1.02]">
+              One cart across<br /><span className="sk-serif sk-aurora-text">every store on Earth.</span>
             </h2>
             <p className="text-white/55 mt-5 max-w-md leading-relaxed">
               SmartKong compares Amazon, Apple, Best Buy, Walmart and thousands more, then routes you to the lowest price. Check out SmartKong sellers in one cart, or buy partner deals in a single tap at the store.
@@ -1396,7 +1394,7 @@ export default function SmartKongLanding() {
           <div className="rounded-3xl border border-white/10 bg-white/[0.03] overflow-hidden grid lg:grid-cols-2">
             <div className="p-8 md:p-12 flex flex-col justify-center">
               <span className="inline-flex items-center gap-2 text-blue-400 text-sm font-semibold mb-4"><MessageSquare className="w-4 h-4" /> AI Shopping Assistant</span>
-              <h3 className="text-3xl md:text-4xl font-black leading-tight mb-4 text-white">Describe what you need.<br />We find the best match.</h3>
+              <h3 className="text-3xl md:text-5xl font-black tracking-tight leading-[1.05] mb-4 text-white">Describe what you need.<br /><span className="sk-serif sk-aurora-text">We find the best match.</span></h3>
               <p className="text-white/50 mb-6">Skip the endless tabs. Tell SmartKong your problem, budget and use-case — our AI reads across the whole catalog and returns ranked picks with reasons.</p>
               <button onClick={() => navigate('/ai-solver')} className="w-fit flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/25"><Sparkles className="w-4 h-4" /> Try the AI Solver</button>
             </div>
