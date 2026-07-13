@@ -14,6 +14,7 @@ import {
   Brain, Wrench, Store, Globe, Lock, RefreshCw, CheckCircle2,
   TrendingUp, MessageSquare, GitCompare, Heart, Truck,
   Package, Users, Scale, Tag, Play, ArrowUpRight, Loader2,
+  Monitor, Keyboard, Lightbulb, Gamepad2, Headphones, Briefcase, Plane, Speaker, BatteryCharging,
 } from 'lucide-react';
 import { ProductArt, VendorMark, type ArtKind } from './HeroProductArt';
 import { BrandLogo, BRAND_LIST } from './BrandLogos';
@@ -83,6 +84,22 @@ const HERO_STATS = [
   { Icon: Globe,       value: 230,   suffix: '+',  label: 'Countries' },
   { Icon: Users,       value: 1.8,   suffix: 'M+', label: 'Happy Customers' },
   { Icon: ShieldCheck, value: 100,   suffix: '%',  label: 'Secure & Safe' },
+];
+
+// AI Collections — products curated to work together (the discovery signature).
+const COLLECTIONS: { emoji: string; title: string; sub: string; from: string; grad: string; icons: React.ComponentType<{ className?: string }>[]; q: string; feature?: boolean }[] = [
+  { emoji: '🧳', title: 'The Perfect Home Office', sub: 'Laptop, monitor, chair, keyboard and webcam that just work together.', from: '1,200', grad: 'from-blue-500 to-cyan-500', icons: [Laptop, Monitor, Keyboard, Camera], q: 'home office setup', feature: true },
+  { emoji: '🎥', title: 'Creator Studio Under €2,000', sub: 'Camera, mic, lights and an editing machine for pro-grade content.', from: '1,800', grad: 'from-violet-500 to-purple-600', icons: [Camera, Mic, Lightbulb, Laptop], q: 'creator studio' },
+  { emoji: '🏡', title: 'Smart Home Essentials', sub: 'Hub, smart lighting, cameras and a speaker to automate your home.', from: '320', grad: 'from-emerald-500 to-green-600', icons: [HomeIcon, Lightbulb, Camera, Speaker], q: 'smart home essentials' },
+  { emoji: '🎮', title: 'Ultimate Gaming Setup', sub: 'A GPU rig, high-refresh monitor, chair and headset built to win.', from: '2,400', grad: 'from-rose-500 to-pink-600', icons: [Gamepad2, Monitor, Headphones, Keyboard], q: 'gaming setup' },
+  { emoji: '✈️', title: 'Travel Like a Pro', sub: 'Luggage, noise-cancelling headphones, a power bank and adapters.', from: '450', grad: 'from-amber-500 to-orange-600', icons: [Briefcase, Headphones, Plane, BatteryCharging], q: 'travel essentials' },
+];
+
+// Living shelf — a gently moving wall of categories for discovery shoppers.
+const SHELF = [
+  { e: '🔥', l: 'Trending' }, { e: '📱', l: 'Phones' }, { e: '🎧', l: 'Headphones' }, { e: '💻', l: 'Laptops' },
+  { e: '🖥️', l: 'Monitors' }, { e: '⌚', l: 'Smartwatches' }, { e: '📷', l: 'Cameras' }, { e: '🎮', l: 'Gaming' },
+  { e: '👟', l: 'Sneakers' }, { e: '🚗', l: 'Auto' }, { e: '🏠', l: 'Home' }, { e: '✈️', l: 'Travel' },
 ];
 
 // Six value props under the hero.
@@ -943,6 +960,57 @@ export default function SmartKongLanding() {
                   <p className={`text-sm mt-0.5 leading-relaxed ${T.cardMeta}`}>{f.body}</p>
                 </div>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── LIVING SHELF (gently moving category wall for discovery) ─────── */}
+      <section className={`${T.sectionB} py-6 border-y ${theme === 'light' ? 'border-gray-100' : 'border-white/[0.06]'}`}>
+        <div className="relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)]">
+          <div className="sk-marquee flex items-center gap-3 w-max">
+            {[...SHELF, ...SHELF].map((c, i) => (
+              <button key={i} onClick={() => navigate(`/shop?q=${encodeURIComponent(c.l)}`)} className={`shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold transition-transform hover:scale-105 ${T.chip}`}>
+                <span className="text-base">{c.e}</span> {c.l}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── AI COLLECTIONS (discovery signature — products that work together) */}
+      <section className={`${T.sectionA} py-20 md:py-28`}>
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <div className="flex items-end justify-between mb-10">
+            <SectionHead eyebrow="AI Collections" title="Curated to work together" tokens={T} sub="Don’t just buy a product — buy the whole setup. Our AI assembles complete kits where everything fits." />
+            <Link to="/shop" className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-500">Browse all <ArrowRight className="w-4 h-4" /></Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {COLLECTIONS.map(col => (
+              <button
+                key={col.title}
+                onClick={() => navigate(`/shop?q=${encodeURIComponent(col.q)}`)}
+                className={`group text-left rounded-3xl overflow-hidden transition-all hover:-translate-y-1.5 ${col.feature ? 'md:col-span-2 lg:col-span-1' : ''} ${T.card}`}
+              >
+                <div className={`relative h-32 bg-gradient-to-br ${col.grad} overflow-hidden`}>
+                  <div className="absolute inset-0 opacity-30" style={{ background: 'radial-gradient(circle at 80% 20%, #fff6, transparent 45%)' }} />
+                  <span className="absolute top-4 left-5 text-4xl drop-shadow-sm">{col.emoji}</span>
+                  <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full bg-white/25 backdrop-blur text-white text-[10px] font-bold tracking-wide">AI CURATED</span>
+                  <div className="absolute bottom-3.5 right-4 flex gap-1.5">
+                    {col.icons.map((Ic, i) => (
+                      <span key={i} className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center"><Ic className="w-4 h-4 text-white" /></span>
+                    ))}
+                  </div>
+                </div>
+                <div className="p-5">
+                  <h3 className={`text-lg font-bold group-hover:text-blue-600 transition-colors ${T.cardTitle}`}>{col.title}</h3>
+                  <p className={`text-sm mt-1 leading-relaxed ${T.cardMeta}`}>{col.sub}</p>
+                  <div className="flex items-center justify-between mt-4">
+                    <span className={`text-sm ${T.cardMeta}`}>From <b className={T.cardTitle}>€{col.from}</b></span>
+                    <span className="flex items-center gap-1 text-blue-600 font-semibold text-sm">Explore <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" /></span>
+                  </div>
+                </div>
+              </button>
             ))}
           </div>
         </div>
