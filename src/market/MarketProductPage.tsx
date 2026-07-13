@@ -9,7 +9,7 @@ import MarketProductCard, { Stars } from './MarketProductCard';
 import type { MarketProduct } from './useMarketCatalog';
 import {
   ShoppingCart, ExternalLink, ShieldCheck, Truck, RotateCcw,
-  Star, Loader2, CheckCircle2, BookOpen,
+  Star, Loader2, CheckCircle2, BookOpen, BadgeCheck, TrendingDown, Bell, BellRing,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -318,8 +318,15 @@ export default function MarketProductPage() {
               </div>
             )}
 
+            {/* Vendor trust */}
+            <TrustBadge
+              sellerId={product.vendor_id ?? product.creator_id ?? null}
+              isAffiliate={isAffiliate}
+              vendorName={product.vendor}
+            />
+
             {/* Trust badges */}
-            <div className="flex flex-wrap gap-5 mt-8 pt-6 border-t border-gray-100 text-xs text-gray-500">
+            <div className="flex flex-wrap gap-5 mt-6 pt-6 border-t border-gray-100 text-xs text-gray-500">
               <span className="flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-emerald-500" /> Secure checkout</span>
               {isDigital
                 ? <span className="flex items-center gap-1.5"><BookOpen className="w-4 h-4 text-blue-500" /> Instant digital delivery</span>
@@ -328,6 +335,9 @@ export default function MarketProductPage() {
             </div>
           </div>
         </div>
+
+        {/* Price intelligence */}
+        <PriceIntel product={product} />
 
         {/* Reviews */}
         <MarketReviews productId={product.id} canReview={isOwned} />
@@ -343,5 +353,214 @@ export default function MarketProductPage() {
         )}
       </div>
     </MarketLayout>
+  );
+}
+
+// ── Vendor trust score ──────────────────────────────────────────────────────────
+function tierFor(score: number) {
+  if (score >= 85) return { label: 'Excellent', color: '#059669', bg: '#ECFDF5' };
+  if (score >= 70) return { label: 'Great',     color: '#2563EB', bg: '#EFF6FF' };
+  if (score >= 50) return { label: 'Good',      color: '#D97706', bg: '#FFFBEB' };
+  return { label: 'New seller', color: '#6B7280', bg: '#F9FAFB' };
+}
+
+function TrustBadge({ sellerId, isAffiliate, vendorName }: {
+  sellerId: string | null; isAffiliate: boolean; vendorName: string | null;
+}) {
+  const [trust, setTrust] = useState<any>(null);
+
+  useEffect(() => {
+    if (isAffiliate || !sellerId) return;
+    supabase.rpc('vendor_trust_score', { p_user_id: sellerId }).then(({ data }) => setTrust(data));
+  }, [sellerId, isAffiliate]);
+
+  // Affiliate products come from external partner stores
+  if (isAffiliate) {
+    return (
+      <div className="mt-6 flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 p-4">
+        <BadgeCheck className="w-8 h-8 text-blue-600 shrink-0" />
+        <div>
+          <p className="text-sm font-semibold text-gray-900">Verified partner — {vendorName ?? 'Partner Store'}</p>
+          <p className="text-xs text-gray-500">Fulfilled by a trusted SmartKong affiliate partner.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!trust) return null;
+  const score = Number(trust.score ?? 0);
+  const tier = tierFor(score);
+
+  return (
+    <div className="mt-6 rounded-xl border border-gray-200 p-4">
+      <div className="flex items-center gap-3">
+        <div className="w-14 h-14 rounded-full flex items-center justify-center font-extrabold text-lg shrink-0"
+          style={{ background: tier.bg, color: tier.color }}>
+          {score}
+        </div>
+        <div className="flex-1">
+          <p className="text-sm font-semibold text-gray-900 flex items-center gap-1.5">
+            Vendor trust: <span style={{ color: tier.color }}>{tier.label}</span>
+            {trust.approved && <BadgeCheck className="w-4 h-4 text-blue-600" />}
+          </p>
+          <p className="text-xs text-gray-500 mt-0.5">
+            {trust.avg_rating > 0 ? `★ ${Number(trust.avg_rating).toFixed(1)} across ${trust.reviews} reviews` : 'No reviews yet'}
+            {trust.sales > 0 ? ` · ${trust.sales} sales` : ''}
+          </p>
+        </div>
+      </div>
+      <div className="mt-3 h-1.5 rounded-full bg-gray-100 overflow-hidden">
+        <div className="h-full rounded-full" style={{ width: `${score}%`, background: tier.color }} />
+      </div>
+    </div>
+  );
+}
+
+// ── Price intelligence: history sparkline + drop alert ──────────────────────────
+function PriceIntel({ product }: { product: any }) {
+  const { user } = useAuth();
+  const [history, setHistory] = useState<{ price: number; recorded_at: string }[]>([]);
+  const [alert, setAlert] = useState<any>(null);
+  const [target, setTarget] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  const currentUsd = (product.price ?? 0) / 100;
+
+  useEffect(() => {
+    supabase.from('price_history')
+      .select('price, recorded_at')
+      .eq('product_id', product.id)
+      .order('recorded_at', { ascending: true })
+      .limit(90)
+      .then(({ data }) => setHistory(data ?? []));
+    if (user?.id) {
+      supabase.from('price_alerts')
+        .select('id, target_cents, active, triggered_at')
+        .eq('product_id', product.id).eq('user_id', user.id)
+        .maybeSingle()
+        .then(({ data }) => { setAlert(data); if (data) setTarget((data.target_cents / 100).toFixed(2)); });
+    }
+  }, [product.id, user?.id]);
+
+  // Affiliate / free products don't need price tracking
+  if (product.is_affiliate || currentUsd === 0) return null;
+
+  const prices = history.map(h => h.price);
+  const lowest = prices.length ? Math.min(...prices) : product.price;
+  const highest = prices.length ? Math.max(...prices) : product.price;
+  const isLowest = product.price <= lowest;
+
+  const saveAlert = async () => {
+    if (!user) { toast.info('Sign in to set a price alert.'); return; }
+    const cents = Math.round(parseFloat(target || '0') * 100);
+    if (!cents || cents <= 0) { toast.error('Enter a target price.'); return; }
+    setSaving(true);
+    const { data, error } = await supabase.from('price_alerts').upsert({
+      user_id: user.id, product_id: product.id, target_cents: cents, active: true, triggered_at: null,
+    }, { onConflict: 'user_id,product_id' }).select().maybeSingle();
+    setSaving(false);
+    if (error) { toast.error('Could not save alert.'); return; }
+    setAlert(data);
+    toast.success(`We’ll alert you when it drops to $${(cents / 100).toFixed(2)}`);
+  };
+
+  const removeAlert = async () => {
+    if (!alert) return;
+    await supabase.from('price_alerts').delete().eq('id', alert.id);
+    setAlert(null); setTarget('');
+    toast.success('Price alert removed');
+  };
+
+  // Sparkline geometry
+  const W = 560, H = 120, pad = 8;
+  const spark = () => {
+    if (history.length < 2) return null;
+    const min = Math.min(...prices), max = Math.max(...prices);
+    const span = max - min || 1;
+    const pts = history.map((h, i) => {
+      const x = pad + (i / (history.length - 1)) * (W - pad * 2);
+      const y = H - pad - ((h.price - min) / span) * (H - pad * 2);
+      return [x, y];
+    });
+    const line = pts.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ');
+    const area = `${line} L${pts[pts.length - 1][0].toFixed(1)},${H - pad} L${pts[0][0].toFixed(1)},${H - pad} Z`;
+    return { line, area };
+  };
+  const s = spark();
+
+  return (
+    <section className="mt-12 rounded-2xl border border-gray-200 p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-extrabold text-gray-900 flex items-center gap-2">
+          <TrendingDown className="w-5 h-5 text-blue-600" /> Price history
+        </h2>
+        {isLowest && prices.length > 1 && (
+          <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-full text-xs font-semibold">Lowest price in {history.length} days</span>
+        )}
+      </div>
+
+      <div className="grid md:grid-cols-[1fr_260px] gap-6 items-center">
+        <div>
+          {s ? (
+            <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-28">
+              <defs>
+                <linearGradient id="pg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stopColor="#2563EB" stopOpacity="0.25" />
+                  <stop offset="1" stopColor="#2563EB" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+              <path d={s.area} fill="url(#pg)" />
+              <path d={s.line} fill="none" stroke="#2563EB" strokeWidth="2" strokeLinejoin="round" />
+            </svg>
+          ) : (
+            <p className="text-sm text-gray-400 py-8">Price tracking has just started — history builds daily.</p>
+          )}
+          <div className="flex gap-6 text-sm mt-2">
+            <span className="text-gray-500">Current <b className="text-gray-900">${currentUsd.toFixed(2)}</b></span>
+            <span className="text-gray-500">Lowest <b className="text-emerald-600">${(lowest / 100).toFixed(2)}</b></span>
+            <span className="text-gray-500">Highest <b className="text-gray-900">${(highest / 100).toFixed(2)}</b></span>
+          </div>
+        </div>
+
+        {/* Price drop alert */}
+        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+          {alert ? (
+            <div>
+              <p className="flex items-center gap-1.5 text-sm font-semibold text-gray-900 mb-1">
+                <BellRing className="w-4 h-4 text-blue-600" /> Alert set
+              </p>
+              <p className="text-xs text-gray-500 mb-3">
+                {alert.triggered_at
+                  ? `Price dropped to your target! Check it out.`
+                  : `We’ll notify you when it drops to $${(alert.target_cents / 100).toFixed(2)}.`}
+              </p>
+              <button onClick={removeAlert} className="text-xs text-red-500 hover:text-red-600 font-medium">Remove alert</button>
+            </div>
+          ) : (
+            <div>
+              <p className="flex items-center gap-1.5 text-sm font-semibold text-gray-900 mb-2">
+                <Bell className="w-4 h-4 text-blue-600" /> Price drop alert
+              </p>
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">$</span>
+                  <input
+                    type="number" min="0" step="0.01"
+                    value={target}
+                    onChange={e => setTarget(e.target.value)}
+                    placeholder={(currentUsd * 0.9).toFixed(2)}
+                    className="w-full border border-gray-300 rounded-lg pl-7 pr-2 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <button onClick={saveAlert} disabled={saving} className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white text-sm font-semibold rounded-lg transition-colors">
+                  Notify me
+                </button>
+              </div>
+              <p className="text-[11px] text-gray-400 mt-2">Get notified when the price hits your target.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
   );
 }
