@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase';
 import Seo from '@/components/Seo';
 import MarketLayout from './MarketLayout';
 import MarketProductCard from './MarketProductCard';
+import { Reveal } from './motion';
 import type { MarketProduct } from './useMarketCatalog';
 import { useWishlist } from './useWishlist';
 import { Heart, Loader2 } from 'lucide-react';
@@ -31,15 +32,16 @@ export default function MarketWishlistPage() {
     <MarketLayout>
       <Seo title="Your Wishlist" description="Products you've saved on SmartKong." noIndex />
       <div className="max-w-7xl mx-auto px-4 lg:px-8 py-10">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-11 h-11 rounded-2xl bg-rose-500/10 flex items-center justify-center">
+        <Reveal className="flex items-center gap-3 mb-8">
+          <div className="w-12 h-12 rounded-2xl bg-rose-500/10 flex items-center justify-center">
             <Heart className="w-5 h-5 text-rose-500 fill-rose-500" />
           </div>
           <div>
-            <h1 className="text-3xl font-extrabold text-gray-900">Your wishlist</h1>
+            <span className="sk-eyebrow mb-1">Saved for later</span>
+            <h1 className="text-3xl md:text-4xl font-black tracking-[-0.02em] text-gray-900">Your <span className="sk-serif sk-aurora-text pr-1">wishlist.</span></h1>
             <p className="text-sm text-gray-500 mt-0.5">{count} saved {count === 1 ? 'item' : 'items'}</p>
           </div>
-        </div>
+        </Reveal>
 
         {loading ? (
           <div className="flex justify-center py-24"><Loader2 className="w-6 h-6 text-blue-600 animate-spin" /></div>
@@ -53,7 +55,9 @@ export default function MarketWishlistPage() {
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {products.map(p => <MarketProductCard key={p.id} product={p} />)}
+            {products.map((p, i) => (
+              <Reveal key={p.id} delay={Math.min(i, 7) * 45}><MarketProductCard product={p} /></Reveal>
+            ))}
           </div>
         )}
       </div>

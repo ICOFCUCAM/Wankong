@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import Seo from '@/components/Seo';
 import MarketLayout from './MarketLayout';
 import MarketProductCard from './MarketProductCard';
+import { Reveal } from './motion';
 import type { MarketProduct } from './useMarketCatalog';
 import { COLLECTIONS } from './collectionsData';
 import { ArrowLeft, ShoppingCart, Sparkles, Loader2 } from 'lucide-react';
@@ -66,17 +67,17 @@ export default function MarketCollectionPage() {
       <Seo title={col.title} description={col.sub} />
 
       {/* Gradient header */}
-      <section className={`bg-gradient-to-br ${col.grad} text-white`}>
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 py-14">
+      <section className={`sk-grain bg-gradient-to-br ${col.grad} text-white`}>
+        <div className="max-w-7xl mx-auto px-4 lg:px-8 py-16">
           <Link to="/" className="inline-flex items-center gap-1.5 text-white/80 hover:text-white text-sm mb-6"><ArrowLeft className="w-4 h-4" /> Back to collections</Link>
-          <div className="flex items-start gap-5">
-            <span className="text-6xl drop-shadow">{col.emoji}</span>
+          <Reveal className="flex items-start gap-5">
+            <span className="text-6xl md:text-7xl drop-shadow">{col.emoji}</span>
             <div>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/20 backdrop-blur text-[11px] font-bold tracking-wide mb-3"><Sparkles className="w-3.5 h-3.5" /> AI CURATED COLLECTION</span>
-              <h1 className="text-3xl md:text-5xl font-black leading-tight">{col.title}</h1>
-              <p className="text-white/85 mt-3 max-w-xl leading-relaxed">{col.sub}</p>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/20 backdrop-blur text-[11px] font-bold tracking-[0.14em] uppercase mb-3"><Sparkles className="w-3.5 h-3.5" /> AI Curated Kit</span>
+              <h1 className="text-4xl md:text-6xl font-black tracking-[-0.03em] leading-[0.98]">{col.title}</h1>
+              <p className="text-white/85 mt-4 max-w-xl leading-relaxed text-base md:text-lg">{col.sub}</p>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
@@ -91,11 +92,13 @@ export default function MarketCollectionPage() {
         ) : (
           <>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Everything in this kit</h2>
+              <h2 className="text-2xl font-black tracking-[-0.02em] text-gray-900">Everything in <span className="sk-serif sk-aurora-text pr-1">this kit.</span></h2>
               <span className="text-sm text-gray-500">{items.length} {items.length === 1 ? 'item' : 'items'} · AI-matched</span>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {items.map(p => <MarketProductCard key={p.id} product={p} />)}
+              {items.map((p, i) => (
+                <Reveal key={p.id} delay={Math.min(i, 7) * 45}><MarketProductCard product={p} /></Reveal>
+              ))}
             </div>
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl bg-gray-50 border border-gray-200 p-6">
               <div>
