@@ -12,6 +12,7 @@ const CREATORS_LINKS = [
   { label: 'Distribution Dashboard',  href: '/dashboard/distribution' },
   { label: 'Creator Earnings',        href: '/dashboard/earnings' },
   { label: 'Creator Memberships',     href: '/dashboard/memberships' },
+  { label: 'Sell on Wankong',         href: '/vendor/register' },
 ];
 
 const DISCOVERY_LINKS = [

@@ -99,6 +99,10 @@ const UploadAudiobookPage    = lazy(() => import('./pages/dashboard/UploadAudiob
 const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage'));
 const AcceptInvitePage   = lazy(() => import('./pages/admin/AcceptInvitePage'));
 
+// ── Marketplace vendors ────────────────────────────────────────────────────────
+const VendorRegisterPage  = lazy(() => import('./pages/vendor/VendorRegisterPage'));
+const VendorDashboardPage = lazy(() => import('./pages/vendor/VendorDashboardPage'));
+
 // ── Library ────────────────────────────────────────────────────────────────────
 const LibraryPage = lazy(() => import('./pages/LibraryPage'));
 
@@ -194,6 +198,8 @@ export default function App() {
           {/* ── Protected: any logged-in user ──────────────────────────────── */}
           <Route path="/dashboard"          element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
           <Route path="/dashboard/earnings" element={<ProtectedRoute><EarningsDashboardPage /></ProtectedRoute>} />
+          <Route path="/vendor/register"    element={<ProtectedRoute><VendorRegisterPage /></ProtectedRoute>} />
+          <Route path="/dashboard/vendor"   element={<ProtectedRoute><VendorDashboardPage /></ProtectedRoute>} />
           <Route path="/book-upload"        element={<ProtectedRoute><BookUploadPage /></ProtectedRoute>} />
           <Route path="/distribute"         element={<ProtectedRoute requiredRole={['artist']}><DistributePage /></ProtectedRoute>} />
           <Route path="/upload/distribute"  element={<ProtectedRoute><DistributeUploadPage /></ProtectedRoute>} />

@@ -5,7 +5,7 @@ import {
   DollarSign, AlertTriangle, Settings, BarChart2,
   ChevronRight, Shield, LogOut, Mail, Copy, RefreshCw,
   Trash2, UserPlus, CheckCircle, Clock, XCircle,
-  Package, Archive,
+  Package, Archive, Store,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
@@ -42,6 +42,7 @@ const NAV: SidebarItem[] = [
   { path: '/admin/release-queue',    label: 'Release Queue',  icon: <Package className="w-4 h-4" /> },
   { path: '/admin/exports',          label: 'Export History', icon: <Archive className="w-4 h-4" /> },
   { path: '/admin/books',            label: 'Books',          icon: <BookOpen className="w-4 h-4" /> },
+  { path: '/admin/vendors',          label: 'Vendors',        icon: <Store className="w-4 h-4" /> },
   { path: '/admin/earnings',         label: 'Earnings',       icon: <DollarSign className="w-4 h-4" /> },
   { path: '/admin/reports',          label: 'Reports',        icon: <AlertTriangle className="w-4 h-4" /> },
   { path: '/admin/settings',         label: 'Settings',       icon: <Settings className="w-4 h-4" /> },
@@ -1260,6 +1261,155 @@ function AdminSettings() {
   );
 }
 
+// ── Vendors (marketplace seller approval) ──────────────────────────────────────
+
+interface VendorRow {
+  id: string;
+  user_id: string;
+  business_name: string;
+  business_email: string | null;
+  phone: string | null;
+  country: string | null;
+  description: string | null;
+  payment_provider: string;
+  commission_rate: number;
+  status: string;
+  sales_count: number;
+  total_sales_cents: number;
+  created_at: string;
+  profile: { display_name: string | null; username: string | null; avatar_url: string | null } | null;
+}
+
+function AdminVendors() {
+  const [vendors, setVendors] = useState<VendorRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [tab,     setTab]     = useState<'pending' | 'approved' | 'all'>('pending');
+  const [busy,    setBusy]    = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    const { data } = await supabase
+      .from('vendor_accounts')
+      .select('id, user_id, business_name, business_email, phone, country, description, payment_provider, commission_rate, status, sales_count, total_sales_cents, created_at, profile:user_id(display_name, username, avatar_url)')
+      .order('created_at', { ascending: false });
+    setVendors((data as unknown as VendorRow[]) ?? []);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  const setStatus = async (v: VendorRow, status: string) => {
+    setBusy(v.id);
+    const { error } = await supabase
+      .from('vendor_accounts')
+      .update({ status })
+      .eq('id', v.id);
+    setBusy(null);
+    if (error) return;
+    setVendors(prev => prev.map(x => x.id === v.id ? { ...x, status } : x));
+  };
+
+  const counts = {
+    pending:  vendors.filter(v => v.status === 'pending').length,
+    approved: vendors.filter(v => v.status === 'approved').length,
+    all:      vendors.length,
+  };
+
+  const visible = tab === 'all' ? vendors : vendors.filter(v => v.status === tab);
+
+  return (
+    <div className="max-w-4xl">
+      <h2 className="text-xl font-bold mb-1">Marketplace Vendors</h2>
+      <p className="text-white/40 text-sm mb-6">Approve seller applications and manage vendor accounts.</p>
+
+      <div className="flex items-center gap-2 mb-6">
+        {(['pending', 'approved', 'all'] as const).map(t => (
+          <button key={t} onClick={() => setTab(t)}
+            className={`px-4 py-2 rounded-xl text-sm font-medium capitalize transition-colors ${
+              tab === t ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white'
+            }`}>
+            {t} ({counts[t]})
+          </button>
+        ))}
+      </div>
+
+      {loading ? (
+        <div className="flex justify-center py-16">
+          <RefreshCw className="w-5 h-5 text-white/30 animate-spin" />
+        </div>
+      ) : visible.length === 0 ? (
+        <p className="text-white/40 text-sm py-12 text-center">No {tab === 'all' ? '' : tab + ' '}vendor accounts.</p>
+      ) : (
+        <div className="space-y-3">
+          {visible.map(v => (
+            <div key={v.id} className="rounded-xl border border-white/10 bg-white/5 p-4">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                <div className="flex items-start gap-3 min-w-0">
+                  <img
+                    src={v.profile?.avatar_url ?? `https://api.dicebear.com/7.x/initials/svg?seed=${v.user_id}`}
+                    alt="" className="w-10 h-10 rounded-full object-cover shrink-0"
+                  />
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-white font-semibold">{v.business_name}</p>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase ${
+                        v.status === 'approved' ? 'bg-emerald-500/15 text-emerald-400' :
+                        v.status === 'pending'  ? 'bg-amber-500/15 text-amber-400' :
+                                                  'bg-red-500/15 text-red-400'
+                      }`}>{v.status}</span>
+                    </div>
+                    <p className="text-white/40 text-xs mt-0.5">
+                      {v.profile?.display_name ?? v.profile?.username ?? 'User'}
+                      {v.country ? ` · ${v.country}` : ''} · {v.payment_provider}
+                      {v.business_email ? ` · ${v.business_email}` : ''}
+                    </p>
+                    {v.description && <p className="text-white/50 text-xs mt-1.5 line-clamp-2">{v.description}</p>}
+                    <p className="text-white/30 text-xs mt-1.5">
+                      Applied {v.created_at?.slice(0, 10)} · fee {(v.commission_rate * 100).toFixed(0)}%
+                      {v.sales_count > 0 && <> · {v.sales_count} sales (${(v.total_sales_cents / 100).toFixed(2)})</>}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  {v.status !== 'approved' && (
+                    <button
+                      onClick={() => setStatus(v, 'approved')}
+                      disabled={busy === v.id}
+                      className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors disabled:opacity-40"
+                      style={{ background: `${GREEN}20`, color: GREEN }}
+                    >
+                      Approve
+                    </button>
+                  )}
+                  {v.status === 'pending' && (
+                    <button
+                      onClick={() => setStatus(v, 'rejected')}
+                      disabled={busy === v.id}
+                      className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors disabled:opacity-40"
+                      style={{ background: `${RED}20`, color: RED }}
+                    >
+                      Reject
+                    </button>
+                  )}
+                  {v.status === 'approved' && (
+                    <button
+                      onClick={() => setStatus(v, 'suspended')}
+                      disabled={busy === v.id}
+                      className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors disabled:opacity-40"
+                      style={{ background: `${ORANGE}20`, color: ORANGE }}
+                    >
+                      Suspend
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Sidebar ────────────────────────────────────────────────────────────────────
 
 function Sidebar({ onSignOut }: { onSignOut: () => void }) {
@@ -1383,6 +1533,7 @@ export default function AdminDashboardPage() {
             <Route path="/release-queue" element={<AdminReleaseQueuePage />} />
             <Route path="/exports"       element={<DistributorExportsPage />} />
             <Route path="/books"         element={<AdminBooks />} />
+            <Route path="/vendors"      element={<AdminVendors />} />
             <Route path="/earnings"     element={<AdminEarnings />} />
             <Route path="/reports"      element={<AdminReports />} />
             <Route path="/settings"     element={<AdminSettings />} />
