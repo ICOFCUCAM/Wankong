@@ -108,12 +108,13 @@ export default function MarketAffiliateAdminPage() {
     <MarketLayout>
       <Seo title="Affiliate Backend" noIndex />
       <div className="max-w-6xl mx-auto px-4 lg:px-8 py-10">
-        <div className="flex items-center gap-3 mb-1">
-          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
-            <KeyRound className="w-5 h-5 text-white" />
+        <div className="flex items-center gap-3.5 mb-1">
+          <div className="w-11 h-11 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-violet-500/25" style={{ background: 'var(--sk-aurora)' }}>
+            <KeyRound className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-2xl font-extrabold text-gray-900">Affiliate Backend</h1>
+            <span className="sk-eyebrow mb-1">Monetization engine</span>
+            <h1 className="text-2xl md:text-3xl font-black tracking-[-0.02em] text-gray-900">Affiliate <span className="sk-serif sk-aurora-text pr-1">backend.</span></h1>
             <p className="text-sm text-gray-500">
               Connect your accounts on {AFFILIATE_NETWORKS.length - 1}+ networks — every product link gets tracked with your IDs.
             </p>
