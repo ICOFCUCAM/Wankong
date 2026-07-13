@@ -82,7 +82,8 @@ export default function MarketComparePage() {
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-8">
           <div>
-            <h1 className="text-3xl font-extrabold text-gray-900">Compare products</h1>
+            <span className="sk-eyebrow mb-2">Side by side</span>
+            <h1 className="text-3xl md:text-4xl font-black tracking-[-0.02em] text-gray-900">Compare, <span className="sk-serif sk-aurora-text pr-1">decide.</span></h1>
             <p className="text-gray-500 text-sm mt-1">Add up to 4 items and let AI break down the trade-offs.</p>
           </div>
           <div className="flex items-center gap-2">

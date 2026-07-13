@@ -11,6 +11,7 @@ import { useCompare } from './useCompare';
 import { useWishlist } from './useWishlist';
 import { ThemeToggle, useMarketTheme, themeTokens } from './theme';
 import FloatingAssistant from './FloatingAssistant';
+import CommandPalette from './CommandPalette';
 import './market-theme.css';
 import './brand.css';
 
@@ -84,6 +85,7 @@ export function MarketHeader() {
               placeholder="What are you shopping for today?"
               className="w-full border border-gray-200 rounded-full pl-11 pr-28 py-2.5 text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
             />
+            <kbd className="absolute right-[6.5rem] top-1/2 -translate-y-1/2 hidden lg:flex items-center gap-0.5 text-[10px] font-semibold text-gray-400 bg-white border border-gray-200 rounded px-1.5 py-0.5 pointer-events-none">⌘K</kbd>
             <button
               type="button"
               onClick={() => navigate(query.trim() ? `/ai-solver?q=${encodeURIComponent(query.trim())}` : '/ai-solver')}
@@ -342,6 +344,7 @@ export default function MarketLayout({ children }: { children: React.ReactNode }
       data-mktheme={theme}
     >
       <MarketHeader />
+      <CommandPalette />
       <main className="flex-1">{children}</main>
       <MarketFooter />
     </div>
