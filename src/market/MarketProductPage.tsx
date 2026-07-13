@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import Seo from '@/components/Seo';
 import MarketLayout from './MarketLayout';
 import MarketProductCard, { Stars } from './MarketProductCard';
-import { Reveal } from './motion';
+import { Reveal, Tilt } from './motion';
 import { VendorMark } from './HeroProductArt';
 import type { MarketProduct } from './useMarketCatalog';
 import {
@@ -278,9 +278,11 @@ export default function MarketProductPage() {
 
         <div className="grid lg:grid-cols-2 gap-10">
           {/* Image */}
-          <div className="bg-gray-50 border border-gray-200 rounded-2xl overflow-hidden aspect-square">
-            <img src={image} alt={product.title} className="w-full h-full object-cover" />
-          </div>
+          <Tilt max={6} className="lg:sticky lg:top-32">
+            <div className="bg-[var(--sk-mist)] border border-gray-200 rounded-3xl overflow-hidden aspect-square shadow-sm">
+              <img src={image} alt={product.title} className="w-full h-full object-cover" />
+            </div>
+          </Tilt>
 
           {/* Details */}
           <div>
