@@ -409,7 +409,7 @@ function Testimonials({ tokens }: { tokens: ReturnType<typeof themeTokens> }) {
   return (
     <div className="grid md:grid-cols-3 gap-6 mt-12">
       {STORIES.map((s, i) => (
-        <Reveal key={s.name} delay={i * 100} className={`relative rounded-3xl p-8 pt-12 ${tokens.card}`}>
+        <Reveal key={s.name} delay={i * 100} className={`relative rounded-3xl p-8 pt-12 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl ${tokens.card}`}>
           <span className="absolute -top-1 left-6 sk-serif sk-aurora-text text-[5.5rem] leading-none select-none" aria-hidden>“</span>
           <p className={`sk-serif text-xl leading-relaxed mb-8 ${tokens.cardTitle}`}>{s.quote}</p>
           <div className="flex items-center gap-3">
@@ -1160,8 +1160,8 @@ export default function SmartKongLanding() {
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-8">
             {FEATURES.map(f => (
-              <div key={f.title} className="flex items-start gap-4">
-                <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${f.tint} flex items-center justify-center shrink-0 shadow-md`}><f.Icon className="w-5 h-5 text-white" /></div>
+              <div key={f.title} className="group flex items-start gap-4">
+                <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${f.tint} flex items-center justify-center shrink-0 shadow-md transition-transform duration-300 group-hover:rotate-[8deg] group-hover:scale-105`}><f.Icon className="w-5 h-5 text-white" /></div>
                 <div>
                   <h3 className={`text-base font-bold ${T.cardTitle}`}>{f.title}</h3>
                   <p className={`text-sm mt-0.5 leading-relaxed ${T.cardMeta}`}>{f.body}</p>
