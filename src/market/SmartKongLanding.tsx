@@ -1033,6 +1033,20 @@ export default function SmartKongLanding() {
         </div>
       </section>
 
+      {/* ── BRAND MARQUEE (giant editorial statement) ────────────────────── */}
+      <section className={`${T.sectionB} py-8 md:py-10 overflow-hidden select-none`} aria-hidden>
+        <div className="sk-marquee flex items-baseline gap-8 w-max whitespace-nowrap [animation-duration:52s]">
+          {[0, 1].map(i => (
+            <span key={i} className="flex items-baseline gap-8 text-[11vw] md:text-[7vw] font-black tracking-[-0.04em] leading-none">
+              <span className="text-gray-900">EVERY STORE</span>
+              <span className="sk-serif sk-aurora-text text-[9vw] md:text-[5.6vw]">one cart</span>
+              <span className="sk-outline-text">EVERY PRICE</span>
+              <span className="sk-serif sk-aurora-text text-[9vw] md:text-[5.6vw]">one search</span>
+            </span>
+          ))}
+        </div>
+      </section>
+
       {/* ── TRUSTED BY (real brand logos, slow marquee) ──────────────────── */}
       <section className="bg-white py-10 border-b border-gray-100">
         <p className="text-center text-sm text-gray-400 mb-8">Trusted by millions. Powered by thousands of stores.</p>
