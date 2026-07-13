@@ -1453,6 +1453,40 @@ export default function SmartKongLanding() {
         </div>
       </section>
 
+      {/* ── MANIFESTO (the editorial belief statement — the brand's voice) ─ */}
+      <section className={`${T.sectionA} py-24 md:py-36 overflow-hidden`}>
+        <div className="max-w-5xl mx-auto px-4 lg:px-8">
+          <Reveal>
+            <span className="sk-eyebrow">Our belief</span>
+            <p className={`mt-6 text-3xl md:text-6xl font-black tracking-[-0.03em] leading-[1.05] ${T.heading}`}>
+              Shopping shouldn't mean{' '}
+              <span className="sk-outline-text">forty tabs</span>, five carts and a
+              nagging feeling you <span className="sk-serif sk-aurora-text">overpaid.</span>
+            </p>
+            <p className={`mt-8 max-w-2xl text-lg md:text-xl leading-relaxed ${T.body}`}>
+              The web scattered the world's stores into a million islands. SmartKong
+              is the layer that puts them back together — one place to ask, one place
+              to compare, one place to buy. Not another store fighting for your
+              attention. The <span className={`font-bold ${T.heading}`}>shopping layer</span> that
+              works for you instead.
+            </p>
+          </Reveal>
+          <div className="mt-16 grid sm:grid-cols-3 gap-px rounded-3xl overflow-hidden" style={{ background: theme === 'light' ? '#E5E9F2' : 'rgba(255,255,255,0.08)' }}>
+            {[
+              { k: 'We index everything', v: 'Every store, every price, one search — so you never wonder if there was a better deal.' },
+              { k: 'We work for shoppers', v: 'Ranked by trust, price and fit — not by who paid the most to reach you.' },
+              { k: 'We never make you leave', v: 'One cart across a thousand stores. Check out once and you’re done.' },
+            ].map((b, i) => (
+              <Reveal key={b.k} delay={i * 90} className={`${theme === 'light' ? 'bg-white' : 'bg-[#0C1020]'} p-7`}>
+                <span className="sk-eyebrow mb-3 text-xs">{`0${i + 1}`}</span>
+                <p className={`text-lg font-bold ${T.cardTitle}`}>{b.k}</p>
+                <p className={`mt-2 text-sm leading-relaxed ${T.cardMeta}`}>{b.v}</p>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── FINALE (grain aurora band, magnetic CTAs, giant type) ────────── */}
       <section className="sk-grain relative overflow-hidden" style={{ background: 'var(--sk-ink)' }}>
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
