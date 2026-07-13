@@ -296,6 +296,13 @@ export function MarketFooter() {
           ))}
         </div>
 
+        {/* Giant wordmark — the brand sign-off */}
+        <div className="overflow-hidden select-none" aria-hidden>
+          <p className="sk-outline-text-dark text-center font-black tracking-[-0.04em] leading-[0.95] text-[17vw] md:text-[13vw] whitespace-nowrap translate-y-[12%]">
+            SmartKong
+          </p>
+        </div>
+
         {/* Bottom */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pt-8 border-t border-white/10">
           <p className="text-xs text-white/35">© {year} SmartKong · A Wankong company. All rights reserved.</p>
