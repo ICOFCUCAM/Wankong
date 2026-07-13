@@ -13,7 +13,7 @@ import {
   Laptop, Car, Home as HomeIcon, Shirt, BookOpen, HeartPulse,
   Brain, Wrench, Store, Globe, Lock, RefreshCw, CheckCircle2,
   TrendingUp, MessageSquare, GitCompare, Heart, Truck,
-  Package, Users, Scale, Tag, Play, ArrowUpRight, Loader2,
+  Package, Users, Scale, Tag, Play, ArrowUpRight, Loader2, ShoppingCart,
 } from 'lucide-react';
 import { ProductArt, VendorMark, type ArtKind } from './HeroProductArt';
 import { BrandLogo, BRAND_LIST } from './BrandLogos';
@@ -622,15 +622,15 @@ const LIVE_STORIES: React.ReactNode[] = [
 
 const SEARCH_VENDORS = ['Amazon', 'Apple', 'Alibaba', 'Newegg', 'Best Buy', 'AliExpress', 'Walmart', 'eBay', 'Samsung', '+ thousands more'];
 
-// Approximate continent positions over the globe image (% of the globe box).
-const REGION_PINS: { x: number; y: number; price: string }[] = [
-  { x: 30, y: 43, price: '$1,299' },
-  { x: 35, y: 68, price: 'R$6.9k' },
-  { x: 52, y: 33, price: '€1,199' },
-  { x: 55, y: 57, price: '$1,340' },
-  { x: 69, y: 40, price: '¥9,180' },
-  { x: 80, y: 46, price: '¥168k' },
-  { x: 82, y: 71, price: 'A$2,099' },
+// Store offers streaming toward the center — the "one checkout across every
+// store" story. Positioned as % of the globe box; lowest price wins.
+const STORE_OFFERS = [
+  { name: 'Amazon',   price: 1399, x: 30, y: 40 },
+  { name: 'Apple',    price: 1499, x: 52, y: 26 },
+  { name: 'Best Buy', price: 1349, x: 71, y: 34 },
+  { name: 'Newegg',   price: 1329, x: 79, y: 57 },
+  { name: 'Walmart',  price: 1419, x: 35, y: 64 },
+  { name: 'eBay',     price: 1379, x: 58, y: 63 },
 ];
 const HUB = { x: 55, y: 47 };
 const worldArc = (a: { x: number; y: number }, b: { x: number; y: number }) =>
@@ -642,38 +642,68 @@ function useRotating(count: number, ms: number) {
   return i;
 }
 
-// The signature interaction: on search, the globe "comes alive" — routes animate
-// across continents, regions light up, and prices stream in before results load.
+// The signature interaction — the whole business in six seconds: stores across
+// the world surface prices, they stream to the center, and SmartKong resolves
+// them into a single lowest-price checkout.
 function WorldSearchOverlay({ query }: { query: string }) {
   const vi = useRotating(SEARCH_VENDORS.length, 240);
+  const [stage, setStage] = useState(0);
+  useEffect(() => { const t = setTimeout(() => setStage(1), 1500); return () => clearTimeout(t); }, []);
+  const lowest = Math.min(...STORE_OFFERS.map(s => s.price));
+  const fmt = (n: number) => '$' + n.toLocaleString('en-US');
   return (
     <div className="pointer-events-none absolute right-0 top-0 h-full w-[88%] sm:w-[80%] lg:w-[74%] z-30 overflow-hidden">
-      <div className="absolute inset-0" style={{ animation: 'sk-veil .5s ease both', background: 'radial-gradient(circle at 58% 47%, rgba(37,99,235,0.16), transparent 62%)' }} />
+      <div className="absolute inset-0" style={{ animation: 'sk-veil .5s ease both', background: 'radial-gradient(circle at 55% 47%, rgba(37,99,235,0.16), transparent 62%)' }} />
+      {/* prices streaming to the center */}
       <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
         <defs>
           <linearGradient id="wroute" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stopColor="#2563EB" stopOpacity="0" /><stop offset="0.5" stopColor="#2563EB" /><stop offset="1" stopColor="#06B6D4" stopOpacity="0.25" />
+            <stop offset="0" stopColor="#2563EB" stopOpacity="0.15" /><stop offset="1" stopColor="#2563EB" />
           </linearGradient>
         </defs>
-        {REGION_PINS.map((p, i) => (
-          <path key={i} d={worldArc(HUB, p)} className="sk-route" style={{ animationDelay: `${i * 0.1}s` }} stroke="url(#wroute)" strokeWidth="1.5" fill="none" vectorEffect="non-scaling-stroke" />
+        {STORE_OFFERS.map((s, i) => (
+          <path key={s.name} d={worldArc({ x: s.x, y: s.y }, HUB)} className="sk-route" style={{ animationDelay: `${i * 0.1}s` }} stroke="url(#wroute)" strokeWidth="1.5" fill="none" vectorEffect="non-scaling-stroke" />
         ))}
       </svg>
-      {REGION_PINS.map((p, i) => (
-        <div key={i} className="sk-pin absolute" style={{ left: `${p.x}%`, top: `${p.y}%`, animationDelay: `${0.25 + i * 0.1}s` }}>
-          <span className="relative flex items-center justify-center">
-            <span className="absolute w-5 h-5 rounded-full bg-blue-500" style={{ animation: `sk-ping 1.6s ease-out ${0.4 + i * 0.1}s infinite` }} />
-            <span className="relative w-2.5 h-2.5 rounded-full bg-blue-600 ring-2 ring-white shadow" />
-          </span>
-          <span className="sk-tag absolute left-1/2 top-0 whitespace-nowrap px-1.5 py-0.5 rounded-md bg-white shadow-md text-[10px] font-bold text-blue-700" style={{ animationDelay: `${0.7 + i * 0.1}s` }}>{p.price}</span>
+      {/* store offer chips */}
+      {STORE_OFFERS.map((s, i) => {
+        const best = s.price === lowest;
+        return (
+          <div key={s.name} className={`sk-pin absolute flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white shadow-md text-[11px] ${best ? 'ring-2 ring-emerald-400' : 'ring-1 ring-black/5'}`} style={{ left: `${s.x}%`, top: `${s.y}%`, animationDelay: `${0.2 + i * 0.12}s` }}>
+            <VendorMark vendor={s.name} />
+            <span className="font-semibold text-gray-700">{s.name}</span>
+            <span className={`font-bold ${best ? 'text-emerald-600' : 'text-gray-900'}`}>{fmt(s.price)}</span>
+          </div>
+        );
+      })}
+      {/* center: SmartKong resolves to one checkout */}
+      <div className="absolute" style={{ left: `${HUB.x}%`, top: `${HUB.y}%` }}>
+        <div className="-translate-x-1/2 -translate-y-1/2">
+          {stage === 0 ? (
+            <div className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-white shadow-2xl ring-1 ring-blue-100">
+              <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center"><Sparkles className="w-3.5 h-3.5 text-white" /></div>
+              <span className="text-xs font-bold text-gray-900">SmartKong is comparing…</span>
+              <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
+            </div>
+          ) : (
+            <div className="sk-rise flex flex-col items-center gap-1.5">
+              <div className="relative flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-blue-600 text-white shadow-2xl shadow-blue-600/40">
+                <span className="absolute -inset-1 rounded-2xl bg-blue-500/40 blur animate-pulse" />
+                <ShoppingCart className="relative w-4 h-4" />
+                <span className="relative text-sm font-bold">One Checkout · {fmt(lowest)}</span>
+              </div>
+              <span className="text-[11px] font-medium text-emerald-600 bg-white px-2 py-0.5 rounded-full shadow">✓ Lowest price · Newegg</span>
+            </div>
+          )}
         </div>
-      ))}
+      </div>
+      {/* bottom ticker */}
       <div className="absolute left-1/2 -translate-x-1/2 bottom-6 flex flex-col items-center gap-2">
         <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/95 shadow-lg ring-1 ring-blue-100">
           <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
           <span className="text-sm text-gray-700">Searching <span className="font-semibold text-blue-700">{SEARCH_VENDORS[vi]}</span>…</span>
         </div>
-        <span className="text-xs text-gray-600 bg-white/85 px-3 py-1 rounded-full shadow-sm">Mapping “{query}” across 42 countries</span>
+        <span className="text-xs text-gray-600 bg-white/85 px-3 py-1 rounded-full shadow-sm">Comparing every store for “{query}” — one checkout</span>
       </div>
     </div>
   );
@@ -889,7 +919,7 @@ export default function SmartKongLanding() {
         @media (prefers-reduced-motion: reduce){ .sk-orbit, .sk-orbit * { animation:none !important } }
       `}</style>
 
-      <Seo title="The World's AI Marketplace" description="Discover anything, buy from anywhere. Search millions of products across thousands of trusted stores, compare prices instantly, and shop with AI." />
+      <Seo title="Every Store. One Cart." description="SmartKong is the world's shopping layer — one search across Amazon, Apple, Best Buy, Temu, eBay, AliExpress and thousands more. Compare every price and check out once." />
       <MarketHeader />
 
       {/* ── HERO (light AI shopping engine) ──────────────────────────────── */}
@@ -906,14 +936,14 @@ export default function SmartKongLanding() {
           {/* Left: copy + search */}
           <div>
             <div className="sk-rise inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-100/70 border border-blue-200 text-sm font-semibold text-blue-700 mb-6">
-              <Sparkles className="w-4 h-4" /> The World’s AI Shopping Engine
+              <Sparkles className="w-4 h-4" /> The World’s Shopping Layer
             </div>
             <h1 className="sk-rise text-5xl md:text-7xl font-black tracking-tight leading-[1.02] mb-5" style={{ animationDelay: '.05s' }}>
-              <span className="text-gray-900">Search once.</span><br />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-500 to-violet-600">Buy smarter.</span>
+              <span className="text-gray-900">Every store.</span><br />
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-500 to-violet-600">One cart.</span>
             </h1>
             <p className="sk-rise text-lg text-gray-600 max-w-lg mb-8 leading-relaxed" style={{ animationDelay: '.1s' }}>
-              <span className="font-semibold text-gray-900">{greeting}.</span> What are you trying to do today? Ask SmartKong and watch AI search every store on Earth at once.
+              One search across Amazon, Apple, Best Buy, Temu, eBay, AliExpress and thousands more. SmartKong compares every price — you check out once.
             </p>
 
             {/* Search card */}
