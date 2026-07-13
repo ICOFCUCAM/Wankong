@@ -113,6 +113,7 @@ const SmartKongLanding        = lazy(() => import('./market/SmartKongLanding'));
 const SmartKongHome           = lazy(() => import('./market/SmartKongHome'));
 const MarketProductPage       = lazy(() => import('./market/MarketProductPage'));
 const MarketAiSolverPage      = lazy(() => import('./market/MarketAiSolverPage'));
+const MarketComparePage       = lazy(() => import('./market/MarketComparePage'));
 const MarketAffiliateAdminPage = lazy(() => import('./market/MarketAffiliateAdminPage'));
 
 // ── Library ────────────────────────────────────────────────────────────────────
@@ -142,6 +143,7 @@ export default function App() {
           <Route path="/"                         element={IS_MARKET_SITE ? <SmartKongLanding /> : <Index />} />
           {IS_MARKET_SITE && <Route path="/shop"           element={<SmartKongHome />} />}
           {IS_MARKET_SITE && <Route path="/category/:slug" element={<SmartKongHome />} />}
+          {IS_MARKET_SITE && <Route path="/compare" element={<MarketComparePage />} />}
           {IS_MARKET_SITE && <Route path="/admin/affiliates" element={<MarketAffiliateAdminPage />} />}
           <Route path="/cart"                     element={<CartPage />} />
           <Route path="/checkout"                 element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />

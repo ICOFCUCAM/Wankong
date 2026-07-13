@@ -8,9 +8,10 @@ import {
   Search, Sparkles, Mic, Camera, Star, ArrowRight, ShieldCheck, Zap,
   Laptop, Car, Home as HomeIcon, Shirt, BookOpen, HeartPulse,
   Brain, Wrench, Store, Globe, Lock, RefreshCw, CheckCircle2,
-  TrendingUp, MessageSquare,
+  TrendingUp, MessageSquare, GitCompare,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useCompare } from './useCompare';
 
 // ── SmartKong landing — the premium front door ──────────────────────────────────
 // Animated constellation hero, AI search, live stats, category tiles, live
@@ -161,6 +162,8 @@ function PremiumCard({ p }: { p: Prod }) {
   const priceUsd = (p.price ?? 0) / 100;
   const compareUsd = p.compare_at_price ? p.compare_at_price / 100 : null;
   const img = p.cover_url ?? `https://api.dicebear.com/7.x/shapes/svg?seed=${p.id}`;
+  const { has, toggle, isFull } = useCompare();
+  const inCompare = has(p.id);
   return (
     <Link
       to={`/products/${p.handle ?? p.id}`}
@@ -193,9 +196,16 @@ function PremiumCard({ p }: { p: Prod }) {
             <span className="text-lg font-bold text-white">{priceUsd > 0 ? `$${priceUsd.toFixed(2)}` : 'Free'}</span>
             {compareUsd && compareUsd > priceUsd && <span className="text-xs text-white/30 line-through">${compareUsd.toFixed(2)}</span>}
           </div>
-          <span className="flex items-center gap-1 text-xs font-semibold text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity">
-            Compare <ArrowRight className="w-3 h-3" />
-          </span>
+          <button
+            onClick={e => {
+              e.preventDefault();
+              if (!inCompare && isFull) { toast.info('Compare holds up to 4 products.'); return; }
+              toggle(p.id);
+            }}
+            className={`flex items-center gap-1 text-xs font-semibold transition-colors ${inCompare ? 'text-blue-400' : 'text-white/40 hover:text-blue-400'}`}
+          >
+            <GitCompare className="w-3.5 h-3.5" /> {inCompare ? 'Added' : 'Compare'}
+          </button>
         </div>
       </div>
     </Link>
@@ -240,6 +250,37 @@ export default function SmartKongLanding() {
     r.onresult = (e: any) => { const t = e.results[0][0].transcript; setQuery(t); runSearch(t); };
     r.onerror = () => toast.error('Could not hear you — try again.');
     r.start();
+  };
+
+  const fileRef = useRef<HTMLInputElement | null>(null);
+  const [imgBusy, setImgBusy] = useState(false);
+
+  const onImage = async (file: File | undefined) => {
+    if (!file) return;
+    if (file.size > 6 * 1024 * 1024) { toast.error('Image must be under 6 MB.'); return; }
+    setImgBusy(true);
+    const toastId = toast.loading('Scanning your image…');
+    try {
+      const dataUrl: string = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      const res = await fetch('/api/image-search', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageDataUrl: dataUrl }),
+      });
+      const data = await res.json();
+      toast.dismiss(toastId);
+      if (!res.ok) throw new Error(data.error ?? 'Image search failed');
+      toast.success(`Found: ${data.label || 'a match'}`);
+      navigate(`/shop?q=${encodeURIComponent(data.query)}`);
+    } catch (err: any) {
+      toast.dismiss(toastId);
+      toast.error(err.message);
+    }
+    setImgBusy(false);
   };
 
   return (
@@ -321,8 +362,9 @@ export default function SmartKongLanding() {
                 <button onClick={voiceSearch} className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.06] text-sm transition-colors">
                   <Mic className="w-4 h-4" /> Voice
                 </button>
-                <button onClick={() => toast.info('Image search is rolling out soon.')} className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.06] text-sm transition-colors">
-                  <Camera className="w-4 h-4" /> Image
+                <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={e => onImage(e.target.files?.[0])} />
+                <button onClick={() => fileRef.current?.click()} disabled={imgBusy} className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.06] text-sm transition-colors disabled:opacity-50">
+                  <Camera className="w-4 h-4" /> {imgBusy ? 'Scanning…' : 'Image'}
                 </button>
                 <button onClick={runAi} className="ml-auto flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-semibold text-sm hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/25">
                   <Sparkles className="w-4 h-4" /> AI Search

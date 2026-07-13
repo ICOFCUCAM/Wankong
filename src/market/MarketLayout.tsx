@@ -5,9 +5,29 @@ import { useAuth } from '@/contexts/AuthContext';
 import { MARKET_CATEGORIES } from './categories';
 import {
   Search, Sparkles, ShoppingCart, User, Store, Globe,
-  Facebook, Twitter, Instagram, Linkedin,
+  Facebook, Twitter, Instagram, Linkedin, GitCompare, X,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useCompare } from './useCompare';
+
+// Floating compare bar — appears on every market page when the shopper has
+// products in their comparison tray.
+export function CompareBar() {
+  const navigate = useNavigate();
+  const { count, clear } = useCompare();
+  if (count === 0) return null;
+  return (
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-4 py-3 bg-gray-900 text-white rounded-2xl shadow-2xl border border-white/10">
+      <span className="flex items-center gap-2 text-sm font-medium">
+        <GitCompare className="w-4 h-4 text-blue-400" /> {count} to compare
+      </span>
+      <button onClick={() => navigate('/compare')} className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-semibold transition-colors">
+        Compare
+      </button>
+      <button onClick={clear} className="text-white/40 hover:text-white" title="Clear"><X className="w-4 h-4" /></button>
+    </div>
+  );
+}
 
 // SmartKong shell — light, blue-accent design ported from the original
 // SmartKongMarket (Replit) app: big AI search bar, category rail, trust
@@ -183,6 +203,8 @@ export function MarketFooter() {
   const [email, setEmail] = useState('');
 
   return (
+    <>
+    <CompareBar />
     <footer className="bg-[#05060A] border-t border-white/10 text-white">
       <div className="max-w-7xl mx-auto px-4 lg:px-8 py-16">
         {/* Top: brand + newsletter */}
@@ -257,6 +279,7 @@ export function MarketFooter() {
         </div>
       </div>
     </footer>
+    </>
   );
 }
 

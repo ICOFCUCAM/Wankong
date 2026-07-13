@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Star, ExternalLink, ShoppingCart } from 'lucide-react';
+import { Star, ExternalLink, ShoppingCart, GitCompare } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import type { MarketProduct } from './useMarketCatalog';
+import { useCompare } from './useCompare';
 
 export function Stars({ value, count }: { value: number; count?: number }) {
   return (
@@ -21,6 +22,8 @@ export function Stars({ value, count }: { value: number; count?: number }) {
 
 export default function MarketProductCard({ product }: { product: MarketProduct }) {
   const { addToCart } = useCart();
+  const { has, toggle, isFull } = useCompare();
+  const inCompare = has(product.id);
 
   const priceUsd = (product.price ?? 0) / 100;
   const compareUsd = product.compare_at_price ? product.compare_at_price / 100 : null;
@@ -58,6 +61,19 @@ export default function MarketProductCard({ product }: { product: MarketProduct 
             -{Math.round((1 - priceUsd / compareUsd) * 100)}%
           </span>
         )}
+        <button
+          onClick={e => {
+            e.preventDefault();
+            if (!inCompare && isFull) { toast.info('Compare holds up to 4 products.'); return; }
+            toggle(product.id);
+          }}
+          title={inCompare ? 'Remove from comparison' : 'Add to comparison'}
+          className={`absolute bottom-2 right-2 flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold border backdrop-blur-sm transition-colors ${
+            inCompare ? 'bg-blue-600 text-white border-blue-600' : 'bg-white/90 text-gray-600 border-gray-200 hover:border-blue-400 hover:text-blue-600'
+          }`}
+        >
+          <GitCompare className="w-3 h-3" /> {inCompare ? 'Added' : 'Compare'}
+        </button>
       </div>
 
       <div className="p-3.5 flex flex-col flex-1">

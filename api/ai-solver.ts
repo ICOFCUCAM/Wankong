@@ -6,11 +6,24 @@ import { serviceClient } from './_lib/fulfillment';
 // ai-service with two changes: one batched reasons call instead of one call
 // per product, and a pure-keyword fallback when OPENAI_API_KEY is absent.
 
+interface Constraints {
+  maxPriceUsd: number | null;   // budget cap converted to USD
+  minPriceUsd: number | null;
+  currency: string | null;      // as the user stated it (EUR, GBP, USD…)
+  productTypes: string[];       // hard filter, e.g. ['Product'] or ['Course']
+  attributes: string[];         // e.g. ['15-inch','video editing','lightweight']
+}
+
 interface ProblemAnalysis {
   category: string;
   keywords: string[];
   suggestedCategories: string[];
+  constraints: Constraints;
 }
+
+const EMPTY_CONSTRAINTS: Constraints = {
+  maxPriceUsd: null, minPriceUsd: null, currency: null, productTypes: [], attributes: [],
+};
 
 interface CandidateProduct {
   id: string;
@@ -55,28 +68,66 @@ async function openaiJson(apiKey: string, system: string, user: string): Promise
 async function analyzeProblem(apiKey: string, problem: string): Promise<ProblemAnalysis> {
   const result = await openaiJson(
     apiKey,
-    `You are the AI assistant for Wankong, a creator marketplace selling Music, Books, Audiobooks, Videos, Podcasts, Courses, Articles and general Products.
-Analyze the user's problem and respond in JSON with keys:
-- category: one of health/social/physical/financial/lifestyle/learning/entertainment/other
-- keywords: array of 5-12 search keywords related to the problem and its solutions
-- suggestedCategories: array of product types from [Music, Book, Audiobook, Video, Podcast, Course, Article, Product] that could help`,
-    `Analyze this problem: "${problem}"`,
+    `You are the shopping AI for SmartKong, a marketplace selling Music, Books, Audiobooks, Videos, Podcasts, Courses, Articles and general physical Products.
+The user describes what they want in natural language (e.g. "the best 15-inch laptop under €1,500 for video editing"). Extract intent AND hard constraints.
+Respond in JSON with keys:
+- category: one of health/social/physical/financial/lifestyle/learning/entertainment/shopping/other
+- keywords: array of 5-12 search keywords (include product nouns and use-case terms)
+- suggestedCategories: array from [Music, Book, Audiobook, Video, Podcast, Course, Article, Product]
+- maxPriceUsd: integer USD budget cap converted from whatever currency the user stated, or null (e.g. €1,500 → 1620)
+- minPriceUsd: integer USD floor or null
+- currency: the currency the user mentioned (EUR/GBP/USD/…) or null
+- attributes: array of concrete requirements the user stated (e.g. "15-inch","video editing","waterproof","under 2kg")`,
+    `Request: "${problem}"`,
   );
+  const num = (v: any) => (typeof v === 'number' && isFinite(v) && v > 0 ? Math.round(v) : null);
   return {
     category:            result.category ?? 'other',
     keywords:            Array.isArray(result.keywords) ? result.keywords : [],
     suggestedCategories: Array.isArray(result.suggestedCategories) ? result.suggestedCategories : [],
+    constraints: {
+      maxPriceUsd:  num(result.maxPriceUsd),
+      minPriceUsd:  num(result.minPriceUsd),
+      currency:     typeof result.currency === 'string' ? result.currency : null,
+      productTypes: Array.isArray(result.suggestedCategories) ? result.suggestedCategories : [],
+      attributes:   Array.isArray(result.attributes) ? result.attributes.slice(0, 8) : [],
+    },
   };
 }
 
-// Keyword-only fallback when no OpenAI key is configured
+// Static FX for budget parsing when the model isn't available (approximate).
+const FX_TO_USD: Record<string, number> = {
+  eur: 1.08, gbp: 1.27, kes: 0.0078, ngn: 0.00065, zar: 0.055, ghs: 0.067,
+  cad: 0.73, aud: 0.66, inr: 0.012, jpy: 0.0064, usd: 1,
+};
+
+// Keyword + regex fallback when no OpenAI key is configured.
 function fallbackAnalysis(problem: string): ProblemAnalysis {
-  const stop = new Set(['the', 'and', 'for', 'with', 'that', 'this', 'have', 'from', 'what', 'how', 'can', 'need', 'want', 'my', 'me', 'i', 'a', 'an', 'to', 'of', 'in', 'on', 'is', 'it', 'be', 'am']);
+  const stop = new Set(['the', 'and', 'for', 'with', 'that', 'this', 'have', 'from', 'what', 'how', 'can', 'need', 'want', 'my', 'me', 'i', 'a', 'an', 'to', 'of', 'in', 'on', 'is', 'it', 'be', 'am', 'best', 'under', 'below', 'cheap']);
+  const lower = problem.toLowerCase();
   const keywords = [...new Set(
-    problem.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/)
-      .filter(w => w.length > 2 && !stop.has(w))
+    lower.replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(w => w.length > 2 && !stop.has(w))
   )].slice(0, 12);
-  return { category: 'other', keywords, suggestedCategories: [] };
+
+  // Parse "under €1,500" / "below 1200 usd" / "$800"
+  let maxPriceUsd: number | null = null;
+  let currency: string | null = null;
+  const m = lower.match(/(?:under|below|less than|max|up to|<)?\s*([€£$])?\s*([\d.,]{2,})\s*(eur|euros?|gbp|pounds?|usd|dollars?|kes|ngn|zar|ghs|cad|aud|inr|jpy)?/);
+  if (m) {
+    const amount = parseFloat(m[2].replace(/,/g, ''));
+    const sym = m[1], word = m[3];
+    const cur = sym === '€' ? 'eur' : sym === '£' ? 'gbp' : sym === '$' ? 'usd'
+      : word ? word.slice(0, 3) : null;
+    if (amount && cur && FX_TO_USD[cur]) {
+      maxPriceUsd = Math.round(amount * FX_TO_USD[cur]);
+      currency = cur.toUpperCase();
+    }
+  }
+
+  return {
+    category: 'shopping', keywords, suggestedCategories: [],
+    constraints: { ...EMPTY_CONSTRAINTS, maxPriceUsd, currency },
+  };
 }
 
 function scoreProduct(product: CandidateProduct, analysis: ProblemAnalysis): number {
@@ -148,19 +199,30 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       analysis = fallbackAnalysis(trimmed);
     }
 
-    // 2. Score the catalog
-    const { data: candidates } = await supabase
+    // 2. Apply hard constraints as real DB filters, then score.
+    const c = analysis.constraints;
+    let query = supabase
       .from('ecom_products')
-      .select('id, title, handle, description, product_type, genre, cover_url, price, is_affiliate, vendor, rating_avg, rating_count, tags, problem_tags, solves_problems')
-      .eq('status', 'active')
-      .order('trending_score', { ascending: false })
-      .limit(400);
+      .select('id, title, handle, description, product_type, genre, cover_url, price, compare_at_price, is_affiliate, affiliate_url, vendor, rating_avg, rating_count, tags, problem_tags, solves_problems')
+      .eq('status', 'active');
 
-    const scored = ((candidates ?? []) as CandidateProduct[])
+    if (c.maxPriceUsd != null) query = query.lte('price', c.maxPriceUsd * 100);
+    if (c.minPriceUsd != null) query = query.gte('price', c.minPriceUsd * 100);
+    if (c.productTypes.length > 0) query = query.in('product_type', c.productTypes);
+
+    const { data: candidates } = await query.order('trending_score', { ascending: false }).limit(400);
+
+    let scored = ((candidates ?? []) as CandidateProduct[])
       .map(p => ({ product: p, score: scoreProduct(p, analysis) }))
       .filter(x => x.score > 0)
       .sort((a, b) => b.score - a.score)
       .slice(0, 6);
+
+    // If constraints filtered everything out, fall back to price-only matches so
+    // the shopper still sees something within budget.
+    if (scored.length === 0 && candidates && candidates.length > 0) {
+      scored = (candidates as CandidateProduct[]).slice(0, 6).map(product => ({ product, score: 1 }));
+    }
 
     // 3. Explain why each product helps (single batched call)
     let reasons: Record<string, string> = {};
@@ -188,6 +250,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.json({
       aiPowered,
       analysis,
+      constraints: analysis.constraints,
       confidence,
       recommendations: scored.map(x => ({
         ...x.product,
