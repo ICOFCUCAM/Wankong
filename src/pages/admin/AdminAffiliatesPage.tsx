@@ -6,29 +6,9 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
+import { AFFILIATE_NETWORKS, networkById } from '@/lib/affiliateNetworks';
+
 type Tab = 'products' | 'accounts' | 'import' | 'commissions';
-type Provider = 'amazon' | 'cj' | 'rakuten' | 'temu';
-
-const PROVIDERS: Provider[] = ['amazon', 'cj', 'rakuten', 'temu'];
-
-// Per-provider credential fields shown in the account form
-const PROVIDER_FIELDS: Record<Provider, { key: string; label: string }[]> = {
-  amazon:  [{ key: 'amazon_associate_tag', label: 'Associate Tag' }],
-  cj:      [
-    { key: 'cj_personal_access_token', label: 'Personal Access Token' },
-    { key: 'cj_publisher_id',          label: 'Publisher ID' },
-    { key: 'cj_site_id',               label: 'Site / Website ID' },
-  ],
-  rakuten: [
-    { key: 'rakuten_affiliate_id', label: 'Affiliate ID' },
-    { key: 'rakuten_api_key',      label: 'API Key' },
-  ],
-  temu:    [
-    { key: 'temu_api_key',     label: 'API Key' },
-    { key: 'temu_campaign_id', label: 'Campaign ID' },
-    { key: 'temu_promo_code',  label: 'Promo Code' },
-  ],
-};
 
 // A tracked link must carry the network's tracking parameter
 function linkIssue(source: string | null, url: string | null): string | null {
@@ -241,13 +221,21 @@ function NetworkAccounts() {
 
   useEffect(() => { load(); }, [load]);
 
-  const provider = (form.provider ?? 'amazon') as Provider;
+  const network = networkById(form.provider) ?? AFFILIATE_NETWORKS[0];
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    const row: Record<string, unknown> = { provider: form.provider, label: form.label.trim() };
-    for (const f of PROVIDER_FIELDS[provider]) row[f.key] = form[f.key]?.trim() || null;
+    const credentials = Object.fromEntries(
+      network.fields
+        .map(f => [f.key, form[f.key]?.trim() ?? ''])
+        .filter(([, v]) => v)
+    );
+    const row: Record<string, unknown> = {
+      provider:    network.id,
+      label:       form.label.trim(),
+      credentials,
+    };
 
     const { error } = await supabase.from('affiliate_accounts').insert([row]);
     setSaving(false);
@@ -291,7 +279,7 @@ function NetworkAccounts() {
                 onChange={e => setForm({ provider: e.target.value, label: form.label })}
                 className="w-full bg-[#0B0814] border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#9D4EDD]"
               >
-                {PROVIDERS.map(p => <option key={p} value={p}>{p.toUpperCase()}</option>)}
+                {AFFILIATE_NETWORKS.map(n => <option key={n.id} value={n.id}>{n.name}</option>)}
               </select>
             </div>
             <div>
@@ -304,11 +292,11 @@ function NetworkAccounts() {
               />
             </div>
           </div>
-          {PROVIDER_FIELDS[provider].map(f => (
+          {network.fields.map(f => (
             <div key={f.key}>
               <label className="block text-xs text-white/55 mb-1">{f.label}</label>
               <input
-                type="text" value={form[f.key] ?? ''}
+                type={f.secret ? 'password' : 'text'} value={form[f.key] ?? ''}
                 onChange={e => setForm(prev => ({ ...prev, [f.key]: e.target.value }))}
                 className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm font-mono focus:outline-none focus:ring-1 focus:ring-[#9D4EDD]"
               />
@@ -329,7 +317,7 @@ function NetworkAccounts() {
         <div className="space-y-2">
           {accounts.map(a => (
             <div key={a.id} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4">
-              <span className="px-2.5 py-1 bg-white/10 rounded-lg text-xs text-white font-bold uppercase">{a.provider}</span>
+              <span className="px-2.5 py-1 bg-white/10 rounded-lg text-xs text-white font-bold">{networkById(a.provider)?.name ?? a.provider}</span>
               <div className="flex-1 min-w-0">
                 <p className="text-white text-sm font-medium">{a.label}</p>
                 <p className="text-white/35 text-xs">Added {a.created_at?.slice(0, 10)}</p>
