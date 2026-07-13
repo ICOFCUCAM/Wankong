@@ -342,7 +342,8 @@ export default function MarketProductPage() {
             {isAffiliate ? (
               <button
                 onClick={handlePartner}
-                className="flex items-center justify-center gap-2 w-full sm:w-auto px-10 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors"
+                className="flex items-center justify-center gap-2 w-full sm:w-auto px-10 py-4 text-white font-bold rounded-xl shadow-lg shadow-violet-500/25 hover:opacity-95 transition-opacity"
+                style={{ background: 'var(--sk-aurora)' }}
               >
                 Buy from {product.vendor ?? 'Partner Store'} <ExternalLink className="w-4 h-4" />
               </button>
@@ -370,7 +371,8 @@ export default function MarketProductPage() {
                 </button>
                 <button
                   onClick={() => handleAdd(true)}
-                  className="px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors"
+                  className="px-8 py-3.5 text-white font-bold rounded-xl shadow-lg shadow-violet-500/25 hover:opacity-95 transition-opacity"
+                  style={{ background: 'var(--sk-aurora)' }}
                 >
                   {priceUsd > 0 ? `Buy Now — $${(priceUsd * quantity).toFixed(2)}` : 'Get for Free'}
                 </button>
