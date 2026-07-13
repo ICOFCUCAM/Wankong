@@ -13,7 +13,7 @@ import {
   Laptop, Car, Home as HomeIcon, Shirt, BookOpen, HeartPulse,
   Brain, Wrench, Store, Globe, Lock, RefreshCw, CheckCircle2,
   TrendingUp, MessageSquare, GitCompare, Heart, Truck,
-  Package, Users, Scale, Tag, Play, ArrowUpRight, Loader2, ShoppingCart,
+  Package, Users, Scale, Tag, Play, ArrowUpRight, Loader2, ShoppingCart, Lock,
 } from 'lucide-react';
 import { ProductArt, VendorMark, type ArtKind } from './HeroProductArt';
 import { BrandLogo, BRAND_LIST } from './BrandLogos';
@@ -84,6 +84,14 @@ const HERO_STATS = [
   { Icon: Globe,       value: 230,   suffix: '+',  label: 'Countries' },
   { Icon: Users,       value: 1.8,   suffix: 'M+', label: 'Happy Customers' },
   { Icon: ShieldCheck, value: 100,   suffix: '%',  label: 'Secure & Safe' },
+];
+
+// Cross-store cart demo — one cart, many stores, one checkout.
+const CART_DEMO = [
+  { store: 'Amazon',   title: 'Sony WH-1000XM5 Headphones', price: '348' },
+  { store: 'Apple',    title: 'MacBook Pro M4',             price: '1,599' },
+  { store: 'Best Buy', title: 'LG UltraGear Monitor',       price: '499' },
+  { store: 'Walmart',  title: 'Ergonomic Office Chair',     price: '199' },
 ];
 
 // Living shelf — a gently moving wall of categories for discovery shoppers.
@@ -1049,6 +1057,61 @@ export default function SmartKongLanding() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── ONE CHECKOUT (the shopping-layer promise, made tangible) ─────── */}
+      <section className="bg-[#070810] py-20 md:py-28">
+        <div className="max-w-7xl mx-auto px-4 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <p className="text-sm font-semibold text-blue-400 uppercase tracking-widest">Compare · Buy · One cart</p>
+            <h2 className="text-4xl md:text-5xl font-black text-white mt-3 leading-[1.05]">
+              One cart across<br /><span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-cyan-300 to-violet-400">every store on Earth.</span>
+            </h2>
+            <p className="text-white/55 mt-5 max-w-md leading-relaxed">
+              SmartKong compares Amazon, Apple, Best Buy, Walmart and thousands more, then routes you to the lowest price. Check out SmartKong sellers in one cart, or buy partner deals in a single tap at the store.
+            </p>
+            <ul className="mt-6 space-y-3">
+              {['Compare every store, buy at the best price', 'One cart & one checkout for SmartKong sellers', 'Partner deals open securely at the store'].map(t => (
+                <li key={t} className="flex items-center gap-2.5 text-white/80"><CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" /> {t}</li>
+              ))}
+            </ul>
+            <button onClick={() => navigate('/cart')} className="mt-8 inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-bold shadow-lg shadow-blue-500/25 hover:opacity-90 transition-opacity">
+              See it in your cart <ArrowRight className="w-4 h-4" />
+            </button>
+            <p className="mt-4 text-xs text-white/40 max-w-sm">SmartKong earns a small commission from partner stores — you never pay more.</p>
+          </div>
+
+          <div className="relative">
+            <div className="absolute -inset-4 rounded-[2rem] opacity-40 blur-3xl" style={{ background: 'radial-gradient(circle at 60% 40%, #2563EB, transparent 60%)' }} aria-hidden />
+            <div className="relative rounded-3xl bg-white shadow-2xl p-6">
+              <div className="flex items-center justify-between mb-4">
+                <span className="flex items-center gap-2 font-bold text-gray-900"><ShoppingCart className="w-5 h-5 text-blue-600" /> Your SmartKong cart</span>
+                <span className="text-xs text-gray-400">4 stores · 4 items</span>
+              </div>
+              <div className="space-y-2.5">
+                {CART_DEMO.map(it => (
+                  <div key={it.title} className="flex items-center gap-3 p-2.5 rounded-xl bg-gray-50">
+                    <div className="w-10 h-10 rounded-lg bg-white ring-1 ring-black/5 flex items-center justify-center shrink-0"><VendorMark vendor={it.store} /></div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-gray-900 truncate">{it.title}</p>
+                      <p className="text-[11px] text-gray-400">{it.store}</p>
+                    </div>
+                    <span className="font-bold text-gray-900">${it.price}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-gray-400">One checkout · 4 stores</p>
+                  <p className="text-2xl font-black text-gray-900">$2,645</p>
+                </div>
+                <button onClick={() => navigate('/cart')} className="flex items-center gap-2 px-5 py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-colors">
+                  <Lock className="w-4 h-4" /> Checkout once
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
