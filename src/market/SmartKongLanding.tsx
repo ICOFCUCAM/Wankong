@@ -287,12 +287,18 @@ function ProductCard({ p }: { p: Prod }) {
   );
 }
 
+// Meridian section head — arc eyebrow, display title, optional serif accent on
+// the last word so every section reads on-brand.
 function SectionHead({ eyebrow, title, tokens, center, sub }: { eyebrow: string; title: string; tokens: ReturnType<typeof themeTokens>; center?: boolean; sub?: string }) {
+  const words = title.split(' ');
+  const accent = words.length > 1 ? words.pop() : null;
   return (
     <div className={center ? 'text-center' : ''}>
-      <p className="text-sm font-semibold text-blue-600 uppercase tracking-widest">{eyebrow}</p>
-      <h2 className={`text-3xl md:text-4xl font-black mt-2 ${tokens.heading}`}>{title}</h2>
-      {sub && <p className={`mt-3 text-base ${tokens.body} ${center ? 'max-w-2xl mx-auto' : 'max-w-xl'}`}>{sub}</p>}
+      <span className={`sk-eyebrow ${center ? 'justify-center' : ''}`}>{eyebrow}</span>
+      <h2 className={`text-4xl md:text-5xl font-black tracking-tight mt-3 ${tokens.heading}`}>
+        {words.join(' ')}{accent && <> <span className="sk-serif sk-aurora-text">{accent}</span></>}
+      </h2>
+      {sub && <p className={`mt-4 text-base md:text-lg ${tokens.body} ${center ? 'max-w-2xl mx-auto' : 'max-w-xl'}`}>{sub}</p>}
     </div>
   );
 }
@@ -778,8 +784,10 @@ function DiscoveryRow({ eyebrow, title, products, tokens }: { eyebrow: string; t
     <div className="mb-14 last:mb-0">
       <div className="flex items-end justify-between mb-6">
         <div>
-          <p className="text-xs font-semibold text-blue-600 uppercase tracking-widest">{eyebrow}</p>
-          <h3 className={`text-2xl md:text-3xl font-black mt-1 ${tokens.heading}`}>{title}</h3>
+          <span className="sk-eyebrow !text-[10px]">{eyebrow}</span>
+          <h3 className={`text-2xl md:text-3xl font-black tracking-tight mt-1.5 ${tokens.heading}`}>
+            {title.split(' ').slice(0, -1).join(' ')} <span className="sk-serif sk-aurora-text">{title.split(' ').slice(-1)}</span>
+          </h3>
         </div>
         <Link to="/shop" className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-500 shrink-0">View all <ArrowRight className="w-4 h-4" /></Link>
       </div>
