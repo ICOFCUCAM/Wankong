@@ -13,7 +13,7 @@ import {
   Laptop, Car, Home as HomeIcon, Shirt, BookOpen, HeartPulse,
   Brain, Wrench, Store, Globe, Lock, RefreshCw, CheckCircle2,
   TrendingUp, MessageSquare, GitCompare, Heart, Truck,
-  Package, Users, Scale, Tag, Play, ArrowUpRight,
+  Package, Users, Scale, Tag, Play, ArrowUpRight, Loader2,
 } from 'lucide-react';
 import { ProductArt, VendorMark, type ArtKind } from './HeroProductArt';
 import { BrandLogo, BRAND_LIST } from './BrandLogos';
@@ -104,11 +104,11 @@ const HERO_CARDS: {
   title: string; rating: number; count: string; price: string; vendor: string;
   art: ArtKind; photo: string; pos: string; delay: string; size: 'lg' | 'md' | 'sm'; mark?: 'apple' | 'link';
 }[] = [
-  { title: 'Sony WH-1000XM5',    rating: 4.8, count: '8,842', price: '348',   vendor: 'Amazon',   art: 'headphones', photo: UNSPLASH('1505740420928-5e560c06d30e'), pos: 'top-[2%] left-[26%]',    delay: '0s',   size: 'md' },
-  { title: 'iPhone 15 Pro',      rating: 4.9, count: '6,421', price: '999',   vendor: 'Apple',    art: 'phone',      photo: UNSPLASH('1592750475338-74b7b21085ab'), pos: 'top-[15%] right-[-3%]',  delay: '.6s',  size: 'sm' },
-  { title: 'MacBook Pro M4',     rating: 4.9, count: '2,843', price: '1,599', vendor: 'Best Buy', art: 'laptop',     photo: UNSPLASH('1517336714731-489689fd1ca8'), pos: 'top-[37%] left-[-7%]',   delay: '.3s',  size: 'lg', mark: 'apple' },
-  { title: 'DJI Air 3S Drone',   rating: 4.7, count: '1,235', price: '1,099', vendor: 'Amazon',   art: 'drone',      photo: UNSPLASH('1473968512647-3e447244af8f'), pos: 'top-[54%] right-[-5%]',  delay: '1s',   size: 'sm' },
-  { title: 'Samsung 65" OLED TV',rating: 4.8, count: '952',   price: '1,299', vendor: 'Walmart',  art: 'tv',         photo: UNSPLASH('1593784991095-a205069470b6'), pos: 'bottom-[0%] left-[19%]', delay: '1.3s', size: 'md', mark: 'link' },
+  { title: 'Sony WH-1000XM5',    rating: 4.8, count: '8,842', price: '348',   vendor: 'Amazon',   art: 'headphones', photo: UNSPLASH('1505740420928-5e560c06d30e'), pos: 'top-[1%] left-[34%]',    delay: '0s',   size: 'md' },
+  { title: 'iPhone 15 Pro',      rating: 4.9, count: '6,421', price: '999',   vendor: 'Apple',    art: 'phone',      photo: UNSPLASH('1592750475338-74b7b21085ab'), pos: 'top-[14%] right-[-4%]',  delay: '.6s',  size: 'sm' },
+  { title: 'MacBook Pro M4',     rating: 4.9, count: '2,843', price: '1,599', vendor: 'Best Buy', art: 'laptop',     photo: UNSPLASH('1517336714731-489689fd1ca8'), pos: 'top-[29%] left-[-8%]',   delay: '.3s',  size: 'lg', mark: 'apple' },
+  { title: 'DJI Air 3S Drone',   rating: 4.7, count: '1,235', price: '1,099', vendor: 'Amazon',   art: 'drone',      photo: UNSPLASH('1473968512647-3e447244af8f'), pos: 'top-[45%] right-[-5%]',  delay: '1s',   size: 'sm' },
+  { title: 'Samsung 65" OLED TV',rating: 4.8, count: '952',   price: '1,299', vendor: 'Walmart',  art: 'tv',         photo: UNSPLASH('1593784991095-a205069470b6'), pos: 'top-[70%] right-[3%]',   delay: '1.3s', size: 'md', mark: 'link' },
 ];
 
 const TRUST = [
@@ -445,6 +445,11 @@ function HeroCard({ c }: { c: (typeof HERO_CARDS)[number] }) {
                 <ArrowRight className="w-3.5 h-3.5" />
               </span>
             </div>
+            {c.size === 'lg' && (
+              <span className="flex items-center gap-1 text-[11px] font-semibold text-emerald-600 mt-1">
+                <CheckCircle2 className="w-3 h-3" /> Best price today
+              </span>
+            )}
             <div className="flex items-center gap-1.5 mt-1.5">
               <VendorMark vendor={c.vendor} />
               <span className="text-[11px] font-medium text-gray-400">{c.vendor}</span>
@@ -452,6 +457,96 @@ function HeroCard({ c }: { c: (typeof HERO_CARDS)[number] }) {
           </div>
         </div>
       </button>
+    </div>
+  );
+}
+
+// ── Animated network background (nodes + connections pulsing over the globe) ────
+function NetworkNodes() {
+  const ref = useRef<HTMLCanvasElement | null>(null);
+  useEffect(() => {
+    const canvas = ref.current; if (!canvas) return;
+    const ctx = canvas.getContext('2d'); if (!ctx) return;
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+    let raf = 0, w = 0, h = 0, ti = 0;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const N = window.innerWidth < 768 ? 16 : 30;
+    const pts: { x: number; y: number; vx: number; vy: number; ph: number }[] = [];
+    const resize = () => { w = canvas.clientWidth; h = canvas.clientHeight; canvas.width = w * dpr; canvas.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
+    resize();
+    for (let i = 0; i < N; i++) pts.push({ x: Math.random() * w, y: Math.random() * h, vx: (Math.random() - 0.5) * 0.2, vy: (Math.random() - 0.5) * 0.2, ph: Math.random() * Math.PI * 2 });
+    const draw = () => {
+      ti += 0.02;
+      ctx.clearRect(0, 0, w, h);
+      for (const p of pts) { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > w) p.vx *= -1; if (p.y < 0 || p.y > h) p.vy *= -1; }
+      for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) {
+        const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y, d = Math.hypot(dx, dy);
+        if (d < 120) { ctx.strokeStyle = `rgba(59,130,246,${0.18 * (1 - d / 120)})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y); ctx.stroke(); }
+      }
+      for (const p of pts) {
+        const g = 1.5 + Math.sin(ti + p.ph) * 0.8;
+        ctx.fillStyle = 'rgba(37,99,235,0.5)'; ctx.beginPath(); ctx.arc(p.x, p.y, g, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = 'rgba(37,99,235,0.1)'; ctx.beginPath(); ctx.arc(p.x, p.y, g * 3.2, 0, Math.PI * 2); ctx.fill();
+      }
+      raf = requestAnimationFrame(draw);
+    };
+    draw();
+    window.addEventListener('resize', resize);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
+  }, []);
+  return <canvas ref={ref} className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden />;
+}
+
+// ── Live AI comparison panel (searches stores, recommends the best) ─────────────
+const AI_STORES = [
+  { name: 'Amazon',   price: '$1,299' },
+  { name: 'Best Buy', price: '$1,289', best: true },
+  { name: 'Walmart',  price: '$1,319' },
+];
+const AI_SEQ = [1500, 850, 850, 850, 2800]; // ms per step: search, reveal×3, recommend
+
+function AiSearchPanel() {
+  const [step, setStep] = useState(0);
+  useEffect(() => {
+    let i = 0; let t: ReturnType<typeof setTimeout>;
+    const run = () => { setStep(i); t = setTimeout(() => { i = (i + 1) % AI_SEQ.length; run(); }, AI_SEQ[i]); };
+    run();
+    return () => clearTimeout(t);
+  }, []);
+  const revealed = step === 0 ? 0 : step === AI_SEQ.length - 1 ? AI_STORES.length : step;
+  return (
+    <div className="sk-float absolute z-20 bottom-[2%] left-[-3%] w-64" style={{ animationDelay: '.9s' }}>
+      <div className="rounded-2xl bg-white/95 backdrop-blur-md shadow-[0_28px_65px_-18px_rgba(30,58,138,0.55)] ring-1 ring-blue-100 p-3.5">
+        <div className="flex items-center gap-2 mb-2.5">
+          <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center"><Sparkles className="w-3.5 h-3.5 text-white" /></div>
+          <span className="text-xs font-bold text-gray-900">SmartKong AI</span>
+          <span className="ml-auto flex items-center gap-1 text-[10px] font-medium text-emerald-600">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> live
+          </span>
+        </div>
+        {step === 0 ? (
+          <div className="flex items-center gap-2 py-3 text-[13px] text-gray-500">
+            <Loader2 className="w-4 h-4 animate-spin text-blue-600" /> Searching 18,500 stores…
+          </div>
+        ) : (
+          <>
+            <div className="space-y-1.5">
+              {AI_STORES.slice(0, revealed).map(s => (
+                <div key={s.name} className={`flex items-center justify-between rounded-lg px-2.5 py-1.5 text-xs transition-all ${s.best ? 'bg-emerald-50 ring-1 ring-emerald-200' : 'bg-gray-50'}`}>
+                  <span className="flex items-center gap-1.5 font-medium text-gray-700"><VendorMark vendor={s.name} />{s.name}</span>
+                  <span className={`font-bold ${s.best ? 'text-emerald-600' : 'text-gray-900'}`}>{s.price}</span>
+                </div>
+              ))}
+            </div>
+            {step === AI_SEQ.length - 1 && (
+              <div className="mt-2.5 flex items-start gap-1.5 rounded-lg bg-blue-600 text-white px-2.5 py-2">
+                <CheckCircle2 className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                <span className="text-[11px] leading-snug">I recommend <b>Best Buy</b> — you save <b>$30</b></span>
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }
@@ -553,6 +648,7 @@ export default function SmartKongLanding() {
         {/* Global network globe — right ~3/4, fading into white on the left */}
         <div className="pointer-events-none select-none absolute right-0 top-0 h-full w-[88%] sm:w-[80%] lg:w-[74%]" aria-hidden>
           <img src="/Smartkonghero.png" alt="" className="w-full h-full object-cover object-right" />
+          <NetworkNodes />
           <div className="absolute inset-y-0 left-0 w-2/5 bg-gradient-to-r from-white via-white/80 to-transparent" />
         </div>
 
@@ -619,9 +715,10 @@ export default function SmartKongLanding() {
             </div>
           </div>
 
-          {/* Right: floating product cards over the globe */}
+          {/* Right: floating product cards + live AI panel over the globe */}
           <div className="relative h-[440px] md:h-[520px] hidden md:block">
             {HERO_CARDS.map(c => <HeroCard key={c.title} c={c} />)}
+            <AiSearchPanel />
           </div>
         </div>
 
