@@ -105,7 +105,7 @@ export default function MarketCollectionPage() {
                 <p className="text-sm text-gray-500">Complete kit total</p>
                 <p className="text-3xl font-black text-gray-900">${total.toFixed(2)}</p>
               </div>
-              <button onClick={addAll} className="flex items-center gap-2 px-7 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-500/25 transition-colors">
+              <button onClick={addAll} className="flex items-center gap-2 px-7 py-3.5 rounded-xl text-white font-bold shadow-lg shadow-violet-500/25 hover:opacity-95 transition-opacity" style={{ background: 'var(--sk-aurora)' }}>
                 <ShoppingCart className="w-4 h-4" /> Add all to cart
               </button>
             </div>
