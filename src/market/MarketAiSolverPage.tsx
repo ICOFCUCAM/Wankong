@@ -123,7 +123,7 @@ export default function MarketAiSolverPage() {
               <button
                 key={ex}
                 onClick={() => solve(ex)}
-                className="px-3.5 py-1.5 bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-200 rounded-full text-xs text-gray-500 hover:text-blue-700 transition-colors"
+                className="px-3.5 py-1.5 bg-[var(--sk-mist)] hover:bg-white border border-gray-200 hover:border-blue-300 rounded-full text-xs text-gray-500 hover:text-blue-700 hover:-translate-y-0.5 transition-all"
               >
                 {ex}
               </button>
