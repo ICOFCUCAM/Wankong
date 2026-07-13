@@ -22,7 +22,7 @@ function FilterSidebar({
   const maxPrice = filters.maxPriceUsd ?? 200000;
 
   return (
-    <aside className="bg-white border border-gray-200 rounded-xl p-5 h-fit lg:sticky lg:top-32 space-y-6">
+    <aside className="bg-white border border-gray-200 rounded-2xl p-5 h-fit lg:sticky lg:top-32 space-y-6">
       {/* Search within results */}
       <div>
         <p className="text-sm font-bold text-gray-900 mb-2">Search products…</p>
@@ -239,7 +239,7 @@ export default function SmartKongHome() {
                     <button
                       onClick={loadMore}
                       disabled={loadingMore}
-                      className="inline-flex items-center gap-2 px-8 py-3 border border-gray-300 hover:border-blue-500 hover:text-blue-600 text-gray-700 font-semibold rounded-xl transition-colors disabled:opacity-50"
+                      className="inline-flex items-center gap-2 px-8 py-3.5 border border-gray-300 hover:border-blue-500 hover:text-blue-600 hover:-translate-y-0.5 text-gray-700 font-semibold rounded-xl transition-all disabled:opacity-50"
                     >
                       {loadingMore && <Loader2 className="w-4 h-4 animate-spin" />}
                       Load more ({total - products.length} remaining)
