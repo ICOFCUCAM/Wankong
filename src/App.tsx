@@ -98,6 +98,7 @@ const UploadAudiobookPage    = lazy(() => import('./pages/dashboard/UploadAudiob
 
 // ── Phase 4 — Admin ────────────────────────────────────────────────────────────
 const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage'));
+const SuperAdminPage     = lazy(() => import('./pages/admin/SuperAdminPage'));
 const AcceptInvitePage   = lazy(() => import('./pages/admin/AcceptInvitePage'));
 
 // ── Marketplace vendors ────────────────────────────────────────────────────────
@@ -269,6 +270,10 @@ export default function App() {
           {/* ── Phase 4 — Admin (all sub-routes handled inside AdminDashboardPage) */}
           <Route path="/admin/moderation"   element={
             <ProtectedRoute requiredRole="admin"><ModerationQueuePage /></ProtectedRoute>
+          } />
+          {/* Super-admin console — gates internally on isSuperAdmin */}
+          <Route path="/admin/super"        element={
+            <ProtectedRoute><SuperAdminPage /></ProtectedRoute>
           } />
           <Route path="/admin/*"            element={
             <ProtectedRoute requiredRole="admin"><AdminDashboardPage /></ProtectedRoute>

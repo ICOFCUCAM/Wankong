@@ -1,6 +1,12 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, ReactNode } from 'react';
 import { supabase } from '@/lib/supabase';
+import { IS_MARKET_SITE } from '@/lib/site';
 import type { User, Session } from '@supabase/supabase-js';
+
+// Which branded platform this deployment serves. Admins can be scoped to one
+// platform; super_admins ('all') span both.
+export type AdminPlatform = 'all' | 'wankong' | 'smartkong';
+export const CURRENT_PLATFORM: AdminPlatform = IS_MARKET_SITE ? 'smartkong' : 'wankong';
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -16,7 +22,11 @@ interface AuthContextType {
   loading:   boolean;
   userRole:  UserRole | null;
   adminRole: AdminRole | null;
+  adminPlatform: AdminPlatform | null;
+  /** Admin rights that apply on THIS platform (super_admin, or a match/all scope). */
   isAdmin:   boolean;
+  /** Spans every platform and can promote/revoke other admins. */
+  isSuperAdmin: boolean;
   signIn:              (email: string, password: string)              => Promise<{ error: Error | null }>;
   signUp:              (email: string, password: string, role?: UserRole, meta?: Record<string, unknown>) => Promise<{ error: Error | null }>;
   signOut:             ()                                             => Promise<void>;
@@ -41,14 +51,17 @@ async function fetchUserRole(userId: string): Promise<UserRole | null> {
   return (data?.role as UserRole) ?? null;
 }
 
-async function fetchAdminRole(userId: string): Promise<AdminRole | null> {
+async function fetchAdmin(userId: string): Promise<{ role: AdminRole; platform: AdminPlatform } | null> {
   const { data } = await supabase
     .from('admin_roles')
-    .select('role')
+    .select('role, platform')
+    // super_admin first so a multi-role user resolves to the highest privilege
     .eq('user_id', userId)
-    .limit(1)
-    .maybeSingle();
-  return (data?.role as AdminRole) ?? null;
+    .order('role', { ascending: true });
+  if (!data || data.length === 0) return null;
+  const sup = data.find(r => r.role === 'super_admin');
+  const row = sup ?? data[0];
+  return { role: row.role as AdminRole, platform: (row.platform as AdminPlatform) ?? 'all' };
 }
 
 // ── Provider ───────────────────────────────────────────────────────────────────
@@ -59,11 +72,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading,   setLoading]   = useState(true);
   const [userRole,  setUserRole]  = useState<UserRole | null>(null);
   const [adminRole, setAdminRole] = useState<AdminRole | null>(null);
+  const [adminPlatform, setAdminPlatform] = useState<AdminPlatform | null>(null);
 
   const loadRoles = useCallback(async (uid: string) => {
-    const [role, admin] = await Promise.all([fetchUserRole(uid), fetchAdminRole(uid)]);
+    const [role, admin] = await Promise.all([fetchUserRole(uid), fetchAdmin(uid)]);
     setUserRole(role);
-    setAdminRole(admin);
+    setAdminRole(admin?.role ?? null);
+    setAdminPlatform(admin?.platform ?? null);
   }, []);
 
   useEffect(() => {
@@ -82,6 +97,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         setUserRole(null);
         setAdminRole(null);
+        setAdminPlatform(null);
         setLoading(false);
       }
     });
@@ -150,15 +166,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (user) await loadRoles(user.id);
   }, [user, loadRoles]);
 
+  const isSuperAdmin = adminRole === 'super_admin';
+  // A scoped admin only counts on their own platform; super_admin (platform
+  // 'all') and legacy rows with no scope count everywhere.
+  const isAdmin = adminRole !== null &&
+    (isSuperAdmin || adminPlatform === 'all' || adminPlatform === CURRENT_PLATFORM);
+
   const value = useMemo<AuthContextType>(() => ({
     user, session, loading,
-    userRole, adminRole,
-    isAdmin: adminRole !== null,
+    userRole, adminRole, adminPlatform,
+    isAdmin, isSuperAdmin,
     signIn, signUp, signOut,
     signInWithGoogle, signInWithApple,
     saveRole, refreshRole,
   }), [
-    user, session, loading, userRole, adminRole,
+    user, session, loading, userRole, adminRole, adminPlatform, isAdmin, isSuperAdmin,
     signIn, signUp, signOut, signInWithGoogle, signInWithApple, saveRole, refreshRole,
   ]);
 

@@ -5,7 +5,7 @@ import {
   DollarSign, AlertTriangle, Settings, BarChart2,
   ChevronRight, Shield, LogOut, Mail, Copy, RefreshCw,
   Trash2, UserPlus, CheckCircle, Clock, XCircle,
-  Package, Archive, Store, Link2,
+  Package, Archive, Store, Link2, Crown,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
@@ -1416,6 +1416,7 @@ function AdminVendors() {
 
 function Sidebar({ onSignOut }: { onSignOut: () => void }) {
   const location = useLocation();
+  const { isSuperAdmin } = useAuth();
 
   return (
     <aside className="w-56 flex-shrink-0 flex flex-col border-r border-white/8" style={{ background: '#07091A' }}>
@@ -1451,6 +1452,11 @@ function Sidebar({ onSignOut }: { onSignOut: () => void }) {
 
       {/* Bottom */}
       <div className="p-3 border-t border-white/8 space-y-1">
+        {isSuperAdmin && (
+          <Link to="/admin/super" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-amber-300 hover:bg-white/5 transition-colors">
+            <Crown className="w-4 h-4" /> Super Admin
+          </Link>
+        )}
         <Link to="/" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/40 hover:text-white hover:bg-white/5 transition-colors">
           ← Back to Site
         </Link>
