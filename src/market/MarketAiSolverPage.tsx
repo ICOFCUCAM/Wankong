@@ -32,6 +32,7 @@ export default function MarketAiSolverPage() {
   const [error,   setError]   = useState('');
   const [results, setResults] = useState<Result[] | null>(null);
   const [reasons, setReasons] = useState<Record<string, string>>({});
+  const [constraints, setConstraints] = useState<any>(null);
 
   const solve = async (text?: string) => {
     const query = (text ?? problem).trim();
@@ -52,6 +53,7 @@ export default function MarketAiSolverPage() {
       if (!res.ok) throw new Error(data.error ?? 'Something went wrong');
       const recs = (Array.isArray(data.recommendations) ? data.recommendations : []) as Result[];
       setResults(recs);
+      setConstraints(data.constraints ?? null);
       setReasons(Object.fromEntries(recs.map(r => [r.id, r.reason ?? ''])));
     } catch (err: any) {
       setError(err.message);
@@ -137,10 +139,25 @@ export default function MarketAiSolverPage() {
             </p>
           ) : (
             <div>
-              <h2 className="flex items-center gap-2 text-gray-900 font-bold mb-5">
+              <h2 className="flex items-center gap-2 text-gray-900 font-bold mb-3">
                 <Sparkles className="w-4 h-4 text-blue-600" />
                 {results.length} solution{results.length > 1 ? 's' : ''} found
               </h2>
+              {constraints && (
+                <div className="flex flex-wrap gap-2 mb-5">
+                  {constraints.maxPriceUsd && (
+                    <span className="px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-xs font-medium">
+                      Budget ≤ ${constraints.maxPriceUsd}{constraints.currency && constraints.currency !== 'USD' ? ` (${constraints.currency})` : ''}
+                    </span>
+                  )}
+                  {(constraints.productTypes ?? []).map((t: string) => (
+                    <span key={t} className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium">{t}</span>
+                  ))}
+                  {(constraints.attributes ?? []).map((a: string) => (
+                    <span key={a} className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-medium">{a}</span>
+                  ))}
+                </div>
+              )}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
                 {results.map(r => (
                   <div key={r.id}>
