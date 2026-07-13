@@ -1375,12 +1375,19 @@ export default function SmartKongLanding() {
           <SectionHead eyebrow="Browse" title="Shop every category" tokens={T} />
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mt-8">
             {CATEGORY_TILES.map(c => (
-              <Link key={c.label} to={c.to} className={`group relative rounded-2xl p-6 overflow-hidden transition-all hover:-translate-y-1 ${T.tile}`}>
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: `radial-gradient(circle at 30% 0%, ${c.from}18, transparent 60%)` }} />
+              <Link key={c.label} to={c.to} className={`group relative rounded-3xl p-6 pb-7 overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl ${T.tile}`}>
+                {/* Ghost letter — the tile's editorial signature */}
+                <span
+                  className="absolute -right-2 -bottom-7 text-[7.5rem] font-black leading-none select-none transition-transform duration-500 group-hover:-translate-y-2 group-hover:rotate-[-4deg]"
+                  style={{ color: 'transparent', WebkitTextStroke: `1.5px ${c.from}40` }} aria-hidden
+                >
+                  {c.label[0]}
+                </span>
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: `radial-gradient(circle at 30% 0%, ${c.from}1f, transparent 60%)` }} />
                 <div className="relative">
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ background: `linear-gradient(135deg, ${c.from}, ${c.to2})` }}><c.Icon className="w-6 h-6 text-white" /></div>
-                  <p className={`font-semibold ${T.cardTitle}`}>{c.label}</p>
-                  <p className={`text-xs mt-0.5 flex items-center gap-1 group-hover:text-blue-600 transition-colors ${T.cardMeta}`}>Explore <ArrowRight className="w-3 h-3" /></p>
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 shadow-md transition-transform duration-300 group-hover:rotate-[8deg]" style={{ background: `linear-gradient(135deg, ${c.from}, ${c.to2})` }}><c.Icon className="w-6 h-6 text-white" /></div>
+                  <p className={`text-lg font-bold ${T.cardTitle}`}>{c.label}</p>
+                  <p className={`text-xs mt-1 flex items-center gap-1 group-hover:text-blue-600 transition-colors ${T.cardMeta}`}>Explore <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" /></p>
                 </div>
               </Link>
             ))}
