@@ -12,11 +12,11 @@ export const IS_MARKET_SITE: boolean =
 export const SITE_NAME = IS_MARKET_SITE ? 'SmartKong' : 'WANKONG';
 
 export const SITE_TAGLINE = IS_MARKET_SITE
-  ? 'The Global Marketplace'
+  ? "The World's Shopping Layer"
   : 'Global Creator Marketplace';
 
 export const SITE_DESCRIPTION = IS_MARKET_SITE
-  ? 'SmartKong — the global marketplace powered by Wankong. Shop music, books, audiobooks, courses and products from creators and trusted partners worldwide.'
+  ? 'SmartKong is the shopping layer for the whole internet — one AI search across every store on Earth, one place to compare every price, one cart to check out once. Not another store. The layer above them all.'
   : 'WANKONG — the global creator marketplace. Upload, distribute and monetize music, books, audiobooks, videos and podcasts to 30+ platforms worldwide.';
 
 // Sister-site links for cross-branding
