@@ -5,6 +5,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useApp } from '@/store/AppContext';
 import { supabase } from '@/lib/supabase';
 import { SUPPORTED_LANGUAGES, applyLangDir } from '@/lib/i18n';
+import { IS_MARKET_SITE, SITE_NAME } from '@/lib/site';
 import NotificationBellComponent from '@/components/NotificationBell';
 
 // ── Language Switcher ─────────────────────────────────────────────────────────
@@ -70,7 +71,7 @@ function LanguageSwitcher() {
 
 // ── Nav links (label keys map to i18n translation keys) ──────────────────────
 
-const NAV_ITEMS: Array<{ key: string; href?: string; handle?: string }> = [
+const WANKONG_NAV: Array<{ key: string; label?: string; href?: string; handle?: string }> = [
   { key: 'nav.home',        href:   '/'                   },
   { key: 'nav.music',       handle: 'music'               },
   { key: 'nav.videos',      handle: 'videos'              },
@@ -83,6 +84,18 @@ const NAV_ITEMS: Array<{ key: string; href?: string; handle?: string }> = [
   { key: 'nav.languages',   handle: 'languages'           },
   { key: 'nav.artists',     handle: 'artists'             },
 ];
+
+// smartkong.net — market-focused navigation (plain labels, no i18n keys)
+const MARKET_NAV: typeof WANKONG_NAV = [
+  { key: 'nav.home',   label: 'Home',       href: '/' },
+  { key: 'mk.books',   label: 'Books',      href: '/ebook-marketplace' },
+  { key: 'mk.music',   label: 'Music',      href: '/music-store' },
+  { key: 'mk.all',     label: 'All Products', handle: 'marketplace' },
+  { key: 'mk.solver',  label: 'AI Solver',  href: '/ai-solver' },
+  { key: 'mk.sell',    label: 'Sell',       href: '/vendor/register' },
+];
+
+const NAV_ITEMS = IS_MARKET_SITE ? MARKET_NAV : WANKONG_NAV;
 
 // NotificationBell is extracted to src/components/NotificationBell.tsx
 
@@ -134,9 +147,13 @@ export default function Header() {
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2.5 flex-shrink-0">
               <div className={`rounded-xl bg-gradient-to-br from-[#9D4EDD]/25 to-[#00D9FF]/10 border border-white/10 flex items-center justify-center transition-all duration-300 ${scrolled ? 'w-8 h-8' : 'w-10 h-10'}`}>
-                <img src="/wankong-mark.png" alt="WANKONG" className={`object-contain transition-all duration-300 ${scrolled ? 'w-5 h-5' : 'w-7 h-7'}`} />
+                <img src="/wankong-mark.png" alt={SITE_NAME} className={`object-contain transition-all duration-300 ${scrolled ? 'w-5 h-5' : 'w-7 h-7'}`} />
               </div>
-              <span className="text-white font-bold text-lg tracking-wide hidden sm:block">WANKONG</span>
+              <span className="text-white font-bold text-lg tracking-wide hidden sm:block">
+                {IS_MARKET_SITE ? (
+                  <>Smart<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF]">Kong</span></>
+                ) : 'WANKONG'}
+              </span>
             </Link>
 
             {/* Desktop nav */}
@@ -147,7 +164,7 @@ export default function Header() {
                   to={item.href ?? `/collections/${item.handle}`}
                   className="px-3 py-1.5 text-sm text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors whitespace-nowrap"
                 >
-                  {t(item.key)}
+                  {item.label ?? t(item.key)}
                 </Link>
               ))}
             </nav>
@@ -243,7 +260,7 @@ export default function Header() {
                   onClick={() => setMobileMenuOpen(false)}
                   className="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
                 >
-                  {t(item.key)}
+                  {item.label ?? t(item.key)}
                 </Link>
               ))}
               <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 text-sm text-[#B794F4] hover:text-[#C9B3F5] hover:bg-gray-800 rounded-lg transition-colors">

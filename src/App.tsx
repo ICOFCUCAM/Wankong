@@ -2,6 +2,7 @@ import { Suspense, lazy } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import GlobalPlayer from './components/GlobalPlayer';
 import ProtectedRoute from './components/ProtectedRoute';
+import { IS_MARKET_SITE } from '@/lib/site';
 import AddToPlaylistModal from './components/playlist/AddToPlaylistModal';
 import MobileBottomNav from './components/MobileBottomNav';
 
@@ -106,6 +107,9 @@ const VendorDashboardPage = lazy(() => import('./pages/vendor/VendorDashboardPag
 // ── AI discovery ───────────────────────────────────────────────────────────────
 const AiSolverPage = lazy(() => import('./pages/AiSolverPage'));
 
+// ── smartkong.net (VITE_SITE_MODE=market) ──────────────────────────────────────
+const MarketHomePage = lazy(() => import('./pages/market/MarketHomePage'));
+
 // ── Library ────────────────────────────────────────────────────────────────────
 const LibraryPage = lazy(() => import('./pages/LibraryPage'));
 
@@ -130,7 +134,7 @@ export default function App() {
         <div key={location.pathname} className="wk-page-in">
         <Routes>
           {/* ── Public ─────────────────────────────────────────────────────── */}
-          <Route path="/"                         element={<Index />} />
+          <Route path="/"                         element={IS_MARKET_SITE ? <MarketHomePage /> : <Index />} />
           <Route path="/cart"                     element={<CartPage />} />
           <Route path="/checkout"                 element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
           <Route path="/order-confirmation"       element={<OrderConfirmation />} />
