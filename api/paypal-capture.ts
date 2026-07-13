@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createClient } from '@supabase/supabase-js';
+import { markPaidAndFulfill, serviceClient } from './_lib/fulfillment';
 
 const PAYPAL_BASE = process.env.PAYPAL_ENV === 'live'
   ? 'https://api-m.paypal.com'
@@ -68,24 +68,31 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: capture.message ?? 'PayPal capture failed', details: capture });
     }
 
-    const captureId = capture.purchase_units?.[0]?.payments?.captures?.[0]?.id;
+    const captureRecord = capture.purchase_units?.[0]?.payments?.captures?.[0];
+    const captureId = captureRecord?.id;
 
-    // Update order status in Supabase if orderId provided
+    // Mark paid and fulfill server-side (library access + seller earnings)
     if (orderId && process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      const supabase = createClient(
-        process.env.SUPABASE_URL,
-        process.env.SUPABASE_SERVICE_ROLE_KEY,
-      );
-      await supabase
+      const supabase = serviceClient();
+
+      // The captured amount must cover the order total — a client can't get
+      // an order fulfilled by paying a smaller PayPal order.
+      const { data: order } = await supabase
         .from('ecom_orders')
-        .update({
-          payment_status:    'paid',
-          payment_method:    'paypal',
-          paypal_order_id:   paypalOrderId,
-          paypal_capture_id: captureId ?? null,
-          paid_at:           new Date().toISOString(),
-        })
-        .eq('id', orderId);
+        .select('total_cents')
+        .eq('id', orderId)
+        .single();
+      const capturedCents = Math.round(parseFloat(captureRecord?.amount?.value ?? '0') * 100);
+      if (order && capturedCents < (order.total_cents ?? 0)) {
+        console.error(`[paypal-capture] amount mismatch for order ${orderId}: captured ${capturedCents}, expected ${order.total_cents}`);
+        return res.status(400).json({ error: 'Captured amount does not match order total' });
+      }
+
+      await markPaidAndFulfill(supabase, orderId, {
+        payment_method:    'paypal',
+        paypal_order_id:   paypalOrderId,
+        paypal_capture_id: captureId ?? null,
+      });
     }
 
     return res.status(200).json({

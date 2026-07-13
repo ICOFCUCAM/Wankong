@@ -15,28 +15,50 @@ export default function OrderConfirmation() {
   const [items,   setItems]   = useState<OrderItem[]>([]);
   const [total,   setTotal]   = useState<number | null>(null);
   const [loading, setLoading] = useState(!!orderId);
+  const [status,  setStatus]  = useState<{ payment: string; fulfillment: string } | null>(null);
 
+  // Fulfillment happens server-side via payment webhooks, so it can lag the
+  // redirect by a few seconds — poll until the order settles.
   useEffect(() => {
     if (!orderId) return;
-    supabase
-      .from('ecom_orders')
-      .select('total_cents, ecom_order_items(title, price, quantity)')
-      .eq('id', orderId)
-      .single()
-      .then(({ data }) => {
-        if (data) {
-          setTotal((data.total_cents ?? 0) / 100);
-          setItems(
-            ((data as any).ecom_order_items ?? []).map((i: any) => ({
-              title:    i.title,
-              price:    i.price / 100,
-              quantity: i.quantity,
-            }))
-          );
-        }
-        setLoading(false);
-      });
+    let attempts = 0;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    const fetchOrder = () => {
+      supabase
+        .from('ecom_orders')
+        .select('total_cents, payment_status, fulfillment_status, ecom_order_items(title, price, quantity)')
+        .eq('id', orderId)
+        .single()
+        .then(({ data }) => {
+          if (data) {
+            setTotal((data.total_cents ?? 0) / 100);
+            setStatus({
+              payment:     data.payment_status ?? 'pending',
+              fulfillment: data.fulfillment_status ?? 'unfulfilled',
+            });
+            setItems(
+              ((data as any).ecom_order_items ?? []).map((i: any) => ({
+                title:    i.title,
+                price:    i.price / 100,
+                quantity: i.quantity,
+              }))
+            );
+            const settled = data.payment_status === 'paid' && data.fulfillment_status === 'fulfilled';
+            if (!settled && attempts < 10) {
+              attempts += 1;
+              timer = setTimeout(fetchOrder, 3000);
+            }
+          }
+          setLoading(false);
+        });
+    };
+
+    fetchOrder();
+    return () => { if (timer) clearTimeout(timer); };
   }, [orderId]);
+
+  const fulfilled = status?.payment === 'paid' && status?.fulfillment === 'fulfilled';
 
   return (
     <div className="min-h-screen bg-[#0B0814] flex items-center justify-center px-4">
@@ -50,7 +72,17 @@ export default function OrderConfirmation() {
         </div>
 
         <h1 className="text-3xl font-bold text-white mb-2">Order Confirmed!</h1>
-        <p className="text-gray-400 mb-6">Thank you for your purchase. Your content is ready to access.</p>
+        <p className="text-gray-400 mb-6">
+          {fulfilled
+            ? 'Thank you for your purchase. Your content is ready to access.'
+            : 'Thank you for your purchase. We’re unlocking your content — this usually takes a few seconds.'}
+        </p>
+        {status && !fulfilled && (
+          <div className="inline-flex items-center gap-2 mb-6 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-full text-amber-400 text-xs">
+            <div className="w-3 h-3 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+            {status.payment === 'paid' ? 'Preparing your library…' : 'Confirming payment…'}
+          </div>
+        )}
 
         {orderId && (
           <p className="text-sm text-gray-500 mb-6">

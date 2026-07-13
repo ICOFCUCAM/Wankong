@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
+import { markPaidAndFulfill } from './_lib/fulfillment';
 
 // Vercel must parse the raw body for Stripe signature verification
 export const config = { api: { bodyParser: false } };
@@ -43,10 +44,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const pi = event.data.object as Stripe.PaymentIntent;
       const orderId = pi.metadata?.orderId;
       if (orderId) {
-        await supabase
-          .from('ecom_orders')
-          .update({ financial_status: 'paid', stripe_payment_intent_id: pi.id })
-          .eq('id', orderId);
+        // Marks the order paid and grants library access + seller earnings
+        // server-side, so fulfillment happens even if the buyer's browser
+        // never returns from the payment.
+        await markPaidAndFulfill(supabase, orderId, { stripe_payment_intent_id: pi.id });
       }
       break;
     }
@@ -57,8 +58,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (orderId) {
         await supabase
           .from('ecom_orders')
-          .update({ financial_status: 'failed' })
-          .eq('id', orderId);
+          .update({ payment_status: 'failed' })
+          .eq('id', orderId)
+          .neq('payment_status', 'paid');
       }
       break;
     }

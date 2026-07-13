@@ -5,94 +5,195 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { CreditCard, Lock, ShieldCheck, Smartphone } from 'lucide-react';
 import MobileMoneyModal from '@/components/MobileMoneyModal';
-import { recordBookSale } from '@/pipelines/earnings/EarningsWorker';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
 type PayMethod = 'card' | 'mobile_money' | 'paypal';
 
 // ── Stripe wiring ──────────────────────────────────────────────────────────────
-// Loads @stripe/react-stripe-js lazily only when the publishable key is set.
-// Without a key the form still works — orders are stored in Supabase and a
-// backend endpoint (/api/create-payment-intent) must return a clientSecret.
+// Card payments are confirmed client-side with Stripe Elements against a
+// PaymentIntent whose amount is computed on the server from catalog prices.
+// Fulfillment (library access + seller earnings) happens server-side via the
+// Stripe webhook — never in this page.
 
 const STRIPE_KEY = (import.meta as any).env?.VITE_STRIPE_PUBLISHABLE_KEY as string | undefined;
+const stripePromise = STRIPE_KEY ? loadStripe(STRIPE_KEY) : null;
 
-let Elements: React.FC<{ stripe: any; options?: any; children: React.ReactNode }> | null = null;
-let CardElement: React.FC<{ options?: any }> | null = null;
-let useStripe: (() => any) | null = null;
-let useElements: (() => any) | null = null;
-let loadStripe: ((key: string) => Promise<any>) | null = null;
-
-// Dynamic import — avoids a hard dependency when Stripe isn't configured
-if (STRIPE_KEY) {
-  Promise.all([
-    import('@stripe/react-stripe-js'),
-    import('@stripe/stripe-js'),
-  ]).then(([reactStripe, stripeJs]) => {
-    Elements    = reactStripe.Elements;
-    CardElement = reactStripe.CardElement;
-    useStripe   = reactStripe.useStripe;
-    useElements = reactStripe.useElements;
-    loadStripe  = stripeJs.loadStripe;
-  }).catch(() => { /* Stripe unavailable */ });
+interface BillingForm {
+  name: string; email: string; address: string; city: string; country: string; zip: string;
 }
 
-// ── Card form (inside Elements if Stripe is available) ─────────────────────────
+interface OrderableItem {
+  id: string; title: string; price: number; quantity: number; image?: string;
+}
 
-function CardInputFallback({
-  card, setCard,
+// Creates the pending order + line items all payment methods charge against.
+async function createPendingOrder(
+  userId: string | null,
+  form: BillingForm,
+  items: OrderableItem[],
+  totalUsd: number,
+  paymentMethod: string,
+): Promise<string> {
+  const { data: order, error } = await supabase
+    .from('ecom_orders')
+    .insert([{
+      user_id:            userId,
+      customer_name:      form.name,
+      customer_email:     form.email,
+      subtotal_cents:     Math.round(totalUsd * 100),
+      tax_cents:          0,
+      total_cents:        Math.round(totalUsd * 100),
+      payment_method:     paymentMethod,
+      payment_status:     'pending',
+      fulfillment_status: 'unfulfilled',
+      billing_address:    { name: form.name, address1: form.address, city: form.city, country: form.country, zip: form.zip },
+      items:              items.map(i => ({ product_id: i.id, title: i.title, price: i.price, quantity: i.quantity })),
+    }])
+    .select('id')
+    .single();
+
+  if (error || !order) throw new Error(error?.message ?? 'Could not create order');
+
+  const { error: itemsError } = await supabase.from('ecom_order_items').insert(
+    items.map(i => ({
+      order_id:   order.id,
+      product_id: i.id,
+      title:      i.title,
+      price:      Math.round(i.price * 100),
+      quantity:   i.quantity,
+    }))
+  );
+  if (itemsError) throw new Error(itemsError.message);
+
+  return order.id as string;
+}
+
+// ── Card form (inside <Elements>) ──────────────────────────────────────────────
+
+const CARD_ELEMENT_OPTIONS = {
+  style: {
+    base: {
+      color: '#ffffff',
+      fontSize: '16px',
+      fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+      '::placeholder': { color: 'rgba(255,255,255,0.3)' },
+    },
+    invalid: { color: '#f87171', iconColor: '#f87171' },
+  },
+  hidePostalCode: true,
+};
+
+function StripeCardForm({
+  form, total, onBack,
 }: {
-  card: { number: string; expiry: string; cvc: string };
-  setCard: React.Dispatch<React.SetStateAction<typeof card>>;
+  form: BillingForm;
+  total: number;
+  onBack: () => void;
 }) {
-  const fmtExpiry = (v: string) =>
-    v.replace(/\D/g, '').slice(0, 4).replace(/^(\d{2})(\d)/, '$1/$2');
-  const fmtNumber = (v: string) =>
-    v.replace(/\D/g, '').slice(0, 16).replace(/(\d{4})(?=\d)/g, '$1 ');
+  const stripe   = useStripe();
+  const elements = useElements();
+  const { items, clearCart } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
+  const [error,   setError]   = useState('');
+
+  const handlePay = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!stripe || !elements || items.length === 0) return;
+    const card = elements.getElement(CardElement);
+    if (!card) return;
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const orderId = await createPendingOrder(user?.id ?? null, form, items, total, 'card');
+
+      const res = await fetch('/api/create-payment-intent', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ orderId, customer_email: form.email }),
+      });
+      const data = await res.json() as { clientSecret?: string; error?: string };
+      if (!res.ok || !data.clientSecret) throw new Error(data.error ?? 'Payment gateway error');
+
+      const result = await stripe.confirmCardPayment(data.clientSecret, {
+        payment_method: {
+          card,
+          billing_details: {
+            name:  form.name,
+            email: form.email,
+            address: { line1: form.address, city: form.city, postal_code: form.zip },
+          },
+        },
+      });
+
+      if (result.error) throw new Error(result.error.message ?? 'Card was declined');
+
+      if (result.paymentIntent?.status === 'succeeded') {
+        clearCart();
+        navigate(`/order-confirmation?orderId=${orderId}`);
+      } else {
+        throw new Error('Payment did not complete. Please try again.');
+      }
+    } catch (err: any) {
+      setError(err.message ?? 'Payment processing failed. Please try again.');
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="space-y-3">
+    <form onSubmit={handlePay} className="space-y-5">
       <div>
-        <label className="block text-xs text-white/55 mb-1">Card Number</label>
-        <div className="relative">
-          <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-          <input
-            type="text"
-            inputMode="numeric"
-            placeholder="1234 5678 9012 3456"
-            value={card.number}
-            onChange={e => setCard(c => ({ ...c, number: fmtNumber(e.target.value) }))}
-            maxLength={19}
-            className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD] text-sm font-mono tracking-wider"
-          />
+        <label className="block text-xs text-white/55 mb-1">Card Details</label>
+        <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 focus-within:ring-2 focus-within:ring-[#9D4EDD]">
+          <CardElement options={CARD_ELEMENT_OPTIONS} />
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className="block text-xs text-white/55 mb-1">Expiry</label>
-          <input
-            type="text"
-            inputMode="numeric"
-            placeholder="MM/YY"
-            value={card.expiry}
-            onChange={e => setCard(c => ({ ...c, expiry: fmtExpiry(e.target.value) }))}
-            maxLength={5}
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD] text-sm font-mono"
-          />
-        </div>
-        <div>
-          <label className="block text-xs text-white/55 mb-1">CVC</label>
-          <input
-            type="text"
-            inputMode="numeric"
-            placeholder="123"
-            value={card.cvc}
-            onChange={e => setCard(c => ({ ...c, cvc: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
-            maxLength={4}
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-[#9D4EDD] text-sm font-mono"
-          />
-        </div>
+      <div className="flex items-center gap-2">
+        {['Visa', 'MC', 'Amex'].map(b => (
+          <span key={b} className="px-2.5 py-1 bg-white/5 border border-white/10 rounded text-xs text-white/55 font-medium">
+            {b}
+          </span>
+        ))}
       </div>
-    </div>
+
+      {error && (
+        <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
+          {error}
+        </div>
+      )}
+
+      <div className="flex gap-3">
+        <button
+          type="button"
+          onClick={onBack}
+          className="px-4 py-3 border border-white/10 text-white/55 hover:text-white rounded-xl transition-colors text-sm"
+        >
+          ← Back
+        </button>
+        <button
+          type="submit"
+          disabled={loading || !stripe}
+          className="flex-1 bg-[#9D4EDD] hover:bg-[#7C3AED] disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
+        >
+          {loading ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              Processing…
+            </>
+          ) : (
+            <>
+              <Lock className="w-4 h-4" />
+              Pay ${total.toFixed(2)}
+            </>
+          )}
+        </button>
+      </div>
+    </form>
   );
 }
 
@@ -105,10 +206,9 @@ export default function CheckoutPage() {
 
   const [loading,      setLoading]      = useState(false);
   const [error,        setError]        = useState('');
-  const [form,         setForm]         = useState({
+  const [form,         setForm]         = useState<BillingForm>({
     name: '', email: '', address: '', city: '', country: 'US', zip: '',
   });
-  const [card,         setCard]         = useState({ number: '', expiry: '', cvc: '' });
   const [step,         setStep]         = useState<'billing' | 'payment'>('billing');
   const [payMethod,    setPayMethod]    = useState<PayMethod>('card');
   const [showMobile,   setShowMobile]   = useState(false);
@@ -155,122 +255,6 @@ export default function CheckoutPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── Post-payment fulfillment ───────────────────────────────────────────────
-  // Grant the buyer access to each purchased product and credit seller earnings.
-  const fulfillOrder = async (orderId: string, orderItems: typeof items) => {
-    const { data: { user: buyer } } = await supabase.auth.getUser();
-
-    await Promise.all(orderItems.map(async item => {
-      // 1. Grant library access
-      if (buyer) {
-        await supabase.from('user_library').insert([{
-          user_id:    buyer.id,
-          product_id: item.id,
-          order_id:   orderId,
-          access_type: 'purchase',
-        }]).then(() => {}); // ignore if row already exists
-      }
-
-      // 2. Credit seller earnings — look up the product's seller/artist
-      const { data: product } = await supabase
-        .from('ecom_products')
-        .select('vendor_id, product_type, price')
-        .eq('id', item.id)
-        .single();
-
-      if (product?.vendor_id) {
-        const salePrice = item.price * (item.quantity ?? 1);
-        await recordBookSale(product.vendor_id, salePrice);
-      }
-    }));
-
-    // Mark order fulfilled
-    await supabase.from('ecom_orders')
-      .update({ fulfillment_status: 'fulfilled' })
-      .eq('id', orderId);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (items.length === 0) return;
-
-    // Simple card validation
-    const rawNum = card.number.replace(/\s/g, '');
-    if (rawNum.length < 13 || !card.expiry.includes('/') || card.cvc.length < 3) {
-      setError('Please enter valid card details.');
-      return;
-    }
-
-    setLoading(true);
-    setError('');
-
-    try {
-      // 1. Create order in Supabase
-      const { data: order, error: orderError } = await supabase
-        .from('ecom_orders')
-        .insert([{
-          user_id:            user?.id ?? null,
-          customer_name:      form.name,
-          customer_email:     form.email,
-          total_cents:        Math.round(total * 100),
-          subtotal_cents:     Math.round(cartTotal * 100),
-          tax_cents:          0,
-          payment_method:     'card',
-          payment_status:     'pending',
-          fulfillment_status: 'unfulfilled',
-          billing_address:    { name: form.name, address1: form.address, city: form.city, country: form.country, zip: form.zip },
-          created_at:         new Date().toISOString(),
-        }])
-        .select()
-        .single();
-
-      if (orderError) throw orderError;
-
-      if (order) {
-        await supabase.from('ecom_order_items').insert(
-          items.map(item => ({
-            order_id:   order.id,
-            product_id: item.id,
-            title:      item.title,
-            price:      Math.round(item.price * 100),
-            quantity:   item.quantity,
-          }))
-        );
-
-        // 2. Charge via Stripe backend endpoint
-        if (STRIPE_KEY) {
-          try {
-            const res = await fetch('/api/create-payment-intent', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ orderId: order.id, amount: Math.round(total * 100) }),
-            });
-            if (res.ok) {
-              await supabase.from('ecom_orders').update({ payment_status: 'paid', paid_at: new Date().toISOString() }).eq('id', order.id);
-              await fulfillOrder(order.id, items);
-            } else {
-              throw new Error('Payment gateway error');
-            }
-          } catch {
-            // Order is recorded but not yet paid — admin can manually review
-            setError('Payment processing failed. Please try again or contact support.');
-            setLoading(false);
-            return;
-          }
-        } else {
-          // No payment gateway configured — record order as pending for manual processing
-          // Order already in pending state — no update needed
-        }
-      }
-
-      clearCart();
-      navigate(`/order-confirmation?orderId=${order?.id || 'new'}`);
-    } catch (err: any) {
-      setError('Payment processing failed. Please try again.');
-      setLoading(false);
-    }
-  };
-
   if (items.length === 0) {
     navigate('/cart');
     return null;
@@ -315,10 +299,10 @@ export default function CheckoutPage() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          <form onSubmit={step === 'payment' ? handleSubmit : e => { e.preventDefault(); setStep('payment'); }}>
+          <div>
 
             {step === 'billing' ? (
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 space-y-4">
+              <form onSubmit={e => { e.preventDefault(); setStep('payment'); }} className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 space-y-4">
                 <h3 className="text-white font-semibold">Billing Information</h3>
                 {[
                   { label: 'Full Name',          key: 'name',    type: 'text',  placeholder: 'John Doe'         },
@@ -346,7 +330,7 @@ export default function CheckoutPage() {
                 >
                   Continue to Payment →
                 </button>
-              </div>
+              </form>
             ) : (
               <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 space-y-5">
                 <div className="flex items-center justify-between">
@@ -381,16 +365,18 @@ export default function CheckoutPage() {
                 </div>
 
                 {payMethod === 'card' && (
-                  <>
-                    <CardInputFallback card={card} setCard={setCard} />
-                    <div className="flex items-center gap-2">
-                      {['Visa', 'MC', 'Amex'].map(b => (
-                        <span key={b} className="px-2.5 py-1 bg-white/5 border border-white/10 rounded text-xs text-white/55 font-medium">
-                          {b}
-                        </span>
-                      ))}
+                  stripePromise ? (
+                    <Elements stripe={stripePromise}>
+                      <StripeCardForm form={form} total={total} onBack={() => setStep('billing')} />
+                    </Elements>
+                  ) : (
+                    <div className="rounded-xl bg-[#0B0814] border border-white/10 p-4 text-center space-y-2">
+                      <CreditCard className="w-8 h-8 text-white/30 mx-auto" />
+                      <p className="text-white/60 text-sm">
+                        Card payments are temporarily unavailable. Please use Mobile Money or PayPal.
+                      </p>
                     </div>
-                  </>
+                  )
                 )}
 
                 {payMethod === 'mobile_money' && (
@@ -402,29 +388,14 @@ export default function CheckoutPage() {
                     <button
                       type="button"
                       onClick={async () => {
-                        // Create order first, then open modal
                         setLoading(true);
-                        const { data: order } = await supabase
-                          .from('ecom_orders')
-                          .insert([{
-                            user_id:            user?.id ?? null,
-                            customer_name:      form.name,
-                            customer_email:     form.email,
-                            total_cents:        Math.round(total * 100),
-                            subtotal_cents:     Math.round(cartTotal * 100),
-                            tax_cents:          0,
-                            payment_method:     'mpesa',
-                            payment_status:     'pending',
-                            fulfillment_status: 'unfulfilled',
-                            billing_address:    { name: form.name, address1: form.address, city: form.city, country: form.country, zip: form.zip },
-                          }])
-                          .select().single();
-                        if (order) {
-                          await supabase.from('ecom_order_items').insert(
-                            items.map(i => ({ order_id: order.id, product_id: i.id, title: i.title, price: Math.round(i.price * 100), quantity: i.quantity }))
-                          );
-                          setOrderId(order.id);
+                        setError('');
+                        try {
+                          const id = await createPendingOrder(user?.id ?? null, form, items, total, 'mpesa');
+                          setOrderId(id);
                           setShowMobile(true);
+                        } catch (err: any) {
+                          setError(err.message ?? 'Could not create order.');
                         }
                         setLoading(false);
                       }}
@@ -452,34 +423,15 @@ export default function CheckoutPage() {
                         setPaypalPending(true);
                         setError('');
                         try {
-                          // Create order in Supabase first
-                          const { data: newOrder } = await supabase
-                            .from('ecom_orders')
-                            .insert([{
-                              user_id:          user?.id ?? null,
-                              customer_name:    form.name,
-                              customer_email:   form.email,
-                              shipping_address: { address: form.address, city: form.city, country: form.country, zip: form.zip },
-                              items:            items.map(i => ({ product_id: i.id, title: i.title, price: i.price, qty: i.qty })),
-                              subtotal_cents:   Math.round(cartTotal * 100),
-                              tax_cents:        0,
-                              total_cents:      Math.round(total * 100),
-                              payment_method:   'paypal',
-                              payment_status:   'pending',
-                              created_at:       new Date().toISOString(),
-                            }])
-                            .select('id')
-                            .single();
-
-                          const oid = newOrder?.id ?? '';
+                          const oid = await createPendingOrder(user?.id ?? null, form, items, total, 'paypal');
                           setOrderId(oid);
 
-                          // Create PayPal order
+                          // Create PayPal order — the server recomputes the
+                          // amount from catalog prices
                           const res = await fetch('/api/paypal-order', {
                             method:  'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body:    JSON.stringify({
-                              amount:      Math.round(total * 100),
                               currency:    'USD',
                               orderId:     oid,
                               description: `WANKONG Order ${oid}`,
@@ -521,38 +473,9 @@ export default function CheckoutPage() {
                     {error}
                   </div>
                 )}
-
-                {payMethod === 'card' && (
-                  <div className="flex gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setStep('billing')}
-                      className="px-4 py-3 border border-white/10 text-white/55 hover:text-white rounded-xl transition-colors text-sm"
-                    >
-                      ← Back
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="flex-1 bg-[#9D4EDD] hover:bg-[#7C3AED] disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
-                    >
-                      {loading ? (
-                        <>
-                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          Processing…
-                        </>
-                      ) : (
-                        <>
-                          <Lock className="w-4 h-4" />
-                          Pay ${total.toFixed(2)}
-                        </>
-                      )}
-                    </button>
-                  </div>
-                )}
               </div>
             )}
-          </form>
+          </div>
 
           {/* Order summary */}
           <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 h-fit">
@@ -603,8 +526,9 @@ export default function CheckoutPage() {
         amount={total}
         orderId={orderId}
         onClose={() => setShowMobile(false)}
-        onSuccess={async (ref) => {
-          await supabase.from('ecom_orders').update({ payment_status: 'paid', mpesa_ref: ref, paid_at: new Date().toISOString() }).eq('id', orderId);
+        onSuccess={() => {
+          // The Daraja callback has already marked the order paid and
+          // fulfilled it server-side.
           clearCart();
           navigate(`/order-confirmation?orderId=${orderId}`);
         }}

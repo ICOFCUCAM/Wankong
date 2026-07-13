@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { serviceClient, authoritativeOrderTotal } from './_lib/fulfillment';
 
 const PAYPAL_BASE = process.env.PAYPAL_ENV === 'live'
   ? 'https://api-m.paypal.com'
@@ -34,13 +35,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!clientId) return res.status(500).json({ error: 'PayPal is not configured on this server.' });
 
   try {
-    const { amount, currency = 'USD', orderId, description } = req.body as {
-      amount:       number;
+    const { currency = 'USD', orderId, description } = req.body as {
       currency?:    string;
       orderId?:     string;
       description?: string;
     };
 
+    if (!orderId) return res.status(400).json({ error: 'Missing orderId' });
+
+    // The charge amount is recomputed from catalog prices on the server —
+    // client-supplied amounts are ignored.
+    const { totalCents: amount } = await authoritativeOrderTotal(serviceClient(), orderId);
     if (!amount || amount <= 0) return res.status(400).json({ error: 'Invalid amount' });
 
     const accessToken = await getAccessToken();

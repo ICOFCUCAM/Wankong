@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useApp } from '@/store/AppContext';
 import { CATEGORIES } from '@/lib/constants';
+
+const PAGE_SIZE = 24;
 
 interface Product {
   id: string;
@@ -49,40 +51,94 @@ export default function Marketplace() {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [showCreators, setShowCreators] = useState(false);
 
-  const [products, setProducts]   = useState<Product[]>([]);
-  const [creators, setCreators]   = useState<Creator[]>([]);
-  const [loading,  setLoading]    = useState(true);
+  const [products,  setProducts]  = useState<Product[]>([]);
+  const [creators,  setCreators]  = useState<Creator[]>([]);
+  const [loading,   setLoading]   = useState(true);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page,      setPage]      = useState(0);
+  const [loadingMore, setLoadingMore] = useState(false);
 
-  useEffect(() => {
-    // Load products
-    supabase
+  // Server-side filtering/sorting/pagination — the catalog no longer loads
+  // everything into the browser, so it scales past a few dozen products.
+  const fetchProducts = useCallback(async (pageIndex: number): Promise<{ items: Product[]; count: number }> => {
+    let query = supabase
       .from('ecom_products')
-      .select('id, title, product_type, price_cents, cover_url, created_at, vendor_id, profiles:vendor_id(display_name, username, avatar_url)')
-      .eq('status', 'active')
-      .limit(80)
-      .then(({ data }) => {
-        if (data) {
-          setProducts(data.map((p: any) => {
-            const profile = Array.isArray(p.profiles) ? p.profiles[0] : p.profiles;
-            const type    = (p.product_type ?? 'music').toLowerCase();
-            return {
-              id:            p.id,
-              title:         p.title ?? 'Untitled',
-              creator:       profile?.display_name ?? profile?.username ?? 'Creator',
-              creatorAvatar: profile?.avatar_url ?? `https://api.dicebear.com/7.x/initials/svg?seed=${p.vendor_id}`,
-              type,
-              thumbnail:     p.cover_url ?? `https://api.dicebear.com/7.x/shapes/svg?seed=${p.id}`,
-              price:         (p.price_cents ?? 0) / 100,
-              isPaid:        (p.price_cents ?? 0) > 0,
-              category:      p.product_type ?? 'Music',
-              tags:          [],
-              createdAt:     p.created_at,
-            };
-          }));
-        }
+      .select('id, title, product_type, price, cover_url, created_at, vendor_id, creator_id, vendor', { count: 'exact' })
+      .eq('status', 'active');
+
+    if (selectedCategory !== 'All') query = query.eq('product_type', selectedCategory);
+    if (searchQuery)                query = query.ilike('title', `%${searchQuery.replace(/[%_]/g, '\\$&')}%`);
+    if (priceFilter === 'free')     query = query.eq('price', 0);
+    if (priceFilter === 'paid')     query = query.gt('price', 0);
+
+    switch (sortBy) {
+      case 'popular':    query = query.order('stream_count', { ascending: false }); break;
+      case 'price_low':  query = query.order('price', { ascending: true }); break;
+      case 'price_high': query = query.order('price', { ascending: false }); break;
+      default:           query = query.order('created_at', { ascending: false });
+    }
+
+    const from = pageIndex * PAGE_SIZE;
+    const { data, count } = await query.range(from, from + PAGE_SIZE - 1);
+    const rows = data ?? [];
+
+    // vendor_id references auth.users, so PostgREST can't embed profiles —
+    // fetch the seller profiles in a second query instead.
+    const sellerIds = [...new Set(rows.map((p: any) => p.vendor_id ?? p.creator_id).filter(Boolean))];
+    const profilesById = new Map<string, any>();
+    if (sellerIds.length > 0) {
+      const { data: profs } = await supabase
+        .from('profiles')
+        .select('id, display_name, username, avatar_url')
+        .in('id', sellerIds);
+      (profs ?? []).forEach((p: any) => profilesById.set(p.id, p));
+    }
+
+    const items = rows.map((p: any) => {
+      const sellerId = p.vendor_id ?? p.creator_id;
+      const profile  = sellerId ? profilesById.get(sellerId) : undefined;
+      return {
+        id:            p.id,
+        title:         p.title ?? 'Untitled',
+        creator:       profile?.display_name ?? profile?.username ?? p.vendor ?? 'Creator',
+        creatorAvatar: profile?.avatar_url ?? `https://api.dicebear.com/7.x/initials/svg?seed=${sellerId ?? p.id}`,
+        type:          (p.product_type ?? 'music').toLowerCase(),
+        thumbnail:     p.cover_url ?? `https://api.dicebear.com/7.x/shapes/svg?seed=${p.id}`,
+        price:         (p.price ?? 0) / 100,
+        isPaid:        (p.price ?? 0) > 0,
+        category:      p.product_type ?? 'Music',
+        tags:          [],
+        createdAt:     p.created_at,
+      };
+    });
+
+    return { items, count: count ?? items.length };
+  }, [searchQuery, selectedCategory, sortBy, priceFilter]);
+
+  // Reload from page 0 whenever a filter changes (debounced for typing)
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => {
+      fetchProducts(0).then(({ items, count }) => {
+        setProducts(items);
+        setTotalCount(count);
+        setPage(0);
         setLoading(false);
       });
+    }, searchQuery ? 300 : 0);
+    return () => clearTimeout(timer);
+  }, [fetchProducts, searchQuery]);
 
+  const loadMore = async () => {
+    setLoadingMore(true);
+    const nextPage = page + 1;
+    const { items } = await fetchProducts(nextPage);
+    setProducts(prev => [...prev, ...items]);
+    setPage(nextPage);
+    setLoadingMore(false);
+  };
+
+  useEffect(() => {
     // Load creators
     supabase
       .from('profiles')
@@ -111,29 +167,15 @@ export default function Marketplace() {
     setFavorites(prev => { const next = new Set(prev); if (next.has(id)) next.delete(id); else next.add(id); return next; });
   };
 
-  const filtered = useMemo(() => {
-    let items = [...products];
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      items = items.filter(i => i.title.toLowerCase().includes(q) || i.creator.toLowerCase().includes(q) || i.category.toLowerCase().includes(q));
-    }
-    if (selectedCategory !== 'All') items = items.filter(i => i.type === selectedCategory.toLowerCase() || i.category === selectedCategory);
-    if (priceFilter === 'free') items = items.filter(i => !i.isPaid);
-    if (priceFilter === 'paid') items = items.filter(i => i.isPaid);
-    switch (sortBy) {
-      case 'newest':     items.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()); break;
-      case 'price_low':  items.sort((a, b) => a.price - b.price); break;
-      case 'price_high': items.sort((a, b) => b.price - a.price); break;
-    }
-    return items;
-  }, [products, searchQuery, selectedCategory, sortBy, priceFilter]);
+  const filtered = products;
+  const hasMore  = products.length < totalCount;
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white">Marketplace</h1>
-          <p className="text-gray-400 mt-1">{loading ? 'Loading…' : `${filtered.length} items found`}</p>
+          <p className="text-gray-400 mt-1">{loading ? 'Loading…' : `${totalCount} items found`}</p>
         </div>
         <div className="flex items-center gap-3">
           <button onClick={() => setShowCreators(!showCreators)} className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${showCreators ? 'bg-[#9D4EDD] text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>
@@ -250,6 +292,18 @@ export default function Marketplace() {
               </span>
             </div>
           ))}
+        </div>
+      )}
+
+      {!loading && !showCreators && hasMore && (
+        <div className="text-center">
+          <button
+            onClick={loadMore}
+            disabled={loadingMore}
+            className="px-6 py-2.5 bg-gray-800 hover:bg-gray-700 disabled:opacity-50 text-white text-sm font-medium rounded-xl transition-colors"
+          >
+            {loadingMore ? 'Loading…' : `Load more (${totalCount - products.length} remaining)`}
+          </button>
         </div>
       )}
 

@@ -13,6 +13,7 @@ import PremiumBackground from '@/components/PremiumBackground';
 import TiltCard from '@/components/TiltCard';
 import CommentsSection from '@/components/CommentsSection';
 import RelatedProducts from '@/components/RelatedProducts';
+import ProductReviews from '@/components/ProductReviews';
 import ShareClipModal from '@/components/ShareClipModal';
 import ReactionBar from '@/components/ReactionBar';
 
@@ -569,6 +570,11 @@ export default function ProductPage() {
         {/* Reactions */}
         <div className="mt-8">
           <ReactionBar contentId={product.id} contentType={rawType || 'product'} />
+        </div>
+
+        {/* Reviews (verified purchasers) */}
+        <div className="mt-12 pt-8 border-t border-white/5">
+          <ProductReviews productId={product.id} canReview={isOwned} />
         </div>
 
         {/* Related products */}
