@@ -1481,8 +1481,8 @@ export default function SmartKongLanding() {
           <SectionHead center eyebrow="Peace of mind" title="Built for trust" tokens={T} />
           <Reveal className={`mt-12 rounded-[2rem] border ${theme === 'light' ? 'border-gray-200 bg-white' : 'border-white/10 bg-white/[0.03]'} px-6 py-2 divide-y ${theme === 'light' ? 'divide-gray-100' : 'divide-white/[0.06]'} md:divide-y-0 md:flex md:items-stretch md:divide-x`}>
             {TRUST.map((t, i) => (
-              <div key={t.label} className="flex-1 flex items-center justify-center gap-3 py-5 md:py-7 md:px-2">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0">
+              <div key={t.label} className="group flex-1 flex items-center justify-center gap-3 py-5 md:py-7 md:px-2">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-[6deg]">
                   <t.Icon className="w-5 h-5 text-emerald-500" />
                 </div>
                 <p className={`text-sm font-semibold leading-tight ${T.cardTitle}`}>{t.label}</p>
