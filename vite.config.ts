@@ -1,6 +1,7 @@
 import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
+import fs from "fs";
 
 // Re-brand the static index.html at build time for the SmartKong (market)
 // deployment, so crawlers and link unfurls get the right title/description/OG
@@ -24,6 +25,30 @@ function brandHtml(mode: string): Plugin {
         .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${desc}$2`)
         .replace(/(<meta name="apple-mobile-web-app-title" content=")[^"]*(")/, `$1SmartKong$2`)
         .replace(/(<meta name="theme-color" content=")[^"]*(")/, `$1#070A14$2`);
+    },
+    // Rebrand the emitted PWA manifest for the SmartKong install experience.
+    closeBundle() {
+      if (!isMarket) return;
+      const out = path.resolve(__dirname, "dist/manifest.json");
+      try {
+        const m = JSON.parse(fs.readFileSync(out, "utf8"));
+        m.name = "SmartKong — The World's Shopping Layer";
+        m.short_name = "SmartKong";
+        m.description = "One AI search across every store on Earth. Compare every price, check out once.";
+        m.background_color = "#070A14";
+        m.theme_color = "#2563EB";
+        m.categories = ["shopping", "productivity", "lifestyle"];
+        if (Array.isArray(m.shortcuts)) {
+          m.shortcuts = [
+            { name: "Search products", url: "/shop" },
+            { name: "Ask the AI", url: "/ai-solver" },
+            { name: "Your wishlist", url: "/wishlist" },
+          ];
+        }
+        fs.writeFileSync(out, JSON.stringify(m, null, 2));
+      } catch {
+        /* manifest absent — nothing to rebrand */
+      }
     },
   };
 }
