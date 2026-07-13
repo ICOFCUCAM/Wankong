@@ -218,6 +218,7 @@ export default function SmartKongLanding() {
   const { user } = useAuth();
   const [query, setQuery] = useState('');
   const [trending, setTrending] = useState<Prod[]>([]);
+  const [forYou, setForYou] = useState<Prod[]>([]);
   const firstName = (user?.user_metadata?.display_name || user?.email?.split('@')[0] || '').split(' ')[0];
 
   useEffect(() => {
@@ -230,6 +231,13 @@ export default function SmartKongLanding() {
       .limit(8)
       .then(({ data }) => { if (Array.isArray(data)) setTrending(data as unknown as Prod[]); });
   }, []);
+
+  // Personalized "For You" — recommendations from the shopper's own history
+  useEffect(() => {
+    if (!user?.id) { setForYou([]); return; }
+    supabase.rpc('recommend_for_user', { p_user_id: user.id, p_limit: 8 })
+      .then(({ data }) => { if (Array.isArray(data)) setForYou(data as unknown as Prod[]); });
+  }, [user?.id]);
 
   const runSearch = useCallback((text?: string) => {
     const q = (text ?? query).trim();
@@ -420,9 +428,24 @@ export default function SmartKongLanding() {
         </div>
       </section>
 
+      {/* ── FOR YOU (personalized) ───────────────────────────────────────── */}
+      {forYou.length >= 4 && (
+        <section className="max-w-7xl mx-auto px-4 lg:px-8 pt-16 md:pt-20">
+          <div className="flex items-end justify-between">
+            <SectionHead eyebrow="Picked for you" title={firstName ? `For you, ${firstName}` : 'For you'} />
+            <Link to="/shop" className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors">
+              View all <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-8">
+            {forYou.map(p => <PremiumCard key={p.id} p={p} />)}
+          </div>
+        </section>
+      )}
+
       {/* ── TRENDING ─────────────────────────────────────────────────────── */}
       {trending.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 lg:px-8 pb-16 md:pb-20">
+        <section className="max-w-7xl mx-auto px-4 lg:px-8 pb-16 md:pb-20 pt-16 md:pt-20">
           <div className="flex items-end justify-between">
             <SectionHead eyebrow="Right now" title="Trending on SmartKong" />
             <Link to="/shop" className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors">

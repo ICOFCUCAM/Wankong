@@ -10,10 +10,25 @@ import type { MarketProduct } from './useMarketCatalog';
 import {
   ShoppingCart, ExternalLink, ShieldCheck, Truck, RotateCcw,
   Star, Loader2, CheckCircle2, BookOpen, BadgeCheck, TrendingDown, Bell, BellRing,
+  Languages,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// Languages offered for on-demand product translation.
+export const TRANSLATE_LANGS: { code: string; label: string }[] = [
+  { code: 'en', label: 'English' },
+  { code: 'fr', label: 'Français' },
+  { code: 'es', label: 'Español' },
+  { code: 'pt', label: 'Português' },
+  { code: 'ar', label: 'العربية' },
+  { code: 'sw', label: 'Kiswahili' },
+  { code: 'de', label: 'Deutsch' },
+  { code: 'zh', label: '中文' },
+  { code: 'hi', label: 'हिन्दी' },
+  { code: 'yo', label: 'Yorùbá' },
+];
 
 // ── Verified-purchase reviews (light theme) ─────────────────────────────────────
 
@@ -142,6 +157,9 @@ export default function MarketProductPage() {
   const [loading, setLoading] = useState(true);
   const [isOwned, setIsOwned] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [lang, setLang] = useState('en');
+  const [translated, setTranslated] = useState<{ title: string; description: string } | null>(null);
+  const [translating, setTranslating] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -170,10 +188,35 @@ export default function MarketProductPage() {
           .order('trending_score', { ascending: false })
           .limit(4);
         setRelated((rel ?? []) as unknown as MarketProduct[]);
+
+        // Record a browse view for personalized "For You" recommendations
+        if (user?.id) {
+          supabase.from('browse_events').insert([{ user_id: user.id, product_id: data.id, event: 'view' }]).then(() => {});
+        }
       }
       setLoading(false);
     })();
   }, [handle, user?.id]);
+
+  // Translate the product on language change (cached server-side per language)
+  const changeLang = async (code: string) => {
+    setLang(code);
+    if (code === 'en' || !product) { setTranslated(null); return; }
+    setTranslating(true);
+    try {
+      const res = await fetch('/api/translate', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId: product.id, targetLang: code }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? 'Translation failed');
+      setTranslated({ title: data.title, description: data.description });
+    } catch (err: any) {
+      toast.error(err.message);
+      setLang('en'); setTranslated(null);
+    }
+    setTranslating(false);
+  };
 
   const trackEvent = (event: 'click' | 'cart') =>
     supabase.rpc('track_product_event', { p_product_id: product.id, p_event: event }).then(() => {});
@@ -239,18 +282,32 @@ export default function MarketProductPage() {
 
           {/* Details */}
           <div>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="px-2.5 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-semibold uppercase tracking-wide">
-                {product.product_type ?? 'Product'}
-              </span>
-              {isAffiliate && (
-                <span className="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-semibold">
-                  Sold by {product.vendor ?? 'Partner Store'}
+            <div className="flex items-center justify-between gap-2 mb-3">
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-semibold uppercase tracking-wide">
+                  {product.product_type ?? 'Product'}
                 </span>
-              )}
+                {isAffiliate && (
+                  <span className="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-semibold">
+                    Sold by {product.vendor ?? 'Partner Store'}
+                  </span>
+                )}
+              </div>
+              {/* Multilingual: translate this product on demand */}
+              <div className="relative flex items-center gap-1.5 text-gray-500 shrink-0">
+                {translating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Languages className="w-4 h-4" />}
+                <select
+                  value={lang}
+                  onChange={e => changeLang(e.target.value)}
+                  className="text-xs bg-transparent border border-gray-200 rounded-lg px-2 py-1 text-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  title="Translate this product"
+                >
+                  {TRANSLATE_LANGS.map(l => <option key={l.code} value={l.code}>{l.label}</option>)}
+                </select>
+              </div>
             </div>
 
-            <h1 className="text-3xl font-extrabold text-gray-900 mb-3">{product.title}</h1>
+            <h1 className="text-3xl font-extrabold text-gray-900 mb-3">{translated?.title ?? product.title}</h1>
 
             <div className="flex items-center gap-3 mb-5">
               {(product.rating_count ?? 0) > 0
@@ -275,8 +332,8 @@ export default function MarketProductPage() {
               )}
             </div>
 
-            {description && (
-              <p className="text-gray-600 leading-relaxed mb-8 max-w-xl">{description.slice(0, 400)}</p>
+            {(translated?.description ?? description) && (
+              <p className="text-gray-600 leading-relaxed mb-8 max-w-xl">{(translated?.description ?? description).slice(0, 600)}</p>
             )}
 
             {/* Purchase actions */}
