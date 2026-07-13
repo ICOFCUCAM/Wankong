@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useCompare } from './useCompare';
+import { ThemeToggle } from './theme';
 
 // Floating compare bar — appears on every market page when the shopper has
 // products in their comparison tray.
@@ -83,7 +84,8 @@ export function MarketHeader() {
             </button>
           </form>
 
-          <div className="flex items-center gap-1 ml-auto shrink-0">
+          <div className="flex items-center gap-2 ml-auto shrink-0">
+            <div className="hidden sm:block"><ThemeToggle /></div>
             <button
               onClick={() => toast.info('SmartKong ships worldwide — prices in USD.')}
               className="p-2.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"

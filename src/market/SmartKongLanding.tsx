@@ -4,6 +4,8 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import Seo from '@/components/Seo';
 import { MarketHeader, MarketFooter } from './MarketLayout';
+import { useMarketTheme, themeTokens } from './theme';
+import { useCompare } from './useCompare';
 import {
   Search, Sparkles, Mic, Camera, Star, ArrowRight, ShieldCheck, Zap,
   Laptop, Car, Home as HomeIcon, Shirt, BookOpen, HeartPulse,
@@ -11,12 +13,11 @@ import {
   TrendingUp, MessageSquare, GitCompare,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { useCompare } from './useCompare';
 
-// ── SmartKong landing — the premium front door ──────────────────────────────────
-// Animated constellation hero, AI search, live stats, category tiles, live
-// trending products, AI-shopping showcase, global-vendor wall, trust section.
-// Deep-black premium aesthetic (Apple / Linear / Stripe / Vercel references).
+// ── SmartKong landing ───────────────────────────────────────────────────────────
+// Light by default (trust-first shopping), with Dark and Aurora as premium
+// options. Uses an alternating dark-band / white / gray section rhythm so the
+// page stays easy to scan instead of one long dark scroll.
 
 const CATEGORY_TILES = [
   { label: 'Electronics', Icon: Laptop,     to: '/category/electronics', from: '#3B82F6', to2: '#06B6D4' },
@@ -30,10 +31,10 @@ const CATEGORY_TILES = [
 ];
 
 const STATS = [
-  { value: 20,   suffix: 'M+', label: 'Products indexed' },
-  { value: 18500, suffix: '',  label: 'Trusted vendors' },
-  { value: 230,  suffix: '',   label: 'Countries served' },
-  { value: 1.8,  suffix: 'M+', label: 'Happy customers' },
+  { value: 20,    suffix: 'M+', label: 'Products indexed' },
+  { value: 18500, suffix: '',   label: 'Trusted vendors' },
+  { value: 230,   suffix: '',   label: 'Countries served' },
+  { value: 1.8,   suffix: 'M+', label: 'Happy customers' },
 ];
 
 const VENDORS = [
@@ -43,9 +44,9 @@ const VENDORS = [
 ];
 
 const WHY = [
-  { Icon: Sparkles, title: 'AI finds better deals', body: 'Search thousands of vendors at once and surface the best price, instantly.' },
-  { Icon: TrendingUp, title: 'Price intelligence', body: 'Know whether to buy now or wait, with AI-driven price and demand signals.' },
-  { Icon: ShieldCheck, title: 'Only trusted vendors', body: 'Verified sellers, buyer protection and AI fraud detection on every order.' },
+  { Icon: Sparkles,    title: 'AI finds better deals', body: 'Search thousands of vendors at once and surface the best price, instantly.' },
+  { Icon: TrendingUp,  title: 'Price intelligence',    body: 'Know whether to buy now or wait, with AI-driven price and demand signals.' },
+  { Icon: ShieldCheck, title: 'Only trusted vendors',  body: 'Verified sellers, buyer protection and AI fraud detection on every order.' },
 ];
 
 const TRUST = [
@@ -57,158 +58,130 @@ const TRUST = [
   { Icon: RefreshCw, label: 'Instant refunds' },
 ];
 
-// ── Constellation canvas (AI particles + connecting lines) ──────────────────────
+// ── Constellation canvas (hero) ─────────────────────────────────────────────────
 function Constellation() {
   const ref = useRef<HTMLCanvasElement | null>(null);
-
   useEffect(() => {
-    const canvas = ref.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let raf = 0;
-    let w = 0, h = 0;
+    const canvas = ref.current; if (!canvas) return;
+    const ctx = canvas.getContext('2d'); if (!ctx) return;
+    let raf = 0, w = 0, h = 0;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const COUNT = window.innerWidth < 768 ? 34 : 64;
     const pts: { x: number; y: number; vx: number; vy: number }[] = [];
-
-    const resize = () => {
-      w = canvas.clientWidth; h = canvas.clientHeight;
-      canvas.width = w * dpr; canvas.height = h * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
+    const resize = () => { w = canvas.clientWidth; h = canvas.clientHeight; canvas.width = w * dpr; canvas.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
     resize();
-    for (let i = 0; i < COUNT; i++) {
-      pts.push({ x: Math.random() * w, y: Math.random() * h, vx: (Math.random() - 0.5) * 0.25, vy: (Math.random() - 0.5) * 0.25 });
-    }
-
+    for (let i = 0; i < COUNT; i++) pts.push({ x: Math.random() * w, y: Math.random() * h, vx: (Math.random() - 0.5) * 0.25, vy: (Math.random() - 0.5) * 0.25 });
     const draw = () => {
       ctx.clearRect(0, 0, w, h);
-      for (const p of pts) {
-        p.x += p.vx; p.y += p.vy;
-        if (p.x < 0 || p.x > w) p.vx *= -1;
-        if (p.y < 0 || p.y > h) p.vy *= -1;
+      for (const p of pts) { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > w) p.vx *= -1; if (p.y < 0 || p.y > h) p.vy *= -1; }
+      for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) {
+        const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y, dist = Math.hypot(dx, dy);
+        if (dist < 130) { ctx.strokeStyle = `rgba(96,165,250,${0.14 * (1 - dist / 130)})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y); ctx.stroke(); }
       }
-      for (let i = 0; i < pts.length; i++) {
-        for (let j = i + 1; j < pts.length; j++) {
-          const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
-          const dist = Math.hypot(dx, dy);
-          if (dist < 130) {
-            ctx.strokeStyle = `rgba(96,165,250,${0.14 * (1 - dist / 130)})`;
-            ctx.lineWidth = 1;
-            ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y); ctx.stroke();
-          }
-        }
-      }
-      for (const p of pts) {
-        ctx.fillStyle = 'rgba(147,197,253,0.7)';
-        ctx.beginPath(); ctx.arc(p.x, p.y, 1.4, 0, Math.PI * 2); ctx.fill();
-      }
+      for (const p of pts) { ctx.fillStyle = 'rgba(147,197,253,0.7)'; ctx.beginPath(); ctx.arc(p.x, p.y, 1.4, 0, Math.PI * 2); ctx.fill(); }
       raf = requestAnimationFrame(draw);
     };
     draw();
     window.addEventListener('resize', resize);
     return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
   }, []);
-
   return <canvas ref={ref} className="absolute inset-0 w-full h-full" aria-hidden />;
 }
 
-// ── Count-up number ─────────────────────────────────────────────────────────────
+// ── Count-up ────────────────────────────────────────────────────────────────────
 function CountUp({ value, suffix }: { value: number; suffix: string }) {
   const [display, setDisplay] = useState(0);
   const ref = useRef<HTMLSpanElement | null>(null);
   const done = useRef(false);
-
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+    const el = ref.current; if (!el) return;
     const io = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting && !done.current) {
         done.current = true;
-        const start = performance.now();
-        const dur = 1600;
-        const tick = (now: number) => {
-          const t = Math.min(1, (now - start) / dur);
-          const eased = 1 - Math.pow(1 - t, 3);
-          setDisplay(value * eased);
-          if (t < 1) requestAnimationFrame(tick);
-        };
+        const start = performance.now(), dur = 1600;
+        const tick = (now: number) => { const t = Math.min(1, (now - start) / dur); setDisplay(value * (1 - Math.pow(1 - t, 3))); if (t < 1) requestAnimationFrame(tick); };
         requestAnimationFrame(tick);
       }
     }, { threshold: 0.4 });
     io.observe(el);
     return () => io.disconnect();
   }, [value]);
-
-  const fmt = (n: number) => {
-    if (value >= 1000 && value < 1_000_000) return Math.round(n).toLocaleString();
-    if (value % 1 !== 0) return n.toFixed(1);
-    return Math.round(n).toString();
-  };
-
+  const fmt = (n: number) => value >= 1000 && value < 1_000_000 ? Math.round(n).toLocaleString() : value % 1 !== 0 ? n.toFixed(1) : Math.round(n).toString();
   return <span ref={ref}>{fmt(display)}{suffix}</span>;
 }
 
-// ── Premium product card ────────────────────────────────────────────────────────
+// ── Product card (theme-aware, large image, hover lift + zoom) ───────────────────
 interface Prod {
   id: string; title: string; handle: string | null; price: number;
   compare_at_price: number | null; cover_url: string | null; vendor: string | null;
   product_type: string | null; is_affiliate: boolean; rating_avg: number | null; rating_count: number | null;
 }
 
-function PremiumCard({ p }: { p: Prod }) {
+function ProductCard({ p }: { p: Prod }) {
+  const { theme } = useMarketTheme();
+  const T = themeTokens(theme);
+  const { has, toggle, isFull } = useCompare();
+  const inCompare = has(p.id);
+
   const priceUsd = (p.price ?? 0) / 100;
   const compareUsd = p.compare_at_price ? p.compare_at_price / 100 : null;
   const img = p.cover_url ?? `https://api.dicebear.com/7.x/shapes/svg?seed=${p.id}`;
-  const { has, toggle, isFull } = useCompare();
-  const inCompare = has(p.id);
+
   return (
     <Link
       to={`/products/${p.handle ?? p.id}`}
-      className="group relative rounded-2xl bg-white/[0.03] border border-white/10 overflow-hidden hover:border-blue-400/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_60px_-15px_rgba(37,99,235,0.4)]"
+      className={`group relative rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-2 flex flex-col ${T.card}`}
     >
-      <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-white/[0.06] to-transparent">
-        <img src={img} alt={p.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-        <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-[10px] font-semibold uppercase tracking-wide text-white/80">
+      <div className="relative aspect-[4/5] overflow-hidden bg-gray-100 dark:bg-white/[0.04]">
+        <img src={img} alt={p.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[600ms] ease-out" />
+        <span className={`absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wide backdrop-blur-md ${theme === 'light' ? 'bg-white/90 text-gray-700 border border-gray-200' : 'bg-black/50 text-white/80 border border-white/10'}`}>
           {p.is_affiliate ? (p.vendor ?? 'Partner') : (p.product_type ?? 'Product')}
         </span>
         {compareUsd && compareUsd > priceUsd && (
-          <span className="absolute top-3 right-3 px-2 py-1 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 text-white text-[10px] font-bold">
+          <span className="absolute top-3 right-3 px-2 py-1 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white text-[10px] font-bold">
             -{Math.round((1 - priceUsd / compareUsd) * 100)}%
           </span>
         )}
+        <button
+          onClick={e => { e.preventDefault(); if (!inCompare && isFull) { toast.info('Compare holds up to 4 products.'); return; } toggle(p.id); }}
+          className={`absolute bottom-3 right-3 flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-semibold backdrop-blur-md transition-colors ${
+            inCompare ? 'bg-blue-600 text-white' : theme === 'light' ? 'bg-white/90 text-gray-600 border border-gray-200 hover:text-blue-600' : 'bg-black/50 text-white/70 border border-white/10 hover:text-white'
+          }`}
+        >
+          <GitCompare className="w-3 h-3" /> {inCompare ? 'Added' : 'Compare'}
+        </button>
       </div>
-      <div className="p-4">
-        <h3 className="text-sm font-semibold text-white line-clamp-1">{p.title}</h3>
-        <div className="flex items-center gap-1 mt-1.5 text-amber-400 text-xs">
+      <div className="p-4 flex flex-col flex-1">
+        <h3 className={`text-sm font-semibold leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors ${T.cardTitle}`}>{p.title}</h3>
+        <div className="flex items-center gap-1 mt-1.5 text-xs">
           {(p.rating_count ?? 0) > 0 ? (
-            <>
-              <Star className="w-3.5 h-3.5 fill-amber-400" />
-              <span className="text-white/70">{Number(p.rating_avg).toFixed(1)}</span>
-              <span className="text-white/30">({p.rating_count})</span>
-            </>
-          ) : <span className="text-white/30">New arrival</span>}
+            <span className="flex items-center gap-1 text-amber-500">
+              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+              <span className={T.cardTitle}>{Number(p.rating_avg).toFixed(1)}</span>
+              <span className={T.cardMeta}>({p.rating_count})</span>
+            </span>
+          ) : <span className={T.cardMeta}>New arrival</span>}
         </div>
-        <div className="flex items-center justify-between mt-3">
+        <div className="mt-auto pt-3 flex items-end justify-between">
           <div className="flex items-baseline gap-2">
-            <span className="text-lg font-bold text-white">{priceUsd > 0 ? `$${priceUsd.toFixed(2)}` : 'Free'}</span>
-            {compareUsd && compareUsd > priceUsd && <span className="text-xs text-white/30 line-through">${compareUsd.toFixed(2)}</span>}
+            <span className={`text-xl font-extrabold ${T.cardTitle}`}>{priceUsd > 0 ? `$${priceUsd.toFixed(2)}` : 'Free'}</span>
+            {compareUsd && compareUsd > priceUsd && <span className={`text-xs line-through ${T.cardMeta}`}>${compareUsd.toFixed(2)}</span>}
           </div>
-          <button
-            onClick={e => {
-              e.preventDefault();
-              if (!inCompare && isFull) { toast.info('Compare holds up to 4 products.'); return; }
-              toggle(p.id);
-            }}
-            className={`flex items-center gap-1 text-xs font-semibold transition-colors ${inCompare ? 'text-blue-400' : 'text-white/40 hover:text-blue-400'}`}
-          >
-            <GitCompare className="w-3.5 h-3.5" /> {inCompare ? 'Added' : 'Compare'}
-          </button>
+          <span className="flex items-center gap-1 text-xs font-semibold text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity">
+            View <ArrowRight className="w-3 h-3" />
+          </span>
         </div>
       </div>
     </Link>
+  );
+}
+
+function SectionHead({ eyebrow, title, tokens, center }: { eyebrow: string; title: string; tokens: ReturnType<typeof themeTokens>; center?: boolean }) {
+  return (
+    <div className={center ? 'text-center' : ''}>
+      <p className="text-sm font-semibold text-blue-600 uppercase tracking-widest">{eyebrow}</p>
+      <h2 className={`text-3xl md:text-4xl font-black mt-2 ${tokens.heading}`}>{title}</h2>
+    </div>
   );
 }
 
@@ -216,44 +189,34 @@ function PremiumCard({ p }: { p: Prod }) {
 export default function SmartKongLanding() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { theme } = useMarketTheme();
+  const T = themeTokens(theme);
+
   const [query, setQuery] = useState('');
   const [trending, setTrending] = useState<Prod[]>([]);
   const [forYou, setForYou] = useState<Prod[]>([]);
   const firstName = (user?.user_metadata?.display_name || user?.email?.split('@')[0] || '').split(' ')[0];
 
   useEffect(() => {
-    supabase
-      .from('ecom_products')
+    supabase.from('ecom_products')
       .select('id, title, handle, price, compare_at_price, cover_url, vendor, product_type, is_affiliate, rating_avg, rating_count')
-      .eq('status', 'active')
-      .order('trending_score', { ascending: false })
-      .order('created_at', { ascending: false })
-      .limit(8)
+      .eq('status', 'active').order('trending_score', { ascending: false }).order('created_at', { ascending: false }).limit(8)
       .then(({ data }) => { if (Array.isArray(data)) setTrending(data as unknown as Prod[]); });
   }, []);
 
-  // Personalized "For You" — recommendations from the shopper's own history
   useEffect(() => {
     if (!user?.id) { setForYou([]); return; }
     supabase.rpc('recommend_for_user', { p_user_id: user.id, p_limit: 8 })
       .then(({ data }) => { if (Array.isArray(data)) setForYou(data as unknown as Prod[]); });
   }, [user?.id]);
 
-  const runSearch = useCallback((text?: string) => {
-    const q = (text ?? query).trim();
-    navigate(q ? `/shop?q=${encodeURIComponent(q)}` : '/shop');
-  }, [query, navigate]);
-
-  const runAi = useCallback(() => {
-    const q = query.trim();
-    navigate(q ? `/ai-solver?q=${encodeURIComponent(q)}` : '/ai-solver');
-  }, [query, navigate]);
+  const runSearch = useCallback((text?: string) => { const q = (text ?? query).trim(); navigate(q ? `/shop?q=${encodeURIComponent(q)}` : '/shop'); }, [query, navigate]);
+  const runAi = useCallback(() => { const q = query.trim(); navigate(q ? `/ai-solver?q=${encodeURIComponent(q)}` : '/ai-solver'); }, [query, navigate]);
 
   const voiceSearch = () => {
     const SR = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
     if (!SR) { toast.info('Voice search isn’t supported in this browser.'); return; }
-    const r = new SR();
-    r.lang = 'en-US'; r.interimResults = false;
+    const r = new SR(); r.lang = 'en-US'; r.interimResults = false;
     toast.info('Listening… speak now');
     r.onresult = (e: any) => { const t = e.results[0][0].transcript; setQuery(t); runSearch(t); };
     r.onerror = () => toast.error('Could not hear you — try again.');
@@ -262,37 +225,25 @@ export default function SmartKongLanding() {
 
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [imgBusy, setImgBusy] = useState(false);
-
   const onImage = async (file: File | undefined) => {
     if (!file) return;
     if (file.size > 6 * 1024 * 1024) { toast.error('Image must be under 6 MB.'); return; }
     setImgBusy(true);
     const toastId = toast.loading('Scanning your image…');
     try {
-      const dataUrl: string = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-      const res = await fetch('/api/image-search', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ imageDataUrl: dataUrl }),
-      });
+      const dataUrl: string = await new Promise((resolve, reject) => { const r = new FileReader(); r.onload = () => resolve(r.result as string); r.onerror = reject; r.readAsDataURL(file); });
+      const res = await fetch('/api/image-search', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ imageDataUrl: dataUrl }) });
       const data = await res.json();
       toast.dismiss(toastId);
       if (!res.ok) throw new Error(data.error ?? 'Image search failed');
       toast.success(`Found: ${data.label || 'a match'}`);
       navigate(`/shop?q=${encodeURIComponent(data.query)}`);
-    } catch (err: any) {
-      toast.dismiss(toastId);
-      toast.error(err.message);
-    }
+    } catch (err: any) { toast.dismiss(toastId); toast.error(err.message); }
     setImgBusy(false);
   };
 
   return (
-    <div className="min-h-screen bg-[#05060A] text-white">
+    <div className={`min-h-screen ${T.page}`}>
       <style>{`
         @keyframes sk-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-16px)} }
         @keyframes sk-drift { 0%,100%{transform:translate(0,0)} 33%{transform:translate(40px,-30px)} 66%{transform:translate(-30px,20px)} }
@@ -305,22 +256,17 @@ export default function SmartKongLanding() {
         .sk-cursor::after{content:'▍';animation:sk-blink 1s step-end infinite;color:#60A5FA}
       `}</style>
 
-      <Seo
-        title="The World's AI Marketplace"
-        description="Discover anything, buy from anywhere. Search millions of products across thousands of trusted stores, compare prices instantly, and shop with AI."
-      />
+      <Seo title="The World's AI Marketplace" description="Discover anything, buy from anywhere. Search millions of products across thousands of trusted stores, compare prices instantly, and shop with AI." />
       <MarketHeader />
 
-      {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden">
-        {/* Mesh gradient */}
+      {/* ── HERO (dark band in every theme) ──────────────────────────────── */}
+      <section className="relative overflow-hidden bg-[#070810]">
         <div className="absolute inset-0" aria-hidden>
           <div className="absolute top-[-20%] left-[10%] w-[46rem] h-[46rem] rounded-full opacity-40 blur-[120px]" style={{ background: 'radial-gradient(circle,#2563EB,transparent 60%)', animation: 'sk-drift 20s ease-in-out infinite' }} />
           <div className="absolute bottom-[-30%] right-[5%] w-[42rem] h-[42rem] rounded-full opacity-30 blur-[120px]" style={{ background: 'radial-gradient(circle,#7C3AED,transparent 60%)', animation: 'sk-drift 26s ease-in-out infinite reverse' }} />
         </div>
         <Constellation />
 
-        {/* Floating glass product chips */}
         <div className="pointer-events-none absolute inset-0 hidden lg:block" aria-hidden>
           {[
             { t: '14%', l: '6%', d: '0s', label: 'MacBook Pro M4', price: '$1,599' },
@@ -328,8 +274,7 @@ export default function SmartKongLanding() {
             { t: '20%', r: '5%', d: '.7s', label: 'iPhone 18 Pro', price: '$1,199' },
             { t: '64%', r: '8%', d: '2s', label: 'RTX 5090 Rig', price: '$2,899' },
           ].map((c, i) => (
-            <div key={i} className="sk-float absolute w-44 rounded-2xl bg-white/[0.06] border border-white/10 backdrop-blur-md p-3 shadow-2xl"
-              style={{ top: c.t, left: (c as any).l, right: (c as any).r, animationDelay: c.d }}>
+            <div key={i} className="sk-float absolute w-44 rounded-2xl bg-white/[0.06] border border-white/10 backdrop-blur-md p-3 shadow-2xl" style={{ top: c.t, left: (c as any).l, right: (c as any).r, animationDelay: c.d }}>
               <div className="h-16 rounded-xl bg-gradient-to-br from-blue-500/30 to-cyan-400/10 mb-2" />
               <p className="text-xs font-semibold text-white/90 truncate">{c.label}</p>
               <p className="text-xs text-blue-300">{c.price} · best price</p>
@@ -341,64 +286,40 @@ export default function SmartKongLanding() {
           <div className="sk-rise inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.06] border border-white/10 backdrop-blur-md text-sm text-white/80 mb-8">
             <Sparkles className="w-4 h-4 text-blue-400" /> The world’s AI marketplace
           </div>
-
-          <h1 className="sk-rise text-5xl md:text-7xl font-black tracking-tight leading-[1.05] mb-6" style={{ animationDelay: '.05s' }}>
+          <h1 className="sk-rise text-5xl md:text-7xl font-black tracking-tight leading-[1.05] mb-6 text-white" style={{ animationDelay: '.05s' }}>
             Discover Anything.<br />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-cyan-300 to-violet-400">Buy From Anywhere.</span>
           </h1>
-
           <p className="sk-rise text-lg md:text-xl text-white/55 max-w-2xl mx-auto mb-10" style={{ animationDelay: '.1s' }}>
-            Search millions of products across thousands of trusted stores, compare
-            prices instantly, chat with AI experts, and buy from the best source —
-            all in one place.
+            Search millions of products across thousands of trusted stores, compare prices instantly, chat with AI experts, and buy from the best source — all in one place.
           </p>
 
-          {/* AI search box */}
           <div className="sk-rise max-w-2xl mx-auto" style={{ animationDelay: '.15s' }}>
             <div className="rounded-2xl bg-white/[0.06] border border-white/12 backdrop-blur-xl p-2 shadow-2xl">
               <div className="flex items-center gap-2 px-3">
                 <Search className="w-5 h-5 text-white/40 shrink-0" />
-                <input
-                  value={query}
-                  onChange={e => setQuery(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && runSearch()}
-                  placeholder="What are you looking for today?"
-                  className="flex-1 bg-transparent py-3.5 text-white placeholder-white/35 focus:outline-none text-base"
-                />
+                <input value={query} onChange={e => setQuery(e.target.value)} onKeyDown={e => e.key === 'Enter' && runSearch()} placeholder="What are you looking for today?" className="flex-1 bg-transparent py-3.5 text-white placeholder-white/35 focus:outline-none text-base" />
               </div>
               <div className="flex items-center gap-2 mt-1 px-1">
-                <button onClick={voiceSearch} className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.06] text-sm transition-colors">
-                  <Mic className="w-4 h-4" /> Voice
-                </button>
+                <button onClick={voiceSearch} className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.06] text-sm transition-colors"><Mic className="w-4 h-4" /> Voice</button>
                 <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={e => onImage(e.target.files?.[0])} />
-                <button onClick={() => fileRef.current?.click()} disabled={imgBusy} className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.06] text-sm transition-colors disabled:opacity-50">
-                  <Camera className="w-4 h-4" /> {imgBusy ? 'Scanning…' : 'Image'}
-                </button>
-                <button onClick={runAi} className="ml-auto flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-semibold text-sm hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/25">
-                  <Sparkles className="w-4 h-4" /> AI Search
-                </button>
+                <button onClick={() => fileRef.current?.click()} disabled={imgBusy} className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.06] text-sm transition-colors disabled:opacity-50"><Camera className="w-4 h-4" /> {imgBusy ? 'Scanning…' : 'Image'}</button>
+                <button onClick={runAi} className="ml-auto flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-semibold text-sm hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/25"><Sparkles className="w-4 h-4" /> AI Search</button>
               </div>
             </div>
-
-            {/* quick pills */}
             <div className="flex flex-wrap justify-center gap-2 mt-5">
               {['headphones', 'gaming laptop', 'running shoes', 'home office'].map(t => (
-                <button key={t} onClick={() => { setQuery(t); runSearch(t); }} className="px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-white/55 hover:text-white hover:border-white/25 text-xs transition-colors">
-                  {t}
-                </button>
+                <button key={t} onClick={() => { setQuery(t); runSearch(t); }} className="px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-white/55 hover:text-white hover:border-white/25 text-xs transition-colors">{t}</button>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Live stats */}
         <div className="relative border-t border-white/[0.06] bg-white/[0.02]">
           <div className="max-w-6xl mx-auto px-4 lg:px-8 py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
             {STATS.map(s => (
               <div key={s.label} className="text-center">
-                <p className="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
-                  <CountUp value={s.value} suffix={s.suffix} />
-                </p>
+                <p className="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60"><CountUp value={s.value} suffix={s.suffix} /></p>
                 <p className="text-xs md:text-sm text-white/40 mt-1">{s.label}</p>
               </div>
             ))}
@@ -406,166 +327,137 @@ export default function SmartKongLanding() {
         </div>
       </section>
 
-      {/* ── CATEGORIES ───────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 lg:px-8 py-16 md:py-20">
-        <SectionHead eyebrow="Browse" title="Shop every category" />
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-          {CATEGORY_TILES.map(c => (
-            <Link key={c.label} to={c.to}
-              className="group relative rounded-2xl border border-white/10 bg-white/[0.03] p-6 overflow-hidden hover:border-white/20 transition-all hover:-translate-y-1">
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: `radial-gradient(circle at 30% 0%, ${c.from}22, transparent 60%)` }} />
-              <div className="relative">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ background: `linear-gradient(135deg, ${c.from}, ${c.to2})` }}>
-                  <c.Icon className="w-6 h-6 text-white" />
-                </div>
-                <p className="font-semibold text-white">{c.label}</p>
-                <p className="text-xs text-white/40 mt-0.5 flex items-center gap-1 group-hover:text-blue-300 transition-colors">
-                  Explore <ArrowRight className="w-3 h-3" />
-                </p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
       {/* ── FOR YOU (personalized) ───────────────────────────────────────── */}
       {forYou.length >= 4 && (
-        <section className="max-w-7xl mx-auto px-4 lg:px-8 pt-16 md:pt-20">
-          <div className="flex items-end justify-between">
-            <SectionHead eyebrow="Picked for you" title={firstName ? `For you, ${firstName}` : 'For you'} />
-            <Link to="/shop" className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors">
-              View all <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-8">
-            {forYou.map(p => <PremiumCard key={p.id} p={p} />)}
+        <section className={`${T.sectionA} py-16 md:py-20`}>
+          <div className="max-w-7xl mx-auto px-4 lg:px-8">
+            <div className="flex items-end justify-between">
+              <SectionHead eyebrow="Picked for you" title={firstName ? `For you, ${firstName}` : 'For you'} tokens={T} />
+              <Link to="/shop" className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-500">View all <ArrowRight className="w-4 h-4" /></Link>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
+              {forYou.map(p => <ProductCard key={p.id} p={p} />)}
+            </div>
           </div>
         </section>
       )}
 
       {/* ── TRENDING ─────────────────────────────────────────────────────── */}
       {trending.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 lg:px-8 pb-16 md:pb-20 pt-16 md:pt-20">
-          <div className="flex items-end justify-between">
-            <SectionHead eyebrow="Right now" title="Trending on SmartKong" />
-            <Link to="/shop" className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors">
-              View all <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-8">
-            {trending.map(p => <PremiumCard key={p.id} p={p} />)}
+        <section className={`${T.sectionB} py-16 md:py-20`}>
+          <div className="max-w-7xl mx-auto px-4 lg:px-8">
+            <div className="flex items-end justify-between">
+              <SectionHead eyebrow="Right now" title="Trending on SmartKong" tokens={T} />
+              <Link to="/shop" className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-500">View all <ArrowRight className="w-4 h-4" /></Link>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
+              {trending.map(p => <ProductCard key={p.id} p={p} />)}
+            </div>
           </div>
         </section>
       )}
 
-      {/* ── WHY SMARTKONG ────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 lg:px-8 py-16 md:py-20">
-        <SectionHead center eyebrow="Why SmartKong" title="Shopping, upgraded by AI" />
-        <div className="grid md:grid-cols-3 gap-6 mt-10">
-          {WHY.map(w => (
-            <div key={w.title} className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.05] to-transparent p-7">
-              <div className="w-12 h-12 rounded-xl bg-blue-500/15 border border-blue-400/20 flex items-center justify-center mb-5">
-                <w.Icon className="w-6 h-6 text-blue-400" />
-              </div>
-              <h3 className="text-lg font-bold text-white mb-2">{w.title}</h3>
-              <p className="text-white/50 text-sm leading-relaxed">{w.body}</p>
-            </div>
-          ))}
+      {/* ── CATEGORIES ───────────────────────────────────────────────────── */}
+      <section className={`${T.sectionA} py-16 md:py-20`}>
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <SectionHead eyebrow="Browse" title="Shop every category" tokens={T} />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mt-8">
+            {CATEGORY_TILES.map(c => (
+              <Link key={c.label} to={c.to} className={`group relative rounded-2xl p-6 overflow-hidden transition-all hover:-translate-y-1 ${T.tile}`}>
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: `radial-gradient(circle at 30% 0%, ${c.from}18, transparent 60%)` }} />
+                <div className="relative">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ background: `linear-gradient(135deg, ${c.from}, ${c.to2})` }}><c.Icon className="w-6 h-6 text-white" /></div>
+                  <p className={`font-semibold ${T.cardTitle}`}>{c.label}</p>
+                  <p className={`text-xs mt-0.5 flex items-center gap-1 group-hover:text-blue-600 transition-colors ${T.cardMeta}`}>Explore <ArrowRight className="w-3 h-3" /></p>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* ── AI SHOPPING SHOWCASE ─────────────────────────────────────────── */}
-      <section className="max-w-6xl mx-auto px-4 lg:px-8 py-16 md:py-20">
-        <div className="rounded-3xl border border-white/10 bg-white/[0.03] overflow-hidden grid lg:grid-cols-2">
-          <div className="p-8 md:p-12 flex flex-col justify-center">
-            <span className="inline-flex items-center gap-2 text-blue-400 text-sm font-semibold mb-4">
-              <MessageSquare className="w-4 h-4" /> AI Shopping Assistant
-            </span>
-            <h3 className="text-3xl md:text-4xl font-black leading-tight mb-4">
-              Describe what you need.<br />We find the best match.
-            </h3>
-            <p className="text-white/50 mb-6">
-              Skip the endless tabs. Tell SmartKong your problem, budget and use-case —
-              our AI reads across the whole catalog and returns ranked picks with reasons.
-            </p>
-            <button onClick={() => navigate('/ai-solver')} className="w-fit flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/25">
-              <Sparkles className="w-4 h-4" /> Try the AI Solver
-            </button>
+      {/* ── AI SHOWCASE (dark band) ──────────────────────────────────────── */}
+      <section className="bg-[#070810] py-16 md:py-24">
+        <div className="max-w-6xl mx-auto px-4 lg:px-8">
+          <div className="rounded-3xl border border-white/10 bg-white/[0.03] overflow-hidden grid lg:grid-cols-2">
+            <div className="p-8 md:p-12 flex flex-col justify-center">
+              <span className="inline-flex items-center gap-2 text-blue-400 text-sm font-semibold mb-4"><MessageSquare className="w-4 h-4" /> AI Shopping Assistant</span>
+              <h3 className="text-3xl md:text-4xl font-black leading-tight mb-4 text-white">Describe what you need.<br />We find the best match.</h3>
+              <p className="text-white/50 mb-6">Skip the endless tabs. Tell SmartKong your problem, budget and use-case — our AI reads across the whole catalog and returns ranked picks with reasons.</p>
+              <button onClick={() => navigate('/ai-solver')} className="w-fit flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/25"><Sparkles className="w-4 h-4" /> Try the AI Solver</button>
+            </div>
+            <div className="bg-[#0A0C12] p-6 md:p-8 border-t lg:border-t-0 lg:border-l border-white/10 flex flex-col justify-center gap-4">
+              <div className="self-end max-w-[80%] rounded-2xl rounded-br-md bg-blue-600 px-4 py-3 text-sm text-white">I need a laptop under $1,200 for machine learning.</div>
+              <div className="self-start max-w-[85%] rounded-2xl rounded-bl-md bg-white/[0.06] border border-white/10 px-4 py-3 text-sm text-white/80">
+                <span className="flex items-center gap-1.5 text-blue-300 font-semibold mb-1.5"><Sparkles className="w-3.5 h-3.5" /> SmartKong AI</span>
+                <span className="sk-cursor">Great pick for ML on a budget. Top 3: a 32GB RAM ultrabook with a discrete GPU, a refurbished workstation with CUDA support, and a cloud-GPU bundle. Comparing prices across 6 vendors now</span>
+              </div>
+            </div>
           </div>
-          <div className="bg-[#0A0C12] p-6 md:p-8 border-t lg:border-t-0 lg:border-l border-white/10 flex flex-col justify-center gap-4">
-            <div className="self-end max-w-[80%] rounded-2xl rounded-br-md bg-blue-600 px-4 py-3 text-sm">
-              I need a laptop under $1,200 for machine learning.
-            </div>
-            <div className="self-start max-w-[85%] rounded-2xl rounded-bl-md bg-white/[0.06] border border-white/10 px-4 py-3 text-sm text-white/80">
-              <span className="flex items-center gap-1.5 text-blue-300 font-semibold mb-1.5">
-                <Sparkles className="w-3.5 h-3.5" /> SmartKong AI
-              </span>
-              <span className="sk-cursor">Great pick for ML on a budget. Top 3: a 32GB RAM ultrabook with a discrete GPU, a refurbished workstation with CUDA support, and a cloud-GPU bundle. Comparing prices across 6 vendors now</span>
-            </div>
+        </div>
+      </section>
+
+      {/* ── WHY SMARTKONG ────────────────────────────────────────────────── */}
+      <section className={`${T.sectionB} py-16 md:py-20`}>
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <SectionHead center eyebrow="Why SmartKong" title="Shopping, upgraded by AI" tokens={T} />
+          <div className="grid md:grid-cols-3 gap-6 mt-10">
+            {WHY.map(w => (
+              <div key={w.title} className={`rounded-2xl p-7 ${T.card}`}>
+                <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-5"><w.Icon className="w-6 h-6 text-blue-600" /></div>
+                <h3 className={`text-lg font-bold mb-2 ${T.cardTitle}`}>{w.title}</h3>
+                <p className={`text-sm leading-relaxed ${T.body}`}>{w.body}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* ── GLOBAL VENDORS ───────────────────────────────────────────────── */}
-      <section className="py-16 md:py-20 border-y border-white/[0.06] bg-white/[0.015]">
-        <p className="text-center text-sm text-white/40 mb-8">Aggregating the world’s best stores &amp; networks</p>
+      <section className={`${T.sectionA} py-16 md:py-20 border-y ${theme === 'light' ? 'border-gray-100' : 'border-white/[0.06]'}`}>
+        <p className={`text-center text-sm mb-8 ${T.body}`}>Aggregating the world’s best stores &amp; networks</p>
         <div className="relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)]">
           <div className="sk-marquee flex gap-4 w-max">
             {[...VENDORS, ...VENDORS].map((v, i) => (
-              <span key={i} className="px-6 py-3 rounded-xl bg-white/[0.04] border border-white/10 text-white/60 font-semibold whitespace-nowrap">
-                {v}
-              </span>
+              <span key={i} className={`px-6 py-3 rounded-xl font-semibold whitespace-nowrap ${T.chip}`}>{v}</span>
             ))}
           </div>
         </div>
       </section>
 
       {/* ── TRUST ────────────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 lg:px-8 py-16 md:py-20">
-        <SectionHead center eyebrow="Peace of mind" title="Built for trust" />
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mt-10">
-          {TRUST.map(t => (
-            <div key={t.label} className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-center hover:border-emerald-400/30 transition-colors">
-              <t.Icon className="w-7 h-7 text-emerald-400 mx-auto mb-3" />
-              <p className="text-xs font-medium text-white/70">{t.label}</p>
-            </div>
-          ))}
+      <section className={`${T.sectionB} py-16 md:py-20`}>
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <SectionHead center eyebrow="Peace of mind" title="Built for trust" tokens={T} />
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mt-10">
+            {TRUST.map(t => (
+              <div key={t.label} className={`rounded-2xl p-5 text-center transition-colors hover:border-emerald-400/40 ${T.card}`}>
+                <t.Icon className="w-7 h-7 text-emerald-500 mx-auto mb-3" />
+                <p className={`text-xs font-medium ${T.body}`}>{t.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 lg:px-8 pb-20">
-        <div className="relative rounded-3xl overflow-hidden p-10 md:p-16 text-center" style={{ background: 'linear-gradient(120deg,#1D4ED8,#0EA5E9 55%,#7C3AED)' }}>
-          <div className="absolute inset-0 opacity-30" style={{ background: 'radial-gradient(circle at 80% 20%, #fff4, transparent 40%)' }} aria-hidden />
-          <div className="relative">
-            <h3 className="text-3xl md:text-5xl font-black mb-4">
-              {firstName ? `Ready when you are, ${firstName}.` : 'Sell to the world with SmartKong.'}
-            </h3>
-            <p className="text-white/80 max-w-xl mx-auto mb-8">
-              List your products once and reach millions of AI-guided shoppers across 230 countries.
-            </p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <Link to="/vendor/register" className="flex items-center gap-2 px-7 py-3.5 rounded-xl bg-white text-gray-900 font-bold hover:bg-white/90 transition-colors">
-                <Store className="w-4 h-4" /> Become a Vendor
-              </Link>
-              <Link to="/shop" className="flex items-center gap-2 px-7 py-3.5 rounded-xl bg-white/15 border border-white/25 backdrop-blur-md text-white font-bold hover:bg-white/25 transition-colors">
-                <Globe className="w-4 h-4" /> Start Shopping
-              </Link>
+      <section className={`${T.sectionA} pb-20 pt-4`}>
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <div className="relative rounded-3xl overflow-hidden p-10 md:p-16 text-center" style={{ background: 'linear-gradient(120deg,#1D4ED8,#0EA5E9 55%,#7C3AED)' }}>
+            <div className="absolute inset-0 opacity-30" style={{ background: 'radial-gradient(circle at 80% 20%, #fff4, transparent 40%)' }} aria-hidden />
+            <div className="relative">
+              <h3 className="text-3xl md:text-5xl font-black mb-4 text-white">{firstName ? `Ready when you are, ${firstName}.` : 'Sell to the world with SmartKong.'}</h3>
+              <p className="text-white/80 max-w-xl mx-auto mb-8">List your products once and reach millions of AI-guided shoppers across 230 countries.</p>
+              <div className="flex flex-wrap justify-center gap-3">
+                <Link to="/vendor/register" className="flex items-center gap-2 px-7 py-3.5 rounded-xl bg-white text-gray-900 font-bold hover:bg-white/90 transition-colors"><Store className="w-4 h-4" /> Become a Vendor</Link>
+                <Link to="/shop" className="flex items-center gap-2 px-7 py-3.5 rounded-xl bg-white/15 border border-white/25 backdrop-blur-md text-white font-bold hover:bg-white/25 transition-colors"><Globe className="w-4 h-4" /> Start Shopping</Link>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       <MarketFooter />
-    </div>
-  );
-}
-
-function SectionHead({ eyebrow, title, center }: { eyebrow: string; title: string; center?: boolean }) {
-  return (
-    <div className={center ? 'text-center' : ''}>
-      <p className="text-sm font-semibold text-blue-400 uppercase tracking-widest">{eyebrow}</p>
-      <h2 className="text-3xl md:text-4xl font-black text-white mt-2">{title}</h2>
     </div>
   );
 }
