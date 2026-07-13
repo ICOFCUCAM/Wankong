@@ -1182,99 +1182,34 @@ export default function SmartKongLanding() {
         </div>
       </section>
 
-      {/* ── FEATURE STRIP (6 value props) ────────────────────────────────── */}
-      <section className={`${T.sectionA} py-14`}>
-        <div className="max-w-7xl mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-8">
-            {FEATURES.map(f => (
-              <div key={f.title} className="group flex items-start gap-4">
-                <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${f.tint} flex items-center justify-center shrink-0 shadow-md transition-transform duration-300 group-hover:rotate-[8deg] group-hover:scale-105`}><f.Icon className="w-5 h-5 text-white" /></div>
-                <div>
-                  <h3 className={`text-base font-bold ${T.cardTitle}`}>{f.title}</h3>
-                  <p className={`text-sm mt-0.5 leading-relaxed ${T.cardMeta}`}>{f.body}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ── LIVE COMMERCE PULSE (the layer is alive) ─────────────────────── */}
       <CommercePulse />
 
-      {/* ── HOW IT WORKS (cinematic 01/02/03) ────────────────────────────── */}
-      <section className={`${T.sectionA} py-24 md:py-32 overflow-hidden`}>
-        <div className="max-w-7xl mx-auto px-4 lg:px-8">
-          <Reveal>
-            <span className="sk-eyebrow">How SmartKong works</span>
-            <h2 className={`text-4xl md:text-6xl font-black tracking-tight mt-3 ${T.heading}`}>
-              Three steps.<br /><span className="sk-serif sk-aurora-text">The whole internet.</span>
-            </h2>
-          </Reveal>
-          <div className="mt-16 space-y-20 md:space-y-28">
-            {[
-              { n: '01', title: 'Ask for anything', accent: 'anything', body: 'Type it like you’d say it — “the best gaming laptop under €1,500”. No categories, no filters, no tabs.', Icon: MessageSquare },
-              { n: '02', title: 'AI searches the world', accent: 'the world', body: 'SmartKong sweeps Amazon, Apple, Best Buy, Temu, eBay and thousands more at once — comparing price, trust and shipping in seconds.', Icon: Globe },
-              { n: '03', title: 'Check out once', accent: 'once', body: 'The best offer wins. Buy SmartKong sellers in one cart, or land directly on the partner store’s lowest price.', Icon: ShoppingCart },
-            ].map((s, i) => (
-              <Reveal key={s.n} className={`grid md:grid-cols-[1fr_1.2fr] gap-6 md:gap-14 items-center ${i % 2 ? 'md:[direction:rtl]' : ''}`}>
-                <div className="[direction:ltr] relative">
-                  <span className="block text-[9rem] md:text-[13rem] font-black leading-[0.8] tracking-[-0.05em] sk-outline-text select-none" aria-hidden>{s.n}</span>
-                  <div className="absolute bottom-2 left-1 w-16 h-8 border-2 border-blue-500/50 border-b-0 rounded-t-full" aria-hidden />
+      {/* ── FEATURED (one rich product moment: magazine lead + Netflix rows) */}
+      {trending.length > 0 && (() => {
+        const byRating = [...pool].sort((a, b) => (Number(b.rating_avg) || 0) - (Number(a.rating_avg) || 0));
+        return (
+          <section className={`${T.sectionB} py-20 md:py-28`}>
+            <div className="max-w-7xl mx-auto px-4 lg:px-8">
+              <div className="flex items-end justify-between mb-10">
+                <SectionHead eyebrow="What the world is buying" title="Featured today" tokens={T} sub="The products SmartKong shoppers are searching, comparing and buying right now." />
+                <Link to="/shop" className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-500">View all <ArrowRight className="w-4 h-4" /></Link>
+              </div>
+              {trending[0] && <FeaturedDeal p={trending[0]} tokens={T} />}
+              {pool.length >= 4 && (
+                <div className="mt-6">
+                  <DiscoveryRow eyebrow="Right now" title="Trending Today" products={pool.slice(0, 14)} tokens={T} />
+                  <DiscoveryRow eyebrow="Highest rated" title="AI Picks" products={byRating.slice(0, 14)} tokens={T} />
+                  {forYou.length >= 4 && <DiscoveryRow eyebrow="Picked for you" title={firstName ? `For you, ${firstName}` : 'For you'} products={forYou.slice(0, 14)} tokens={T} />}
                 </div>
-                <div className="[direction:ltr]">
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 text-white shadow-lg shadow-blue-500/25" style={{ background: 'var(--sk-aurora)' }}>
-                    <s.Icon className="w-6 h-6" />
-                  </div>
-                  <h3 className={`text-3xl md:text-4xl font-black tracking-tight ${T.heading}`}>
-                    {s.title.replace(s.accent, '').trim()} <span className="sk-serif sk-aurora-text">{s.accent}</span>
-                  </h3>
-                  <p className={`mt-4 text-lg leading-relaxed max-w-md ${T.body}`}>{s.body}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
+              )}
+            </div>
+          </section>
+        );
+      })()}
 
-      {/* ── TWO WAYS TO SHOP (intent shoppers + discovery shoppers) ──────── */}
-      <section className={`${T.sectionB} py-20 md:py-28`}>
-        <div className="max-w-7xl mx-auto px-4 lg:px-8">
-          <Reveal className="text-center max-w-2xl mx-auto">
-            <span className="sk-eyebrow justify-center">However you shop</span>
-            <h2 className={`text-4xl md:text-6xl font-black tracking-[-0.03em] mt-3 ${T.heading}`}>
-              Two ways to shop.<br /><span className="sk-serif sk-aurora-text">One layer for both.</span>
-            </h2>
-          </Reveal>
-          <div className="mt-14 grid md:grid-cols-2 gap-6">
-            {[
-              { tag: 'Know what you want', title: 'Just ask.', accent: 'ask.', body: 'Type it like you\'d say it. SmartKong sweeps every store, ranks by price and trust, and hands you the answer — no tabs, no guessing.', Icon: MessageSquare, cta: 'Ask the AI', to: '/ai-solver', chips: ['“gaming laptop under €1,500”', '“a gift for a 6-year-old”', '“cheapest iPhone 15 Pro”'] },
-              { tag: 'Here to be inspired', title: 'Just browse.', accent: 'browse.', body: 'Wander a living catalog of what the world is loving right now — curated kits, trending picks and editorial collections that make you want to buy.', Icon: Globe, cta: 'Explore the catalog', to: '/shop', chips: ['AI Collections', 'Trending this week', 'Every category'] },
-            ].map((c, i) => (
-              <Reveal key={c.title} delay={i * 110}>
-                <div className={`group h-full rounded-[2rem] border p-8 md:p-10 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl ${theme === 'light' ? 'border-gray-200 bg-white' : 'border-white/10 bg-white/[0.03]'}`}>
-                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-blue-500/25 transition-transform group-hover:rotate-[8deg]" style={{ background: 'var(--sk-aurora)' }}>
-                    <c.Icon className="w-6 h-6" />
-                  </div>
-                  <span className="sk-eyebrow mb-3">{c.tag}</span>
-                  <h3 className={`text-3xl md:text-4xl font-black tracking-tight ${T.heading}`}>
-                    {c.title.replace(c.accent, '')}<span className="sk-serif sk-aurora-text">{c.accent}</span>
-                  </h3>
-                  <p className={`mt-4 leading-relaxed ${T.body}`}>{c.body}</p>
-                  <div className="mt-6 flex flex-wrap gap-2">
-                    {c.chips.map(ch => (
-                      <span key={ch} className={`px-3 py-1.5 rounded-full text-xs font-medium ${theme === 'light' ? 'bg-[var(--sk-mist)] text-gray-600' : 'bg-white/[0.06] text-white/70'}`}>{ch}</span>
-                    ))}
-                  </div>
-                  <button onClick={() => navigate(c.to)} className="mt-7 inline-flex items-center gap-2 font-bold text-blue-600 hover:gap-3 transition-all">
-                    {c.cta} <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ── AI-FOUND DEALS (the one distinct savings band) ───────────────── */}
+      {deals.length >= 4 && <DealBand deals={deals} />}
 
       {/* ── ONE CHECKOUT (the shopping-layer promise, made tangible) ─────── */}
       <Spotlight className="bg-[#070810] py-20 md:py-28 overflow-hidden">
@@ -1330,6 +1265,45 @@ export default function SmartKongLanding() {
         </div>
       </Spotlight>
 
+      {/* ── TWO WAYS TO SHOP (intent shoppers + discovery shoppers) ──────── */}
+      <section className={`${T.sectionB} py-20 md:py-28`}>
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <Reveal className="text-center max-w-2xl mx-auto">
+            <span className="sk-eyebrow justify-center">However you shop</span>
+            <h2 className={`text-4xl md:text-6xl font-black tracking-[-0.03em] mt-3 ${T.heading}`}>
+              Two ways to shop.<br /><span className="sk-serif sk-aurora-text">One layer for both.</span>
+            </h2>
+          </Reveal>
+          <div className="mt-14 grid md:grid-cols-2 gap-6">
+            {[
+              { tag: 'Know what you want', title: 'Just ask.', accent: 'ask.', body: 'Type it like you\'d say it. SmartKong sweeps every store, ranks by price and trust, and hands you the answer — no tabs, no guessing.', Icon: MessageSquare, cta: 'Ask the AI', to: '/ai-solver', chips: ['“gaming laptop under €1,500”', '“a gift for a 6-year-old”', '“cheapest iPhone 15 Pro”'] },
+              { tag: 'Here to be inspired', title: 'Just browse.', accent: 'browse.', body: 'Wander a living catalog of what the world is loving right now — curated kits, trending picks and editorial collections that make you want to buy.', Icon: Globe, cta: 'Explore the catalog', to: '/shop', chips: ['AI Collections', 'Trending this week', 'Every category'] },
+            ].map((c, i) => (
+              <Reveal key={c.title} delay={i * 110}>
+                <div className={`group h-full rounded-[2rem] border p-8 md:p-10 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl ${theme === 'light' ? 'border-gray-200 bg-white' : 'border-white/10 bg-white/[0.03]'}`}>
+                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-blue-500/25 transition-transform group-hover:rotate-[8deg]" style={{ background: 'var(--sk-aurora)' }}>
+                    <c.Icon className="w-6 h-6" />
+                  </div>
+                  <span className="sk-eyebrow mb-3">{c.tag}</span>
+                  <h3 className={`text-3xl md:text-4xl font-black tracking-tight ${T.heading}`}>
+                    {c.title.replace(c.accent, '')}<span className="sk-serif sk-aurora-text">{c.accent}</span>
+                  </h3>
+                  <p className={`mt-4 leading-relaxed ${T.body}`}>{c.body}</p>
+                  <div className="mt-6 flex flex-wrap gap-2">
+                    {c.chips.map(ch => (
+                      <span key={ch} className={`px-3 py-1.5 rounded-full text-xs font-medium ${theme === 'light' ? 'bg-[var(--sk-mist)] text-gray-600' : 'bg-white/[0.06] text-white/70'}`}>{ch}</span>
+                    ))}
+                  </div>
+                  <button onClick={() => navigate(c.to)} className="mt-7 inline-flex items-center gap-2 font-bold text-blue-600 hover:gap-3 transition-all">
+                    {c.cta} <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── AI COLLECTIONS (discovery signature — products that work together) */}
       <section className={`${T.sectionA} py-20 md:py-28`}>
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
@@ -1367,32 +1341,6 @@ export default function SmartKongLanding() {
           </div>
         </div>
       </section>
-
-      {/* ── FEATURED (one rich product moment: magazine lead + Netflix rows) */}
-      {trending.length > 0 && (() => {
-        const byRating = [...pool].sort((a, b) => (Number(b.rating_avg) || 0) - (Number(a.rating_avg) || 0));
-        return (
-          <section className={`${T.sectionB} py-20 md:py-28`}>
-            <div className="max-w-7xl mx-auto px-4 lg:px-8">
-              <div className="flex items-end justify-between mb-10">
-                <SectionHead eyebrow="What the world is buying" title="Featured today" tokens={T} sub="The products SmartKong shoppers are searching, comparing and buying right now." />
-                <Link to="/shop" className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-500">View all <ArrowRight className="w-4 h-4" /></Link>
-              </div>
-              {trending[0] && <FeaturedDeal p={trending[0]} tokens={T} />}
-              {pool.length >= 4 && (
-                <div className="mt-6">
-                  <DiscoveryRow eyebrow="Right now" title="Trending Today" products={pool.slice(0, 14)} tokens={T} />
-                  <DiscoveryRow eyebrow="Highest rated" title="AI Picks" products={byRating.slice(0, 14)} tokens={T} />
-                  {forYou.length >= 4 && <DiscoveryRow eyebrow="Picked for you" title={firstName ? `For you, ${firstName}` : 'For you'} products={forYou.slice(0, 14)} tokens={T} />}
-                </div>
-              )}
-            </div>
-          </section>
-        );
-      })()}
-
-      {/* ── AI-FOUND DEALS (the one distinct savings band) ───────────────── */}
-      {deals.length >= 4 && <DealBand deals={deals} />}
 
       {/* ── CATEGORIES ───────────────────────────────────────────────────── */}
       <section className={`${T.sectionA} py-20 md:py-28`}>
@@ -1441,6 +1389,58 @@ export default function SmartKongLanding() {
         </div>
       </section>
 
+      {/* ── FEATURE STRIP (6 value props) ────────────────────────────────── */}
+      <section className={`${T.sectionA} py-14`}>
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-8">
+            {FEATURES.map(f => (
+              <div key={f.title} className="group flex items-start gap-4">
+                <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${f.tint} flex items-center justify-center shrink-0 shadow-md transition-transform duration-300 group-hover:rotate-[8deg] group-hover:scale-105`}><f.Icon className="w-5 h-5 text-white" /></div>
+                <div>
+                  <h3 className={`text-base font-bold ${T.cardTitle}`}>{f.title}</h3>
+                  <p className={`text-sm mt-0.5 leading-relaxed ${T.cardMeta}`}>{f.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── HOW IT WORKS (cinematic 01/02/03) ────────────────────────────── */}
+      <section className={`${T.sectionA} py-24 md:py-32 overflow-hidden`}>
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <Reveal>
+            <span className="sk-eyebrow">How SmartKong works</span>
+            <h2 className={`text-4xl md:text-6xl font-black tracking-tight mt-3 ${T.heading}`}>
+              Three steps.<br /><span className="sk-serif sk-aurora-text">The whole internet.</span>
+            </h2>
+          </Reveal>
+          <div className="mt-16 space-y-20 md:space-y-28">
+            {[
+              { n: '01', title: 'Ask for anything', accent: 'anything', body: 'Type it like you’d say it — “the best gaming laptop under €1,500”. No categories, no filters, no tabs.', Icon: MessageSquare },
+              { n: '02', title: 'AI searches the world', accent: 'the world', body: 'SmartKong sweeps Amazon, Apple, Best Buy, Temu, eBay and thousands more at once — comparing price, trust and shipping in seconds.', Icon: Globe },
+              { n: '03', title: 'Check out once', accent: 'once', body: 'The best offer wins. Buy SmartKong sellers in one cart, or land directly on the partner store’s lowest price.', Icon: ShoppingCart },
+            ].map((s, i) => (
+              <Reveal key={s.n} className={`grid md:grid-cols-[1fr_1.2fr] gap-6 md:gap-14 items-center ${i % 2 ? 'md:[direction:rtl]' : ''}`}>
+                <div className="[direction:ltr] relative">
+                  <span className="block text-[9rem] md:text-[13rem] font-black leading-[0.8] tracking-[-0.05em] sk-outline-text select-none" aria-hidden>{s.n}</span>
+                  <div className="absolute bottom-2 left-1 w-16 h-8 border-2 border-blue-500/50 border-b-0 rounded-t-full" aria-hidden />
+                </div>
+                <div className="[direction:ltr]">
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 text-white shadow-lg shadow-blue-500/25" style={{ background: 'var(--sk-aurora)' }}>
+                    <s.Icon className="w-6 h-6" />
+                  </div>
+                  <h3 className={`text-3xl md:text-4xl font-black tracking-tight ${T.heading}`}>
+                    {s.title.replace(s.accent, '').trim()} <span className="sk-serif sk-aurora-text">{s.accent}</span>
+                  </h3>
+                  <p className={`mt-4 text-lg leading-relaxed max-w-md ${T.body}`}>{s.body}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── GLOBAL VENDORS ───────────────────────────────────────────────── */}
       <section className={`${T.sectionA} py-20 md:py-28 border-y ${theme === 'light' ? 'border-gray-100' : 'border-white/[0.06]'}`}>
         <p className={`text-center text-sm mb-8 ${T.body}`}>Aggregating the world’s best stores &amp; networks</p>
@@ -1450,14 +1450,6 @@ export default function SmartKongLanding() {
               <span key={i} className={`px-6 py-3 rounded-xl font-semibold whitespace-nowrap ${T.chip}`}>{v}</span>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* ── CUSTOMER STORIES (social proof) ──────────────────────────────── */}
-      <section className={`${T.sectionB} py-20 md:py-28`}>
-        <div className="max-w-7xl mx-auto px-4 lg:px-8">
-          <SectionHead center eyebrow="Loved by shoppers" title="People love buying here" tokens={T} sub="Over 1.8 million shoppers use SmartKong before they buy." />
-          <Testimonials tokens={T} />
         </div>
       </section>
 
@@ -1475,6 +1467,14 @@ export default function SmartKongLanding() {
               </div>
             ))}
           </Reveal>
+        </div>
+      </section>
+
+      {/* ── CUSTOMER STORIES (social proof) ──────────────────────────────── */}
+      <section className={`${T.sectionB} py-20 md:py-28`}>
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <SectionHead center eyebrow="Loved by shoppers" title="People love buying here" tokens={T} sub="Over 1.8 million shoppers use SmartKong before they buy." />
+          <Testimonials tokens={T} />
         </div>
       </section>
 
@@ -1582,6 +1582,7 @@ export default function SmartKongLanding() {
           </Reveal>
         </div>
       </Spotlight>
+
 
       <MarketFooter />
     </div>
