@@ -629,6 +629,59 @@ function WorldSearchOverlay({ query }: { query: string }) {
   );
 }
 
+// ── Interactive globe: hover a continent, region-specific commerce surfaces ─────
+const REGIONS = [
+  { key: 'na', label: 'North America', x: 15, y: 49, theme: 'Best deals today',    Icon: Tag,        tint: '#2563EB', q: 'best deals usa',      items: ['MacBook Pro M4 · $1,599', 'RTX 5090 rig · $1,999', 'iPhone 15 Pro · $999'] },
+  { key: 'eu', label: 'Europe',        x: 46, y: 24, theme: 'Trusted brands',       Icon: ShieldCheck, tint: '#7C3AED', q: 'europe trusted brands', items: ['Bosch appliances', 'Philips electronics', 'Adidas Originals'] },
+  { key: 'af', label: 'Africa',        x: 50, y: 60, theme: 'Emerging suppliers',   Icon: Store,       tint: '#F59E0B', q: 'africa suppliers',     items: ['Wholesale textiles', 'Solar equipment', 'Agri machinery'] },
+  { key: 'cn', label: 'China',         x: 67, y: 33, theme: 'Factories & wholesale', Icon: Package,    tint: '#EF4444', q: 'import from china',    items: ['Direct-from-factory', 'Bulk electronics', 'Custom manufacturing'] },
+  { key: 'jp', label: 'Japan',         x: 82, y: 53, theme: 'Electronics',          Icon: Laptop,      tint: '#06B6D4', q: 'japan electronics',    items: ['Sony cameras', 'Nintendo consoles', 'Casio watches'] },
+];
+
+function RegionGlobe({ onHover, onPick }: { onHover: (a: boolean) => void; onPick: (q: string) => void }) {
+  const [active, setActive] = useState<string | null>(null);
+  const show = (k: string) => { setActive(k); onHover(true); };
+  const hide = () => { setActive(null); onHover(false); };
+  return (
+    <div className="hidden md:block pointer-events-none absolute right-0 top-0 h-full w-[80%] lg:w-[74%] z-30">
+      <div className={`absolute left-1/2 -translate-x-1/2 top-3 transition-opacity duration-300 ${active ? 'opacity-0' : 'opacity-100'}`}>
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/85 backdrop-blur shadow-sm ring-1 ring-black/5 text-xs font-medium text-gray-600">
+          <Globe className="w-3.5 h-3.5 text-blue-600" /> Hover the globe to explore regions
+        </span>
+      </div>
+      {REGIONS.map(r => {
+        const on = active === r.key;
+        const flip = r.x >= 55;
+        return (
+          <div key={r.key} className="absolute pointer-events-auto" style={{ left: `${r.x}%`, top: `${r.y}%` }} onMouseEnter={() => show(r.key)} onMouseLeave={hide}>
+            <button
+              onFocus={() => show(r.key)} onBlur={hide} onClick={() => onPick(r.q)} title={r.label}
+              className="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center outline-none"
+            >
+              <span className="absolute w-6 h-6 rounded-full opacity-40" style={{ background: r.tint, animation: 'sk-ping 1.8s ease-out infinite' }} />
+              <span className="relative w-3.5 h-3.5 rounded-full ring-2 ring-white shadow-md transition-transform hover:scale-125" style={{ background: r.tint }} />
+            </button>
+            {on && (
+              <div className={`absolute ${flip ? 'right-3' : 'left-3'} top-3 w-56 rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 p-3.5 sk-rise`}>
+                <div className="flex items-center gap-2 mb-2.5">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${r.tint}1a` }}><r.Icon className="w-4 h-4" style={{ color: r.tint }} /></div>
+                  <div><p className="text-sm font-bold text-gray-900 leading-tight">{r.label}</p><p className="text-[11px] text-gray-400">{r.theme}</p></div>
+                </div>
+                <ul className="space-y-1 mb-3">
+                  {r.items.map(it => <li key={it} className="flex items-center gap-1.5 text-[11px] text-gray-600"><span className="w-1 h-1 rounded-full" style={{ background: r.tint }} />{it}</li>)}
+                </ul>
+                <button onClick={() => onPick(r.q)} className="w-full flex items-center justify-center gap-1 px-3 py-1.5 rounded-lg text-white text-xs font-semibold transition-opacity hover:opacity-90" style={{ background: r.tint }}>
+                  Explore {r.label} <ArrowRight className="w-3 h-3" />
+                </button>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ── Page ────────────────────────────────────────────────────────────────────────
 export default function SmartKongLanding() {
   const navigate = useNavigate();
@@ -639,6 +692,7 @@ export default function SmartKongLanding() {
   const [query, setQuery] = useState('');
   const typed = useTypewriter(TYPED_SUGGESTIONS);
   const [worldQuery, setWorldQuery] = useState<string | null>(null);
+  const [regionHovering, setRegionHovering] = useState(false);
   const storyIdx = useRotating(LIVE_STORIES.length, 3800);
   const greeting = (() => { const h = new Date().getHours(); return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening'; })();
   const [trending, setTrending] = useState<Prod[]>([]);
@@ -811,11 +865,14 @@ export default function SmartKongLanding() {
           </div>
 
           {/* Right: floating product cards + live AI panel over the globe */}
-          <div className="relative h-[440px] md:h-[520px] hidden md:block">
+          <div className={`relative h-[440px] md:h-[520px] hidden md:block transition-opacity duration-300 ${regionHovering ? 'opacity-10' : 'opacity-100'}`}>
             {worldQuery === null && HERO_CARDS.map(c => <HeroCard key={c.title} c={c} />)}
             {worldQuery === null && <AiSearchPanel />}
           </div>
         </div>
+
+        {/* Interactive globe: hover a continent to surface its commerce */}
+        {worldQuery === null && <RegionGlobe onHover={setRegionHovering} onPick={q => launchWorldSearch(q)} />}
 
         {/* Signature interaction: AI maps the world's commerce on search */}
         {worldQuery !== null && <WorldSearchOverlay query={worldQuery} />}
