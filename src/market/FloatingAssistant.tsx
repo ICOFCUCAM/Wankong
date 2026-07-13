@@ -70,7 +70,7 @@ export default function FloatingAssistant() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed bottom-5 right-5 z-50 flex items-center gap-2 pl-4 pr-5 py-3 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold shadow-2xl shadow-blue-500/40 hover:scale-105 active:scale-95 transition-transform"
+          className="fixed bottom-5 right-5 z-50 flex items-center gap-2 pl-4 pr-5 py-3 rounded-full [background:var(--sk-aurora)] text-white font-semibold shadow-2xl shadow-blue-500/40 hover:scale-105 active:scale-95 transition-transform"
           title="Ask the SmartKong AI"
         >
           <span className="relative flex items-center justify-center">
@@ -85,7 +85,7 @@ export default function FloatingAssistant() {
       {open && (
         <div className="fixed bottom-5 right-5 z-50 w-[calc(100vw-2.5rem)] sm:w-[380px] h-[70vh] sm:h-[560px] max-h-[640px] flex flex-col rounded-2xl overflow-hidden bg-white border border-gray-200 shadow-2xl">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white shrink-0">
+          <div className="flex items-center justify-between px-4 py-3 [background:var(--sk-aurora)] text-white shrink-0">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><Sparkles className="w-4 h-4" /></div>
               <div className="leading-tight">
