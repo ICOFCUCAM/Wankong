@@ -118,6 +118,7 @@ const MarketWishlistPage      = lazy(() => import('./market/MarketWishlistPage')
 const MarketCollectionPage    = lazy(() => import('./market/MarketCollectionPage'));
 const MarketAffiliateAdminPage = lazy(() => import('./market/MarketAffiliateAdminPage'));
 const MarketNotFoundPage      = lazy(() => import('./market/MarketNotFoundPage'));
+const MarketCartPage          = lazy(() => import('./market/MarketCartPage'));
 
 // ── Library ────────────────────────────────────────────────────────────────────
 const LibraryPage = lazy(() => import('./pages/LibraryPage'));
@@ -150,7 +151,7 @@ export default function App() {
           {IS_MARKET_SITE && <Route path="/wishlist" element={<MarketWishlistPage />} />}
           {IS_MARKET_SITE && <Route path="/kit/:key" element={<MarketCollectionPage />} />}
           {IS_MARKET_SITE && <Route path="/admin/affiliates" element={<MarketAffiliateAdminPage />} />}
-          <Route path="/cart"                     element={<CartPage />} />
+          <Route path="/cart"                     element={IS_MARKET_SITE ? <MarketCartPage /> : <CartPage />} />
           <Route path="/checkout"                 element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
           <Route path="/order-confirmation"       element={<OrderConfirmation />} />
           <Route path="/settings/social/callback" element={<SocialOAuthCallback />} />
