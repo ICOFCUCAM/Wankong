@@ -102,7 +102,7 @@ const UNSPLASH = (id: string) => `https://images.unsplash.com/photo-${id}?auto=f
 
 const HERO_CARDS: {
   title: string; rating: number; count: string; price: string; vendor: string;
-  art: ArtKind; photo: string; pos: string; delay: string; size: 'lg' | 'md' | 'sm'; mark?: 'apple' | 'link';
+  art: ArtKind; photo: string; pos: string; delay: string; size: 'lg' | 'md' | 'sm'; mark?: 'apple' | 'link'; href?: string;
 }[] = [
   { title: 'Sony WH-1000XM5',    rating: 4.8, count: '8,842', price: '348',   vendor: 'Amazon',   art: 'headphones', photo: UNSPLASH('1505740420928-5e560c06d30e'), pos: 'top-[1%] left-[34%]',    delay: '0s',   size: 'md' },
   { title: 'iPhone 15 Pro',      rating: 4.9, count: '6,421', price: '999',   vendor: 'Apple',    art: 'phone',      photo: UNSPLASH('1592750475338-74b7b21085ab'), pos: 'top-[14%] right-[-4%]',  delay: '.6s',  size: 'sm' },
@@ -415,7 +415,7 @@ function HeroCard({ c }: { c: (typeof HERO_CARDS)[number] }) {
   return (
     <div className={`sk-float absolute z-10 ${c.pos}`} style={{ animationDelay: c.delay }}>
       <button
-        onClick={() => navigate(`/shop?q=${encodeURIComponent(c.title)}`)}
+        onClick={() => navigate(c.href ?? `/shop?q=${encodeURIComponent(c.title)}`)}
         title={`Shop ${c.title}`}
         className={`group block text-left rounded-2xl bg-white shadow-[0_22px_55px_-18px_rgba(30,58,138,0.4)] ring-1 ring-black/[0.04] p-2.5 cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_34px_70px_-18px_rgba(30,58,138,0.6)] hover:ring-blue-300 active:scale-[0.97] ${W}`}
       >
@@ -498,14 +498,9 @@ function NetworkNodes() {
 }
 
 // ── Live AI comparison panel (searches stores, recommends the best) ─────────────
-const AI_STORES = [
-  { name: 'Amazon',   price: '$1,299' },
-  { name: 'Best Buy', price: '$1,289', best: true },
-  { name: 'Walmart',  price: '$1,319' },
-];
 const AI_SEQ = [1500, 850, 850, 850, 2800]; // ms per step: search, reveal×3, recommend
 
-function AiSearchPanel() {
+function AiSearchPanel({ product }: { product?: { title: string; priceUsd: number } }) {
   const [step, setStep] = useState(0);
   useEffect(() => {
     let i = 0; let t: ReturnType<typeof setTimeout>;
@@ -513,13 +508,25 @@ function AiSearchPanel() {
     run();
     return () => clearTimeout(t);
   }, []);
-  const revealed = step === 0 ? 0 : step === AI_SEQ.length - 1 ? AI_STORES.length : step;
+  const base = product && product.priceUsd > 0 ? product.priceUsd : 1299;
+  const savings = Math.max(9, Math.round(base * 0.012));
+  const fmt = (n: number) => '$' + Math.round(n).toLocaleString('en-US');
+  const stores = [
+    { name: 'Amazon',   price: fmt(base) },
+    { name: 'Best Buy', price: fmt(base - savings), best: true },
+    { name: 'Walmart',  price: fmt(base + Math.round(base * 0.015)) },
+  ];
+  const revealed = step === 0 ? 0 : step === AI_SEQ.length - 1 ? stores.length : step;
+  const short = product ? (product.title.length > 24 ? product.title.slice(0, 24) + '…' : product.title) : null;
   return (
     <div className="sk-float absolute z-20 bottom-[2%] left-[-3%] w-64" style={{ animationDelay: '.9s' }}>
       <div className="rounded-2xl bg-white/95 backdrop-blur-md shadow-[0_28px_65px_-18px_rgba(30,58,138,0.55)] ring-1 ring-blue-100 p-3.5">
         <div className="flex items-center gap-2 mb-2.5">
           <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center"><Sparkles className="w-3.5 h-3.5 text-white" /></div>
-          <span className="text-xs font-bold text-gray-900">SmartKong AI</span>
+          <div className="min-w-0">
+            <p className="text-xs font-bold text-gray-900 leading-none">SmartKong AI</p>
+            {short && <p className="text-[10px] text-gray-400 truncate mt-0.5">Best price · {short}</p>}
+          </div>
           <span className="ml-auto flex items-center gap-1 text-[10px] font-medium text-emerald-600">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> live
           </span>
@@ -531,7 +538,7 @@ function AiSearchPanel() {
         ) : (
           <>
             <div className="space-y-1.5">
-              {AI_STORES.slice(0, revealed).map(s => (
+              {stores.slice(0, revealed).map(s => (
                 <div key={s.name} className={`flex items-center justify-between rounded-lg px-2.5 py-1.5 text-xs transition-all ${s.best ? 'bg-emerald-50 ring-1 ring-emerald-200' : 'bg-gray-50'}`}>
                   <span className="flex items-center gap-1.5 font-medium text-gray-700"><VendorMark vendor={s.name} />{s.name}</span>
                   <span className={`font-bold ${s.best ? 'text-emerald-600' : 'text-gray-900'}`}>{s.price}</span>
@@ -541,7 +548,7 @@ function AiSearchPanel() {
             {step === AI_SEQ.length - 1 && (
               <div className="mt-2.5 flex items-start gap-1.5 rounded-lg bg-blue-600 text-white px-2.5 py-2">
                 <CheckCircle2 className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-                <span className="text-[11px] leading-snug">I recommend <b>Best Buy</b> — you save <b>$30</b></span>
+                <span className="text-[11px] leading-snug">I recommend <b>Best Buy</b> — you save <b>{fmt(savings)}</b></span>
               </div>
             )}
           </>
@@ -729,6 +736,25 @@ export default function SmartKongLanding() {
       .then(({ data }) => { if (Array.isArray(data)) setForYou(data as unknown as Prod[]); });
   }, [user?.id]);
 
+  // Real catalog products fill the floating hero cards when available; the
+  // curated showcase is the fallback for an empty catalog.
+  const heroCards = trending.length >= 5
+    ? HERO_CARDS.map((l, i) => {
+        const p = trending[i];
+        const usd = (p.price ?? 0) / 100;
+        return {
+          ...l,
+          title: p.title,
+          price: usd > 0 ? usd.toLocaleString('en-US', { maximumFractionDigits: 0 }) : l.price,
+          count: (p.rating_count ?? 0) > 0 ? String(p.rating_count) : l.count,
+          rating: Number(p.rating_avg) || l.rating,
+          vendor: p.vendor ?? l.vendor,
+          photo: p.cover_url ?? l.photo,
+          href: `/products/${p.handle ?? p.id}`,
+        };
+      })
+    : HERO_CARDS;
+
   const runSearch = useCallback((text?: string) => { const q = (text ?? query).trim(); navigate(q ? `/shop?q=${encodeURIComponent(q)}` : '/shop'); }, [query, navigate]);
   // The signature interaction: play the "AI maps the world" animation, then route.
   const launchWorldSearch = useCallback((text?: string, dest = '/shop') => {
@@ -866,8 +892,8 @@ export default function SmartKongLanding() {
 
           {/* Right: floating product cards + live AI panel over the globe */}
           <div className={`relative h-[440px] md:h-[520px] hidden md:block transition-opacity duration-300 ${regionHovering ? 'opacity-10' : 'opacity-100'}`}>
-            {worldQuery === null && HERO_CARDS.map(c => <HeroCard key={c.title} c={c} />)}
-            {worldQuery === null && <AiSearchPanel />}
+            {worldQuery === null && heroCards.map(c => <HeroCard key={c.pos} c={c} />)}
+            {worldQuery === null && <AiSearchPanel product={trending[0] ? { title: trending[0].title, priceUsd: (trending[0].price ?? 0) / 100 } : undefined} />}
           </div>
         </div>
 
