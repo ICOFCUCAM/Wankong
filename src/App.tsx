@@ -119,6 +119,7 @@ const MarketCollectionPage    = lazy(() => import('./market/MarketCollectionPage
 const MarketAffiliateAdminPage = lazy(() => import('./market/MarketAffiliateAdminPage'));
 const MarketNotFoundPage      = lazy(() => import('./market/MarketNotFoundPage'));
 const MarketCartPage          = lazy(() => import('./market/MarketCartPage'));
+const MarketAboutPage         = lazy(() => import('./market/MarketAboutPage'));
 
 // ── Library ────────────────────────────────────────────────────────────────────
 const LibraryPage = lazy(() => import('./pages/LibraryPage'));
@@ -167,7 +168,7 @@ export default function App() {
           <Route path="/music-store"              element={<MusicStorePage />} />
 
           {/* ── Company ────────────────────────────────────────────────────── */}
-          <Route path="/about"                    element={<AboutPage />} />
+          <Route path="/about"                    element={IS_MARKET_SITE ? <MarketAboutPage /> : <AboutPage />} />
           <Route path="/careers"                  element={<CareersPage />} />
           <Route path="/press"                    element={<PressPage />} />
           <Route path="/terms-of-service"         element={<TermsPage />} />
