@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase';
 import Seo from '@/components/Seo';
 import MarketLayout from './MarketLayout';
 import { useCompare } from './useCompare';
+import { Reveal } from './motion';
 import { Stars } from './MarketProductCard';
 import {
   Sparkles, Check, X, Trophy, Loader2, Search, Plus, ArrowLeft, ShoppingCart,
@@ -95,7 +96,8 @@ export default function MarketComparePage() {
             <button
               onClick={runComparison}
               disabled={ids.length < 2 || analyzing}
-              className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white text-sm font-semibold rounded-xl transition-colors"
+              className="flex items-center gap-2 px-5 py-2.5 disabled:opacity-40 text-white text-sm font-semibold rounded-xl shadow-lg shadow-violet-500/20 hover:opacity-95 transition-opacity"
+              style={{ background: 'var(--sk-aurora)' }}
             >
               {analyzing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
               {analyzing ? 'Analyzing…' : 'Compare with AI'}
@@ -116,12 +118,13 @@ export default function MarketComparePage() {
         ) : (
           <>
             {result?.summary && (
-              <div className="mb-8 rounded-2xl bg-blue-50 border border-blue-100 p-5">
-                <p className="flex items-center gap-2 text-blue-700 font-semibold text-sm mb-1.5">
-                  <Sparkles className="w-4 h-4" /> AI verdict
+              <Reveal className="mb-8 rounded-2xl bg-[var(--sk-mist)] border border-blue-100 p-5 relative overflow-hidden">
+                <span aria-hidden className="absolute -right-6 -top-6 w-24 h-24 rounded-full opacity-20 blur-2xl" style={{ background: 'var(--sk-aurora)' }} />
+                <p className="relative flex items-center gap-2 text-blue-700 font-bold text-sm mb-1.5">
+                  <Sparkles className="w-4 h-4" /> The AI verdict
                 </p>
-                <p className="text-gray-700 text-sm leading-relaxed">{result.summary}</p>
-              </div>
+                <p className="relative text-gray-700 text-sm leading-relaxed">{result.summary}</p>
+              </Reveal>
             )}
 
             <div className="overflow-x-auto">
@@ -132,7 +135,7 @@ export default function MarketComparePage() {
                   return (
                     <div key={p.id} className={`relative rounded-2xl border bg-white overflow-hidden ${isWinner ? 'border-blue-500 shadow-lg shadow-blue-500/10' : 'border-gray-200'}`}>
                       {isWinner && (
-                        <div className="absolute top-3 left-3 z-10 flex items-center gap-1 px-2.5 py-1 bg-blue-600 text-white rounded-full text-[10px] font-bold uppercase">
+                        <div className="absolute top-3 left-3 z-10 flex items-center gap-1 px-2.5 py-1 text-white rounded-full text-[10px] font-bold uppercase shadow-md shadow-violet-500/25" style={{ background: 'var(--sk-aurora)' }}>
                           <Trophy className="w-3 h-3" /> Best value
                         </div>
                       )}
