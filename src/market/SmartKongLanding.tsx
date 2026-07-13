@@ -1076,6 +1076,41 @@ export default function SmartKongLanding() {
         </div>
       </section>
 
+      {/* ── HOW IT WORKS (cinematic 01/02/03) ────────────────────────────── */}
+      <section className={`${T.sectionA} py-24 md:py-32 overflow-hidden`}>
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <Reveal>
+            <span className="sk-eyebrow">How SmartKong works</span>
+            <h2 className={`text-4xl md:text-6xl font-black tracking-tight mt-3 ${T.heading}`}>
+              Three steps.<br /><span className="sk-serif sk-aurora-text">The whole internet.</span>
+            </h2>
+          </Reveal>
+          <div className="mt-16 space-y-20 md:space-y-28">
+            {[
+              { n: '01', title: 'Ask for anything', accent: 'anything', body: 'Type it like you’d say it — “the best gaming laptop under €1,500”. No categories, no filters, no tabs.', Icon: MessageSquare },
+              { n: '02', title: 'AI searches the world', accent: 'the world', body: 'SmartKong sweeps Amazon, Apple, Best Buy, Temu, eBay and thousands more at once — comparing price, trust and shipping in seconds.', Icon: Globe },
+              { n: '03', title: 'Check out once', accent: 'once', body: 'The best offer wins. Buy SmartKong sellers in one cart, or land directly on the partner store’s lowest price.', Icon: ShoppingCart },
+            ].map((s, i) => (
+              <Reveal key={s.n} className={`grid md:grid-cols-[1fr_1.2fr] gap-6 md:gap-14 items-center ${i % 2 ? 'md:[direction:rtl]' : ''}`}>
+                <div className="[direction:ltr] relative">
+                  <span className="block text-[9rem] md:text-[13rem] font-black leading-[0.8] tracking-[-0.05em] sk-outline-text select-none" aria-hidden>{s.n}</span>
+                  <div className="absolute bottom-2 left-1 w-16 h-8 border-2 border-blue-500/50 border-b-0 rounded-t-full" aria-hidden />
+                </div>
+                <div className="[direction:ltr]">
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 text-white shadow-lg shadow-blue-500/25" style={{ background: 'var(--sk-aurora)' }}>
+                    <s.Icon className="w-6 h-6" />
+                  </div>
+                  <h3 className={`text-3xl md:text-4xl font-black tracking-tight ${T.heading}`}>
+                    {s.title.replace(s.accent, '').trim()} <span className="sk-serif sk-aurora-text">{s.accent}</span>
+                  </h3>
+                  <p className={`mt-4 text-lg leading-relaxed max-w-md ${T.body}`}>{s.body}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── ONE CHECKOUT (the shopping-layer promise, made tangible) ─────── */}
       <section className="bg-[#070810] py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
