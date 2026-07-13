@@ -121,6 +121,7 @@ const MarketAffiliateAdminPage = lazy(() => import('./market/MarketAffiliateAdmi
 const MarketNotFoundPage      = lazy(() => import('./market/MarketNotFoundPage'));
 const MarketCartPage          = lazy(() => import('./market/MarketCartPage'));
 const MarketAboutPage         = lazy(() => import('./market/MarketAboutPage'));
+const MarketDashboardPage     = lazy(() => import('./market/MarketDashboardPage'));
 
 // ── Library ────────────────────────────────────────────────────────────────────
 const LibraryPage = lazy(() => import('./pages/LibraryPage'));
@@ -222,7 +223,7 @@ export default function App() {
           <Route path="/competition/results/:roomId"  element={<ResultsPage />} />
 
           {/* ── Protected: any logged-in user ──────────────────────────────── */}
-          <Route path="/dashboard"          element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+          <Route path="/dashboard"          element={<ProtectedRoute>{IS_MARKET_SITE ? <MarketDashboardPage /> : <DashboardPage />}</ProtectedRoute>} />
           <Route path="/dashboard/earnings" element={<ProtectedRoute><EarningsDashboardPage /></ProtectedRoute>} />
           <Route path="/vendor/register"    element={<ProtectedRoute><VendorRegisterPage /></ProtectedRoute>} />
           <Route path="/dashboard/vendor"   element={<ProtectedRoute><VendorDashboardPage /></ProtectedRoute>} />
