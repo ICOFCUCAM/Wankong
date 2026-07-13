@@ -13,8 +13,9 @@ import {
   Laptop, Car, Home as HomeIcon, Shirt, BookOpen, HeartPulse,
   Brain, Wrench, Store, Globe, Lock, RefreshCw, CheckCircle2,
   TrendingUp, MessageSquare, GitCompare, Heart, Truck,
-  Package, Users, Scale, Tag, Play, Headphones, Smartphone, Monitor, Plane,
+  Package, Users, Scale, Tag, Play,
 } from 'lucide-react';
+import { ProductArt, VendorMark, type ArtKind } from './HeroProductArt';
 import { toast } from 'sonner';
 
 // ── SmartKong landing ───────────────────────────────────────────────────────────
@@ -61,13 +62,16 @@ const FEATURES = [
   { Icon: Globe,       title: 'Global Shopping',    body: 'Shop from anywhere, we deliver everywhere',            tint: 'from-sky-500 to-blue-400' },
 ];
 
-// Floating product cards orbiting the hero globe.
-const HERO_CARDS = [
-  { title: 'Sony WH-1000XM5', rating: 4.8, count: '8,842', price: '348',   vendor: 'Amazon',   Icon: Headphones, grad: 'from-slate-700 to-slate-900', pos: 'top-[6%] left-[26%]',  delay: '0s',   wide: false },
-  { title: 'iPhone 15 Pro',   rating: 4.9, count: '6,421', price: '999',   vendor: 'Apple',    Icon: Smartphone, grad: 'from-zinc-400 to-zinc-600',   pos: 'top-[19%] right-[1%]', delay: '.6s',  wide: false },
-  { title: 'MacBook Pro M4',  rating: 4.9, count: '2,843', price: '1,599', vendor: 'Best Buy', Icon: Laptop,     grad: 'from-slate-500 to-slate-800',  pos: 'top-[40%] left-[0%]',  delay: '.3s',  wide: true  },
-  { title: 'DJI Air 3S Drone',rating: 4.7, count: '1,235', price: '1,099', vendor: 'Amazon',   Icon: Plane,      grad: 'from-neutral-500 to-neutral-800', pos: 'top-[54%] right-[-2%]', delay: '1s', wide: false },
-  { title: 'Samsung 65" OLED',rating: 4.8, count: '952',   price: '1,299', vendor: 'Walmart',  Icon: Monitor,    grad: 'from-indigo-600 to-purple-800', pos: 'bottom-[2%] left-[16%]', delay: '1.3s', wide: true },
+// Floating product cards orbiting the hero globe — all art is coded SVG.
+const HERO_CARDS: {
+  title: string; rating: number; count: string; price: string; vendor: string;
+  art: ArtKind; pos: string; delay: string; big?: boolean;
+}[] = [
+  { title: 'Sony WH-1000XM5',    rating: 4.8, count: '8,842', price: '348',   vendor: 'Amazon',   art: 'headphones', pos: 'top-[3%] left-[20%]',      delay: '0s'   },
+  { title: 'iPhone 15 Pro',      rating: 4.9, count: '6,421', price: '999',   vendor: 'Apple',    art: 'phone',      pos: 'top-[17%] right-[-2%]',    delay: '.6s'  },
+  { title: 'MacBook Pro M4',     rating: 4.9, count: '2,843', price: '1,599', vendor: 'Best Buy', art: 'laptop',     pos: 'top-[39%] left-[-4%]',     delay: '.3s', big: true },
+  { title: 'DJI Air 3S Drone',   rating: 4.7, count: '1,235', price: '1,099', vendor: 'Amazon',   art: 'drone',      pos: 'top-[56%] right-[-4%]',    delay: '1s'   },
+  { title: 'Samsung 65" OLED TV',rating: 4.8, count: '952',   price: '1,299', vendor: 'Walmart',  art: 'tv',         pos: 'bottom-[1%] left-[13%]',   delay: '1.3s', big: true },
 ];
 
 const TRUST = [
@@ -384,11 +388,26 @@ function DottedGlobe() {
       <div className="relative w-[min(120%,560px)] aspect-square">
         <div className="absolute inset-[8%] rounded-full opacity-60 blur-3xl" style={{ background: 'radial-gradient(circle at 50% 45%, #BFDBFE, #DBEAFE 45%, transparent 70%)' }} />
         <svg viewBox="-170 -170 340 340" className="relative w-full h-full">
+          <defs>
+            <linearGradient id="skArc1" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stopColor="#60A5FA" stopOpacity="0" /><stop offset="0.5" stopColor="#60A5FA" stopOpacity="0.9" /><stop offset="1" stopColor="#60A5FA" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient id="skArc2" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stopColor="#A78BFA" stopOpacity="0" /><stop offset="0.5" stopColor="#A78BFA" stopOpacity="0.8" /><stop offset="1" stopColor="#A78BFA" stopOpacity="0" />
+            </linearGradient>
+          </defs>
           {dots.map((p, i) => {
             const depth = (p.z + 150) / 300;
             return <circle key={i} cx={p.x} cy={-p.y} r={0.7 + depth * 1.5} fill="#3B82F6" opacity={0.12 + depth * 0.5} />;
           })}
-          {/* two orbit arcs */}
+          {/* glowing network arcs */}
+          <path d="M -140 40 Q -30 -130 130 -50" fill="none" stroke="url(#skArc1)" strokeWidth="2.5" opacity="0.8" />
+          <path d="M -120 -70 Q 40 -20 135 60" fill="none" stroke="url(#skArc2)" strokeWidth="2" opacity="0.7" />
+          <path d="M -100 100 Q 10 40 120 110" fill="none" stroke="url(#skArc1)" strokeWidth="1.6" opacity="0.5" />
+          {/* connection nodes */}
+          <circle cx="-30" cy="-92" r="3" fill="#60A5FA" opacity="0.9" /><circle cx="-30" cy="-92" r="6.5" fill="#60A5FA" opacity="0.25" />
+          <circle cx="55" cy="8" r="2.5" fill="#A78BFA" opacity="0.9" /><circle cx="55" cy="8" r="5.5" fill="#A78BFA" opacity="0.25" />
+          {/* orbit arcs */}
           <ellipse cx="0" cy="0" rx="150" ry="52" fill="none" stroke="#93C5FD" strokeWidth="1" opacity="0.4" transform="rotate(-18)" />
           <path d="M -150 -30 A 150 150 0 0 1 150 30" fill="none" stroke="#FBBF24" strokeWidth="1.5" opacity="0.5" strokeDasharray="2 5" transform="rotate(24)" />
         </svg>
@@ -397,26 +416,29 @@ function DottedGlobe() {
   );
 }
 
-// ── Floating hero product card ──────────────────────────────────────────────────
+// ── Floating hero product card (image left, details right — like the mock) ─────
 function HeroCard({ c }: { c: (typeof HERO_CARDS)[number] }) {
   return (
     <div
-      className={`sk-float absolute z-10 rounded-2xl bg-white shadow-[0_20px_50px_-15px_rgba(30,58,138,0.35)] ring-1 ring-black/[0.04] p-3 ${c.pos} ${c.wide ? 'w-56' : 'w-44'}`}
+      className={`sk-float absolute z-10 rounded-2xl bg-white shadow-[0_22px_55px_-18px_rgba(30,58,138,0.4)] ring-1 ring-black/[0.05] p-2.5 ${c.pos} ${c.big ? 'w-64' : 'w-56'}`}
       style={{ animationDelay: c.delay }}
     >
-      <div className={c.wide ? 'flex items-center gap-3' : ''}>
-        <div className={`rounded-xl bg-gradient-to-br ${c.grad} flex items-center justify-center shrink-0 ${c.wide ? 'w-20 h-16' : 'w-full h-16 mb-2'}`}>
-          <c.Icon className="w-7 h-7 text-white/90" />
+      <div className="flex items-center gap-3">
+        <div className={`rounded-xl overflow-hidden shrink-0 ${c.big ? 'w-24 h-[4.75rem]' : 'w-[4.5rem] h-[4.5rem]'}`}>
+          <ProductArt kind={c.art} />
         </div>
-        <div className="min-w-0">
-          <p className="text-xs font-bold text-gray-900 truncate">{c.title}</p>
+        <div className="min-w-0 py-0.5">
+          <p className={`font-bold text-gray-900 truncate ${c.big ? 'text-sm' : 'text-xs'}`}>{c.title}</p>
           <div className="flex items-center gap-1 mt-0.5">
-            <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-            <span className="text-[10px] font-semibold text-gray-500">{c.rating}</span>
-            <span className="text-[10px] text-gray-400">({c.count})</span>
+            {[1, 2, 3, 4].map(n => <Star key={n} className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />)}
+            <Star className="w-2.5 h-2.5 fill-amber-400/50 text-amber-400" />
+            <span className="text-[10px] text-gray-400 ml-0.5">({c.count})</span>
           </div>
-          <p className="text-sm font-extrabold text-blue-600 mt-0.5">From ${c.price}</p>
-          <p className="text-[10px] text-gray-400 mt-0.5">{c.vendor}</p>
+          <p className={`font-extrabold text-blue-600 mt-1 ${c.big ? 'text-base' : 'text-sm'}`}>From ${c.price}</p>
+          <div className="flex items-center gap-1.5 mt-1">
+            <VendorMark vendor={c.vendor} />
+            <span className="text-[10px] font-medium text-gray-400">{c.vendor}</span>
+          </div>
         </div>
       </div>
     </div>
