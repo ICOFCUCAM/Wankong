@@ -1,0 +1,79 @@
+/* SmartKong funnel theming.
+   The catalog / product / compare / AI-solver / admin pages are authored in a
+   light palette. Rather than re-writing every className, we re-skin them for
+   the Dark and Aurora themes with scoped overrides that only touch the page
+   CONTENT (`.sk-market ... main`) — the header stays light and the footer is
+   already dark, matching the landing's rhythm. Wankong (no .sk-market) is
+   untouched. Selectors are specific enough to win over Tailwind utilities
+   without !important. */
+
+/* ── DARK — elegant near-black (Linear / OpenAI) ────────────────────────────── */
+.sk-market[data-mktheme="dark"] main .bg-white { background-color: #14161C; }
+.sk-market[data-mktheme="dark"] main .bg-gray-50 { background-color: #101114; }
+.sk-market[data-mktheme="dark"] main .bg-gray-100 { background-color: #1A1D24; }
+
+.sk-market[data-mktheme="dark"] main .text-gray-900 { color: #F3F4F6; }
+.sk-market[data-mktheme="dark"] main .text-gray-800 { color: #E5E7EB; }
+.sk-market[data-mktheme="dark"] main .text-gray-700 { color: #D1D5DB; }
+.sk-market[data-mktheme="dark"] main .text-gray-600 { color: #A3A9B4; }
+.sk-market[data-mktheme="dark"] main .text-gray-500 { color: #8B909A; }
+.sk-market[data-mktheme="dark"] main .text-gray-400 { color: #6B7280; }
+.sk-market[data-mktheme="dark"] main .text-gray-300 { color: #4B5563; }
+
+.sk-market[data-mktheme="dark"] main .border-gray-100,
+.sk-market[data-mktheme="dark"] main .border-gray-200,
+.sk-market[data-mktheme="dark"] main .border-gray-300 { border-color: #262A32; }
+.sk-market[data-mktheme="dark"] main .divide-gray-100 > * + *,
+.sk-market[data-mktheme="dark"] main .divide-gray-200 > * + * { border-color: #262A32; }
+
+.sk-market[data-mktheme="dark"] main input,
+.sk-market[data-mktheme="dark"] main select,
+.sk-market[data-mktheme="dark"] main textarea {
+  background-color: #14161C; color: #E5E7EB; border-color: #262A32;
+}
+.sk-market[data-mktheme="dark"] main input::placeholder,
+.sk-market[data-mktheme="dark"] main textarea::placeholder { color: #6B7280; }
+
+/* accent tints */
+.sk-market[data-mktheme="dark"] main .bg-blue-50 { background-color: rgba(37,99,235,0.14); }
+.sk-market[data-mktheme="dark"] main .bg-emerald-50 { background-color: rgba(16,185,129,0.14); }
+.sk-market[data-mktheme="dark"] main .bg-amber-50 { background-color: rgba(245,158,11,0.14); }
+.sk-market[data-mktheme="dark"] main .bg-red-50 { background-color: rgba(239,68,68,0.14); }
+.sk-market[data-mktheme="dark"] main .text-blue-700 { color: #93C5FD; }
+.sk-market[data-mktheme="dark"] main .text-emerald-700 { color: #6EE7B7; }
+.sk-market[data-mktheme="dark"] main .text-emerald-600 { color: #34D399; }
+
+/* ── AURORA — translucent glass on deep black ──────────────────────────────── */
+.sk-market[data-mktheme="aurora"] main .bg-white { background-color: rgba(255,255,255,0.03); }
+.sk-market[data-mktheme="aurora"] main .bg-gray-50 { background-color: rgba(255,255,255,0.02); }
+.sk-market[data-mktheme="aurora"] main .bg-gray-100 { background-color: rgba(255,255,255,0.06); }
+
+.sk-market[data-mktheme="aurora"] main .text-gray-900 { color: #F5F7FA; }
+.sk-market[data-mktheme="aurora"] main .text-gray-800 { color: #E5E7EB; }
+.sk-market[data-mktheme="aurora"] main .text-gray-700 { color: #CBD5E1; }
+.sk-market[data-mktheme="aurora"] main .text-gray-600 { color: #94A3B8; }
+.sk-market[data-mktheme="aurora"] main .text-gray-500 { color: rgba(255,255,255,0.5); }
+.sk-market[data-mktheme="aurora"] main .text-gray-400 { color: rgba(255,255,255,0.35); }
+.sk-market[data-mktheme="aurora"] main .text-gray-300 { color: rgba(255,255,255,0.25); }
+
+.sk-market[data-mktheme="aurora"] main .border-gray-100,
+.sk-market[data-mktheme="aurora"] main .border-gray-200,
+.sk-market[data-mktheme="aurora"] main .border-gray-300 { border-color: rgba(255,255,255,0.1); }
+.sk-market[data-mktheme="aurora"] main .divide-gray-100 > * + *,
+.sk-market[data-mktheme="aurora"] main .divide-gray-200 > * + * { border-color: rgba(255,255,255,0.08); }
+
+.sk-market[data-mktheme="aurora"] main input,
+.sk-market[data-mktheme="aurora"] main select,
+.sk-market[data-mktheme="aurora"] main textarea {
+  background-color: rgba(255,255,255,0.04); color: #E5E7EB; border-color: rgba(255,255,255,0.1);
+}
+.sk-market[data-mktheme="aurora"] main input::placeholder,
+.sk-market[data-mktheme="aurora"] main textarea::placeholder { color: rgba(255,255,255,0.35); }
+
+.sk-market[data-mktheme="aurora"] main .bg-blue-50 { background-color: rgba(37,99,235,0.16); }
+.sk-market[data-mktheme="aurora"] main .bg-emerald-50 { background-color: rgba(16,185,129,0.16); }
+.sk-market[data-mktheme="aurora"] main .bg-amber-50 { background-color: rgba(245,158,11,0.16); }
+.sk-market[data-mktheme="aurora"] main .bg-red-50 { background-color: rgba(239,68,68,0.16); }
+.sk-market[data-mktheme="aurora"] main .text-blue-700 { color: #93C5FD; }
+.sk-market[data-mktheme="aurora"] main .text-emerald-700 { color: #6EE7B7; }
+.sk-market[data-mktheme="aurora"] main .text-emerald-600 { color: #34D399; }

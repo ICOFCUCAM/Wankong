@@ -9,7 +9,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useCompare } from './useCompare';
-import { ThemeToggle } from './theme';
+import { ThemeToggle, useMarketTheme, themeTokens } from './theme';
+import './market-theme.css';
 
 // Floating compare bar — appears on every market page when the shopper has
 // products in their comparison tray.
@@ -286,8 +287,13 @@ export function MarketFooter() {
 }
 
 export default function MarketLayout({ children }: { children: React.ReactNode }) {
+  const { theme } = useMarketTheme();
+  const T = themeTokens(theme);
   return (
-    <div className="min-h-screen bg-white text-gray-900 flex flex-col">
+    <div
+      className={`sk-market min-h-screen flex flex-col ${T.page} ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}
+      data-mktheme={theme}
+    >
       <MarketHeader />
       <main className="flex-1">{children}</main>
       <MarketFooter />
