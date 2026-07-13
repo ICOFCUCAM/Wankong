@@ -75,7 +75,7 @@ export default function Marketplace() {
     if (priceFilter === 'paid')     query = query.gt('price', 0);
 
     switch (sortBy) {
-      case 'popular':    query = query.order('stream_count', { ascending: false }); break;
+      case 'popular':    query = query.order('trending_score', { ascending: false }); break;
       case 'price_low':  query = query.order('price', { ascending: true }); break;
       case 'price_high': query = query.order('price', { ascending: false }); break;
       default:           query = query.order('created_at', { ascending: false });
@@ -182,6 +182,12 @@ export default function Marketplace() {
           <p className="text-gray-400 mt-1">{loading ? 'Loading…' : `${totalCount} items found`}</p>
         </div>
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate('/ai-solver')}
+            className="px-4 py-2 rounded-xl text-sm font-medium bg-gradient-to-r from-[#9D4EDD] to-[#00D9FF] text-white hover:opacity-90 transition-opacity"
+          >
+            ✨ AI Solver
+          </button>
           <button onClick={() => setShowCreators(!showCreators)} className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${showCreators ? 'bg-[#9D4EDD] text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>
             {showCreators ? 'Show Content' : 'Show Creators'}
           </button>

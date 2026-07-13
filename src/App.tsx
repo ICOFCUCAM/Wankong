@@ -103,6 +103,9 @@ const AcceptInvitePage   = lazy(() => import('./pages/admin/AcceptInvitePage'));
 const VendorRegisterPage  = lazy(() => import('./pages/vendor/VendorRegisterPage'));
 const VendorDashboardPage = lazy(() => import('./pages/vendor/VendorDashboardPage'));
 
+// ── AI discovery ───────────────────────────────────────────────────────────────
+const AiSolverPage = lazy(() => import('./pages/AiSolverPage'));
+
 // ── Library ────────────────────────────────────────────────────────────────────
 const LibraryPage = lazy(() => import('./pages/LibraryPage'));
 
@@ -133,6 +136,7 @@ export default function App() {
           <Route path="/order-confirmation"       element={<OrderConfirmation />} />
           <Route path="/settings/social/callback" element={<SocialOAuthCallback />} />
           <Route path="/search"                   element={<SearchPage />} />
+          <Route path="/ai-solver"                element={<AiSolverPage />} />
           <Route path="/collections/:handle"      element={<CollectionPage />} />
           <Route path="/products/:handle"         element={<ProductPage />} />
           <Route path="/artist/:id"               element={<ArtistProfile />} />

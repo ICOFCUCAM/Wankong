@@ -37,12 +37,12 @@ export default function TrendingSection() {
 
   useEffect(() => {
     (async () => {
-      // Trend by engagement, not just recency — stream_count is bumped on plays
+      // trending_score = clicks + 3×carts + 10×sales + streams/20, refreshed hourly
       const { data } = await supabase
         .from('ecom_products')
         .select('id, title, product_type, price, cover_url, created_at, vendor_id, creator_id, vendor')
         .eq('status', 'active')
-        .order('stream_count', { ascending: false })
+        .order('trending_score', { ascending: false })
         .order('created_at', { ascending: false })
         .limit(24);
 

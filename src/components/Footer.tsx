@@ -16,6 +16,7 @@ const CREATORS_LINKS = [
 ];
 
 const DISCOVERY_LINKS = [
+  { label: 'AI Problem Solver',   href: '/ai-solver' },
   { label: 'Music by Language',   href: '/collections/music' },
   { label: 'Browse Books',        href: '/collections/books' },
   { label: 'Audiobooks',          href: '/collections/audiobooks' },
