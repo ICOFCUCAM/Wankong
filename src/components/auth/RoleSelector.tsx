@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Music, BookOpen, Users, Check } from 'lucide-react';
+import { Music, BookOpen, Users, Check, ShoppingBag, Store } from 'lucide-react';
 import type { UserRole } from '@/contexts/AuthContext';
+import { IS_MARKET_SITE } from '@/lib/site';
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -67,16 +68,52 @@ const ROLES: RoleCard[] = [
   },
 ];
 
+// SmartKong is a commerce platform — people sign up to shop or to sell, not as
+// artists/authors/fans. These map onto existing user_roles values so no schema
+// change is needed (shopper → fan, seller → creator). Admins & super-admins use
+// the same login; their rights come from admin_roles, not this choice.
+const MARKET_ROLES: RoleCard[] = [
+  {
+    role:        'fan',
+    label:       'Shopper',
+    description: 'Search every store on Earth, compare prices and check out once',
+    icon:        <ShoppingBag className="w-7 h-7" />,
+    perks: [
+      'Buy from thousands of stores in one cart',
+      'AI search & live price comparison',
+      'Price-drop alerts & wishlist',
+      'Buyer protection on every order',
+    ],
+    colour:   '#2563EB',
+    gradient: 'from-[#2563EB]/20 to-[#06B6D4]/10',
+  },
+  {
+    role:        'creator',
+    label:       'Seller',
+    description: 'List your products and reach millions of AI-guided shoppers',
+    icon:        <Store className="w-7 h-7" />,
+    perks: [
+      'List products & open your store',
+      'Reach shoppers in 230 countries',
+      'AI matches you to the right buyers',
+      'Your prices, your brand, your payouts',
+    ],
+    colour:   '#7C3AED',
+    gradient: 'from-[#7C3AED]/20 to-[#2563EB]/10',
+  },
+];
+
 // ── Component ──────────────────────────────────────────────────────────────────
 
 export default function RoleSelector({ onSelect, loading = false, ctaLabel = 'Continue' }: Props) {
   const [selected, setSelected] = useState<UserRole | null>(null);
+  const roles = IS_MARKET_SITE ? MARKET_ROLES : ROLES;
 
   return (
     <div className="w-full">
       {/* Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        {ROLES.map(r => {
+      <div className={`grid grid-cols-1 gap-4 mb-6 ${IS_MARKET_SITE ? 'sm:grid-cols-2 max-w-2xl mx-auto' : 'sm:grid-cols-3'}`}>
+        {roles.map(r => {
           const isActive = selected === r.role;
           return (
             <button
