@@ -40,6 +40,10 @@
     {
       "path": "/api/refresh-trending",
       "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/affiliate-autosync",
+      "schedule": "30 */6 * * *"
     }
   ]
 }

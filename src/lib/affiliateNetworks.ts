@@ -41,12 +41,20 @@ export const AFFILIATE_NETWORKS: AffiliateNetwork[] = [
   // ── Major retail programs ─────────────────────────────────────────────────
   {
     id: 'amazon', name: 'Amazon Associates', category: 'retail', website: 'https://affiliate-program.amazon.com',
-    fields: [{ key: 'associate_tag', label: 'Associate Tag (e.g. yourtag-20)', required: true }],
+    fields: [
+      { key: 'associate_tag', label: 'Associate Tag (e.g. yourtag-20)', required: true },
+      { key: 'access_key',    label: 'PA-API Access Key (enables bulk import)', secret: true },
+      { key: 'secret_key',    label: 'PA-API Secret Key (enables bulk import)', secret: true },
+    ],
     link: { type: 'param', param: 'tag', field: 'associate_tag' },
   },
   {
     id: 'ebay', name: 'eBay Partner Network', category: 'retail', website: 'https://partnernetwork.ebay.com',
-    fields: [{ key: 'campaign_id', label: 'Campaign ID (campid)', required: true }],
+    fields: [
+      { key: 'campaign_id',   label: 'Campaign ID (campid)', required: true },
+      { key: 'client_id',     label: 'API Client ID (enables bulk import)', secret: true },
+      { key: 'client_secret', label: 'API Client Secret (enables bulk import)', secret: true },
+    ],
     link: { type: 'params', params: [{ param: 'mkcid', field: '_mkcid', optional: true }, { param: 'campid', field: 'campaign_id' }] },
   },
   {
