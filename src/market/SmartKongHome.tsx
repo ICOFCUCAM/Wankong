@@ -204,21 +204,25 @@ export default function SmartKongHome() {
             {loading ? (
               <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
                 {Array.from({ length: 8 }).map((_, i) => (
-                  <div key={i} className="bg-white border border-gray-200 rounded-xl overflow-hidden animate-pulse">
-                    <div className="aspect-square bg-gray-100" />
+                  <div key={i} className="bg-white border border-gray-200 rounded-2xl overflow-hidden animate-pulse">
+                    <div className="aspect-square bg-[var(--sk-mist)]" />
                     <div className="p-3.5 space-y-2">
                       <div className="h-4 bg-gray-100 rounded w-3/4" />
                       <div className="h-3 bg-gray-100 rounded w-1/2" />
+                      <div className="h-5 bg-gray-100 rounded w-1/3 mt-3" />
                     </div>
                   </div>
                 ))}
               </div>
             ) : products.length === 0 ? (
-              <div className="text-center py-24">
-                <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500 font-medium">No products match your filters.</p>
-                <Link to="/ai-solver" className="inline-flex items-center gap-1.5 mt-3 text-blue-600 hover:text-blue-700 text-sm font-semibold">
-                  <Sparkles className="w-4 h-4" /> Try the AI Problem Solver instead
+              <div className="text-center py-24 rounded-3xl border border-dashed border-gray-200 bg-[var(--sk-mist)]/40">
+                <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center mx-auto mb-4">
+                  <Search className="w-6 h-6 text-blue-500" />
+                </div>
+                <p className="text-gray-900 font-bold text-lg">Nothing matched — <span className="sk-serif sk-aurora-text">yet.</span></p>
+                <p className="text-gray-500 text-sm mt-1 max-w-sm mx-auto">Loosen a filter, or describe what you need and let the AI search the whole world for it.</p>
+                <Link to="/ai-solver" className="inline-flex items-center gap-1.5 mt-5 px-5 py-2.5 rounded-xl text-white text-sm font-semibold shadow-lg shadow-violet-500/20" style={{ background: 'var(--sk-aurora)' }}>
+                  <Sparkles className="w-4 h-4" /> Ask the AI instead
                 </Link>
               </div>
             ) : (
