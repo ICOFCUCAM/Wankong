@@ -1,6 +1,7 @@
 import {
   Laptop, Monitor, Keyboard, Camera, Mic, Lightbulb, Home, Gamepad2,
   Headphones, Briefcase, Plane, Speaker, BatteryCharging,
+  Tablet, Backpack, Sliders, Music, Dumbbell, Watch, Shirt, ChefHat, Utensils, Aperture, Video,
 } from 'lucide-react';
 import type { ComponentType } from 'react';
 
@@ -49,5 +50,35 @@ export const COLLECTIONS: Collection[] = [
     sub: 'Luggage, noise-cancelling headphones, a power bank and adapters.',
     from: '450', grad: 'from-amber-500 to-orange-600', icons: [Briefcase, Headphones, Plane, BatteryCharging],
     slots: [{ label: 'Luggage', q: 'luggage' }, { label: 'Headphones', q: 'headphones' }, { label: 'Power bank', q: 'power bank' }, { label: 'Adapter', q: 'adapter' }],
+  },
+  {
+    key: 'student-starter', emoji: '🎓', title: 'Student Starter Pack',
+    sub: 'Laptop, tablet, backpack and headphones to ace the semester.',
+    from: '900', grad: 'from-sky-500 to-indigo-600', icons: [Laptop, Tablet, Backpack, Headphones],
+    slots: [{ label: 'Laptop', q: 'laptop' }, { label: 'Tablet', q: 'tablet' }, { label: 'Backpack', q: 'backpack' }, { label: 'Headphones', q: 'headphones' }],
+  },
+  {
+    key: 'podcast-kit', emoji: '🎙️', title: 'Podcast Starter Kit',
+    sub: 'Microphone, headphones, audio interface and a boom arm.',
+    from: '420', grad: 'from-fuchsia-500 to-rose-600', icons: [Mic, Headphones, Sliders, Music],
+    slots: [{ label: 'Microphone', q: 'microphone' }, { label: 'Headphones', q: 'headphones' }, { label: 'Audio interface', q: 'audio' }, { label: 'Boom arm', q: 'stand' }],
+  },
+  {
+    key: 'home-gym', emoji: '🏋️', title: 'Home Gym Essentials',
+    sub: 'Dumbbells, a smartwatch, apparel and earbuds to train at home.',
+    from: '260', grad: 'from-lime-500 to-emerald-600', icons: [Dumbbell, Watch, Shirt, Headphones],
+    slots: [{ label: 'Dumbbells', q: 'dumbbell' }, { label: 'Smartwatch', q: 'watch' }, { label: 'Apparel', q: 'shirt' }, { label: 'Earbuds', q: 'earbuds' }],
+  },
+  {
+    key: 'chef-kitchen', emoji: '🍳', title: 'The Chef’s Kitchen',
+    sub: 'Air fryer, blender, knife set and cookware that do it all.',
+    from: '380', grad: 'from-orange-500 to-red-600', icons: [ChefHat, Utensils, Home, Briefcase],
+    slots: [{ label: 'Air fryer', q: 'air fryer' }, { label: 'Blender', q: 'blender' }, { label: 'Knife set', q: 'knife' }, { label: 'Cookware', q: 'cookware' }],
+  },
+  {
+    key: 'photo-kit', emoji: '📸', title: 'Photography Starter Kit',
+    sub: 'Camera, lens, tripod and a bag to start shooting like a pro.',
+    from: '1,100', grad: 'from-slate-600 to-slate-800', icons: [Camera, Aperture, Video, Briefcase],
+    slots: [{ label: 'Camera', q: 'camera' }, { label: 'Lens', q: 'lens' }, { label: 'Tripod', q: 'tripod' }, { label: 'Camera bag', q: 'bag' }],
   },
 ];
