@@ -18,7 +18,7 @@ import {
 import { ProductArt, VendorMark, type ArtKind } from './HeroProductArt';
 import { BrandLogo, BRAND_LIST } from './BrandLogos';
 import { COLLECTIONS } from './collectionsData';
-import { Reveal, Magnetic, Tilt, ArcSeam } from './motion';
+import { Reveal, Magnetic, Tilt, ArcSeam, Spotlight } from './motion';
 import { toast } from 'sonner';
 
 // Rotating natural-language search prompts (typewriter in the hero search box).
@@ -1211,8 +1211,8 @@ export default function SmartKongLanding() {
       </section>
 
       {/* ── ONE CHECKOUT (the shopping-layer promise, made tangible) ─────── */}
-      <section className="bg-[#070810] py-20 md:py-28">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
+      <Spotlight className="bg-[#070810] py-20 md:py-28 overflow-hidden">
+        <div className="relative z-[1] max-w-7xl mx-auto px-4 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
           <div>
             <span className="sk-eyebrow !text-cyan-300">Compare · Buy · One cart</span>
             <h2 className="text-4xl md:text-6xl font-black tracking-tight text-white mt-3 leading-[1.02]">
@@ -1262,7 +1262,7 @@ export default function SmartKongLanding() {
             </div>
           </div>
         </div>
-      </section>
+      </Spotlight>
 
       {/* ── LIVING SHELF (gently moving category wall for discovery) ─────── */}
       <section className={`${T.sectionB} py-6 border-y ${theme === 'light' ? 'border-gray-100' : 'border-white/[0.06]'}`}>
@@ -1488,7 +1488,8 @@ export default function SmartKongLanding() {
       </section>
 
       {/* ── FINALE (grain aurora band, magnetic CTAs, giant type) ────────── */}
-      <section className="sk-grain relative overflow-hidden" style={{ background: 'var(--sk-ink)' }}>
+      <Spotlight className="sk-grain relative overflow-hidden" color="rgba(6,182,212,0.16)">
+        <div className="absolute inset-0 -z-[1]" style={{ background: 'var(--sk-ink)' }} aria-hidden />
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
           <div className="absolute top-[-30%] left-1/2 -translate-x-1/2 w-[70rem] h-[40rem] rounded-full opacity-30 blur-[130px]" style={{ background: 'var(--sk-aurora)' }} />
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[120%] h-40 border-t-2 border-blue-400/20 rounded-[100%_100%_0_0]" />
@@ -1514,7 +1515,7 @@ export default function SmartKongLanding() {
             </div>
           </Reveal>
         </div>
-      </section>
+      </Spotlight>
 
       <MarketFooter />
     </div>

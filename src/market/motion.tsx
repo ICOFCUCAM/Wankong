@@ -66,6 +66,34 @@ export function Tilt({ max = 7, className = '', children }: { max?: number; clas
   return <div ref={ref} className={`sk-tilt ${className}`}>{children}</div>;
 }
 
+// ── Spotlight: a soft aurora glow that follows the cursor over dark bands ───────
+export function Spotlight({ className = '', color = 'rgba(124,58,237,0.18)', children }: {
+  className?: string; color?: string; children: ReactNode;
+}) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const glow = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const el = ref.current, g = glow.current; if (!el || !g) return;
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+    const move = (e: MouseEvent) => {
+      const r = el.getBoundingClientRect();
+      g.style.opacity = '1';
+      g.style.transform = `translate(${(e.clientX - r.left).toFixed(0)}px, ${(e.clientY - r.top).toFixed(0)}px)`;
+    };
+    const leave = () => { g.style.opacity = '0'; };
+    el.addEventListener('mousemove', move);
+    el.addEventListener('mouseleave', leave);
+    return () => { el.removeEventListener('mousemove', move); el.removeEventListener('mouseleave', leave); };
+  }, []);
+  return (
+    <div ref={ref} className={`relative ${className}`}>
+      <div ref={glow} aria-hidden className="pointer-events-none absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 w-[36rem] h-[36rem] rounded-full opacity-0 transition-opacity duration-500 blur-[80px] z-0"
+        style={{ background: `radial-gradient(circle, ${color}, transparent 60%)` }} />
+      {children}
+    </div>
+  );
+}
+
 // ── ScrollProgress: a thin aurora meridian tracking page scroll ────────────────
 export function ScrollProgress() {
   const ref = useRef<HTMLDivElement | null>(null);
