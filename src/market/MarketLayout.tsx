@@ -67,11 +67,11 @@ export function MarketHeader() {
       {/* Top bar: logo · search · actions */}
       <div className="max-w-7xl mx-auto px-4 lg:px-8">
         <div className="flex items-center gap-4 h-16">
-          <Link to="/" className="flex items-center gap-2.5 shrink-0">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center shadow-md shadow-violet-500/20 overflow-hidden">
+          <Link to="/" className="group flex items-center gap-2.5 shrink-0">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-md shadow-violet-500/25 overflow-hidden transition-transform group-hover:rotate-[8deg]" style={{ background: 'var(--sk-aurora, linear-gradient(100deg,#2563EB,#7C3AED 55%,#06B6D4 120%))' }}>
               <img src="/wankong-mark.png" alt="SmartKong" className="w-5 h-5 object-contain brightness-0 invert" />
             </div>
-            <span className="text-xl font-extrabold tracking-tight text-gray-900">SmartKong</span>
+            <span className="text-xl font-extrabold tracking-tight text-gray-900">Smart<span className="sk-serif sk-aurora-text pr-0.5">Kong</span></span>
           </Link>
 
           {/* Global product search */}
@@ -130,7 +130,8 @@ export function MarketHeader() {
             </Link>
             <Link
               to={user ? '/dashboard' : '/auth/login'}
-              className="ml-1 hidden sm:flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm"
+              className="ml-1 hidden sm:flex items-center px-4 py-2 text-white text-sm font-semibold rounded-lg transition-opacity hover:opacity-90 shadow-md shadow-blue-500/25"
+              style={{ background: 'var(--sk-aurora, linear-gradient(100deg,#2563EB,#7C3AED 55%,#06B6D4 120%))' }}
             >
               {user ? 'Account' : 'Sign in'}
             </Link>
@@ -150,7 +151,10 @@ export function MarketHeader() {
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
           <nav className="flex items-center justify-center gap-8 h-11">
             {NAV.map(n => (
-              <Link key={n.label} to={n.to} className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors whitespace-nowrap">
+              <Link
+                key={n.label} to={n.to}
+                className="relative text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors whitespace-nowrap after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:rounded-full after:transition-all after:duration-300 hover:after:w-full after:[background:var(--sk-aurora,linear-gradient(100deg,#2563EB,#7C3AED,#06B6D4))]"
+              >
                 {n.label}
               </Link>
             ))}
