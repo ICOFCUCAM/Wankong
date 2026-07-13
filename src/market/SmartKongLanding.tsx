@@ -790,6 +790,93 @@ function DiscoveryRow({ eyebrow, title, products, tokens }: { eyebrow: string; t
   );
 }
 
+// ── Live Commerce Pulse — a Bloomberg-style band proving the layer is alive ─────
+const PULSE_EVENTS = [
+  '🇳🇴 Norway · MacBook Pro dropped €463', '🇯🇵 Japan · best country for iPhones today',
+  '🇺🇸 USA · RTX 5090 back in stock at Newegg', '🇩🇪 Germany · Bosch tools −22%',
+  '🇧🇷 Brazil · sneaker demand up 3.1×', '🇳🇬 Nigeria · solar kits trending',
+  '🇬🇧 UK · OLED TVs at 90-day low', '🇰🇷 Korea · new Samsung drop indexed',
+  '🇫🇷 France · 1,204 deals found this hour', '🇮🇳 India · earbuds price war detected',
+];
+const PULSE_COUNTRIES = [
+  { flag: '🇺🇸', name: 'USA',     v: 92 }, { flag: '🇩🇪', name: 'Germany', v: 64 },
+  { flag: '🇯🇵', name: 'Japan',   v: 78 }, { flag: '🇬🇧', name: 'UK',      v: 58 },
+  { flag: '🇳🇴', name: 'Norway',  v: 41 }, { flag: '🇧🇷', name: 'Brazil',  v: 49 },
+];
+
+function CommercePulse() {
+  return (
+    <section className="sk-grain relative overflow-hidden" style={{ background: 'var(--sk-ink)' }}>
+      <div className="absolute inset-0 pointer-events-none" aria-hidden>
+        <div className="absolute top-[-40%] left-[15%] w-[40rem] h-[40rem] rounded-full opacity-25 blur-[130px]" style={{ background: 'radial-gradient(circle,#2563EB,transparent 60%)' }} />
+        <div className="absolute bottom-[-45%] right-[8%] w-[36rem] h-[36rem] rounded-full opacity-20 blur-[130px]" style={{ background: 'radial-gradient(circle,#7C3AED,transparent 60%)' }} />
+      </div>
+
+      {/* Ticker rail */}
+      <div className="relative border-b border-white/[0.07] py-3 overflow-hidden">
+        <div className="sk-ticker flex items-center gap-10 w-max whitespace-nowrap">
+          {[0, 1].map(i => (
+            <span key={i} className="flex items-center gap-10">
+              {PULSE_EVENTS.map(e => (
+                <span key={e} className="flex items-center gap-2 text-[13px] text-white/60">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />{e}
+                </span>
+              ))}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 lg:px-8 py-20 md:py-24 grid lg:grid-cols-2 gap-14 items-center">
+        <Reveal>
+          <span className="sk-eyebrow !text-cyan-300">Live right now</span>
+          <h2 className="text-4xl md:text-6xl font-black tracking-tight text-white mt-3 leading-[1.02]">
+            The pulse of<br /><span className="sk-serif sk-aurora-text">world commerce.</span>
+          </h2>
+          <p className="text-white/50 mt-5 max-w-md leading-relaxed">
+            SmartKong never sleeps. Prices shift, stock moves, deals surface — and the layer sees all of it, everywhere, in real time.
+          </p>
+          <div className="grid grid-cols-3 gap-4 mt-10">
+            {[
+              { v: 17328, s: '', l: 'deals found today' },
+              { v: 18500, s: '+', l: 'stores watched' },
+              { v: 12, s: '%', l: 'avg. saving' },
+            ].map(k => (
+              <div key={k.l}>
+                <p className="text-3xl md:text-4xl font-black text-white"><CountUp value={k.v} suffix={k.s} /></p>
+                <p className="text-[11px] text-white/40 mt-1 uppercase tracking-wider">{k.l}</p>
+              </div>
+            ))}
+          </div>
+        </Reveal>
+
+        <Reveal delay={120}>
+          <div className="rounded-3xl bg-white/[0.04] border border-white/10 backdrop-blur-sm p-6 md:p-8">
+            <div className="flex items-center justify-between mb-6">
+              <p className="text-sm font-bold text-white">Global shopping activity</p>
+              <span className="flex items-center gap-1.5 text-[11px] font-medium text-emerald-400">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> updating live
+              </span>
+            </div>
+            <div className="space-y-4">
+              {PULSE_COUNTRIES.map((c, i) => (
+                <div key={c.name} className="flex items-center gap-3">
+                  <span className="w-6 text-base shrink-0" aria-hidden>{c.flag}</span>
+                  <span className="w-20 text-xs text-white/60 shrink-0">{c.name}</span>
+                  <div className="flex-1 h-2.5 rounded-full bg-white/[0.06] overflow-hidden">
+                    <div className="sk-bar h-full rounded-full" style={{ width: `${c.v}%`, background: 'var(--sk-aurora)', animationDelay: `${i * 0.12}s` }} />
+                  </div>
+                  <span className="w-9 text-right text-xs font-bold text-white/80">{c.v}%</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
 // ── Page ────────────────────────────────────────────────────────────────────────
 export default function SmartKongLanding() {
   const navigate = useNavigate();
@@ -1075,6 +1162,9 @@ export default function SmartKongLanding() {
           </div>
         </div>
       </section>
+
+      {/* ── LIVE COMMERCE PULSE (the layer is alive) ─────────────────────── */}
+      <CommercePulse />
 
       {/* ── HOW IT WORKS (cinematic 01/02/03) ────────────────────────────── */}
       <section className={`${T.sectionA} py-24 md:py-32 overflow-hidden`}>
