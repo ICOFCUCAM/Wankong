@@ -13,10 +13,46 @@ import {
   Laptop, Car, Home as HomeIcon, Shirt, BookOpen, HeartPulse,
   Brain, Wrench, Store, Globe, Lock, RefreshCw, CheckCircle2,
   TrendingUp, MessageSquare, GitCompare, Heart, Truck,
-  Package, Users, Scale, Tag, Play,
+  Package, Users, Scale, Tag, Play, ArrowUpRight,
 } from 'lucide-react';
 import { ProductArt, VendorMark, type ArtKind } from './HeroProductArt';
+import { BrandLogo, BRAND_LIST } from './BrandLogos';
 import { toast } from 'sonner';
+
+// Rotating natural-language search prompts (typewriter in the hero search box).
+const TYPED_SUGGESTIONS = [
+  'the best gaming laptop under €1500',
+  'the cheapest iPhone 15 Pro',
+  'a quiet washing machine',
+  'an RTX 5090 in stock',
+  'an ergonomic office chair',
+  'noise-cancelling headphones',
+];
+
+function useTypewriter(words: string[]) {
+  const [text, setText] = useState('');
+  const wi = useRef(0), ci = useRef(0), deleting = useRef(false);
+  useEffect(() => {
+    let t: ReturnType<typeof setTimeout>;
+    const tick = () => {
+      const word = words[wi.current % words.length];
+      if (!deleting.current) {
+        ci.current++;
+        setText(word.slice(0, ci.current));
+        if (ci.current >= word.length) { deleting.current = true; t = setTimeout(tick, 1800); return; }
+        t = setTimeout(tick, 52);
+      } else {
+        ci.current--;
+        setText(word.slice(0, Math.max(0, ci.current)));
+        if (ci.current <= 0) { deleting.current = false; wi.current++; t = setTimeout(tick, 320); return; }
+        t = setTimeout(tick, 26);
+      }
+    };
+    t = setTimeout(tick, 700);
+    return () => clearTimeout(t);
+  }, [words]);
+  return text;
+}
 
 // ── SmartKong landing ───────────────────────────────────────────────────────────
 // Light by default (trust-first shopping), with Dark and Aurora as premium
@@ -49,9 +85,6 @@ const HERO_STATS = [
   { Icon: ShieldCheck, value: 100,   suffix: '%',  label: 'Secure & Safe' },
 ];
 
-// Brand wordmarks for the "Trusted by millions" strip.
-const BRANDS = ['amazon', 'ebay', 'Walmart', 'BEST BUY', 'AliExpress', 'TEMU', 'Apple', 'Costco', 'Etsy', 'newegg', 'SAMSUNG'];
-
 // Six value props under the hero.
 const FEATURES = [
   { Icon: Sparkles,    title: 'AI-Powered Search',  body: 'Natural language search that understands you',        tint: 'from-blue-500 to-cyan-400' },
@@ -69,13 +102,13 @@ const UNSPLASH = (id: string) => `https://images.unsplash.com/photo-${id}?auto=f
 
 const HERO_CARDS: {
   title: string; rating: number; count: string; price: string; vendor: string;
-  art: ArtKind; photo: string; pos: string; delay: string; big?: boolean; titleMark?: boolean;
+  art: ArtKind; photo: string; pos: string; delay: string; size: 'lg' | 'md' | 'sm'; mark?: 'apple' | 'link';
 }[] = [
-  { title: 'Sony WH-1000XM5',    rating: 4.8, count: '8,842', price: '348',   vendor: 'Amazon',   art: 'headphones', photo: UNSPLASH('1505740420928-5e560c06d30e'), pos: 'top-[3%] left-[20%]',    delay: '0s'   },
-  { title: 'iPhone 15 Pro',      rating: 4.9, count: '6,421', price: '999',   vendor: 'Apple',    art: 'phone',      photo: UNSPLASH('1592750475338-74b7b21085ab'), pos: 'top-[17%] right-[-2%]',  delay: '.6s'  },
-  { title: 'MacBook Pro M4',     rating: 4.9, count: '2,843', price: '1,599', vendor: 'Best Buy', art: 'laptop',     photo: UNSPLASH('1517336714731-489689fd1ca8'), pos: 'top-[39%] left-[-4%]',   delay: '.3s', big: true, titleMark: true },
-  { title: 'DJI Air 3S Drone',   rating: 4.7, count: '1,235', price: '1,099', vendor: 'Amazon',   art: 'drone',      photo: UNSPLASH('1473968512647-3e447244af8f'), pos: 'top-[56%] right-[-4%]',  delay: '1s'   },
-  { title: 'Samsung 65" OLED TV',rating: 4.8, count: '952',   price: '1,299', vendor: 'Walmart',  art: 'tv',         photo: UNSPLASH('1593784991095-a205069470b6'), pos: 'bottom-[1%] left-[13%]', delay: '1.3s', big: true },
+  { title: 'Sony WH-1000XM5',    rating: 4.8, count: '8,842', price: '348',   vendor: 'Amazon',   art: 'headphones', photo: UNSPLASH('1505740420928-5e560c06d30e'), pos: 'top-[2%] left-[26%]',    delay: '0s',   size: 'md' },
+  { title: 'iPhone 15 Pro',      rating: 4.9, count: '6,421', price: '999',   vendor: 'Apple',    art: 'phone',      photo: UNSPLASH('1592750475338-74b7b21085ab'), pos: 'top-[15%] right-[-3%]',  delay: '.6s',  size: 'sm' },
+  { title: 'MacBook Pro M4',     rating: 4.9, count: '2,843', price: '1,599', vendor: 'Best Buy', art: 'laptop',     photo: UNSPLASH('1517336714731-489689fd1ca8'), pos: 'top-[37%] left-[-7%]',   delay: '.3s',  size: 'lg', mark: 'apple' },
+  { title: 'DJI Air 3S Drone',   rating: 4.7, count: '1,235', price: '1,099', vendor: 'Amazon',   art: 'drone',      photo: UNSPLASH('1473968512647-3e447244af8f'), pos: 'top-[54%] right-[-5%]',  delay: '1s',   size: 'sm' },
+  { title: 'Samsung 65" OLED TV',rating: 4.8, count: '952',   price: '1,299', vendor: 'Walmart',  art: 'tv',         photo: UNSPLASH('1593784991095-a205069470b6'), pos: 'bottom-[0%] left-[19%]', delay: '1.3s', size: 'md', mark: 'link' },
 ];
 
 const TRUST = [
@@ -373,35 +406,52 @@ function Testimonials({ tokens }: { tokens: ReturnType<typeof themeTokens> }) {
 
 // ── Floating hero product card (image left, details right — like the mock) ─────
 function HeroCard({ c }: { c: (typeof HERO_CARDS)[number] }) {
+  const navigate = useNavigate();
   const [photoOk, setPhotoOk] = useState(true);
+  const W = c.size === 'lg' ? 'w-72' : c.size === 'md' ? 'w-60' : 'w-52';
+  const IMG = c.size === 'lg' ? 'w-24 h-[4.75rem]' : c.size === 'md' ? 'w-[4.5rem] h-[4.5rem]' : 'w-16 h-16';
+  const TITLE = c.size === 'lg' ? 'text-sm' : 'text-[13px]';
+  const PRICE = c.size === 'lg' ? 'text-base' : 'text-[15px]';
   return (
-    <div
-      className={`sk-float absolute z-10 rounded-2xl bg-white shadow-[0_22px_55px_-18px_rgba(30,58,138,0.4)] ring-1 ring-black/[0.05] p-2.5 ${c.pos} ${c.big ? 'w-72' : 'w-56'}`}
-      style={{ animationDelay: c.delay }}
-    >
-      <div className="flex items-center gap-3">
-        <div className={`rounded-xl overflow-hidden shrink-0 bg-gray-100 ${c.big ? 'w-24 h-[4.75rem]' : 'w-[4.5rem] h-[4.5rem]'}`}>
-          {photoOk
-            ? <img src={c.photo} alt={c.title} loading="eager" className="w-full h-full object-cover" onError={() => setPhotoOk(false)} />
-            : <ProductArt kind={c.art} />}
-        </div>
-        <div className="min-w-0 py-0.5">
-          <p className={`flex items-center gap-1 font-bold text-gray-900 truncate ${c.big ? 'text-sm' : 'text-xs'}`}>
-            <span className="truncate">{c.title}</span>
-            {c.titleMark && <VendorMark vendor="Apple" />}
-          </p>
-          <div className="flex items-center gap-1 mt-0.5">
-            {[1, 2, 3, 4].map(n => <Star key={n} className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />)}
-            <Star className="w-2.5 h-2.5 fill-amber-400/50 text-amber-400" />
-            <span className="text-[10px] text-gray-400 ml-0.5">({c.count})</span>
+    <div className={`sk-float absolute z-10 ${c.pos}`} style={{ animationDelay: c.delay }}>
+      <button
+        onClick={() => navigate(`/shop?q=${encodeURIComponent(c.title)}`)}
+        title={`Shop ${c.title}`}
+        className={`group block text-left rounded-2xl bg-white shadow-[0_22px_55px_-18px_rgba(30,58,138,0.4)] ring-1 ring-black/[0.04] p-2.5 cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_34px_70px_-18px_rgba(30,58,138,0.6)] hover:ring-blue-300 active:scale-[0.97] ${W}`}
+      >
+        <div className="flex items-center gap-3">
+          <div className={`rounded-xl overflow-hidden shrink-0 bg-gray-100 ${IMG}`}>
+            {photoOk
+              ? <img src={c.photo} alt={c.title} loading="eager" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" onError={() => setPhotoOk(false)} />
+              : <ProductArt kind={c.art} />}
           </div>
-          <p className={`font-extrabold text-blue-600 mt-1 ${c.big ? 'text-base' : 'text-sm'}`}>From ${c.price}</p>
-          <div className="flex items-center gap-1.5 mt-1">
-            <VendorMark vendor={c.vendor} />
-            <span className="text-[10px] font-medium text-gray-400">{c.vendor}</span>
+          <div className="min-w-0 py-0.5 flex-1">
+            <p className={`flex items-center gap-1 font-bold text-gray-900 truncate ${TITLE}`}>
+              <span className="truncate">{c.title}</span>
+              {c.mark === 'apple' && <VendorMark vendor="Apple" />}
+              {c.mark === 'link' && <ArrowUpRight className="w-3 h-3 text-blue-500 shrink-0" />}
+            </p>
+            <div className="flex items-center gap-1 mt-1">
+              {[1, 2, 3, 4].map(n => <Star key={n} className="w-3 h-3 fill-amber-400 text-amber-400" />)}
+              <span className="relative w-3 h-3">
+                <Star className="absolute inset-0 w-3 h-3 text-amber-400" />
+                <Star className="absolute inset-0 w-3 h-3 fill-amber-400 text-amber-400 [clip-path:inset(0_50%_0_0)]" />
+              </span>
+              <span className="text-[11px] text-gray-400 ml-0.5">({c.count})</span>
+            </div>
+            <div className="flex items-center justify-between mt-1.5">
+              <p className={`font-extrabold text-blue-600 ${PRICE}`}><span className="font-semibold">From</span> ${c.price}</p>
+              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-blue-600 text-white shadow-sm opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
+                <ArrowRight className="w-3.5 h-3.5" />
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 mt-1.5">
+              <VendorMark vendor={c.vendor} />
+              <span className="text-[11px] font-medium text-gray-400">{c.vendor}</span>
+            </div>
           </div>
         </div>
-      </div>
+      </button>
     </div>
   );
 }
@@ -414,6 +464,7 @@ export default function SmartKongLanding() {
   const T = themeTokens(theme);
 
   const [query, setQuery] = useState('');
+  const typed = useTypewriter(TYPED_SUGGESTIONS);
   const [trending, setTrending] = useState<Prod[]>([]);
   const [deals, setDeals] = useState<Prod[]>([]);
   const [forYou, setForYou] = useState<Prod[]>([]);
@@ -499,9 +550,11 @@ export default function SmartKongLanding() {
 
       {/* ── HERO (light AI shopping engine) ──────────────────────────────── */}
       <section className="relative overflow-hidden bg-white">
-        {/* Global network globe background */}
-        <img src="/Smartkonghero.png" alt="" aria-hidden className="pointer-events-none select-none absolute inset-0 w-full h-full object-cover object-right" />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white via-white/60 to-transparent md:via-white/20" aria-hidden />
+        {/* Global network globe — right ~3/4, fading into white on the left */}
+        <div className="pointer-events-none select-none absolute right-0 top-0 h-full w-[88%] sm:w-[80%] lg:w-[74%]" aria-hidden>
+          <img src="/Smartkonghero.png" alt="" className="w-full h-full object-cover object-right" />
+          <div className="absolute inset-y-0 left-0 w-2/5 bg-gradient-to-r from-white via-white/80 to-transparent" />
+        </div>
 
         <div className="relative max-w-7xl mx-auto px-4 lg:px-8 pt-12 md:pt-16 pb-4 grid lg:grid-cols-2 gap-8 items-center">
           {/* Left: copy + search */}
@@ -521,7 +574,13 @@ export default function SmartKongLanding() {
             <div className="sk-rise max-w-xl bg-white rounded-2xl shadow-[0_24px_60px_-20px_rgba(30,58,138,0.35)] ring-1 ring-black/[0.04] p-2.5" style={{ animationDelay: '.15s' }}>
               <div className="flex items-center gap-2 px-3">
                 <Search className="w-5 h-5 text-gray-400 shrink-0" />
-                <input value={query} onChange={e => setQuery(e.target.value)} onKeyDown={e => e.key === 'Enter' && runSearch()} placeholder="What are you looking for?" className="flex-1 bg-transparent py-3 text-gray-900 placeholder-gray-400 focus:outline-none text-base" />
+                <input
+                  value={query}
+                  onChange={e => setQuery(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && runSearch()}
+                  placeholder={query ? '' : `Find me ${typed}`}
+                  className="flex-1 bg-transparent py-3 text-gray-900 placeholder-gray-500 focus:outline-none text-base"
+                />
               </div>
               <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={e => onImage(e.target.files?.[0])} />
               <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
@@ -530,6 +589,23 @@ export default function SmartKongLanding() {
                 <button onClick={() => fileRef.current?.click()} disabled={imgBusy} className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-gray-500 hover:bg-gray-100 text-sm transition-colors disabled:opacity-50"><Camera className="w-4 h-4" /> {imgBusy ? 'Scanning…' : 'Image Search'}</button>
                 <button onClick={() => navigate('/compare')} className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-gray-500 hover:bg-gray-100 text-sm transition-colors"><GitCompare className="w-4 h-4" /> Compare</button>
               </div>
+            </div>
+
+            {/* Live AI-search signal + popular searches */}
+            <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+              <span className="flex items-center gap-2 text-sm text-gray-500">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                </span>
+                AI is searching <span className="font-semibold text-gray-700">18,500 stores</span> in real time
+              </span>
+              <span className="hidden sm:flex items-center gap-1.5 text-sm text-gray-400">
+                <span className="text-gray-400">Popular:</span>
+                {['MacBook', 'iPhone', 'DJI', 'RTX 5090'].map(t => (
+                  <button key={t} onClick={() => { setQuery(t); runSearch(t); }} className="text-blue-600 hover:text-blue-700 hover:underline font-medium">{t}</button>
+                ))}
+              </span>
             </div>
 
             {/* CTAs */}
@@ -565,15 +641,14 @@ export default function SmartKongLanding() {
         </div>
       </section>
 
-      {/* ── TRUSTED BY (brand strip) ─────────────────────────────────────── */}
+      {/* ── TRUSTED BY (real brand logos, slow marquee) ──────────────────── */}
       <section className="bg-white py-10 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8">
-          <p className="text-center text-sm text-gray-400 mb-7">Trusted by millions. Powered by thousands of stores.</p>
-          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-5">
-            {BRANDS.map(b => (
-              <span key={b} className="text-lg md:text-xl font-extrabold text-gray-400 hover:text-gray-700 transition-colors tracking-tight">{b}</span>
+        <p className="text-center text-sm text-gray-400 mb-8">Trusted by millions. Powered by thousands of stores.</p>
+        <div className="relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_7%,#000_93%,transparent)]">
+          <div className="sk-marquee flex items-center gap-14 w-max">
+            {[...BRAND_LIST, ...BRAND_LIST].map((b, i) => (
+              <div key={i} className="shrink-0 opacity-80 hover:opacity-100 transition-opacity"><BrandLogo name={b} /></div>
             ))}
-            <Link to="/shop" className="text-gray-300 hover:text-blue-600 transition-colors"><ArrowRight className="w-5 h-5" /></Link>
           </div>
         </div>
       </section>
