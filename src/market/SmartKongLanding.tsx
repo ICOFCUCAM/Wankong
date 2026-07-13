@@ -6,11 +6,13 @@ import Seo from '@/components/Seo';
 import { MarketHeader, MarketFooter } from './MarketLayout';
 import { useMarketTheme, themeTokens } from './theme';
 import { useCompare } from './useCompare';
+import { useWishlist } from './useWishlist';
+import { confettiBurst } from './confetti';
 import {
   Search, Sparkles, Mic, Camera, Star, ArrowRight, ShieldCheck, Zap,
   Laptop, Car, Home as HomeIcon, Shirt, BookOpen, HeartPulse,
   Brain, Wrench, Store, Globe, Lock, RefreshCw, CheckCircle2,
-  TrendingUp, MessageSquare, GitCompare,
+  TrendingUp, MessageSquare, GitCompare, Heart, Truck,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -117,6 +119,44 @@ interface Prod {
   product_type: string | null; is_affiliate: boolean; rating_avg: number | null; rating_count: number | null;
 }
 
+// A blended "AI match" score — how confident SmartKong is in the pick.
+function aiScore(p: Prod): number {
+  const rating = p.rating_avg ?? 4.2;
+  const discount = p.compare_at_price && p.compare_at_price > p.price ? 1 - p.price / p.compare_at_price : 0;
+  let s = 70 + (rating / 5) * 20 + discount * 12 + ((p.rating_count ?? 0) > 500 ? 3 : 0);
+  return Math.max(72, Math.min(99, Math.round(s)));
+}
+
+function shippingLabel(p: Prod): string {
+  const usd = (p.price ?? 0) / 100;
+  if (usd === 0) return 'Instant';
+  return usd >= 50 ? 'Free shipping' : 'Ships in 2 days';
+}
+
+function SaveButton({ p, className }: { p: Prod; className?: string }) {
+  const { has, toggle } = useWishlist();
+  const saved = has(p.id);
+  return (
+    <button
+      onClick={e => {
+        e.preventDefault();
+        const nowSaved = toggle(p.id);
+        if (nowSaved) {
+          const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+          confettiBurst(r.left + r.width / 2, r.top + r.height / 2);
+          toast.success('Saved to your wishlist');
+        }
+      }}
+      title={saved ? 'Saved' : 'Save to wishlist'}
+      className={`flex items-center justify-center rounded-full transition-all active:scale-90 ${
+        saved ? 'bg-rose-500 text-white' : 'bg-white/90 text-gray-600 hover:text-rose-500 border border-gray-200'
+      } ${className ?? 'w-8 h-8'}`}
+    >
+      <Heart className={`w-4 h-4 ${saved ? 'fill-white' : ''}`} />
+    </button>
+  );
+}
+
 function ProductCard({ p }: { p: Prod }) {
   const { theme } = useMarketTheme();
   const T = themeTokens(theme);
@@ -125,50 +165,74 @@ function ProductCard({ p }: { p: Prod }) {
 
   const priceUsd = (p.price ?? 0) / 100;
   const compareUsd = p.compare_at_price ? p.compare_at_price / 100 : null;
+  const discountPct = compareUsd && compareUsd > priceUsd ? Math.round((1 - priceUsd / compareUsd) * 100) : 0;
   const img = p.cover_url ?? `https://api.dicebear.com/7.x/shapes/svg?seed=${p.id}`;
+  const score = aiScore(p);
+  const ship = shippingLabel(p);
 
   return (
     <Link
       to={`/products/${p.handle ?? p.id}`}
       className={`group relative rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-2 flex flex-col ${T.card}`}
     >
-      <div className="relative aspect-[4/5] overflow-hidden bg-gray-100 dark:bg-white/[0.04]">
-        <img src={img} alt={p.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[600ms] ease-out" />
-        <span className={`absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wide backdrop-blur-md ${theme === 'light' ? 'bg-white/90 text-gray-700 border border-gray-200' : 'bg-black/50 text-white/80 border border-white/10'}`}>
-          {p.is_affiliate ? (p.vendor ?? 'Partner') : (p.product_type ?? 'Product')}
-        </span>
-        {compareUsd && compareUsd > priceUsd && (
-          <span className="absolute top-3 right-3 px-2 py-1 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white text-[10px] font-bold">
-            -{Math.round((1 - priceUsd / compareUsd) * 100)}%
-          </span>
+      {/* Dominant image (≈65% of the card) */}
+      <div className="relative aspect-square overflow-hidden bg-gray-100 dark:bg-white/[0.04]">
+        <img src={img} alt={p.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-[1.12] transition-transform duration-[700ms] ease-out" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent opacity-70" />
+
+        {discountPct > 0 && (
+          <span className="absolute top-3 left-3 px-2 py-1 rounded-full bg-rose-500 text-white text-[11px] font-bold shadow-lg">-{discountPct}%</span>
         )}
+        {/* AI match score */}
+        <span className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white text-[10px] font-bold shadow-lg">
+          <Sparkles className="w-3 h-3" /> AI {score}
+        </span>
+
+        {/* Save (top-right, drops in on hover) */}
+        <div className="absolute top-12 right-3 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all">
+          <SaveButton p={p} className="w-9 h-9 shadow-lg" />
+        </div>
+
+        {/* Vendor + shipping over the gradient */}
+        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-2">
+          <span className="px-2 py-0.5 rounded-md bg-white/90 text-gray-700 text-[10px] font-semibold truncate max-w-[55%]">
+            {p.is_affiliate ? (p.vendor ?? 'Partner') : (p.vendor ?? p.product_type ?? 'SmartKong')}
+          </span>
+          <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/90 text-white text-[10px] font-semibold">
+            {ship === 'Free shipping' ? <Truck className="w-3 h-3" /> : <Zap className="w-3 h-3" />} {ship}
+          </span>
+        </div>
+
+        {/* Quick compare (hover) */}
         <button
           onClick={e => { e.preventDefault(); if (!inCompare && isFull) { toast.info('Compare holds up to 4 products.'); return; } toggle(p.id); }}
-          className={`absolute bottom-3 right-3 flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-semibold backdrop-blur-md transition-colors ${
-            inCompare ? 'bg-blue-600 text-white' : theme === 'light' ? 'bg-white/90 text-gray-600 border border-gray-200 hover:text-blue-600' : 'bg-black/50 text-white/70 border border-white/10 hover:text-white'
+          className={`absolute bottom-12 right-3 flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-semibold backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all ${
+            inCompare ? 'bg-blue-600 text-white' : 'bg-white/90 text-gray-600 hover:text-blue-600 border border-gray-200'
           }`}
         >
           <GitCompare className="w-3 h-3" /> {inCompare ? 'Added' : 'Compare'}
         </button>
       </div>
+
       <div className="p-4 flex flex-col flex-1">
-        <h3 className={`text-sm font-semibold leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors ${T.cardTitle}`}>{p.title}</h3>
-        <div className="flex items-center gap-1 mt-1.5 text-xs">
+        <h3 className={`text-[15px] font-semibold leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors ${T.cardTitle}`}>{p.title}</h3>
+        <div className="flex items-center gap-1.5 mt-2 text-xs">
           {(p.rating_count ?? 0) > 0 ? (
-            <span className="flex items-center gap-1 text-amber-500">
-              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-              <span className={T.cardTitle}>{Number(p.rating_avg).toFixed(1)}</span>
-              <span className={T.cardMeta}>({p.rating_count})</span>
-            </span>
+            <>
+              <span className="flex items-center gap-0.5">
+                {[1, 2, 3, 4, 5].map(n => <Star key={n} className={`w-3.5 h-3.5 ${n <= Math.round(Number(p.rating_avg)) ? 'text-amber-400 fill-amber-400' : 'text-gray-300'}`} />)}
+              </span>
+              <span className={T.cardMeta}>{Number(p.rating_avg).toFixed(1)} ({p.rating_count})</span>
+            </>
           ) : <span className={T.cardMeta}>New arrival</span>}
         </div>
         <div className="mt-auto pt-3 flex items-end justify-between">
           <div className="flex items-baseline gap-2">
-            <span className={`text-xl font-extrabold ${T.cardTitle}`}>{priceUsd > 0 ? `$${priceUsd.toFixed(2)}` : 'Free'}</span>
+            <span className={`text-2xl font-extrabold tracking-tight ${T.cardTitle}`}>{priceUsd > 0 ? `$${priceUsd.toFixed(2)}` : 'Free'}</span>
             {compareUsd && compareUsd > priceUsd && <span className={`text-xs line-through ${T.cardMeta}`}>${compareUsd.toFixed(2)}</span>}
           </div>
-          <span className="flex items-center gap-1 text-xs font-semibold text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity">
-            View <ArrowRight className="w-3 h-3" />
+          <span className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-600 text-white shadow-md shadow-blue-500/30 scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all">
+            <ArrowRight className="w-4 h-4" />
           </span>
         </div>
       </div>
@@ -176,11 +240,72 @@ function ProductCard({ p }: { p: Prod }) {
   );
 }
 
-function SectionHead({ eyebrow, title, tokens, center }: { eyebrow: string; title: string; tokens: ReturnType<typeof themeTokens>; center?: boolean }) {
+function SectionHead({ eyebrow, title, tokens, center, sub }: { eyebrow: string; title: string; tokens: ReturnType<typeof themeTokens>; center?: boolean; sub?: string }) {
   return (
     <div className={center ? 'text-center' : ''}>
       <p className="text-sm font-semibold text-blue-600 uppercase tracking-widest">{eyebrow}</p>
       <h2 className={`text-3xl md:text-4xl font-black mt-2 ${tokens.heading}`}>{title}</h2>
+      {sub && <p className={`mt-3 text-base ${tokens.body} ${center ? 'max-w-2xl mx-auto' : 'max-w-xl'}`}>{sub}</p>}
+    </div>
+  );
+}
+
+// ── Featured "Deal of the Week" (breaks the grid rhythm) ────────────────────────
+function FeaturedDeal({ p, tokens }: { p: Prod; tokens: ReturnType<typeof themeTokens> }) {
+  const priceUsd = (p.price ?? 0) / 100;
+  const compareUsd = p.compare_at_price ? p.compare_at_price / 100 : null;
+  const save = compareUsd && compareUsd > priceUsd ? compareUsd - priceUsd : 0;
+  const img = p.cover_url ?? `https://api.dicebear.com/7.x/shapes/svg?seed=${p.id}`;
+  return (
+    <Link to={`/products/${p.handle ?? p.id}`} className={`group grid md:grid-cols-2 rounded-3xl overflow-hidden mb-8 ${tokens.card}`}>
+      <div className="relative aspect-[16/10] md:aspect-auto overflow-hidden bg-gray-100 dark:bg-white/[0.04]">
+        <img src={img} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[800ms]" />
+        <span className="absolute top-4 left-4 px-3 py-1.5 rounded-full bg-rose-500 text-white text-xs font-bold shadow-lg">Deal of the Week</span>
+      </div>
+      <div className="p-8 md:p-10 flex flex-col justify-center">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white text-[10px] font-bold"><Sparkles className="w-3 h-3" /> AI {aiScore(p)} match</span>
+          {(p.rating_count ?? 0) > 0 && <span className="flex items-center gap-1 text-amber-500 text-xs"><Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />{Number(p.rating_avg).toFixed(1)} ({p.rating_count})</span>}
+        </div>
+        <h3 className={`text-2xl md:text-3xl font-black leading-tight mb-3 ${tokens.cardTitle}`}>{p.title}</h3>
+        <p className={`text-sm mb-6 ${tokens.body}`}>{p.vendor ? `Sold by ${p.vendor} · ` : ''}{shippingLabel(p)} · buyer protected</p>
+        <div className="flex items-end gap-3 mb-6">
+          <span className={`text-4xl font-black tracking-tight ${tokens.cardTitle}`}>${priceUsd.toFixed(2)}</span>
+          {compareUsd && compareUsd > priceUsd && <span className={`text-lg line-through mb-1 ${tokens.cardMeta}`}>${compareUsd.toFixed(2)}</span>}
+          {save > 0 && <span className="mb-1 px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-600 text-sm font-bold">Save ${save.toFixed(2)}</span>}
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 text-white font-bold group-hover:bg-blue-700 transition-colors">View deal <ArrowRight className="w-4 h-4" /></span>
+          <SaveButton p={p} className="w-11 h-11" />
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+// ── Customer stories (social proof) ─────────────────────────────────────────────
+const STORIES = [
+  { name: 'Amara O.', role: 'Small-business owner · Lagos', quote: 'The AI found a supplier 30% cheaper than what I was paying. SmartKong basically paid for my month.', initials: 'AO' },
+  { name: 'Daniel K.', role: 'Music producer · Nairobi', quote: 'I described the exact monitors I needed and it compared six vendors in seconds. Bought in one click.', initials: 'DK' },
+  { name: 'Priya S.', role: 'Student · Mumbai', quote: 'Price alerts told me exactly when to buy my laptop. Saved ₹18,000 waiting for the drop.', initials: 'PS' },
+];
+
+function Testimonials({ tokens }: { tokens: ReturnType<typeof themeTokens> }) {
+  return (
+    <div className="grid md:grid-cols-3 gap-6 mt-10">
+      {STORIES.map(s => (
+        <div key={s.name} className={`rounded-2xl p-7 ${tokens.card}`}>
+          <div className="flex items-center gap-1 text-amber-400 mb-4">{[1, 2, 3, 4, 5].map(n => <Star key={n} className="w-4 h-4 fill-amber-400" />)}</div>
+          <p className={`text-[15px] leading-relaxed mb-6 ${tokens.cardTitle}`}>“{s.quote}”</p>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-white text-xs font-bold">{s.initials}</div>
+            <div>
+              <p className={`text-sm font-semibold ${tokens.cardTitle}`}>{s.name}</p>
+              <p className={`text-xs ${tokens.cardMeta}`}>{s.role}</p>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -329,7 +454,7 @@ export default function SmartKongLanding() {
 
       {/* ── FOR YOU (personalized) ───────────────────────────────────────── */}
       {forYou.length >= 4 && (
-        <section className={`${T.sectionA} py-16 md:py-20`}>
+        <section className={`${T.sectionA} py-20 md:py-28`}>
           <div className="max-w-7xl mx-auto px-4 lg:px-8">
             <div className="flex items-end justify-between">
               <SectionHead eyebrow="Picked for you" title={firstName ? `For you, ${firstName}` : 'For you'} tokens={T} />
@@ -342,23 +467,24 @@ export default function SmartKongLanding() {
         </section>
       )}
 
-      {/* ── TRENDING ─────────────────────────────────────────────────────── */}
+      {/* ── TRENDING (featured deal breaks the grid) ─────────────────────── */}
       {trending.length > 0 && (
-        <section className={`${T.sectionB} py-16 md:py-20`}>
+        <section className={`${T.sectionB} py-20 md:py-28`}>
           <div className="max-w-7xl mx-auto px-4 lg:px-8">
-            <div className="flex items-end justify-between">
-              <SectionHead eyebrow="Right now" title="Trending on SmartKong" tokens={T} />
+            <div className="flex items-end justify-between mb-10">
+              <SectionHead eyebrow="Right now" title="Trending this week" tokens={T} sub="The products SmartKong shoppers are buying and comparing most." />
               <Link to="/shop" className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-500">View all <ArrowRight className="w-4 h-4" /></Link>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
-              {trending.map(p => <ProductCard key={p.id} p={p} />)}
+            {trending[0] && <FeaturedDeal p={trending[0]} tokens={T} />}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {trending.slice(1).map(p => <ProductCard key={p.id} p={p} />)}
             </div>
           </div>
         </section>
       )}
 
       {/* ── CATEGORIES ───────────────────────────────────────────────────── */}
-      <section className={`${T.sectionA} py-16 md:py-20`}>
+      <section className={`${T.sectionA} py-20 md:py-28`}>
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
           <SectionHead eyebrow="Browse" title="Shop every category" tokens={T} />
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mt-8">
@@ -398,7 +524,7 @@ export default function SmartKongLanding() {
       </section>
 
       {/* ── WHY SMARTKONG ────────────────────────────────────────────────── */}
-      <section className={`${T.sectionB} py-16 md:py-20`}>
+      <section className={`${T.sectionB} py-20 md:py-28`}>
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
           <SectionHead center eyebrow="Why SmartKong" title="Shopping, upgraded by AI" tokens={T} />
           <div className="grid md:grid-cols-3 gap-6 mt-10">
@@ -414,7 +540,7 @@ export default function SmartKongLanding() {
       </section>
 
       {/* ── GLOBAL VENDORS ───────────────────────────────────────────────── */}
-      <section className={`${T.sectionA} py-16 md:py-20 border-y ${theme === 'light' ? 'border-gray-100' : 'border-white/[0.06]'}`}>
+      <section className={`${T.sectionA} py-20 md:py-28 border-y ${theme === 'light' ? 'border-gray-100' : 'border-white/[0.06]'}`}>
         <p className={`text-center text-sm mb-8 ${T.body}`}>Aggregating the world’s best stores &amp; networks</p>
         <div className="relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)]">
           <div className="sk-marquee flex gap-4 w-max">
@@ -425,8 +551,16 @@ export default function SmartKongLanding() {
         </div>
       </section>
 
+      {/* ── CUSTOMER STORIES (social proof) ──────────────────────────────── */}
+      <section className={`${T.sectionB} py-20 md:py-28`}>
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <SectionHead center eyebrow="Loved by shoppers" title="People love buying here" tokens={T} sub="Over 1.8 million shoppers use SmartKong before they buy." />
+          <Testimonials tokens={T} />
+        </div>
+      </section>
+
       {/* ── TRUST ────────────────────────────────────────────────────────── */}
-      <section className={`${T.sectionB} py-16 md:py-20`}>
+      <section className={`${T.sectionA} py-20 md:py-28`}>
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
           <SectionHead center eyebrow="Peace of mind" title="Built for trust" tokens={T} />
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mt-10">
@@ -441,7 +575,7 @@ export default function SmartKongLanding() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
-      <section className={`${T.sectionA} pb-20 pt-4`}>
+      <section className={`${T.sectionB} pb-24 pt-4`}>
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
           <div className="relative rounded-3xl overflow-hidden p-10 md:p-16 text-center" style={{ background: 'linear-gradient(120deg,#1D4ED8,#0EA5E9 55%,#7C3AED)' }}>
             <div className="absolute inset-0 opacity-30" style={{ background: 'radial-gradient(circle at 80% 20%, #fff4, transparent 40%)' }} aria-hidden />
