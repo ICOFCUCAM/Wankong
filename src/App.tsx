@@ -109,6 +109,7 @@ const AiSolverPage = lazy(() => import('./pages/AiSolverPage'));
 
 // ── smartkong.net (VITE_SITE_MODE=market) ──────────────────────────────────────
 // SmartKong pages (light, blue design ported from the original SmartKongMarket app)
+const SmartKongLanding        = lazy(() => import('./market/SmartKongLanding'));
 const SmartKongHome           = lazy(() => import('./market/SmartKongHome'));
 const MarketProductPage       = lazy(() => import('./market/MarketProductPage'));
 const MarketAiSolverPage      = lazy(() => import('./market/MarketAiSolverPage'));
@@ -138,7 +139,8 @@ export default function App() {
         <div key={location.pathname} className="wk-page-in">
         <Routes>
           {/* ── Public ─────────────────────────────────────────────────────── */}
-          <Route path="/"                         element={IS_MARKET_SITE ? <SmartKongHome /> : <Index />} />
+          <Route path="/"                         element={IS_MARKET_SITE ? <SmartKongLanding /> : <Index />} />
+          {IS_MARKET_SITE && <Route path="/shop"           element={<SmartKongHome />} />}
           {IS_MARKET_SITE && <Route path="/category/:slug" element={<SmartKongHome />} />}
           {IS_MARKET_SITE && <Route path="/admin/affiliates" element={<MarketAffiliateAdminPage />} />}
           <Route path="/cart"                     element={<CartPage />} />

@@ -15,14 +15,6 @@ import { toast } from 'sonner';
 
 const BLUE = '#2563EB';
 
-const SUPPORT_LINKS = [
-  { label: 'Help Center',       href: '/help' },
-  { label: 'Contact Us',        href: '/contact' },
-  { label: 'FAQ',               href: '/faq' },
-  { label: 'Become a Vendor',   href: '/vendor/register' },
-  { label: 'Affiliate Backend', href: '/admin/affiliates' },
-];
-
 const POWERED_BY = ['Amazon', 'AutoTrader', 'Carvana', 'Caterpillar', 'CJ Affiliate'];
 
 export function MarketHeader() {
@@ -34,7 +26,7 @@ export function MarketHeader() {
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const q = query.trim();
-    navigate(q ? `/?q=${encodeURIComponent(q)}` : '/');
+    navigate(q ? `/shop?q=${encodeURIComponent(q)}` : '/shop');
   };
 
   return (
@@ -137,98 +129,130 @@ export function MarketHeader() {
   );
 }
 
+const FOOTER_COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
+  {
+    title: 'Marketplace',
+    links: [
+      { label: 'All Products', href: '/shop' },
+      { label: 'AI Problem Solver', href: '/ai-solver' },
+      { label: 'Trending', href: '/shop?sort=popular' },
+      { label: 'Categories', href: '/category/electronics' },
+      { label: 'Deals', href: '/shop?sort=price_low' },
+    ],
+  },
+  {
+    title: 'Sell & Partner',
+    links: [
+      { label: 'Become a Vendor', href: '/vendor/register' },
+      { label: 'Vendor Dashboard', href: '/dashboard/vendor' },
+      { label: 'Affiliate Backend', href: '/admin/affiliates' },
+      { label: 'Partner Networks', href: '/admin/affiliates' },
+    ],
+  },
+  {
+    title: 'Company',
+    links: [
+      { label: 'About', href: '/about' },
+      { label: 'Careers', href: '/careers' },
+      { label: 'Press', href: '/press' },
+      { label: 'Blog', href: '/help' },
+    ],
+  },
+  {
+    title: 'Resources',
+    links: [
+      { label: 'Help Center', href: '/help' },
+      { label: 'Contact Us', href: '/contact' },
+      { label: 'FAQ', href: '/faq' },
+      { label: 'API Access', href: '/api-access' },
+    ],
+  },
+  {
+    title: 'Legal',
+    links: [
+      { label: 'Privacy Policy', href: '/privacy-policy' },
+      { label: 'Terms of Service', href: '/terms-of-service' },
+      { label: 'Cookie Policy', href: '/cookies' },
+      { label: 'Buyer Protection', href: '/help' },
+    ],
+  },
+];
+
 export function MarketFooter() {
   const year = new Date().getFullYear();
   const [email, setEmail] = useState('');
 
   return (
-    <footer className="bg-gray-50 border-t-4 mt-16" style={{ borderTopColor: BLUE }}>
-      <div className="max-w-7xl mx-auto px-4 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-          {/* Brand */}
-          <div>
-            <p className="text-lg font-extrabold text-gray-900 mb-3">SmartKong</p>
-            <p className="text-sm text-gray-500 leading-relaxed mb-4">
-              Your smart product discovery platform connecting you to global
-              affiliate networks and trusted vendors. Powered by Wankong.
-            </p>
-            <div className="flex gap-3 text-gray-400">
-              {[
-                { Icon: Facebook,  href: 'https://www.facebook.com/wankong.official' },
-                { Icon: Twitter,   href: 'https://x.com/wankong' },
-                { Icon: Instagram, href: 'https://www.instagram.com/wankong.official' },
-                { Icon: Linkedin,  href: 'https://www.linkedin.com/company/wankong' },
-              ].map(({ Icon, href }) => (
-                <a key={href} href={href} target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors">
-                  <Icon className="w-5 h-5" />
-                </a>
-              ))}
+    <footer className="bg-[#05060A] border-t border-white/10 text-white">
+      <div className="max-w-7xl mx-auto px-4 lg:px-8 py-16">
+        {/* Top: brand + newsletter */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 pb-12 border-b border-white/10">
+          <div className="max-w-sm">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-9 h-9 rounded-full bg-blue-500/15 border border-blue-400/20 flex items-center justify-center overflow-hidden">
+                <img src="/wankong-mark.png" alt="SmartKong" className="w-6 h-6 object-contain" />
+              </div>
+              <span className="text-xl font-extrabold tracking-tight">
+                Smart<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Kong</span>
+              </span>
             </div>
+            <p className="text-sm text-white/45 leading-relaxed">
+              The world’s AI marketplace — discover, compare and buy anything from anywhere.
+            </p>
           </div>
-
-          {/* Categories */}
-          <div>
-            <p className="text-sm font-bold text-gray-900 mb-3">Categories</p>
-            <ul className="space-y-2.5">
-              {MARKET_CATEGORIES.map(c => (
-                <li key={c.slug}>
-                  <Link to={`/category/${c.slug}`} className="text-sm text-gray-500 hover:text-blue-600 transition-colors">
-                    {c.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Support */}
-          <div>
-            <p className="text-sm font-bold text-gray-900 mb-3">Support</p>
-            <ul className="space-y-2.5">
-              {SUPPORT_LINKS.map(l => (
-                <li key={l.label}>
-                  <Link to={l.href} className="text-sm text-gray-500 hover:text-blue-600 transition-colors">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Newsletter */}
-          <div>
-            <p className="text-sm font-bold text-gray-900 mb-3">Newsletter</p>
-            <p className="text-sm text-gray-500 mb-3">Get the latest deals and product recommendations.</p>
-            <form
-              onSubmit={e => { e.preventDefault(); if (email.trim()) { toast.success('Subscribed!'); setEmail(''); } }}
-              className="flex gap-2"
-            >
+          <form
+            onSubmit={e => { e.preventDefault(); if (email.trim()) { toast.success('Subscribed!'); setEmail(''); } }}
+            className="w-full lg:w-auto"
+          >
+            <p className="text-sm font-semibold mb-2">Get AI deal alerts</p>
+            <div className="flex gap-2">
               <input
-                type="email"
-                required
-                value={email}
+                type="email" required value={email}
                 onChange={e => setEmail(e.target.value)}
-                placeholder="Your email"
-                className="flex-1 min-w-0 border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="you@email.com"
+                className="flex-1 lg:w-64 min-w-0 bg-white/[0.04] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors">
+              <button className="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-400 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity">
                 Subscribe
               </button>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
 
-        {/* Bottom strip */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-12 pt-6 border-t border-gray-200">
-          <p className="text-xs text-gray-400">© {year} SmartKong · A Wankong company. All rights reserved.</p>
-          <div className="flex items-center gap-5">
-            <Link to="/privacy-policy" className="text-xs text-gray-500 hover:text-blue-600">Privacy Policy</Link>
-            <Link to="/terms-of-service" className="text-xs text-gray-500 hover:text-blue-600">Terms of Service</Link>
+        {/* Columns */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 py-12">
+          {FOOTER_COLUMNS.map(col => (
+            <div key={col.title}>
+              <p className="text-sm font-bold text-white mb-4">{col.title}</p>
+              <ul className="space-y-2.5">
+                {col.links.map(l => (
+                  <li key={l.label}>
+                    <Link to={l.href} className="text-sm text-white/45 hover:text-white transition-colors">{l.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom */}
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pt-8 border-t border-white/10">
+          <p className="text-xs text-white/35">© {year} SmartKong · A Wankong company. All rights reserved.</p>
+          <div className="flex items-center gap-3 text-white/40">
+            {[
+              { Icon: Facebook,  href: 'https://www.facebook.com/wankong.official' },
+              { Icon: Twitter,   href: 'https://x.com/wankong' },
+              { Icon: Instagram, href: 'https://www.instagram.com/wankong.official' },
+              { Icon: Linkedin,  href: 'https://www.linkedin.com/company/wankong' },
+            ].map(({ Icon, href }) => (
+              <a key={href} href={href} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                <Icon className="w-5 h-5" />
+              </a>
+            ))}
           </div>
           <div className="flex items-center gap-3 flex-wrap">
-            <span className="text-xs text-gray-400">Powered by:</span>
-            {POWERED_BY.map(b => (
-              <span key={b} className="text-xs text-gray-500 font-medium">{b}</span>
-            ))}
+            <span className="text-xs text-white/35">Powered by:</span>
+            {POWERED_BY.map(b => <span key={b} className="text-xs text-white/45 font-medium">{b}</span>)}
           </div>
         </div>
       </div>

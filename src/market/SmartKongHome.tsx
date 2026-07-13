@@ -5,87 +5,11 @@ import MarketLayout from './MarketLayout';
 import MarketProductCard from './MarketProductCard';
 import { useMarketCatalog, type CatalogFilters } from './useMarketCatalog';
 import { MARKET_CATEGORIES, categoryBySlug } from './categories';
-import { Search, Sparkles, TrendingUp, Store, Loader2 } from 'lucide-react';
+import { Search, Sparkles, Loader2 } from 'lucide-react';
 
-// SmartKong homepage / category pages — the "Discover Any Product, Anywhere"
-// experience from the original SmartKongMarket app: hero with AI search,
-// filter sidebar (category, price range, rating), All Products grid.
-
-function Hero() {
-  const navigate = useNavigate();
-  const [query, setQuery] = useState('');
-
-  return (
-    <section className="relative overflow-hidden bg-gray-900">
-      {/* Product-collage backdrop */}
-      <div
-        className="absolute inset-0 opacity-30"
-        style={{
-          background:
-            'radial-gradient(circle at 78% 30%, rgba(37,99,235,0.55), transparent 45%),' +
-            'radial-gradient(circle at 90% 75%, rgba(147,51,234,0.35), transparent 40%),' +
-            'radial-gradient(circle at 15% 85%, rgba(37,99,235,0.3), transparent 45%)',
-        }}
-        aria-hidden
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-900/85 to-gray-900/40" aria-hidden />
-
-      <div className="relative max-w-7xl mx-auto px-4 lg:px-8 py-16 md:py-24">
-        <div className="max-w-2xl">
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-sm border border-white/15 rounded-full text-sm text-white/85 mb-6">
-            <Sparkles className="w-4 h-4 text-blue-400" /> AI-Powered Product Discovery
-          </span>
-
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-tight mb-6">
-            Discover Any Product,<br />
-            <span className="text-blue-500">Anywhere</span>
-          </h1>
-
-          <p className="text-lg text-gray-300 mb-8 max-w-xl">
-            Search across global affiliate networks and trusted vendors. Find the
-            best deals on digital and physical products with AI-powered recommendations.
-          </p>
-
-          <form
-            onSubmit={e => { e.preventDefault(); navigate(query.trim() ? `/?q=${encodeURIComponent(query.trim())}` : '/'); }}
-            className="relative max-w-xl mb-8"
-          >
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
-              type="search"
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-              placeholder="Search for any product…"
-              className="w-full bg-white border-0 rounded-xl pl-11 pr-24 py-4 text-gray-900 placeholder-gray-400 shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button
-              type="button"
-              onClick={() => navigate(query.trim() ? `/ai-solver?q=${encodeURIComponent(query.trim())}` : '/ai-solver')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs font-semibold transition-colors"
-            >
-              <Sparkles className="w-3 h-3" /> AI
-            </button>
-          </form>
-
-          <div className="flex flex-wrap gap-3">
-            <button
-              onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
-              className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"
-            >
-              <TrendingUp className="w-4 h-4" /> Explore Trending Products
-            </button>
-            <Link
-              to="/vendor/register"
-              className="flex items-center gap-2 px-6 py-3 bg-white/90 hover:bg-white text-gray-900 font-semibold rounded-xl transition-colors"
-            >
-              <Store className="w-4 h-4" /> Become a Vendor
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
+// SmartKong catalog browser — /shop and /category/:slug. The premium hero
+// lives on the landing page (SmartKongLanding); this is the filter sidebar +
+// product grid experience.
 
 function FilterSidebar({
   filters, setFilters,
@@ -218,8 +142,6 @@ export default function SmartKongHome() {
         title={activeCategory ? activeCategory.label : undefined}
         description="Search across global affiliate networks and trusted vendors. Find the best deals on digital and physical products with AI-powered recommendations."
       />
-
-      {!slug && !urlQuery && <Hero />}
 
       <div id="products" className="max-w-7xl mx-auto px-4 lg:px-8 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8 items-start">
