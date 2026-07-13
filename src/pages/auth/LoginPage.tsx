@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import OAuthButtons from '@/components/auth/OAuthButtons';
+import { IS_MARKET_SITE } from '@/lib/site';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -50,15 +51,15 @@ export default function LoginPage() {
 
         {/* Logo */}
         <div className="flex items-center gap-2 justify-center mb-8">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00D9FF] to-[#9D4EDD] flex items-center justify-center">
-            <span className="text-white font-black text-base">W</span>
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: IS_MARKET_SITE ? 'linear-gradient(100deg,#2563EB,#7C3AED 55%,#06B6D4 120%)' : 'linear-gradient(135deg,#00D9FF,#9D4EDD)' }}>
+            <span className="text-white font-black text-base">{IS_MARKET_SITE ? 'S' : 'W'}</span>
           </div>
-          <span className="text-white font-black text-2xl">WANKONG</span>
+          <span className="text-white font-black text-2xl">{IS_MARKET_SITE ? 'SmartKong' : 'WANKONG'}</span>
         </div>
 
         <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
           <h1 className="text-2xl font-black text-white mb-1">Sign In</h1>
-          <p className="text-white/40 text-sm mb-6">Welcome back to the global creator platform.</p>
+          <p className="text-white/40 text-sm mb-6">{IS_MARKET_SITE ? 'Welcome back — every store, one account.' : 'Welcome back to the global creator platform.'}</p>
 
           {error && (
             <div className="bg-red-500/10 border border-red-500/20 text-red-300 text-sm rounded-xl px-4 py-3 mb-5">

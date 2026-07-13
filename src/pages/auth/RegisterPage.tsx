@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth, type UserRole } from '@/contexts/AuthContext';
 import RoleSelector from '@/components/auth/RoleSelector';
 import OAuthButtons from '@/components/auth/OAuthButtons';
+import { IS_MARKET_SITE } from '@/lib/site';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -57,11 +58,11 @@ export default function RegisterPage() {
       <div className="flex items-center gap-2.5 px-6 py-5">
         <div
           className="w-9 h-9 rounded-xl flex items-center justify-center"
-          style={{ background: `linear-gradient(135deg, ${CYAN}, ${PURPLE})` }}
+          style={{ background: IS_MARKET_SITE ? 'linear-gradient(100deg,#2563EB,#7C3AED 55%,#06B6D4 120%)' : `linear-gradient(135deg, ${CYAN}, ${PURPLE})` }}
         >
-          <span className="text-white font-black text-base">W</span>
+          <span className="text-white font-black text-base">{IS_MARKET_SITE ? 'S' : 'W'}</span>
         </div>
-        <span className="text-white font-black text-xl">WANKONG</span>
+        <span className="text-white font-black text-xl">{IS_MARKET_SITE ? 'SmartKong' : 'WANKONG'}</span>
       </div>
 
       <div className="flex-1 flex flex-col items-center justify-center px-4 pb-16">
@@ -72,7 +73,7 @@ export default function RegisterPage() {
             <>
               <div className="text-center mb-8">
                 <h1 className="text-3xl font-black text-white mb-2">Create your account</h1>
-                <p className="text-white/50">Choose how you want to use WANKONG</p>
+                <p className="text-white/50">Choose how you want to use {IS_MARKET_SITE ? 'SmartKong' : 'WANKONG'}</p>
               </div>
               <RoleSelector onSelect={handleRoleSelect} ctaLabel="Next: Create Account" />
               <p className="text-center mt-5 text-white/40 text-sm">
