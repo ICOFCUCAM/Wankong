@@ -283,6 +283,70 @@ function FeaturedDeal({ p, tokens }: { p: Prod; tokens: ReturnType<typeof themeT
   );
 }
 
+// ── AI-Found Deals band (savings-first, horizontal scroll) ──────────────────────
+function DealCard({ p }: { p: Prod }) {
+  const priceUsd = (p.price ?? 0) / 100;
+  const compareUsd = p.compare_at_price ? p.compare_at_price / 100 : priceUsd;
+  const save = compareUsd - priceUsd;
+  const pct = compareUsd > 0 ? Math.round((save / compareUsd) * 100) : 0;
+  const img = p.cover_url ?? `https://api.dicebear.com/7.x/shapes/svg?seed=${p.id}`;
+  return (
+    <Link
+      to={`/products/${p.handle ?? p.id}`}
+      className="group relative shrink-0 w-60 rounded-2xl overflow-hidden bg-white/[0.06] border border-white/10 backdrop-blur-md hover:border-white/25 transition-all hover:-translate-y-1.5"
+    >
+      <div className="relative aspect-[4/3] overflow-hidden bg-white/[0.04]">
+        <img src={img} alt={p.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[700ms]" />
+        <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-rose-500 text-white text-xs font-black shadow-lg">-{pct}%</span>
+        <div className="absolute top-3 right-3">
+          <SaveButton p={p} className="w-8 h-8 shadow-lg" />
+        </div>
+      </div>
+      <div className="p-4">
+        <p className="text-sm font-semibold text-white line-clamp-2 leading-snug mb-2 group-hover:text-blue-300 transition-colors">{p.title}</p>
+        <div className="flex items-baseline gap-2">
+          <span className="text-xl font-black text-white">${priceUsd.toFixed(2)}</span>
+          <span className="text-xs text-white/40 line-through">${compareUsd.toFixed(2)}</span>
+        </div>
+        <span className="mt-2 inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-300 text-xs font-bold">
+          <Zap className="w-3 h-3" /> Save ${save.toFixed(2)}
+        </span>
+      </div>
+    </Link>
+  );
+}
+
+function DealBand({ deals }: { deals: Prod[] }) {
+  const totalSave = deals.reduce((s, p) => s + ((p.compare_at_price ?? 0) - p.price), 0) / 100;
+  return (
+    <section className="relative overflow-hidden bg-[#070810] py-16 md:py-20">
+      <div className="absolute inset-0" aria-hidden>
+        <div className="absolute top-[-30%] right-[10%] w-[36rem] h-[36rem] rounded-full opacity-25 blur-[120px]" style={{ background: 'radial-gradient(circle,#10B981,transparent 60%)' }} />
+      </div>
+      <div className="relative max-w-7xl mx-auto px-4 lg:px-8">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+          <div>
+            <p className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-400 uppercase tracking-widest mb-2">
+              <Sparkles className="w-4 h-4" /> AI-Found Deals
+            </p>
+            <h2 className="text-3xl md:text-4xl font-black text-white">Biggest markdowns right now</h2>
+            <p className="mt-2 text-white/50 max-w-xl">
+              Our AI scans price drops across the catalog. These picks save you a combined{' '}
+              <span className="font-bold text-emerald-300">${totalSave.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>.
+            </p>
+          </div>
+          <Link to="/shop?sort=price_low" className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-blue-400 hover:text-blue-300 shrink-0">
+            All deals <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+        <div className="flex gap-5 overflow-x-auto pb-4 scrollbar-none -mx-4 px-4 lg:mx-0 lg:px-0 snap-x">
+          {deals.map(p => <div key={p.id} className="snap-start"><DealCard p={p} /></div>)}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ── Customer stories (social proof) ─────────────────────────────────────────────
 const STORIES = [
   { name: 'Amara O.', role: 'Small-business owner · Lagos', quote: 'The AI found a supplier 30% cheaper than what I was paying. SmartKong basically paid for my month.', initials: 'AO' },
@@ -319,6 +383,7 @@ export default function SmartKongLanding() {
 
   const [query, setQuery] = useState('');
   const [trending, setTrending] = useState<Prod[]>([]);
+  const [deals, setDeals] = useState<Prod[]>([]);
   const [forYou, setForYou] = useState<Prod[]>([]);
   const firstName = (user?.user_metadata?.display_name || user?.email?.split('@')[0] || '').split(' ')[0];
 
@@ -327,6 +392,22 @@ export default function SmartKongLanding() {
       .select('id, title, handle, price, compare_at_price, cover_url, vendor, product_type, is_affiliate, rating_avg, rating_count')
       .eq('status', 'active').order('trending_score', { ascending: false }).order('created_at', { ascending: false }).limit(8)
       .then(({ data }) => { if (Array.isArray(data)) setTrending(data as unknown as Prod[]); });
+  }, []);
+
+  // AI-Found Deals — biggest markdowns, ranked by absolute savings.
+  useEffect(() => {
+    supabase.from('ecom_products')
+      .select('id, title, handle, price, compare_at_price, cover_url, vendor, product_type, is_affiliate, rating_avg, rating_count')
+      .eq('status', 'active').not('compare_at_price', 'is', null)
+      .order('compare_at_price', { ascending: false }).limit(40)
+      .then(({ data }) => {
+        if (!Array.isArray(data)) return;
+        const ranked = (data as unknown as Prod[])
+          .filter(p => p.compare_at_price && p.compare_at_price > p.price)
+          .sort((a, b) => ((b.compare_at_price! - b.price) - (a.compare_at_price! - a.price)))
+          .slice(0, 8);
+        setDeals(ranked);
+      });
   }, []);
 
   useEffect(() => {
@@ -451,6 +532,9 @@ export default function SmartKongLanding() {
           </div>
         </div>
       </section>
+
+      {/* ── AI-FOUND DEALS (savings band) ────────────────────────────────── */}
+      {deals.length >= 4 && <DealBand deals={deals} />}
 
       {/* ── FOR YOU (personalized) ───────────────────────────────────────── */}
       {forYou.length >= 4 && (

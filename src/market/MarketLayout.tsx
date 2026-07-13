@@ -4,12 +4,14 @@ import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { MARKET_CATEGORIES } from './categories';
 import {
-  Search, Sparkles, ShoppingCart, User, Store, Globe,
+  Search, Sparkles, ShoppingCart, User, Store, Globe, Heart,
   Facebook, Twitter, Instagram, Linkedin, GitCompare, X,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useCompare } from './useCompare';
+import { useWishlist } from './useWishlist';
 import { ThemeToggle, useMarketTheme, themeTokens } from './theme';
+import FloatingAssistant from './FloatingAssistant';
 import './market-theme.css';
 
 // Floating compare bar — appears on every market page when the shopper has
@@ -43,6 +45,7 @@ export function MarketHeader() {
   const navigate = useNavigate();
   const { cartCount } = useCart();
   const { user } = useAuth();
+  const { count: wishCount } = useWishlist();
   const [query, setQuery] = useState('');
 
   const submitSearch = (e: React.FormEvent) => {
@@ -94,6 +97,18 @@ export function MarketHeader() {
             >
               <Globe className="w-5 h-5" />
             </button>
+            <Link
+              to="/wishlist"
+              className="relative p-2.5 text-gray-500 hover:text-rose-500 hover:bg-gray-100 rounded-full transition-colors"
+              title="Wishlist"
+            >
+              <Heart className={`w-5 h-5 ${wishCount > 0 ? 'text-rose-500 fill-rose-500' : ''}`} />
+              {wishCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                  {wishCount}
+                </span>
+              )}
+            </Link>
             <Link
               to="/cart"
               className="relative p-2.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
@@ -207,6 +222,7 @@ export function MarketFooter() {
 
   return (
     <>
+    <FloatingAssistant />
     <CompareBar />
     <footer className="bg-[#05060A] border-t border-white/10 text-white">
       <div className="max-w-7xl mx-auto px-4 lg:px-8 py-16">
