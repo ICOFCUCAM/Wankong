@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import Seo from '@/components/Seo';
 import MarketLayout from './MarketLayout';
 import MarketProductCard from './MarketProductCard';
+import { Reveal } from './motion';
 import type { MarketProduct } from './useMarketCatalog';
 import { Sparkles, Search, Loader2 } from 'lucide-react';
 
@@ -75,17 +76,20 @@ export default function MarketAiSolverPage() {
       />
 
       <div className="max-w-4xl mx-auto px-4 lg:px-8 py-12">
-        <div className="text-center mb-10">
-          <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <Reveal className="text-center mb-10">
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg shadow-violet-500/25" style={{ background: 'var(--sk-aurora)' }}>
             <Sparkles className="w-7 h-7 text-white" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3">AI Problem Solver</h1>
-          <p className="text-gray-500 max-w-xl mx-auto">
-            Tell us what you're struggling with, and our AI matches you with the
-            products across SmartKong that can help — from courses and books to
-            partner-store gear.
+          <span className="sk-eyebrow justify-center mb-4">Describe it — we'll find it</span>
+          <h1 className="text-4xl md:text-6xl font-black tracking-[-0.03em] leading-[0.98] text-[var(--sk-ink)] mb-4">
+            What are you trying <span className="sk-serif sk-aurora-text pr-1">to solve?</span>
+          </h1>
+          <p className="text-gray-500 max-w-xl mx-auto leading-relaxed">
+            Tell us what you're struggling with, and our AI searches the world's
+            shelves — courses, books, gear and partner-store products — for what
+            actually solves it.
           </p>
-        </div>
+        </Reveal>
 
         <form
           onSubmit={e => { e.preventDefault(); solve(); }}
@@ -138,7 +142,7 @@ export default function MarketAiSolverPage() {
               Nothing matches that problem yet — try describing it differently.
             </p>
           ) : (
-            <div>
+            <Reveal>
               <h2 className="flex items-center gap-2 text-gray-900 font-bold mb-3">
                 <Sparkles className="w-4 h-4 text-blue-600" />
                 {results.length} solution{results.length > 1 ? 's' : ''} found
@@ -159,8 +163,8 @@ export default function MarketAiSolverPage() {
                 </div>
               )}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
-                {results.map(r => (
-                  <div key={r.id}>
+                {results.map((r, i) => (
+                  <Reveal key={r.id} delay={i * 55}>
                     <MarketProductCard product={r} />
                     {reasons[r.id] && (
                       <p className="mt-2 px-1 text-xs text-gray-500 leading-relaxed">
@@ -168,10 +172,10 @@ export default function MarketAiSolverPage() {
                         {reasons[r.id]}
                       </p>
                     )}
-                  </div>
+                  </Reveal>
                 ))}
               </div>
-            </div>
+            </Reveal>
           )
         )}
       </div>
