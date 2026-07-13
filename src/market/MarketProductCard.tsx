@@ -53,7 +53,7 @@ export default function MarketProductCard({ product }: { product: MarketProduct 
   return (
     <Link
       to={link}
-      className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg hover:border-blue-200 transition-all flex flex-col"
+      className="group bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-blue-500/5 hover:border-blue-200 hover:-translate-y-1 transition-all duration-300 flex flex-col"
     >
       <div className="relative aspect-square bg-gray-50 overflow-hidden">
         <img src={image} alt={product.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -119,14 +119,16 @@ export default function MarketProductCard({ product }: { product: MarketProduct 
           {product.is_affiliate ? (
             <button
               onClick={handlePartner}
-              className="flex items-center gap-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-colors"
+              className="flex items-center gap-1 px-3 py-2 text-white text-xs font-semibold rounded-lg transition-opacity hover:opacity-90 shadow-sm shadow-blue-500/20"
+              style={{ background: 'var(--sk-aurora, #2563EB)' }}
             >
               View Deal <ExternalLink className="w-3 h-3" />
             </button>
           ) : priceUsd > 0 ? (
             <button
               onClick={handleAdd}
-              className="flex items-center gap-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-colors"
+              className="flex items-center gap-1 px-3 py-2 text-white text-xs font-semibold rounded-lg transition-opacity hover:opacity-90 shadow-sm shadow-blue-500/20"
+              style={{ background: 'var(--sk-aurora, #2563EB)' }}
             >
               <ShoppingCart className="w-3.5 h-3.5" /> Add
             </button>
