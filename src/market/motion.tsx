@@ -66,6 +66,32 @@ export function Tilt({ max = 7, className = '', children }: { max?: number; clas
   return <div ref={ref} className={`sk-tilt ${className}`}>{children}</div>;
 }
 
+// ── ScrollProgress: a thin aurora meridian tracking page scroll ────────────────
+export function ScrollProgress() {
+  const ref = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const bar = ref.current; if (!bar) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const h = document.documentElement;
+      const max = h.scrollHeight - h.clientHeight;
+      const p = max > 0 ? Math.min(1, h.scrollTop / max) : 0;
+      bar.style.transform = `scaleX(${p.toFixed(4)})`;
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); if (raf) cancelAnimationFrame(raf); };
+  }, []);
+  return (
+    <div aria-hidden className="fixed top-0 left-0 right-0 z-[60] h-[3px] pointer-events-none">
+      <div ref={ref} className="h-full w-full origin-left" style={{ transform: 'scaleX(0)', background: 'linear-gradient(90deg,#2563EB,#7C3AED 55%,#06B6D4)' }} />
+    </div>
+  );
+}
+
 // ── ArcSeam: the meridian horizon between sections — the brand's signature ─────
 export function ArcSeam({ from = '#FFFFFF', to, flip = false }: { from?: string; to?: string; flip?: boolean }) {
   return (

@@ -12,6 +12,7 @@ import { useWishlist } from './useWishlist';
 import { ThemeToggle, useMarketTheme, themeTokens } from './theme';
 import FloatingAssistant from './FloatingAssistant';
 import CommandPalette from './CommandPalette';
+import { ScrollProgress } from './motion';
 import './market-theme.css';
 import './brand.css';
 
@@ -343,6 +344,7 @@ export default function MarketLayout({ children }: { children: React.ReactNode }
       className={`sk-market min-h-screen flex flex-col ${T.page} ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}
       data-mktheme={theme}
     >
+      <ScrollProgress />
       <MarketHeader />
       <CommandPalette />
       <main className="flex-1">{children}</main>
