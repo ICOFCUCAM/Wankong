@@ -1002,7 +1002,7 @@ export default function SmartKongLanding() {
   };
 
   return (
-    <div className={`min-h-screen ${T.page}`}>
+    <div className={`sk-market min-h-screen ${T.page}`}>
       <style>{`
         @keyframes sk-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-16px)} }
         @keyframes sk-drift { 0%,100%{transform:translate(0,0)} 33%{transform:translate(40px,-30px)} 66%{transform:translate(-30px,20px)} }
