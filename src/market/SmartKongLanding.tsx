@@ -1052,7 +1052,7 @@ export default function SmartKongLanding() {
             </p>
 
             {/* Search card */}
-            <div className="sk-rise max-w-xl bg-white rounded-2xl shadow-[0_24px_60px_-20px_rgba(30,58,138,0.35)] ring-1 ring-black/[0.04] p-2.5" style={{ animationDelay: '.15s' }}>
+            <div className="sk-rise max-w-xl bg-white rounded-2xl shadow-[0_24px_60px_-20px_rgba(30,58,138,0.35)] ring-1 ring-black/[0.04] p-2.5 transition-all duration-300 focus-within:ring-2 focus-within:ring-violet-400/60 focus-within:shadow-[0_28px_80px_-20px_rgba(124,58,237,0.45)]" style={{ animationDelay: '.15s' }}>
               <div className="flex items-center gap-2 px-3">
                 <Search className="w-5 h-5 text-gray-400 shrink-0" />
                 <input
@@ -1078,7 +1078,7 @@ export default function SmartKongLanding() {
                 <button
                   key={it.label}
                   onClick={() => onIntent(it)}
-                  className="px-3.5 py-2 rounded-full bg-white border border-gray-200 text-sm font-medium text-gray-700 hover:border-blue-400 hover:text-blue-700 hover:shadow-sm active:scale-95 transition-all"
+                  className="px-3.5 py-2 rounded-full bg-white border border-gray-200 text-sm font-medium text-gray-700 hover:border-violet-400 hover:text-violet-700 hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all"
                 >
                   {it.label}
                 </button>
@@ -1117,8 +1117,8 @@ export default function SmartKongLanding() {
         <div className="relative max-w-7xl mx-auto px-4 lg:px-8 pb-16 md:pb-20">
           <div className="rounded-2xl bg-white shadow-[0_20px_50px_-24px_rgba(30,58,138,0.35)] ring-1 ring-black/[0.04] grid grid-cols-2 md:grid-cols-5 divide-x divide-gray-100">
             {HERO_STATS.map(s => (
-              <div key={s.label} className="flex items-center justify-center gap-3 px-4 py-6">
-                <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center shrink-0"><s.Icon className="w-5 h-5 text-blue-600" /></div>
+              <div key={s.label} className="group flex items-center justify-center gap-3 px-4 py-6">
+                <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 transition-transform group-hover:rotate-[8deg]"><s.Icon className="w-5 h-5 text-blue-600" /></div>
                 <div>
                   <p className="text-xl md:text-2xl font-black text-gray-900 leading-none"><CountUp value={s.value} suffix={s.suffix} /></p>
                   <p className="text-xs text-gray-400 mt-1">{s.label}</p>
