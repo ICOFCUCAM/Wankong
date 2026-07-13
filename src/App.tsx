@@ -109,9 +109,10 @@ const AiSolverPage = lazy(() => import('./pages/AiSolverPage'));
 
 // ── smartkong.net (VITE_SITE_MODE=market) ──────────────────────────────────────
 // SmartKong pages (light, blue design ported from the original SmartKongMarket app)
-const SmartKongHome      = lazy(() => import('./market/SmartKongHome'));
-const MarketProductPage  = lazy(() => import('./market/MarketProductPage'));
-const MarketAiSolverPage = lazy(() => import('./market/MarketAiSolverPage'));
+const SmartKongHome           = lazy(() => import('./market/SmartKongHome'));
+const MarketProductPage       = lazy(() => import('./market/MarketProductPage'));
+const MarketAiSolverPage      = lazy(() => import('./market/MarketAiSolverPage'));
+const MarketAffiliateAdminPage = lazy(() => import('./market/MarketAffiliateAdminPage'));
 
 // ── Library ────────────────────────────────────────────────────────────────────
 const LibraryPage = lazy(() => import('./pages/LibraryPage'));
@@ -139,6 +140,7 @@ export default function App() {
           {/* ── Public ─────────────────────────────────────────────────────── */}
           <Route path="/"                         element={IS_MARKET_SITE ? <SmartKongHome /> : <Index />} />
           {IS_MARKET_SITE && <Route path="/category/:slug" element={<SmartKongHome />} />}
+          {IS_MARKET_SITE && <Route path="/admin/affiliates" element={<MarketAffiliateAdminPage />} />}
           <Route path="/cart"                     element={<CartPage />} />
           <Route path="/checkout"                 element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
           <Route path="/order-confirmation"       element={<OrderConfirmation />} />

@@ -16,10 +16,11 @@ import { toast } from 'sonner';
 const BLUE = '#2563EB';
 
 const SUPPORT_LINKS = [
-  { label: 'Help Center',      href: '/help' },
-  { label: 'Contact Us',       href: '/contact' },
-  { label: 'FAQ',              href: '/faq' },
-  { label: 'Become a Vendor',  href: '/vendor/register' },
+  { label: 'Help Center',       href: '/help' },
+  { label: 'Contact Us',        href: '/contact' },
+  { label: 'FAQ',               href: '/faq' },
+  { label: 'Become a Vendor',   href: '/vendor/register' },
+  { label: 'Affiliate Backend', href: '/admin/affiliates' },
 ];
 
 const POWERED_BY = ['Amazon', 'AutoTrader', 'Carvana', 'Caterpillar', 'CJ Affiliate'];

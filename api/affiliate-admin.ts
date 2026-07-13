@@ -30,16 +30,17 @@ async function requireAdmin(req: VercelRequest) {
 async function cjConfig(supabase: ReturnType<typeof serviceClient>): Promise<CjConfig> {
   const { data: account } = await supabase
     .from('affiliate_accounts')
-    .select('cj_personal_access_token, cj_publisher_id, cj_site_id')
+    .select('cj_personal_access_token, cj_publisher_id, cj_site_id, credentials')
     .eq('provider', 'cj')
     .eq('is_active', true)
     .limit(1)
     .maybeSingle();
 
+  const creds = (account?.credentials ?? {}) as Record<string, string>;
   const config: CjConfig = {
-    apiToken:    account?.cj_personal_access_token || process.env.CJ_AFFILIATE_API_TOKEN || '',
-    publisherId: account?.cj_publisher_id          || process.env.CJ_AFFILIATE_PUBLISHER_ID || '',
-    siteId:      account?.cj_site_id               || process.env.CJ_AFFILIATE_SITE_ID || '',
+    apiToken:    creds.api_token    || account?.cj_personal_access_token || process.env.CJ_AFFILIATE_API_TOKEN || '',
+    publisherId: creds.publisher_id || account?.cj_publisher_id          || process.env.CJ_AFFILIATE_PUBLISHER_ID || '',
+    siteId:      creds.site_id      || account?.cj_site_id               || process.env.CJ_AFFILIATE_SITE_ID || '',
   };
   if (!config.apiToken || !config.siteId) {
     throw new Error('CJ Affiliate is not configured — add a CJ account under Admin → Affiliates.');

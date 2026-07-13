@@ -1,13 +1,17 @@
-// Affiliate network adapters — ported from SmartKongMarket's adapter pattern.
-// Each network knows how to turn a plain product URL into a commission-tracked
-// affiliate link using the credentials stored in affiliate_accounts.
+// Affiliate link building — generalized over the network registry
+// (src/lib/affiliateNetworks.ts), which defines 30+ networks, their
+// credential fields, and how a plain product URL becomes a tracked link.
 
-export type AffiliateProvider = 'amazon' | 'cj' | 'rakuten' | 'temu';
+import { networkById, buildTrackedLink } from '../../src/lib/affiliateNetworks';
+
+export type AffiliateProvider = string;
 
 export interface AffiliateAccount {
   id?: string;
-  provider: AffiliateProvider;
+  provider: string;
   label?: string;
+  credentials?: Record<string, string | null> | null;
+  // Legacy dedicated columns (pre-registry rows)
   amazon_associate_tag?: string | null;
   cj_personal_access_token?: string | null;
   cj_publisher_id?: string | null;
@@ -19,47 +23,31 @@ export interface AffiliateAccount {
   temu_promo_code?: string | null;
 }
 
-type LinkBuilder = (originalUrl: string, account: AffiliateAccount) => string;
-
-const builders: Record<AffiliateProvider, LinkBuilder> = {
-  amazon(originalUrl, account) {
-    if (!account.amazon_associate_tag) throw new Error('Amazon associate tag not configured');
-    const url = new URL(originalUrl);
-    url.searchParams.set('tag', account.amazon_associate_tag);
-    return url.toString();
-  },
-  cj(originalUrl, account) {
-    if (!account.cj_site_id) throw new Error('CJ site ID not configured');
-    const url = new URL(originalUrl);
-    url.searchParams.set('sid', account.cj_site_id);
-    return url.toString();
-  },
-  rakuten(originalUrl, account) {
-    if (!account.rakuten_affiliate_id) throw new Error('Rakuten affiliate ID not configured');
-    const url = new URL(originalUrl);
-    url.searchParams.set('mid', account.rakuten_affiliate_id);
-    return url.toString();
-  },
-  temu(originalUrl, account) {
-    if (!account.temu_campaign_id && !account.temu_promo_code) {
-      throw new Error('Temu campaign ID or promo code not configured');
-    }
-    const url = new URL(originalUrl);
-    if (account.temu_campaign_id) url.searchParams.set('campaign_id', account.temu_campaign_id);
-    if (account.temu_promo_code)  url.searchParams.set('promo', account.temu_promo_code);
-    return url.toString();
-  },
-};
+// Maps the legacy dedicated columns into registry credential keys so
+// accounts created before migration 044 keep building links.
+function effectiveCredentials(account: AffiliateAccount): Record<string, string | null | undefined> {
+  return {
+    associate_tag: account.amazon_associate_tag,
+    api_token:     account.cj_personal_access_token,
+    publisher_id:  account.cj_publisher_id,
+    site_id:       account.cj_site_id,
+    affiliate_id:  account.rakuten_affiliate_id,
+    api_key:       account.rakuten_api_key ?? account.temu_api_key,
+    campaign_id:   account.temu_campaign_id,
+    promo_code:    account.temu_promo_code,
+    ...(account.credentials ?? {}),
+  };
+}
 
 export function buildAffiliateLink(
-  provider: AffiliateProvider,
+  provider: string,
   originalUrl: string,
   account: AffiliateAccount,
 ): string {
-  const builder = builders[provider];
-  if (!builder) throw new Error(`Unsupported provider: ${provider}`);
+  const network = networkById(provider);
+  if (!network) throw new Error(`Unsupported provider: ${provider}`);
   try {
-    return builder(originalUrl, account);
+    return buildTrackedLink(network, originalUrl, effectiveCredentials(account));
   } catch (err: any) {
     if (err instanceof TypeError) throw new Error('Invalid URL format');
     throw err;
