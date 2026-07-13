@@ -7,6 +7,7 @@ import { CreditCard, Lock, ShieldCheck, Smartphone } from 'lucide-react';
 import MobileMoneyModal from '@/components/MobileMoneyModal';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { SITE_NAME } from '@/lib/site';
 
 type PayMethod = 'card' | 'mobile_money' | 'paypal';
 
@@ -267,7 +268,10 @@ export default function CheckoutPage() {
 
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold text-white">Checkout</h1>
+          <div>
+            <h1 className="text-2xl font-bold text-white">Checkout</h1>
+            {SITE_NAME === 'SmartKong' && <p className="text-white/40 text-sm mt-0.5">One checkout · every store on Earth.</p>}
+          </div>
           <div className="flex items-center gap-1.5 text-emerald-400 text-xs">
             <ShieldCheck className="w-4 h-4" />
             <span>Secure checkout</span>
@@ -434,7 +438,7 @@ export default function CheckoutPage() {
                             body:    JSON.stringify({
                               currency:    'USD',
                               orderId:     oid,
-                              description: `WANKONG Order ${oid}`,
+                              description: `${SITE_NAME} Order ${oid}`,
                             }),
                           });
 
