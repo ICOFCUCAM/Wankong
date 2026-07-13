@@ -1192,7 +1192,7 @@ export default function SmartKongLanding() {
           <section className={`${T.sectionB} py-20 md:py-28`}>
             <div className="max-w-7xl mx-auto px-4 lg:px-8">
               <div className="flex items-end justify-between mb-10">
-                <SectionHead eyebrow="What the world is buying" title="Featured today" tokens={T} sub="The products SmartKong shoppers are searching, comparing and buying right now." />
+                <SectionHead eyebrow={isBiz ? 'What buyers are sourcing' : 'What the world is buying'} title={isBiz ? 'In demand now' : 'Featured today'} tokens={T} sub={isBiz ? 'The products buyers are quoting, comparing and ordering in volume right now.' : 'The products SmartKong shoppers are searching, comparing and buying right now.'} />
                 <Link to="/shop" className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-500">View all <ArrowRight className="w-4 h-4" /></Link>
               </div>
               {trending[0] && <FeaturedDeal p={trending[0]} tokens={T} />}
@@ -1215,70 +1215,150 @@ export default function SmartKongLanding() {
       <Spotlight className="bg-[#070810] py-20 md:py-28 overflow-hidden">
         <div className="relative z-[1] max-w-7xl mx-auto px-4 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
           <div>
-            <span className="sk-eyebrow !text-cyan-300">Compare · Buy · One cart</span>
+            <span className="sk-eyebrow !text-cyan-300">{isBiz ? 'Quote · Compare · One request' : 'Compare · Buy · One cart'}</span>
             <h2 className="text-4xl md:text-6xl font-black tracking-tight text-white mt-3 leading-[1.02]">
-              One cart across<br /><span className="sk-serif sk-aurora-text">every store on Earth.</span>
+              {isBiz
+                ? <>One request across<br /><span className="sk-serif sk-aurora-text">every supplier on Earth.</span></>
+                : <>One cart across<br /><span className="sk-serif sk-aurora-text">every store on Earth.</span></>}
             </h2>
             <p className="text-white/55 mt-5 max-w-md leading-relaxed">
-              SmartKong compares Amazon, Apple, Best Buy, Walmart and thousands more, then routes you to the lowest price. Check out SmartKong sellers in one cart, or buy partner deals in a single tap at the store.
+              {isBiz
+                ? 'Send one request and SmartKong fans it out to thousands of suppliers, factories and wholesalers — then ranks the quotes by unit price, MOQ, lead time and trust.'
+                : 'SmartKong compares Amazon, Apple, Best Buy, Walmart and thousands more, then routes you to the lowest price. Check out SmartKong sellers in one cart, or buy partner deals in a single tap at the store.'}
             </p>
             <ul className="mt-6 space-y-3">
-              {['Compare every store, buy at the best price', 'One cart & one checkout for SmartKong sellers', 'Partner deals open securely at the store'].map(t => (
+              {(isBiz
+                ? ['One request reaches thousands of suppliers', 'Compare bulk pricing, MOQ & lead time', 'Trade assurance & escrow on every order']
+                : ['Compare every store, buy at the best price', 'One cart & one checkout for SmartKong sellers', 'Partner deals open securely at the store']
+              ).map(t => (
                 <li key={t} className="flex items-center gap-2.5 text-white/80"><CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" /> {t}</li>
               ))}
             </ul>
-            <button onClick={() => navigate('/cart')} className="mt-8 inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-bold shadow-lg shadow-blue-500/25 hover:opacity-90 transition-opacity">
-              See it in your cart <ArrowRight className="w-4 h-4" />
+            <button onClick={() => navigate(isBiz ? '/shop?q=bulk%20quote' : '/cart')} className="mt-8 inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-bold shadow-lg shadow-blue-500/25 hover:opacity-90 transition-opacity">
+              {isBiz ? 'Start a request' : 'See it in your cart'} <ArrowRight className="w-4 h-4" />
             </button>
           </div>
 
           <div className="relative">
             <div className="absolute -inset-4 rounded-[2rem] opacity-40 blur-3xl" style={{ background: 'radial-gradient(circle at 60% 40%, #2563EB, transparent 60%)' }} aria-hidden />
-            <div className="relative rounded-3xl bg-white shadow-2xl p-6">
-              <div className="flex items-center justify-between mb-4">
-                <span className="flex items-center gap-2 font-bold text-gray-900"><ShoppingCart className="w-5 h-5 text-blue-600" /> Your SmartKong cart</span>
-                <span className="text-xs text-gray-400">4 stores · 4 items</span>
-              </div>
-              <div className="space-y-2.5">
-                {CART_DEMO.map(it => (
-                  <div key={it.title} className="flex items-center gap-3 p-2.5 rounded-xl bg-gray-50">
-                    <div className="w-10 h-10 rounded-lg bg-white ring-1 ring-black/5 flex items-center justify-center shrink-0"><VendorMark vendor={it.store} /></div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-gray-900 truncate">{it.title}</p>
-                      <p className="text-[11px] text-gray-400">{it.store}</p>
-                    </div>
-                    <span className="font-bold text-gray-900">${it.price}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-gray-400">One checkout · 4 stores</p>
-                  <p className="text-2xl font-black text-gray-900">$2,645</p>
+            {isBiz ? (
+              <div className="relative rounded-3xl bg-white shadow-2xl p-6">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="flex items-center gap-2 font-bold text-gray-900"><Package className="w-5 h-5 text-blue-600" /> Quote request</span>
+                  <span className="text-xs text-emerald-600 font-semibold">4 quotes · live</span>
                 </div>
-                <button onClick={() => navigate('/cart')} className="flex items-center gap-2 px-5 py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-colors">
-                  <Lock className="w-4 h-4" /> Checkout once
-                </button>
+                <p className="text-xs text-gray-400 mb-4">5,000 × USB-C LED bulbs · MOQ 1,000</p>
+                <div className="space-y-2.5">
+                  {[
+                    { s: 'Shenzhen Lumina Co.', unit: '$0.82', lead: '12 days', best: true },
+                    { s: 'Guangzhou BrightWorks', unit: '$0.91', lead: '9 days' },
+                    { s: 'Bombay Electricals Ltd.', unit: '$0.97', lead: '18 days' },
+                    { s: 'İzmir Aydınlatma A.Ş.', unit: '$1.04', lead: '7 days' },
+                  ].map(q => (
+                    <div key={q.s} className={`flex items-center gap-3 p-2.5 rounded-xl ${q.best ? 'bg-emerald-50 ring-1 ring-emerald-200' : 'bg-gray-50'}`}>
+                      <div className="w-9 h-9 rounded-lg bg-white ring-1 ring-black/5 flex items-center justify-center shrink-0 text-gray-500"><Store className="w-4 h-4" /></div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-gray-900 truncate flex items-center gap-1.5">{q.s}{q.best && <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-600 text-white font-bold">BEST</span>}</p>
+                        <p className="text-[11px] text-gray-400">Lead {q.lead}</p>
+                      </div>
+                      <span className={`font-bold ${q.best ? 'text-emerald-600' : 'text-gray-900'}`}>{q.unit}<span className="text-[10px] text-gray-400">/unit</span></span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                  <div>
+                    <p className="text-xs text-gray-400">Best quote · 5,000 units</p>
+                    <p className="text-2xl font-black text-gray-900">$4,100</p>
+                  </div>
+                  <button onClick={() => navigate('/shop?q=bulk%20quote')} className="flex items-center gap-2 px-5 py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-colors">
+                    <Lock className="w-4 h-4" /> Accept quote
+                  </button>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="relative rounded-3xl bg-white shadow-2xl p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="flex items-center gap-2 font-bold text-gray-900"><ShoppingCart className="w-5 h-5 text-blue-600" /> Your SmartKong cart</span>
+                  <span className="text-xs text-gray-400">4 stores · 4 items</span>
+                </div>
+                <div className="space-y-2.5">
+                  {CART_DEMO.map(it => (
+                    <div key={it.title} className="flex items-center gap-3 p-2.5 rounded-xl bg-gray-50">
+                      <div className="w-10 h-10 rounded-lg bg-white ring-1 ring-black/5 flex items-center justify-center shrink-0"><VendorMark vendor={it.store} /></div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-gray-900 truncate">{it.title}</p>
+                        <p className="text-[11px] text-gray-400">{it.store}</p>
+                      </div>
+                      <span className="font-bold text-gray-900">${it.price}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                  <div>
+                    <p className="text-xs text-gray-400">One checkout · 4 stores</p>
+                    <p className="text-2xl font-black text-gray-900">$2,645</p>
+                  </div>
+                  <button onClick={() => navigate('/cart')} className="flex items-center gap-2 px-5 py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-colors">
+                    <Lock className="w-4 h-4" /> Checkout once
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </Spotlight>
+
+      {/* ── SOURCING CAPABILITIES (business mode only) ───────────────────── */}
+      {isBiz && (
+        <section className={`${T.sectionA} py-20 md:py-28`}>
+          <div className="max-w-7xl mx-auto px-4 lg:px-8">
+            <Reveal className="max-w-2xl">
+              <span className="sk-eyebrow">Built for buyers</span>
+              <h2 className={`text-4xl md:text-6xl font-black tracking-[-0.03em] mt-3 ${T.heading}`}>
+                Everything sourcing needs, <span className="sk-serif sk-aurora-text">in one layer.</span>
+              </h2>
+            </Reveal>
+            <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { Icon: MessageSquare, k: 'RFQ in one place', v: 'One request reaches thousands of verified suppliers; quotes stream back ranked by price, MOQ and lead time.' },
+                { Icon: Tag, k: 'Bulk pricing tiers', v: 'See volume breakpoints across every supplier at once — the more you order, the more SmartKong saves you.' },
+                { Icon: ShieldCheck, k: 'Trade assurance', v: 'Escrow, verified factories and dispute protection on every order, so you pay only when it ships as agreed.' },
+                { Icon: Package, k: 'Consolidated logistics', v: 'Combine orders from many suppliers into one shipment, with freight, customs and duties estimated up front.' },
+                { Icon: Globe, k: 'Import made simple', v: 'HS codes, landed-cost calculators and door-to-door tracking — import from anywhere without the paperwork maze.' },
+                { Icon: Sparkles, k: 'AI sourcing agent', v: 'Describe what you need; the AI finds suppliers, compares quotes and flags risk before you commit.' },
+              ].map((b, i) => (
+                <Reveal key={b.k} delay={i * 60}>
+                  <div className={`h-full rounded-3xl border p-7 transition-all duration-300 hover:-translate-y-1 ${theme === 'light' ? 'border-gray-200 bg-white' : 'border-white/10 bg-white/[0.03]'}`}>
+                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white mb-5 shadow-lg shadow-blue-500/25" style={{ background: 'var(--sk-aurora)' }}><b.Icon className="w-6 h-6" /></div>
+                    <p className={`text-lg font-bold ${T.cardTitle}`}>{b.k}</p>
+                    <p className={`mt-2 leading-relaxed ${T.cardMeta}`}>{b.v}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── TWO WAYS TO SHOP (intent shoppers + discovery shoppers) ──────── */}
       <section className={`${T.sectionB} py-20 md:py-28`}>
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
           <Reveal className="text-center max-w-2xl mx-auto">
-            <span className="sk-eyebrow justify-center">However you shop</span>
+            <span className="sk-eyebrow justify-center">{isBiz ? 'However you source' : 'However you shop'}</span>
             <h2 className={`text-4xl md:text-6xl font-black tracking-[-0.03em] mt-3 ${T.heading}`}>
-              Two ways to shop.<br /><span className="sk-serif sk-aurora-text">One layer for both.</span>
+              {isBiz
+                ? <>Two ways to source.<br /><span className="sk-serif sk-aurora-text">One layer for both.</span></>
+                : <>Two ways to shop.<br /><span className="sk-serif sk-aurora-text">One layer for both.</span></>}
             </h2>
           </Reveal>
           <div className="mt-14 grid md:grid-cols-2 gap-6">
-            {[
+            {(isBiz ? [
+              { tag: 'Know your specs', title: 'Request quotes.', accent: 'quotes.', body: 'Describe the spec and quantity. SmartKong sends one request to thousands of suppliers and factories, then ranks the quotes by unit price, MOQ and lead time.', Icon: MessageSquare, cta: 'Start a request', to: '/shop?q=bulk%20quote', chips: ['“5,000 LED bulbs, MOQ 1,000”', '“custom-branded packaging”', '“OEM bluetooth earbuds”'] },
+              { tag: 'Scaling a business', title: 'Source suppliers.', accent: 'suppliers.', body: 'Browse verified suppliers, factories and wholesalers worldwide — with trade assurance, bulk pricing tiers and consolidated logistics built in.', Icon: Globe, cta: 'Explore suppliers', to: '/shop?q=wholesale%20suppliers', chips: ['Verified factories', 'Bulk pricing tiers', 'Import & logistics'] },
+            ] : [
               { tag: 'Know what you want', title: 'Just ask.', accent: 'ask.', body: 'Type it like you\'d say it. SmartKong sweeps every store, ranks by price and trust, and hands you the answer — no tabs, no guessing.', Icon: MessageSquare, cta: 'Ask the AI', to: '/ai-solver', chips: ['“gaming laptop under €1,500”', '“a gift for a 6-year-old”', '“cheapest iPhone 15 Pro”'] },
               { tag: 'Here to be inspired', title: 'Just browse.', accent: 'browse.', body: 'Wander a living catalog of what the world is loving right now — curated kits, trending picks and editorial collections that make you want to buy.', Icon: Globe, cta: 'Explore the catalog', to: '/shop', chips: ['AI Collections', 'Trending this week', 'Every category'] },
-            ].map((c, i) => (
+            ]).map((c, i) => (
               <Reveal key={c.title} delay={i * 110}>
                 <div className={`group h-full rounded-[2rem] border p-8 md:p-10 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl ${theme === 'light' ? 'border-gray-200 bg-white' : 'border-white/10 bg-white/[0.03]'}`}>
                   <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-blue-500/25 transition-transform group-hover:rotate-[8deg]" style={{ background: 'var(--sk-aurora)' }}>
