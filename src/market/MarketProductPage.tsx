@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import Seo from '@/components/Seo';
 import MarketLayout from './MarketLayout';
 import MarketProductCard, { Stars } from './MarketProductCard';
+import { Reveal } from './motion';
 import { VendorMark } from './HeroProductArt';
 import type { MarketProduct } from './useMarketCatalog';
 import {
@@ -78,7 +79,7 @@ function MarketReviews({ productId, canReview }: { productId: string; canReview:
   return (
     <section className="mt-12">
       <div className="flex items-center justify-between mb-5">
-        <h2 className="text-xl font-extrabold text-gray-900">Customer Reviews ({reviews.length})</h2>
+        <h2 className="text-2xl font-black tracking-[-0.02em] text-gray-900">What buyers <span className="sk-serif sk-aurora-text pr-1">say.</span> <span className="text-base font-semibold text-gray-400">({reviews.length})</span></h2>
         {user && canReview && (
           <button
             onClick={() => setShowForm(!showForm)}
@@ -405,12 +406,15 @@ export default function MarketProductPage() {
 
         {/* Related */}
         {related.length > 0 && (
-          <section className="mt-14">
-            <h2 className="text-xl font-extrabold text-gray-900 mb-5">You may also like</h2>
+          <Reveal as="section" className="mt-14">
+            <span className="sk-eyebrow mb-3">More to explore</span>
+            <h2 className="text-2xl font-black tracking-[-0.02em] text-gray-900 mb-5">You may also <span className="sk-serif sk-aurora-text pr-1">like.</span></h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-              {related.map(p => <MarketProductCard key={p.id} product={p} />)}
+              {related.map((p, i) => (
+                <Reveal key={p.id} delay={i * 60}><MarketProductCard product={p} /></Reveal>
+              ))}
             </div>
-          </section>
+          </Reveal>
         )}
       </div>
     </MarketLayout>
@@ -447,9 +451,10 @@ function StorePriceCompare({ product, priceUsd, isAffiliate, onBuyHere }: {
   };
 
   return (
-    <section className="mt-12">
+    <Reveal as="section" className="mt-12">
+      <span className="sk-eyebrow mb-2">The shopping layer</span>
       <div className="flex items-center gap-2 mb-1.5">
-        <h2 className="text-lg font-extrabold text-gray-900">Compare this price across stores</h2>
+        <h2 className="text-2xl font-black tracking-[-0.02em] text-gray-900">One product. <span className="sk-serif sk-aurora-text pr-1">Every price.</span></h2>
         <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[10px] font-bold"><Sparkles className="w-3 h-3" /> AI-CHECKED</span>
       </div>
       <p className="text-sm text-gray-500 mb-4">SmartKong searches every store so you always land on the lowest price.</p>
@@ -479,7 +484,7 @@ function StorePriceCompare({ product, priceUsd, isAffiliate, onBuyHere }: {
           );
         })}
       </div>
-    </section>
+    </Reveal>
   );
 }
 
