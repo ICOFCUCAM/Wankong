@@ -1210,6 +1210,45 @@ export default function SmartKongLanding() {
         </div>
       </section>
 
+      {/* ── TWO WAYS TO SHOP (intent shoppers + discovery shoppers) ──────── */}
+      <section className={`${T.sectionB} py-20 md:py-28`}>
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <Reveal className="text-center max-w-2xl mx-auto">
+            <span className="sk-eyebrow justify-center">However you shop</span>
+            <h2 className={`text-4xl md:text-6xl font-black tracking-[-0.03em] mt-3 ${T.heading}`}>
+              Two ways to shop.<br /><span className="sk-serif sk-aurora-text">One layer for both.</span>
+            </h2>
+          </Reveal>
+          <div className="mt-14 grid md:grid-cols-2 gap-6">
+            {[
+              { tag: 'Know what you want', title: 'Just ask.', accent: 'ask.', body: 'Type it like you\'d say it. SmartKong sweeps every store, ranks by price and trust, and hands you the answer — no tabs, no guessing.', Icon: MessageSquare, cta: 'Ask the AI', to: '/ai-solver', chips: ['“gaming laptop under €1,500”', '“a gift for a 6-year-old”', '“cheapest iPhone 15 Pro”'] },
+              { tag: 'Here to be inspired', title: 'Just browse.', accent: 'browse.', body: 'Wander a living catalog of what the world is loving right now — curated kits, trending picks and editorial collections that make you want to buy.', Icon: Globe, cta: 'Explore the catalog', to: '/shop', chips: ['AI Collections', 'Trending this week', 'Every category'] },
+            ].map((c, i) => (
+              <Reveal key={c.title} delay={i * 110}>
+                <div className={`group h-full rounded-[2rem] border p-8 md:p-10 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl ${theme === 'light' ? 'border-gray-200 bg-white' : 'border-white/10 bg-white/[0.03]'}`}>
+                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-blue-500/25 transition-transform group-hover:rotate-[8deg]" style={{ background: 'var(--sk-aurora)' }}>
+                    <c.Icon className="w-6 h-6" />
+                  </div>
+                  <span className="sk-eyebrow mb-3">{c.tag}</span>
+                  <h3 className={`text-3xl md:text-4xl font-black tracking-tight ${T.heading}`}>
+                    {c.title.replace(c.accent, '')}<span className="sk-serif sk-aurora-text">{c.accent}</span>
+                  </h3>
+                  <p className={`mt-4 leading-relaxed ${T.body}`}>{c.body}</p>
+                  <div className="mt-6 flex flex-wrap gap-2">
+                    {c.chips.map(ch => (
+                      <span key={ch} className={`px-3 py-1.5 rounded-full text-xs font-medium ${theme === 'light' ? 'bg-[var(--sk-mist)] text-gray-600' : 'bg-white/[0.06] text-white/70'}`}>{ch}</span>
+                    ))}
+                  </div>
+                  <button onClick={() => navigate(c.to)} className="mt-7 inline-flex items-center gap-2 font-bold text-blue-600 hover:gap-3 transition-all">
+                    {c.cta} <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── ONE CHECKOUT (the shopping-layer promise, made tangible) ─────── */}
       <Spotlight className="bg-[#070810] py-20 md:py-28 overflow-hidden">
         <div className="relative z-[1] max-w-7xl mx-auto px-4 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
