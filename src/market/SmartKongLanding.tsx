@@ -438,6 +438,7 @@ function HeroCard({ c }: { c: (typeof HERO_CARDS)[number] }) {
   const PRICE = c.size === 'lg' ? 'text-base' : 'text-[15px]';
   return (
     <div className={`sk-float absolute z-10 ${c.pos}`} style={{ animationDelay: c.delay }}>
+      <Tilt max={9}>
       <button
         onClick={() => navigate(c.href ?? `/shop?q=${encodeURIComponent(c.title)}`)}
         title={`Shop ${c.title}`}
@@ -481,6 +482,7 @@ function HeroCard({ c }: { c: (typeof HERO_CARDS)[number] }) {
           </div>
         </div>
       </button>
+      </Tilt>
     </div>
   );
 }
@@ -1280,10 +1282,10 @@ export default function SmartKongLanding() {
       {/* ── AI COLLECTIONS (discovery signature — products that work together) */}
       <section className={`${T.sectionA} py-20 md:py-28`}>
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
-          <div className="flex items-end justify-between mb-10">
+          <Reveal className="flex items-end justify-between mb-10">
             <SectionHead eyebrow="AI Collections" title="Curated to work together" tokens={T} sub="Don’t just buy a product — buy the whole setup. Our AI assembles complete kits where everything fits." />
             <Link to="/shop" className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-500">Browse all <ArrowRight className="w-4 h-4" /></Link>
-          </div>
+          </Reveal>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {COLLECTIONS.map(col => (
               <button
