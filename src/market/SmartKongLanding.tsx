@@ -409,19 +409,20 @@ const STORIES = [
 
 function Testimonials({ tokens }: { tokens: ReturnType<typeof themeTokens> }) {
   return (
-    <div className="grid md:grid-cols-3 gap-6 mt-10">
-      {STORIES.map(s => (
-        <div key={s.name} className={`rounded-2xl p-7 ${tokens.card}`}>
-          <div className="flex items-center gap-1 text-amber-400 mb-4">{[1, 2, 3, 4, 5].map(n => <Star key={n} className="w-4 h-4 fill-amber-400" />)}</div>
-          <p className={`text-[15px] leading-relaxed mb-6 ${tokens.cardTitle}`}>“{s.quote}”</p>
+    <div className="grid md:grid-cols-3 gap-6 mt-12">
+      {STORIES.map((s, i) => (
+        <Reveal key={s.name} delay={i * 100} className={`relative rounded-3xl p-8 pt-12 ${tokens.card}`}>
+          <span className="absolute -top-1 left-6 sk-serif sk-aurora-text text-[5.5rem] leading-none select-none" aria-hidden>“</span>
+          <p className={`sk-serif text-xl leading-relaxed mb-8 ${tokens.cardTitle}`}>{s.quote}</p>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-white text-xs font-bold">{s.initials}</div>
+            <div className="w-11 h-11 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0" style={{ background: 'var(--sk-aurora)' }}>{s.initials}</div>
             <div>
-              <p className={`text-sm font-semibold ${tokens.cardTitle}`}>{s.name}</p>
+              <p className={`text-sm font-bold ${tokens.cardTitle}`}>{s.name}</p>
               <p className={`text-xs ${tokens.cardMeta}`}>{s.role}</p>
             </div>
+            <span className="ml-auto flex items-center gap-0.5 text-amber-400">{[1, 2, 3, 4, 5].map(n => <Star key={n} className="w-3.5 h-3.5 fill-amber-400" />)}</span>
           </div>
-        </div>
+        </Reveal>
       ))}
     </div>
   );
@@ -1443,20 +1444,32 @@ export default function SmartKongLanding() {
         </div>
       </section>
 
-      {/* ── CTA ──────────────────────────────────────────────────────────── */}
-      <section className={`${T.sectionB} pb-24 pt-4`}>
-        <div className="max-w-7xl mx-auto px-4 lg:px-8">
-          <div className="relative rounded-3xl overflow-hidden p-10 md:p-16 text-center" style={{ background: 'linear-gradient(120deg,#1D4ED8,#0EA5E9 55%,#7C3AED)' }}>
-            <div className="absolute inset-0 opacity-30" style={{ background: 'radial-gradient(circle at 80% 20%, #fff4, transparent 40%)' }} aria-hidden />
-            <div className="relative">
-              <h3 className="text-3xl md:text-5xl font-black mb-4 text-white">{firstName ? `Ready when you are, ${firstName}.` : 'Sell to the world with SmartKong.'}</h3>
-              <p className="text-white/80 max-w-xl mx-auto mb-8">List your products once and reach millions of AI-guided shoppers across 230 countries.</p>
-              <div className="flex flex-wrap justify-center gap-3">
-                <Link to="/vendor/register" className="flex items-center gap-2 px-7 py-3.5 rounded-xl bg-white text-gray-900 font-bold hover:bg-white/90 transition-colors"><Store className="w-4 h-4" /> Become a Vendor</Link>
-                <Link to="/shop" className="flex items-center gap-2 px-7 py-3.5 rounded-xl bg-white/15 border border-white/25 backdrop-blur-md text-white font-bold hover:bg-white/25 transition-colors"><Globe className="w-4 h-4" /> Start Shopping</Link>
-              </div>
+      {/* ── FINALE (grain aurora band, magnetic CTAs, giant type) ────────── */}
+      <section className="sk-grain relative overflow-hidden" style={{ background: 'var(--sk-ink)' }}>
+        <div className="absolute inset-0 pointer-events-none" aria-hidden>
+          <div className="absolute top-[-30%] left-1/2 -translate-x-1/2 w-[70rem] h-[40rem] rounded-full opacity-30 blur-[130px]" style={{ background: 'var(--sk-aurora)' }} />
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[120%] h-40 border-t-2 border-blue-400/20 rounded-[100%_100%_0_0]" />
+        </div>
+        <div className="relative max-w-5xl mx-auto px-4 lg:px-8 py-28 md:py-36 text-center">
+          <Reveal>
+            <span className="sk-eyebrow !text-cyan-300 justify-center">One layer above every store</span>
+            <h3 className="text-5xl md:text-7xl font-black tracking-[-0.03em] leading-[0.98] text-white mt-5 mb-6">
+              {firstName ? <>Ready when you are,<br /><span className="sk-serif sk-aurora-text">{firstName}.</span></> : <>Shop the world.<br /><span className="sk-serif sk-aurora-text">Sell to the world.</span></>}
+            </h3>
+            <p className="text-white/50 max-w-xl mx-auto mb-10 text-lg">One search, every store, one cart — and your products in front of millions of AI-guided shoppers across 230 countries.</p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Magnetic>
+                <Link to="/shop" className="flex items-center gap-2 px-8 py-4 rounded-2xl text-white font-bold shadow-2xl shadow-blue-500/30 hover:opacity-95 transition-opacity" style={{ background: 'var(--sk-aurora)' }}>
+                  <Globe className="w-4 h-4" /> Start Shopping
+                </Link>
+              </Magnetic>
+              <Magnetic>
+                <Link to="/vendor/register" className="flex items-center gap-2 px-8 py-4 rounded-2xl bg-white/[0.07] border border-white/15 backdrop-blur-md text-white font-bold hover:bg-white/[0.13] transition-colors">
+                  <Store className="w-4 h-4" /> Become a Vendor
+                </Link>
+              </Magnetic>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
