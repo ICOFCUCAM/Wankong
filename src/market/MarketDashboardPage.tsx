@@ -135,6 +135,7 @@ export default function MarketDashboardPage() {
               <div className="space-y-2">
                 <ActionRow to="/dashboard/vendor" icon={Package} title="Seller dashboard" sub="Products, sales & payouts" />
                 <ActionRow to="/vendor/register" icon={Store} title="Open a store" sub="Become a seller" />
+                <ActionRow to="/affiliate" icon={Plug} title="Partner program" sub="Promote any product, earn commission" />
               </div>
             </div>
 

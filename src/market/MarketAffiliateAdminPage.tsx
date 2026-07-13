@@ -232,6 +232,9 @@ export default function MarketAffiliateAdminPage() {
             );
           })}
         </section>
+
+        {/* Partner program — approve external affiliates */}
+        <PartnersPanel />
       </div>
 
       {connecting && (
@@ -676,6 +679,69 @@ function EarningsPanel() {
             </div>
           )}
         </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Partner program: approve / reject external affiliates ────────────────────────
+interface PartnerRow {
+  id: string; email: string; code: string; display_name: string | null;
+  status: string; default_commission_bps: number;
+  clicks: number; conversions: number; earnings_cents: number; created_at: string;
+}
+
+function PartnersPanel() {
+  const [rows, setRows] = useState<PartnerRow[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    const { data, error } = await supabase.rpc('list_partners');
+    setLoading(false);
+    if (error) return; // non-admins simply won't see rows
+    setRows((data ?? []) as PartnerRow[]);
+  }, []);
+  useEffect(() => { load(); }, [load]);
+
+  const setStatus = async (id: string, status: string) => {
+    const { error } = await supabase.rpc('set_partner_status', { p_partner_id: id, p_status: status });
+    if (error) { toast.error(error.message); return; }
+    toast.success(`Partner ${status}`);
+    load();
+  };
+
+  const badge = (s: string) =>
+    s === 'approved' ? 'bg-emerald-50 text-emerald-700'
+    : s === 'pending' ? 'bg-amber-50 text-amber-700'
+    : 'bg-gray-100 text-gray-500';
+
+  return (
+    <section className="mt-10">
+      <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">Partner program ({rows.length})</h2>
+      <div className="rounded-2xl border border-gray-200 overflow-hidden">
+        {loading ? (
+          <p className="text-sm text-gray-400 p-6 text-center">Loading…</p>
+        ) : rows.length === 0 ? (
+          <p className="text-sm text-gray-400 p-6 text-center">No affiliate partners yet. Approved partners can promote any product with tracked links.</p>
+        ) : rows.map((r, i) => (
+          <div key={r.id} className={`flex items-center gap-3 px-4 py-3.5 ${i > 0 ? 'border-t border-gray-100' : ''}`}>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-gray-900 truncate">{r.display_name || r.email}</p>
+              <p className="text-xs text-gray-400">{r.code} · {(r.default_commission_bps / 100).toFixed(0)}% · {r.clicks} clicks · {r.conversions} sales · ${(r.earnings_cents / 100).toFixed(2)}</p>
+            </div>
+            <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-full ${badge(r.status)}`}>{r.status}</span>
+            {r.status !== 'approved' && (
+              <button onClick={() => setStatus(r.id, 'approved')} className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors">Approve</button>
+            )}
+            {r.status === 'pending' && (
+              <button onClick={() => setStatus(r.id, 'rejected')} className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 hover:bg-gray-50 text-gray-600 transition-colors">Reject</button>
+            )}
+            {r.status === 'approved' && (
+              <button onClick={() => setStatus(r.id, 'suspended')} className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 hover:bg-gray-50 text-gray-600 transition-colors">Suspend</button>
+            )}
+          </div>
+        ))}
       </div>
     </section>
   );

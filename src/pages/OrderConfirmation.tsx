@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
+import { currentRef } from '@/market/PartnerRedirect';
 
 interface OrderItem {
   title: string;
@@ -16,6 +17,16 @@ export default function OrderConfirmation() {
   const [total,   setTotal]   = useState<number | null>(null);
   const [loading, setLoading] = useState(!!orderId);
   const [status,  setStatus]  = useState<{ payment: string; fulfillment: string } | null>(null);
+
+  // Attribute the sale to a partner's referral link, if one is active. The RPC
+  // is idempotent per order; we clear the ref so it isn't reused on later buys.
+  useEffect(() => {
+    if (!orderId) return;
+    const ref = currentRef();
+    if (!ref) return;
+    supabase.rpc('record_partner_conversion', { p_code: ref, p_order_id: orderId })
+      .then(() => { try { localStorage.removeItem('sk_ref'); } catch { /* ignore */ } });
+  }, [orderId]);
 
   // Fulfillment happens server-side via payment webhooks, so it can lag the
   // redirect by a few seconds — poll until the order settles.

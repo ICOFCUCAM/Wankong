@@ -213,8 +213,8 @@ const FOOTER_COLUMNS: { title: string; links: { label: string; href: string }[] 
       { label: 'Find suppliers', href: '/shop?q=wholesale%20suppliers' },
       { label: 'Import globally', href: '/shop?q=import%20from%20China' },
       { label: 'Sell products', href: '/vendor/register' },
+      { label: 'Partner program', href: '/affiliate' },
       { label: 'Vendor dashboard', href: '/dashboard/vendor' },
-      { label: 'Affiliate backend', href: '/admin/affiliates' },
     ],
   },
   {

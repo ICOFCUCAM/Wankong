@@ -122,6 +122,8 @@ const MarketNotFoundPage      = lazy(() => import('./market/MarketNotFoundPage')
 const MarketCartPage          = lazy(() => import('./market/MarketCartPage'));
 const MarketAboutPage         = lazy(() => import('./market/MarketAboutPage'));
 const MarketDashboardPage     = lazy(() => import('./market/MarketDashboardPage'));
+const MarketPartnerPage       = lazy(() => import('./market/MarketPartnerPage'));
+const PartnerRedirect         = lazy(() => import('./market/PartnerRedirect'));
 
 // ── Library ────────────────────────────────────────────────────────────────────
 const LibraryPage = lazy(() => import('./pages/LibraryPage'));
@@ -148,6 +150,9 @@ export default function App() {
         <Routes>
           {/* ── Public ─────────────────────────────────────────────────────── */}
           <Route path="/"                         element={IS_MARKET_SITE ? <SmartKongLanding /> : <Index />} />
+          {/* Partner tracked-link redirect + partner program (market mode) */}
+          <Route path="/r/:code"                  element={<PartnerRedirect />} />
+          {IS_MARKET_SITE && <Route path="/affiliate" element={<MarketPartnerPage />} />}
           {IS_MARKET_SITE && <Route path="/shop"           element={<SmartKongHome />} />}
           {IS_MARKET_SITE && <Route path="/category/:slug" element={<SmartKongHome />} />}
           {IS_MARKET_SITE && <Route path="/compare" element={<MarketComparePage />} />}
