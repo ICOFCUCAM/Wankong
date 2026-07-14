@@ -233,6 +233,8 @@ export default function MarketAffiliateAdminPage() {
           })}
         </section>
 
+        {/* Per-industry commission rates */}
+        <CategoryRatesPanel />
         {/* Partner program — approve external affiliates + process payouts */}
         <PartnersPanel />
         <PayoutsPanel />
@@ -812,6 +814,51 @@ function PayoutsPanel() {
                 <button onClick={() => setStatus(r.id, 'rejected')} className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 hover:bg-gray-50 text-gray-600 transition-colors">Reject</button>
               </>
             )}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ── Per-industry commission rates (beauty ~20% vs GPUs ~3%) ──────────────────────
+interface CatRate { category: string; bps: number; label: string | null }
+
+function CategoryRatesPanel() {
+  const [rows, setRows] = useState<CatRate[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    const { data } = await supabase.from('category_commission').select('category, bps, label').order('bps', { ascending: false });
+    setRows((data ?? []) as CatRate[]);
+    setLoading(false);
+  }, []);
+  useEffect(() => { load(); }, [load]);
+
+  const edit = async (r: CatRate) => {
+    const input = window.prompt(`Commission rate for ${r.label || r.category} (percentage)`, (r.bps / 100).toString());
+    if (input == null) return;
+    const num = parseFloat(input.replace(/[^0-9.]/g, ''));
+    if (isNaN(num)) { toast.error('Enter a number'); return; }
+    const { error } = await supabase.rpc('set_category_commission', { p_category: r.category, p_bps: Math.round(num * 100), p_label: r.label });
+    if (error) { toast.error(error.message); return; }
+    toast.success('Rate updated'); load();
+  };
+
+  return (
+    <section className="mt-10">
+      <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-1">Commission by industry</h2>
+      <p className="text-xs text-gray-400 mb-3">Partners earn the category rate on each item they sell — beauty pays more than GPUs, matching how each vertical works.</p>
+      <div className="rounded-2xl border border-gray-200 overflow-hidden">
+        {loading ? (
+          <p className="text-sm text-gray-400 p-6 text-center">Loading…</p>
+        ) : rows.length === 0 ? (
+          <p className="text-sm text-gray-400 p-6 text-center">No category rates configured.</p>
+        ) : rows.map((r, i) => (
+          <div key={r.category} className={`flex items-center gap-3 px-4 py-3 ${i > 0 ? 'border-t border-gray-100' : ''}`}>
+            <span className="flex-1 text-sm font-semibold text-gray-900">{r.label || r.category}</span>
+            <button onClick={() => edit(r)} className="px-3 py-1.5 text-sm font-bold rounded-lg border border-gray-200 hover:border-blue-400 text-blue-700 transition-colors">{(r.bps / 100).toFixed(r.bps % 100 ? 1 : 0)}%</button>
           </div>
         ))}
       </div>

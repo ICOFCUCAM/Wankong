@@ -41,6 +41,30 @@ export const MARKET_CATEGORIES: MarketCategory[] = [
     slug: 'home', label: 'Home & Living', short: 'Home',
     keywords: ['home', 'kitchen', 'furniture', 'garden', 'decor', 'appliance'],
   },
+  {
+    slug: 'sports', label: 'Sports & Outdoor', short: 'Sports',
+    keywords: ['sport', 'outdoor', 'fitness', 'camping', 'bike', 'cycling', 'running', 'gym'],
+  },
+  {
+    slug: 'toys', label: 'Toys & Games', short: 'Toys',
+    keywords: ['toy', 'game', 'lego', 'puzzle', 'board game', 'kids', 'children'],
+  },
+  {
+    slug: 'grocery', label: 'Grocery & Food', short: 'Grocery',
+    keywords: ['grocery', 'food', 'snack', 'beverage', 'coffee', 'pantry', 'organic'],
+  },
+  {
+    slug: 'luxury', label: 'Luxury', short: 'Luxury',
+    keywords: ['luxury', 'designer', 'premium', 'couture', 'fine jewelry'],
+  },
+  {
+    slug: 'travel', label: 'Travel & Experiences', short: 'Travel',
+    keywords: ['travel', 'hotel', 'flight', 'booking', 'tour', 'experience', 'luggage'],
+  },
+  {
+    slug: 'software', label: 'Software & SaaS', short: 'Software',
+    keywords: ['software', 'saas', 'app', 'subscription', 'vpn', 'hosting', 'ai tool', 'license'],
+  },
 ];
 
 export function categoryBySlug(slug?: string | null): MarketCategory | undefined {
