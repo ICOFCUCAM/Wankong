@@ -204,6 +204,29 @@ capability this round — an evidence gap, not proof they lack innovation
 (cashback/coupon + browser-extension checkout-layer attribution are the obvious
 next research target, and directly adjacent to SmartKong).
 
+## Gap sweep — cashback / coupon / price-comparison / checkout-layer (2024–2026)
+
+Second research pass (27 sources, 23 confirmed / 2 refuted) covering the segment
+the first sweep missed. This one changed the strategy, not just the feature list.
+
+| # | Capability / insight | Source | Why it matters | Build |
+|---|---|---|---|---|
+| F10 | **Cashback wallet lifecycle** — Pending → Confirmed → Payable, where *confirmed* only happens after the retailer's return window passes and the network invoices; deliberate 4–6 week delay rules out returns; per-txn "estimated payable speed" | TopCashback, Rakuten, cashback-site norm | The correct settlement model for shopper cashback — and it maps 1:1 onto SmartKong's `partner_conversions` (pending/approved/paid). Adopt the return-window gate. | ◐ Med |
+| F11 | **Ethical checkout attribution** — the Honey/MegaLag scandal: browser extensions overwrote the *creator's* affiliate link at checkout (last-click hijack, "cookie stuffing") even with no discount; Google's Mar-2025 Chrome policy now bans claiming commission without giving a discount; active class action vs Honey/Rakuten/Capital One; Honey lost ~3M/20M users | MegaLag, 9to5Google, Seeger Weiss | **SmartKong already does this right** — the partner program attributes via the creator's *own* code/link and never overrides it. Make "we never hijack your commission" an explicit brand + compliance guarantee. | ✅ (validate + market) |
+| F12 | **Agentic-commerce protocols** — OpenAI **Agentic Commerce Protocol** (ACP, open-sourced w/ Stripe, powers ChatGPT Instant Checkout) and Google **Universal Commerce Protocol** (UCP, keeps merchant-of-record, native+embedded checkout) | OpenAI (Sep 2025), Google I/O (May 2026) | Category-defining: commerce is standardizing agent↔merchant checkout. "The world's shopping layer" must be **in the agent graph** — consume/expose ACP/UCP so AI agents can transact through SmartKong. | ● Hard |
+| F13 | **Keepa-style price pipeline** — 36 packed time-series per product (Amazon/marketplace/BuyBox/eBay/list, plus rank/rating/coupon/promo), minute-resolution, BuyBox *seller* attribution, coupon history; SP-API gives only current price so you must crawl | Keepa API | Upgrades SmartKong's `price_history` from a single series to a rich multi-series graph (incl. coupon + who-had-the-buybox), enabling real price prediction. | ◐ Med |
+| F14 | **Universal cross-merchant cart, enriched** — Google Universal Cart persists across surfaces, validates multi-retailer builds (e.g. PC parts compatibility), and bakes price-tracking + in-stock + deal alerts *into the cart* | Google Universal Cart | Validates SmartKong's multi-store cart; the additions to steal are in-cart price/stock/deal alerts and cross-item compatibility checks. | ◐ Med |
+| F15 | **In-conversation / agent checkout** — buy inside the AI chat (ChatGPT Instant Checkout; Etsy + 1M Shopify merchants), merchant stays merchant-of-record | OpenAI | SmartKong's AI assistant should *complete* purchases, not just recommend — closes discovery→checkout inside one AI surface. | ● Hard |
+| F16 | **Merchant-funded shopper cashback** — cashback sites earn the retailer's affiliate commission and *share a slice with the shopper* after confirmation | cashback-site model | Turns SmartKong's (hidden) inbound affiliate commission into a **visible shopper reward** — a growth loop, and the honest inverse of the Honey model. | ◐ Med |
+
+### Verified NOT real (gap sweep) — do not assert
+- ChatGPT Instant Checkout is **merchant-funded, doesn't change prices, keeps results unbiased** — **refuted (0-3)**; treat as OpenAI marketing, not verified fact.
+- Google agentic checkout **auto-completes the purchase when price drops within budget** (buy-for-me) — **refuted (0-3)**; it is not fully autonomous auto-buy.
+
+### Method note
+This sweep's automated synthesis step returned a placeholder; findings above were
+reconstructed from the verified per-claim journal (23 confirmed / 2 refuted, 3-vote).
+
 ## Recommended build order (phases)
 
 - **Phase 1 — Partner Program MVP** ✅ *shipped* (profiles, approval, universal links, attribution, dashboard, admin queue).
@@ -211,10 +234,17 @@ next research target, and directly adjacent to SmartKong).
 - **Phase 3 — Best-commission routing + AI**: route each product to the highest-value merchant, forecast earnings pre-publish, auto-swap on out-of-stock. **Fold in F1 agentic partner ops** (recruit/audit agent, task copilot over partner data) and **F2 own-your-AI data access** (OpenAPI + prompt recipes) — both play to SmartKong's AI-first strength.
 - **Phase 4 — Creator storefronts** *(bumped — research confirms F4 is category-defining)*: persistent per-partner shoppable shop pages over the unified catalog, curated multi-store collections, brand invitations, **F6 brand→creator campaign distribution**.
 - **Phase 5 — Fraud & attribution hardening**: dup-click/bot/VPN detection, S2S postbacks, cookie-less + cross-device, and a first exploration of **F3 zero-click / journey-reconstruction attribution** (SmartKong's logged-in + unified-catalog first-party graph is a real edge).
-- **Phase 6 — Coupons & cashback**: coupon vault, **F8 single-use auto-applying promo codes** (quick win, cuts attribution leakage), shopper cashback wallet, seasonal commission windows. *(Also the next research target: browser-extension checkout-layer attribution à la Honey/Rakuten.)*
+- **Phase 6 — Coupons & cashback**: coupon vault, **F8 single-use auto-applying promo codes** (done), **F16 merchant-funded shopper cashback** with the **F10 Pending→Confirmed→Payable lifecycle** (confirm only after the retailer return window; reuse `partner_conversions` states), seasonal commission windows.
 - **Phase 7 — Public API + connectors**: REST API with keys/scopes, webhooks, Zapier/Shopify/Woo.
-- **Phase 8 — Social & influencer layer**: partner CRM + org accounts, influencer matching, **F5 video-first social discovery** and **F7 in-platform social amplification** (the heaviest lifts, last).
+- **Phase 8 — Social & influencer layer**: partner CRM + org accounts, influencer matching, **F5 video-first social discovery** and **F7 in-platform social amplification** (heaviest lifts, last).
+- **Phase 9 — Agentic-commerce protocols (north star)**: **F12** consume/expose **ACP (OpenAI/Stripe)** and **UCP (Google)** so AI agents transact *through* SmartKong; **F15** complete purchases inside SmartKong's AI assistant. This is what makes SmartKong "the shopping layer" in an agent-driven web — highest ceiling, do once the partner economy is real.
+- **Cross-cutting: enrich price intelligence (F13)** — upgrade `price_history` to Keepa-style multi-series (incl. coupon + buybox) whenever Phase 3 routing or Phase 6 cashback needs better price signals.
+
+**Brand + compliance principle (F11):** SmartKong attributes via the creator's
+*own* code/link and **never overwrites another party's affiliate link** (the Honey
+anti-pattern, now banned by Chrome policy and under class action). Keep it that
+way and market it — "we never steal your commission."
 
 Each phase is independently shippable and builds on Phase 1's attribution spine.
-Quick wins to pull forward regardless of phase: **F8 single-use promo codes** and
-**on-demand withdrawal**.
+Quick wins already pulled forward: **F8 single-use promo codes**, **on-demand
+withdrawal**, **commission forecasting (F-fore)**.
