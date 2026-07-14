@@ -45,6 +45,14 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
           limit: { type: 'integer', required: false, default: 8, minimum: 1, maximum: 20 },
         },
         returns: 'results[] with price, offers[] (per-merchant, value-ranked), best_offer and routing summary.',
+        auth: { header: 'x-api-key', value: '<optional>', note: 'Public free allowance without a key; an API key unlocks a higher metered tier (x-api-tier / x-api-remaining response headers).' },
+      },
+      insights: {
+        description: 'Privacy-preserving aggregated market analytics for a category (no PII): product count, price bands, top vendors, trending titles.',
+        method: 'RPC',
+        path: 'rpc/market_insights',
+        parameters: { p_category: { type: 'string', required: false, description: 'Category to scope; omit for all.' } },
+        note: 'Positioned as a merchant/data-insights product; currently open, will move behind merchant plans.',
       },
       route_offers: {
         description: 'Given a specific product (UPC or title), rank every merchant offer by Commerce Score for a chosen preference.',

@@ -40,6 +40,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const supabase = createClient(url, key);
 
+    // API access is a revenue stream: an optional x-api-key unlocks metered
+    // tiers with a higher monthly quota. Requests without a key stay on the
+    // free public allowance; an invalid or exhausted key is rejected.
+    const apiKey = (req.headers['x-api-key'] as string) || (src as any).api_key;
+    if (apiKey) {
+      const { data: meter } = await supabase.rpc('meter_agent_key', { p_key: String(apiKey) });
+      if (meter && meter.ok === false) {
+        return res.status(meter.reason === 'invalid_key' ? 401 : 429).json({ error: `api_key_${meter.reason}` });
+      }
+      if (meter?.tier) res.setHeader('x-api-tier', String(meter.tier));
+      if (typeof meter?.remaining === 'number') res.setHeader('x-api-remaining', String(meter.remaining));
+    }
+
     // 1. Candidate products by keyword (title / description / category / genre).
     const words = query.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(w => w.length > 2);
     const term = words[0] ?? query;

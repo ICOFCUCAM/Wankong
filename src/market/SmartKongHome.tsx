@@ -3,10 +3,37 @@ import { useNavigate, useParams, useSearchParams, Link } from 'react-router-dom'
 import Seo from '@/components/Seo';
 import MarketLayout from './MarketLayout';
 import MarketProductCard from './MarketProductCard';
-import { useMarketCatalog, type CatalogFilters } from './useMarketCatalog';
+import { supabase } from '@/lib/supabase';
+import { useMarketCatalog, type CatalogFilters, type MarketProduct } from './useMarketCatalog';
 import { MARKET_CATEGORIES, categoryBySlug } from './categories';
 import { Reveal } from './motion';
-import { Search, Sparkles, Loader2 } from 'lucide-react';
+import { Search, Sparkles, Loader2, Megaphone } from 'lucide-react';
+
+// Clearly-labeled promoted products (a monetization surface). Never mixed
+// silently into organic results — always shown under a "Sponsored" label.
+function SponsoredRail({ slot }: { slot: string }) {
+  const [items, setItems] = useState<MarketProduct[]>([]);
+  useEffect(() => {
+    let cancelled = false;
+    supabase.rpc('active_sponsored', { p_slot: slot, p_limit: 4 }).then(({ data }) => {
+      if (!cancelled) setItems((Array.isArray(data) ? data : []) as MarketProduct[]);
+    });
+    return () => { cancelled = true; };
+  }, [slot]);
+
+  if (items.length === 0) return null;
+  return (
+    <div className="mb-8 rounded-2xl border border-amber-200/70 bg-amber-50/40 p-4">
+      <div className="flex items-center gap-1.5 mb-3">
+        <Megaphone className="w-3.5 h-3.5 text-amber-600" />
+        <span className="text-[11px] font-bold uppercase tracking-wide text-amber-700">Sponsored</span>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
+        {items.map(p => <MarketProductCard key={p.id} product={p} />)}
+      </div>
+    </div>
+  );
+}
 
 // SmartKong catalog browser — /shop and /category/:slug. The premium hero
 // lives on the landing page (SmartKongLanding); this is the filter sidebar +
@@ -173,6 +200,7 @@ export default function SmartKongHome() {
           <FilterSidebar filters={filters} setFilters={setFilters} />
 
           <div>
+            <SponsoredRail slot={activeCategory ? `category:${activeCategory.slug}` : 'shop'} />
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
               <div>
                 <h2 className="text-lg font-bold text-gray-900">

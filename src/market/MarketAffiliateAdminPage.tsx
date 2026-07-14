@@ -238,6 +238,8 @@ export default function MarketAffiliateAdminPage() {
         <LeadBountiesPanel />
         {/* Per-merchant inbound rates + reputation (drives Commerce Score routing) */}
         <MerchantRatesPanel />
+        {/* Sponsored placements — labeled promoted products (monetization) */}
+        <SponsoredPanel />
         {/* Partner program — approve external affiliates + process payouts */}
         <PartnersPanel />
         <PayoutsPanel />
@@ -1002,6 +1004,83 @@ function MerchantRatesPanel() {
             </div>
             <button onClick={() => editRep(r)} className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-200 hover:border-gray-400 text-gray-600 transition-colors">Reputation</button>
             <button onClick={() => editRate(r)} className="px-3 py-1.5 text-sm font-bold rounded-lg border border-gray-200 hover:border-blue-400 text-blue-700 transition-colors">{(r.bps / 100).toFixed(r.bps % 100 ? 1 : 0)}%</button>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ── Sponsored placements — clearly-labeled promoted products (monetization) ─────
+interface SponsoredRow {
+  id: string; product_id: string; title: string; slot: string;
+  bid_cents: number; ends_at: string; active: boolean;
+}
+
+function SponsoredPanel() {
+  const [rows, setRows] = useState<SponsoredRow[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    const { data } = await supabase.rpc('list_sponsored');
+    setRows((data ?? []) as SponsoredRow[]);
+    setLoading(false);
+  }, []);
+  useEffect(() => { load(); }, [load]);
+
+  const promote = async () => {
+    const handle = window.prompt('Product handle or id to promote');
+    if (!handle) return;
+    const { data: prod } = await supabase
+      .from('ecom_products').select('id')
+      .or(`id.eq.${handle},handle.eq.${handle}`).eq('status', 'active').maybeSingle();
+    if (!prod) { toast.error('Product not found'); return; }
+    const slot = window.prompt("Slot ('shop', 'home', 'category:electronics', or 'all')", 'shop') ?? 'shop';
+    const bid = window.prompt('Bid ($ the merchant pays for this placement)', '50');
+    if (bid == null) return;
+    const days = window.prompt('Run for how many days?', '30');
+    if (days == null) return;
+    const { error } = await supabase.rpc('create_sponsored', {
+      p_product_id: prod.id, p_slot: slot,
+      p_bid_cents: Math.round((parseFloat(bid) || 0) * 100),
+      p_days: Math.max(1, Math.round(parseFloat(days) || 30)),
+    });
+    if (error) { toast.error(error.message); return; }
+    toast.success('Placement created'); load();
+  };
+
+  const end = async (r: SponsoredRow) => {
+    if (!window.confirm(`End the sponsored placement for "${r.title}"?`)) return;
+    const { error } = await supabase.rpc('end_sponsored', { p_id: r.id });
+    if (error) { toast.error(error.message); return; }
+    toast.success('Placement ended'); load();
+  };
+
+  return (
+    <section className="mt-10">
+      <div className="flex items-center justify-between mb-1">
+        <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Sponsored placements</h2>
+        <button onClick={promote} className="text-xs font-bold text-blue-700 hover:text-blue-800">+ Promote a product</button>
+      </div>
+      <p className="text-xs text-gray-400 mb-3">Clearly-labeled promoted products shown in a “Sponsored” rail — never mixed silently into organic results.</p>
+      <div className="rounded-2xl border border-gray-200 overflow-hidden">
+        {loading ? (
+          <p className="text-sm text-gray-400 p-6 text-center">Loading…</p>
+        ) : rows.length === 0 ? (
+          <p className="text-sm text-gray-400 p-6 text-center">No placements yet — promote a product to start.</p>
+        ) : rows.map((r, i) => (
+          <div key={r.id} className={`flex items-center gap-3 px-4 py-3 ${i > 0 ? 'border-t border-gray-100' : ''} ${r.active ? '' : 'opacity-50'}`}>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-gray-900 truncate">{r.title}</p>
+              <p className="text-[11px] text-gray-400">
+                slot {r.slot} · ${(r.bid_cents / 100).toFixed(0)} · until {r.ends_at?.slice(0, 10)}
+                {!r.active && ' · ended'}
+              </p>
+            </div>
+            {r.active && (
+              <button onClick={() => end(r)} className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-200 hover:border-red-400 text-red-600 transition-colors">End</button>
+            )}
           </div>
         ))}
       </div>

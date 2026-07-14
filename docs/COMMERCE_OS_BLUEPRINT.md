@@ -247,14 +247,15 @@ each stream today:
 | **Affiliate commissions** | % / flat / hybrid / tiered / per-category / per-merchant / recurring / CPA of completed sales; inbound networks via `affiliate_accounts` | ✅ engine complete (migrations 049–054) |
 | **Partner rev-share** | SmartKong keeps a slice; partner earns their level's share (Starter 60% → Pro 80%) of SmartKong's inbound take | ✅ `partner_levels` + `commission_basis='revshare'` |
 | **B2B / wholesale sourcing** | commission on RFQ/wholesale transactions | ◐ Business-mode RFQ flow shipped (SmartKongLanding); transaction fee not yet metered |
-| **Sponsored placements** | clearly-labeled promoted products in results | ○ needs `is_sponsored` flag + labeled slot + billing |
-| **Merchant subscriptions** | stores pay for premium tools/analytics | ○ needs plan + `user_subscriptions` reuse |
+| **Sponsored placements** | clearly-labeled promoted products in results | ✅ `sponsored_placements` + `active_sponsored()`, labeled "Sponsored" rail on the shop grid, admin promote/end panel (055). Billing = the `bid_cents` ledger; charge integration future |
+| **Merchant subscriptions** | stores pay for premium tools/analytics | ◐ `merchant_plans` (Free/Growth/Pro) + `merchant_subscriptions` + `my_merchant_plan()` (055); checkout + feature-gating UI future |
 | **AI shopping assistant (premium)** | subscription for advanced shopping features | ○ assistant exists; paywall/tier not built |
 | **Supplier marketplace** | fees connecting manufacturers ↔ buyers | ○ maps onto vendor + RFQ rails |
-| **Advertising** | display/search ads, separated from organic | ○ needs ad slots + separation guarantee |
-| **API access** | developers pay for shopping APIs | ◐ `/api/route-offers` is the first public shopping API; no keys/billing yet |
-| **Checkout services** | fee for unified cross-merchant checkout | ○ Phase 9 (ACP/UCP) territory |
-| **Logistics / payments / data insights** | share of fulfillment, payment fees, privacy-preserving market analytics | ○ long-horizon |
+| **Advertising** | display/search ads, separated from organic | ◐ sponsored-placement rail is the labeled-ad primitive; search-ad slots future |
+| **API access** | developers pay for shopping APIs | ✅ `/api/agent-search` + `/api/route-offers` public APIs; `agent_api_keys` + `meter_agent_key()` add metered tiers/quota via `x-api-key` (055) |
+| **Data insights** | privacy-preserving aggregated market analytics | ◐ `market_insights(category)` RPC (counts, price bands, top vendors, trending — no PII) (055); merchant-plan gating future |
+| **Checkout services** | fee for unified cross-merchant checkout | ◐ `/api/agent-checkout` MVP (gated); cross-merchant fee model future |
+| **Logistics / payment processing** | share of fulfillment + payment fees | ○ partnership-dependent, long-horizon |
 
 **Principle:** shopper-facing surfaces never reveal that SmartKong earns
 commission; monetization stays invisible. Sponsored/ad slots are the sole
