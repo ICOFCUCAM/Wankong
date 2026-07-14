@@ -236,6 +236,8 @@ export default function MarketAffiliateAdminPage() {
         {/* Per-industry commission rates + CPA/lead bounties */}
         <CategoryRatesPanel />
         <LeadBountiesPanel />
+        {/* Per-merchant inbound rates + reputation (drives Commerce Score routing) */}
+        <MerchantRatesPanel />
         {/* Partner program — approve external affiliates + process payouts */}
         <PartnersPanel />
         <PayoutsPanel />
@@ -905,6 +907,101 @@ function LeadBountiesPanel() {
           <div key={r.event} className={`flex items-center gap-3 px-4 py-3 ${i > 0 ? 'border-t border-gray-100' : ''}`}>
             <span className="flex-1 text-sm font-semibold text-gray-900">{r.label || r.event}</span>
             <button onClick={() => edit(r)} className="px-3 py-1.5 text-sm font-bold rounded-lg border border-gray-200 hover:border-blue-400 text-blue-700 transition-colors">${(r.payout_cents / 100).toFixed(0)}</button>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ── Per-merchant inbound rate + reputation (powers Commerce Score routing) ───────
+interface MerchantRow {
+  merchant: string; label: string | null; bps: number;
+  rep_score: number; avg_ship_days: number; return_days: number; warranty_months: number;
+}
+
+function MerchantRatesPanel() {
+  const [rows, setRows] = useState<MerchantRow[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    const [{ data: rates }, { data: reps }] = await Promise.all([
+      supabase.from('merchant_commission').select('merchant, bps, label'),
+      supabase.from('merchant_reputation').select('merchant, rep_score, avg_ship_days, return_days, warranty_months'),
+    ]);
+    const byName = new Map<string, MerchantRow>();
+    for (const r of rates ?? []) byName.set(r.merchant, {
+      merchant: r.merchant, label: r.label, bps: r.bps,
+      rep_score: 70, avg_ship_days: 4, return_days: 30, warranty_months: 0,
+    });
+    for (const rp of reps ?? []) {
+      const cur = byName.get(rp.merchant) ?? { merchant: rp.merchant, label: null, bps: 0, rep_score: 70, avg_ship_days: 4, return_days: 30, warranty_months: 0 };
+      byName.set(rp.merchant, { ...cur, rep_score: rp.rep_score, avg_ship_days: Number(rp.avg_ship_days), return_days: rp.return_days, warranty_months: rp.warranty_months });
+    }
+    setRows([...byName.values()].sort((a, b) => b.bps - a.bps));
+    setLoading(false);
+  }, []);
+  useEffect(() => { load(); }, [load]);
+
+  const editRate = async (r: MerchantRow) => {
+    const input = window.prompt(`SmartKong's inbound commission from ${r.label || r.merchant} (percentage)`, (r.bps / 100).toString());
+    if (input == null) return;
+    const num = parseFloat(input.replace(/[^0-9.]/g, ''));
+    if (isNaN(num)) { toast.error('Enter a number'); return; }
+    const { error } = await supabase.rpc('set_merchant_commission', { p_merchant: r.merchant, p_bps: Math.round(num * 100), p_flat: 0, p_label: r.label });
+    if (error) { toast.error(error.message); return; }
+    toast.success('Merchant rate updated'); load();
+  };
+
+  const editRep = async (r: MerchantRow) => {
+    const rep = window.prompt(`${r.label || r.merchant} — reputation score (0–100)`, String(r.rep_score));
+    if (rep == null) return;
+    const ship = window.prompt('Average shipping days', String(r.avg_ship_days));
+    if (ship == null) return;
+    const ret = window.prompt('Return window (days)', String(r.return_days));
+    if (ret == null) return;
+    const warr = window.prompt('Warranty (months, 0 if none)', String(r.warranty_months));
+    if (warr == null) return;
+    const { error } = await supabase.rpc('set_merchant_reputation', {
+      p_merchant: r.merchant,
+      p_rep: Math.max(0, Math.min(100, Math.round(parseFloat(rep) || 0))),
+      p_ship: Math.max(0, parseFloat(ship) || 0),
+      p_return: Math.max(0, Math.round(parseFloat(ret) || 0)),
+      p_warranty: Math.max(0, Math.round(parseFloat(warr) || 0)),
+    });
+    if (error) { toast.error(error.message); return; }
+    toast.success('Reputation updated'); load();
+  };
+
+  const addMerchant = async () => {
+    const name = window.prompt('Merchant name (e.g. Amazon, eBay, Temu)');
+    if (!name) return;
+    const { error } = await supabase.rpc('set_merchant_commission', { p_merchant: name, p_bps: 300, p_flat: 0, p_label: name });
+    if (error) { toast.error(error.message); return; }
+    toast.success(`${name} added — set its reputation next`); load();
+  };
+
+  return (
+    <section className="mt-10">
+      <div className="flex items-center justify-between mb-1">
+        <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Merchants & Commerce Score</h2>
+        <button onClick={addMerchant} className="text-xs font-bold text-blue-700 hover:text-blue-800">+ Add merchant</button>
+      </div>
+      <p className="text-xs text-gray-400 mb-3">Per-merchant inbound rate (what SmartKong earns) plus the reputation, shipping, returns and warranty signals that drive value-first routing on product pages.</p>
+      <div className="rounded-2xl border border-gray-200 overflow-hidden">
+        {loading ? (
+          <p className="text-sm text-gray-400 p-6 text-center">Loading…</p>
+        ) : rows.length === 0 ? (
+          <p className="text-sm text-gray-400 p-6 text-center">No merchants configured.</p>
+        ) : rows.map((r, i) => (
+          <div key={r.merchant} className={`flex items-center gap-3 px-4 py-3 ${i > 0 ? 'border-t border-gray-100' : ''}`}>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-gray-900 capitalize">{r.label || r.merchant}</p>
+              <p className="text-[11px] text-gray-400">rep {r.rep_score} · ship {r.avg_ship_days}d · return {r.return_days}d · warranty {r.warranty_months}mo</p>
+            </div>
+            <button onClick={() => editRep(r)} className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-200 hover:border-gray-400 text-gray-600 transition-colors">Reputation</button>
+            <button onClick={() => editRate(r)} className="px-3 py-1.5 text-sm font-bold rounded-lg border border-gray-200 hover:border-blue-400 text-blue-700 transition-colors">{(r.bps / 100).toFixed(r.bps % 100 ? 1 : 0)}%</button>
           </div>
         ))}
       </div>

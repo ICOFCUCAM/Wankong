@@ -12,7 +12,7 @@ import type { MarketProduct } from './useMarketCatalog';
 import {
   ShoppingCart, ExternalLink, ShieldCheck, Truck, RotateCcw,
   Star, Loader2, CheckCircle2, BookOpen, BadgeCheck, TrendingDown, Bell, BellRing,
-  Languages, Sparkles,
+  Languages, Sparkles, Zap, Gauge, Trophy,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -399,8 +399,8 @@ export default function MarketProductPage() {
           </div>
         </div>
 
-        {/* Compare this product's price across partner stores */}
-        <StorePriceCompare product={product} priceUsd={priceUsd} isAffiliate={isAffiliate} onBuyHere={() => handleAdd(false)} />
+        {/* Commerce Score routing across merchants, with external fallback */}
+        <CommerceScoreCompare product={product} priceUsd={priceUsd} isAffiliate={isAffiliate} onBuyHere={() => handleAdd(false)} />
 
         {/* Price intelligence */}
         <PriceIntel product={product} />
@@ -422,6 +422,138 @@ export default function MarketProductPage() {
         )}
       </div>
     </MarketLayout>
+  );
+}
+
+// ── Commerce Score routing (real multi-merchant offers) ─────────────────────────
+// Ranks the merchants that carry this exact product (matched by UPC, else title)
+// by *customer value* — price, delivery, reputation, returns — using the
+// best_offer_for() engine. Commission never surfaces to shoppers; it only acts
+// as a tie-breaker inside the engine. Falls back to StorePriceCompare when this
+// is the only listing we have for the product.
+const PREFS: { key: string; label: string; icon: typeof Zap }[] = [
+  { key: 'balanced', label: 'Best overall', icon: Trophy },
+  { key: 'cheapest', label: 'Lowest price', icon: TrendingDown },
+  { key: 'fastest',  label: 'Fastest',      icon: Zap },
+  { key: 'trusted',  label: 'Most trusted', icon: ShieldCheck },
+];
+
+function shipLabel(days: number): string {
+  if (days <= 0) return 'Same day';
+  if (days <= 1) return 'Tomorrow';
+  if (days <= 2) return '2 days';
+  return `${Math.round(days)} days`;
+}
+
+type Offer = {
+  product_id: string; merchant: string; price_cents: number; ship_days: number;
+  rep_score: number; commerce_score: number; is_pick: boolean;
+};
+
+function CommerceScoreCompare({ product, priceUsd, isAffiliate, onBuyHere }: {
+  product: any; priceUsd: number; isAffiliate: boolean; onBuyHere: () => void;
+}) {
+  const navigate = useNavigate();
+  const [pref, setPref] = useState('balanced');
+  const [offers, setOffers] = useState<Offer[] | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const group = (product.upc && String(product.upc).trim()) || product.title || '';
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (!group) { setLoading(false); return; }
+      setLoading(true);
+      const { data, error } = await supabase.rpc('best_offer_for', { p_group: group, p_pref: pref });
+      if (cancelled) return;
+      setOffers(error ? [] : ((data ?? []) as Offer[]));
+      setLoading(false);
+    })();
+    return () => { cancelled = true; };
+  }, [group, pref]);
+
+  // Need at least two real merchant offers to route; otherwise show the fallback.
+  if (loading) {
+    return (
+      <section className="mt-12 max-w-2xl">
+        <div className="h-24 rounded-2xl border border-gray-200 animate-pulse bg-gray-50" />
+      </section>
+    );
+  }
+  if (!offers || offers.length < 2) {
+    return <StorePriceCompare product={product} priceUsd={priceUsd} isAffiliate={isAffiliate} onBuyHere={onBuyHere} />;
+  }
+
+  const pick = offers.find(o => o.is_pick) ?? offers[0];
+
+  return (
+    <Reveal as="section" className="mt-12">
+      <span className="sk-eyebrow mb-2">The shopping layer</span>
+      <div className="flex items-center gap-2 mb-1.5">
+        <h2 className="text-2xl font-black tracking-[-0.02em] text-gray-900">
+          {offers.length} stores. <span className="sk-serif sk-aurora-text pr-1">One smart pick.</span>
+        </h2>
+        <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[10px] font-bold"><Gauge className="w-3 h-3" /> COMMERCE SCORE</span>
+      </div>
+      <p className="text-sm text-gray-500 mb-4">
+        SmartKong weighs price, delivery, seller reputation and returns — then routes you to the best overall deal, not just the cheapest.
+      </p>
+
+      {/* Shopper preference */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        {PREFS.map(p => {
+          const Icon = p.icon; const active = pref === p.key;
+          return (
+            <button
+              key={p.key}
+              onClick={() => setPref(p.key)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
+                active ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'
+              }`}
+            >
+              <Icon className="w-3.5 h-3.5" /> {p.label}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="rounded-2xl border border-gray-200 overflow-hidden max-w-2xl">
+        {offers.map((o, i) => {
+          const isPick = o.product_id === pick.product_id;
+          return (
+            <div key={o.product_id} className={`flex items-center gap-3 px-4 py-3 ${i > 0 ? 'border-t border-gray-100' : ''} ${isPick ? 'bg-emerald-50/60' : ''}`}>
+              <div className="w-9 h-9 rounded-lg bg-white ring-1 ring-black/5 flex items-center justify-center shrink-0">
+                <VendorMark vendor={o.merchant} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-gray-900 capitalize flex items-center gap-2 flex-wrap">
+                  {o.merchant}
+                  {isPick && <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 font-bold">AI PICK</span>}
+                </p>
+                <p className="text-[11px] text-gray-500 flex items-center gap-2 mt-0.5">
+                  <span className="flex items-center gap-1"><Truck className="w-3 h-3" /> {shipLabel(o.ship_days)}</span>
+                  <span className="flex items-center gap-1"><ShieldCheck className="w-3 h-3" /> {o.rep_score}/100</span>
+                  <span className="flex items-center gap-1"><Gauge className="w-3 h-3" /> {Number(o.commerce_score).toFixed(0)}</span>
+                </p>
+              </div>
+              <span className={`font-extrabold ${isPick ? 'text-emerald-600' : 'text-gray-900'}`}>${(o.price_cents / 100).toFixed(2)}</span>
+              <button
+                onClick={() => navigate(`/products/${o.product_id}`)}
+                className={`flex items-center gap-1 px-3.5 py-2 rounded-lg text-sm font-semibold transition-colors shrink-0 ${
+                  isPick ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                }`}
+              >
+                View <ExternalLink className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          );
+        })}
+      </div>
+      <p className="text-[11px] text-gray-400 mt-2 flex items-center gap-1">
+        <Sparkles className="w-3 h-3" /> Ranked by SmartKong's Commerce Score for “{PREFS.find(p => p.key === pref)?.label.toLowerCase()}”.
+      </p>
+    </Reveal>
   );
 }
 
