@@ -10,6 +10,7 @@ import { Sparkles, X, Send, Loader2, ArrowRight } from 'lucide-react';
 interface Rec {
   id: string; title: string; handle: string | null; price: number;
   cover_url: string | null; vendor: string | null; reason: string | null;
+  routing: { stores: number; pick: { merchant: string; priceCents: number }; saveCents: number } | null;
 }
 interface Msg { role: 'user' | 'ai'; text: string; recs?: Rec[] }
 
@@ -125,6 +126,12 @@ export default function FloatingAssistant() {
                               <p className="text-xs font-semibold text-gray-900 line-clamp-1 group-hover:text-blue-600">{r.title}</p>
                               {r.reason && <p className="text-[11px] text-gray-500 line-clamp-2 mt-0.5">{r.reason}</p>}
                               <p className="text-sm font-bold text-gray-900 mt-0.5">{priceUsd > 0 ? `$${priceUsd.toFixed(2)}` : 'Free'}</p>
+                              {r.routing && r.routing.stores > 1 && (
+                                <p className="text-[10px] font-medium text-emerald-700 mt-0.5 capitalize">
+                                  {r.routing.stores} stores → {r.routing.pick.merchant}
+                                  {r.routing.saveCents > 0 && <span className="lowercase"> · save ${(r.routing.saveCents / 100).toFixed(0)}</span>}
+                                </p>
+                              )}
                             </div>
                             <ArrowRight className="w-4 h-4 text-gray-300 self-center group-hover:text-blue-600 transition-colors shrink-0" />
                           </Link>
