@@ -31,8 +31,8 @@ one search) already exists in SmartKong, so every capability below can operate
 | Partner dashboard (clicks/EPC/earnings) | ✅ | `MarketPartnerPage`, `my_partner_stats` |
 | Admin approval queue | ✅ | `MarketAffiliateAdminPage` PartnersPanel, `list_partners` |
 | KYC / tax forms (W-9/W-8BEN) | ○ | needs `partner_kyc` table + upload |
-| Sub-affiliate recruiting + override commission | ✅ | `affiliate_partners.referred_by` + `credit_override_chain()` (2-tier, migration 054) |
-| Partner levels (Starter → Enterprise) w/ rev-share | ✅ | `partner_levels`, `partner_level()`, `partner_revshare_bps()` (054) |
+| Sub-affiliate recruiting + override commission | ✅ | `affiliate_partners.referred_by` + `credit_override_chain()` (054); **partner dashboard** recruit panel (referral link `/affiliate?ref=`, recruits + override earned) + referrer-on-signup `become_affiliate(…, p_referrer_code)` (056) |
+| Partner levels (Starter → Enterprise) w/ rev-share | ✅ | `partner_levels`, `partner_level()`, `partner_revshare_bps()` (054); **surfaced** in the dashboard via `my_level_info()` — level, rev-share %, progress to next tier (056) |
 | Team / agency organization accounts | ○ | needs `partner_orgs` + membership (sub-affiliate chain is the primitive) |
 | Built-in CRM (recruit, message, segment partners) | ○ | needs inbox + campaigns |
 | Brand invitations (invite creators to promote) | ○ | needs invite flow |

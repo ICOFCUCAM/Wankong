@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import Seo from '@/components/Seo';
@@ -8,11 +8,17 @@ import { Reveal, Magnetic } from './motion';
 import { toast } from 'sonner';
 import {
   Link2, MousePointerClick, TrendingUp, Wallet, Copy, Check, Loader2,
-  Sparkles, Globe, ShieldCheck, Clock, ArrowRight,
+  Sparkles, Globe, ShieldCheck, Clock, ArrowRight, Award, Users, Gift,
 } from 'lucide-react';
 
 interface Partner { id: string; code: string; display_name: string | null; payout_email: string | null; status: string; default_commission_bps: number }
 interface Stats { clicks: number; conversions: number; earnings_cents: number; pending_cents: number }
+interface LevelInfo {
+  level: string; label: string | null; revenue_share_bps: number | null; commission_basis: string;
+  monthly_orders: number; next_level: string | null; next_label: string | null;
+  next_threshold: number | null; orders_to_next: number | null;
+}
+interface Recruits { recruits: number; override_earnings_cents: number }
 
 const money = (c: number) => `$${((c ?? 0) / 100).toFixed(2)}`;
 const origin = () => (typeof window !== 'undefined' ? window.location.origin : 'https://smartkong.net');
@@ -36,6 +42,10 @@ export default function MarketPartnerPage() {
   const [newCode, setNewCode] = useState('');
   const [newDisc, setNewDisc] = useState('10');
   const [busy, setBusy] = useState(false);
+  const [level, setLevel] = useState<LevelInfo | null>(null);
+  const [recruits, setRecruits] = useState<Recruits | null>(null);
+  const [searchParams] = useSearchParams();
+  const referrerCode = searchParams.get('ref') ?? '';
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -43,16 +53,20 @@ export default function MarketPartnerPage() {
     const row = Array.isArray(data) ? data[0] : data;
     setPartner(row ?? null);
     if (row?.status === 'approved') {
-      const [s, b, pc, po] = await Promise.all([
+      const [s, b, pc, po, li, rc] = await Promise.all([
         supabase.rpc('my_partner_stats'),
         supabase.rpc('partner_balance'),
         supabase.rpc('my_promo_codes'),
         supabase.rpc('my_payouts'),
+        supabase.rpc('my_level_info'),
+        supabase.rpc('my_recruits'),
       ]);
       setStats((Array.isArray(s.data) ? s.data[0] : s.data) ?? null);
       setBalance(typeof b.data === 'number' ? b.data : 0);
       setPromos(pc.data ?? []);
       setPayouts(po.data ?? []);
+      setLevel((li.data as LevelInfo) ?? null);
+      setRecruits((rc.data as Recruits) ?? null);
     }
     setLoading(false);
   }, []);
@@ -92,10 +106,14 @@ export default function MarketPartnerPage() {
   const apply = async (e: React.FormEvent) => {
     e.preventDefault();
     setApplying(true);
-    const { error } = await supabase.rpc('become_affiliate', { p_display_name: name, p_payout_email: payout || user?.email });
+    const { error } = await supabase.rpc('become_affiliate', {
+      p_display_name: name, p_payout_email: payout || user?.email, p_referrer_code: referrerCode || null,
+    });
     setApplying(false);
     if (error) { toast.error(error.message); return; }
-    toast.success('Application submitted — we’ll review it shortly.');
+    toast.success(referrerCode
+      ? 'Application submitted — you joined via a partner referral.'
+      : 'Application submitted — we’ll review it shortly.');
     load();
   };
 
@@ -148,6 +166,11 @@ export default function MarketPartnerPage() {
         ) : (
           <form onSubmit={apply} className="mt-10 max-w-lg mx-auto rounded-2xl border border-gray-200 bg-white p-6">
             <p className="font-bold text-gray-900 mb-4">Apply to become a partner</p>
+            {referrerCode && (
+              <div className="mb-4 flex items-center gap-2 rounded-xl bg-violet-50 border border-violet-100 px-3 py-2.5 text-sm text-violet-800">
+                <Users className="w-4 h-4 shrink-0" /> Invited by partner <b>{referrerCode}</b>
+              </div>
+            )}
             <label className="block text-xs font-semibold text-gray-500 mb-1.5">Display name / brand</label>
             <input value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Techie Reviews" className="w-full border border-gray-300 rounded-xl px-3 py-2.5 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" />
             <label className="block text-xs font-semibold text-gray-500 mb-1.5">Payout email</label>
@@ -206,6 +229,58 @@ export default function MarketPartnerPage() {
             <p className="text-xs text-gray-400 mt-0.5">{s.l}{s.l === 'Earned' && stats?.pending_cents ? ` · ${money(stats.pending_cents)} pending` : ''}</p>
           </div>
         ))}
+      </div>
+
+      {/* Partner level (rev-share tiers) + recruiting */}
+      <div className="mt-6 grid lg:grid-cols-2 gap-6">
+        {level && (
+          <div className="rounded-2xl border border-gray-200 bg-white p-6">
+            <div className="flex items-center justify-between mb-1">
+              <p className="flex items-center gap-2 font-bold text-gray-900"><Award className="w-4 h-4 text-violet-600" /> Your partner level</p>
+              <span className="text-[11px] font-black uppercase tracking-wide px-2.5 py-1 rounded-full bg-violet-50 text-violet-700">{level.level}</span>
+            </div>
+            <p className="text-xs text-gray-400 mb-4">
+              {level.commission_basis === 'revshare'
+                ? <>You keep <b className="text-gray-700">{((level.revenue_share_bps ?? 0) / 100).toFixed(0)}%</b> of SmartKong’s affiliate revenue at this tier.</>
+                : <>Rev-share tier <b className="text-gray-700">{((level.revenue_share_bps ?? 0) / 100).toFixed(0)}%</b> — ask us to switch your account to rev-share to activate it.</>}
+            </p>
+            <div className="rounded-xl bg-[var(--sk-mist)] p-4">
+              <div className="flex items-center justify-between text-sm mb-2">
+                <span className="text-gray-500">{level.monthly_orders} sales this month</span>
+                {level.next_level
+                  ? <span className="text-gray-400">{level.orders_to_next} to <b className="text-gray-600 capitalize">{level.next_level}</b></span>
+                  : <span className="text-emerald-600 font-semibold">Top tier</span>}
+              </div>
+              <div className="h-2 rounded-full bg-gray-200 overflow-hidden">
+                <div className="h-full rounded-full" style={{
+                  width: `${level.next_threshold ? Math.min(100, Math.round((level.monthly_orders / level.next_threshold) * 100)) : 100}%`,
+                  background: 'var(--sk-aurora)',
+                }} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Recruit partners — earn override commission on their sales */}
+        <div className="rounded-2xl border border-gray-200 bg-white p-6">
+          <p className="flex items-center gap-2 font-bold text-gray-900 mb-1"><Users className="w-4 h-4 text-blue-600" /> Recruit partners</p>
+          <p className="text-xs text-gray-400 mb-4">Invite others to join — you earn an override commission on every sale they make.</p>
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="rounded-xl bg-[var(--sk-mist)] p-3">
+              <p className="text-2xl font-black tracking-tight text-gray-900">{recruits?.recruits ?? 0}</p>
+              <p className="text-[11px] text-gray-400">Partners recruited</p>
+            </div>
+            <div className="rounded-xl bg-emerald-50 p-3">
+              <p className="text-2xl font-black tracking-tight text-emerald-700 flex items-center gap-1"><Gift className="w-4 h-4" />{money(recruits?.override_earnings_cents ?? 0)}</p>
+              <p className="text-[11px] text-emerald-600/80">Override earned</p>
+            </div>
+          </div>
+          <label className="block text-xs font-semibold text-gray-500 mb-1.5">Your referral link</label>
+          <div className="flex items-center gap-2 rounded-xl bg-[var(--sk-mist)] px-3 py-2">
+            <code className="flex-1 text-xs text-gray-600 truncate">{origin()}/affiliate?ref={partner.code}</code>
+            <button onClick={() => copy(`${origin()}/affiliate?ref=${partner.code}`, 'ref')} className="text-blue-600 shrink-0">{copied === 'ref' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}</button>
+          </div>
+        </div>
       </div>
 
       {/* Link generator */}
