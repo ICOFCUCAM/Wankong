@@ -31,7 +31,9 @@ one search) already exists in SmartKong, so every capability below can operate
 | Partner dashboard (clicks/EPC/earnings) | ✅ | `MarketPartnerPage`, `my_partner_stats` |
 | Admin approval queue | ✅ | `MarketAffiliateAdminPage` PartnersPanel, `list_partners` |
 | KYC / tax forms (W-9/W-8BEN) | ○ | needs `partner_kyc` table + upload |
-| Team / organization accounts (sub-affiliates) | ○ | needs `partner_orgs` + membership |
+| Sub-affiliate recruiting + override commission | ✅ | `affiliate_partners.referred_by` + `credit_override_chain()` (2-tier, migration 054) |
+| Partner levels (Starter → Enterprise) w/ rev-share | ✅ | `partner_levels`, `partner_level()`, `partner_revshare_bps()` (054) |
+| Team / agency organization accounts | ○ | needs `partner_orgs` + membership (sub-affiliate chain is the primitive) |
 | Built-in CRM (recruit, message, segment partners) | ○ | needs inbox + campaigns |
 | Brand invitations (invite creators to promote) | ○ | needs invite flow |
 | Coupon codes tied to a partner | ○ | needs `partner_coupons` + checkout hook |
@@ -54,12 +56,18 @@ one search) already exists in SmartKong, so every capability below can operate
 |---|---|---|
 | Percentage commission | ✅ | `default_commission_bps` |
 | Fixed amount | ✅ | `commission_type='flat'` + `flat_cents` |
-| Tiered rewards (volume breakpoints) | ✅ | `commission_tiers` + `partner_rate()` |
+| Hybrid ($20 + 5% per sale) | ✅ | `commission_type='hybrid'` = `flat_cents` + `partner_rate()` % (migration 054) |
+| Tiered rewards (cumulative breakpoints) | ✅ | `commission_tiers` + `partner_rate()` |
+| Volume bonus (monthly window, +2% after N sales/mo) | ✅ | `volume_bonus` + `partner_monthly_orders()`, folded into `partner_rate()` (054) |
 | Per-category rates (beauty 20% vs GPU 3%) | ✅ | `category_commission`, resolved per line-item by `commission_for_order()` |
+| Per-merchant rates (Amazon 3%, eBay 4%, Temu 8%) | ✅ | `merchant_commission` (by `ecom_products.vendor`), precedence merchant > category > base (054) |
+| Multi-tier / sub-affiliate override (recruit affiliates) | ✅ | `affiliate_partners.referred_by` + `credit_override_chain()`, 2 levels (`tier2_bps` 5% / `tier3_bps` 2%), `event_type='override'` (054) |
+| Rev-share partner levels (Starter 60% … Enterprise) | ✅ | `partner_levels` + `commission_basis='revshare'`; partner earns a share of SmartKong's inbound take (054) |
+| AI-optimized commission routing (Commerce Score) | ✅ | `best_offer_for()` + `commerce_score()` + `merchant_reputation`; value-first, commission as tie-breaker only. `GET /api/route-offers` (054) |
 | Recurring commission (subscriptions) | ✅ | `event_type='recurring'` + `record_recurring_commission()`, **wired** to Stripe `invoice.payment_succeeded` (renewals). Subscriptions must carry `metadata.partner_ref` — set from `sk_ref`/`sk_promo` at checkout (`create-subscription` `partnerRef`). |
 | Lead / CPA (insurance/finance) | ✅ | `event_type='lead'` + `lead_bounties` + `record_partner_lead()`, **wired** via `POST /api/partner-lead` (server-to-server, `PARTNER_LEAD_SECRET`, idempotent on `ref`). |
-| Performance bonuses / spiffs | ○ | rules engine (future) |
-| Per-merchant overrides | ◐ | category done; per-vendor is the next axis |
+| Performance bonuses / spiffs | ◐ | monthly volume bonus done (`volume_bonus`); arbitrary spiff rules engine future |
+| Per-merchant overrides | ✅ | `merchant_commission` per vendor (054) |
 
 ## 4. Tracking & attribution (Everflow, TUNE)
 
@@ -228,6 +236,29 @@ the first sweep missed. This one changed the strategy, not just the feature list
 ### Method note
 This sweep's automated synthesis step returned a placeholder; findings above were
 reconstructed from the verified per-claim journal (23 confirmed / 2 refuted, 3-vote).
+
+## Monetization — revenue streams (affiliate is only stream #1)
+
+SmartKong's economics are a portfolio, not a single affiliate feed. Status of
+each stream today:
+
+| Revenue source | How SmartKong earns | Status |
+|---|---|---|
+| **Affiliate commissions** | % / flat / hybrid / tiered / per-category / per-merchant / recurring / CPA of completed sales; inbound networks via `affiliate_accounts` | ✅ engine complete (migrations 049–054) |
+| **Partner rev-share** | SmartKong keeps a slice; partner earns their level's share (Starter 60% → Pro 80%) of SmartKong's inbound take | ✅ `partner_levels` + `commission_basis='revshare'` |
+| **B2B / wholesale sourcing** | commission on RFQ/wholesale transactions | ◐ Business-mode RFQ flow shipped (SmartKongLanding); transaction fee not yet metered |
+| **Sponsored placements** | clearly-labeled promoted products in results | ○ needs `is_sponsored` flag + labeled slot + billing |
+| **Merchant subscriptions** | stores pay for premium tools/analytics | ○ needs plan + `user_subscriptions` reuse |
+| **AI shopping assistant (premium)** | subscription for advanced shopping features | ○ assistant exists; paywall/tier not built |
+| **Supplier marketplace** | fees connecting manufacturers ↔ buyers | ○ maps onto vendor + RFQ rails |
+| **Advertising** | display/search ads, separated from organic | ○ needs ad slots + separation guarantee |
+| **API access** | developers pay for shopping APIs | ◐ `/api/route-offers` is the first public shopping API; no keys/billing yet |
+| **Checkout services** | fee for unified cross-merchant checkout | ○ Phase 9 (ACP/UCP) territory |
+| **Logistics / payments / data insights** | share of fulfillment, payment fees, privacy-preserving market analytics | ○ long-horizon |
+
+**Principle:** shopper-facing surfaces never reveal that SmartKong earns
+commission; monetization stays invisible. Sponsored/ad slots are the sole
+exception and must be *explicitly labeled* and separated from organic results.
 
 ## Recommended build order (phases)
 
