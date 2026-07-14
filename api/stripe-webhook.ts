@@ -48,6 +48,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         // server-side, so fulfillment happens even if the buyer's browser
         // never returns from the payment.
         await markPaidAndFulfill(supabase, orderId, { stripe_payment_intent_id: pi.id });
+
+        // Agent-checkout orders have no client OrderConfirmation to attribute
+        // the partner sale, so credit the referring partner here.
+        const ref = pi.metadata?.partner_ref;
+        if (ref) {
+          await supabase.rpc('record_partner_conversion', { p_code: ref, p_order_id: orderId });
+          await supabase.rpc('record_conversion_by_promo', { p_code: ref, p_order_id: orderId });
+        }
       }
       break;
     }
