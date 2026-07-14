@@ -164,15 +164,57 @@ one search) already exists in SmartKong, so every capability below can operate
 
 ---
 
+## Frontier capabilities (2024–2026 research sweep)
+
+Verified via a deep-research pass (25 sources, 3-vote adversarial verification,
+18 claims confirmed / 7 refuted). These are **beyond** the canonical set above —
+the current edge of the category, mostly absent from standard affiliate
+blueprints. Difficulty is for SmartKong specifically.
+
+| # | Capability | Pioneer(s) | Why it matters | Build |
+|---|---|---|---|---|
+| F1 | **Agentic partner ops** — autonomous recruit/qualify/onboard + audit-inactive-partners, and a task-executing copilot (not just Q&A) | impact.com Recruitment Agent + Ask Impact (beta) | Turns partner CRM from manual to autonomous; SmartKong already has the AI + partner data | ◐ Med — LLM over `affiliate_partners`/stats |
+| F2 | **Own-your-AI data access** — machine-readable OpenAPI + prompt "recipes" so brands point *their* LLM at raw attribution data via chat | Everflow OpenAPI + AI Playbook | Every partner automates their own analytics; huge differentiation for an AI-first layer | ◐ Med — publish OpenAPI + recipe library |
+| F3 | **Zero-click / journey-reconstruction attribution** — credit partner influence even with no trackable click | Partnerize VantagePoint (Konnecto) | The "hidden half" of affiliate revenue; SmartKong's unified catalog + logged-in shoppers is a unique first-party angle | ● Hard — modeling + first-party graph |
+| F4 | **Persistent creator storefronts** — always-on curated shop destinations w/ attribution (vs. links that fragment) | impact.com Storefronts (GA), Fanatics | Category-defining; the durable form of creator commerce | ◐ Med — per-partner shop page over catalog |
+| F5 | **Video-first, social, location-aware discovery** — feed of creator video, social graph, creator↔shopper chat, no product-tag requirement | LTK app redesign | Discovery is becoming social entertainment, not a catalog | ● Hard — social + video product |
+| F6 | **Brand→creator campaign distribution** — push launches/promo windows to your creator network with gifting, flat-rate, custom codes | Howl Portfolios | Activates partners at scale without manual research | ◐ Med — campaign push over partner CRM |
+| F7 | **In-platform social amplification** — turn creator content into paid ads natively; verified creator discovery via Instagram Creator Marketplace | impact.com (June 2026) | Closes the loop from organic → paid; first-party creator data | ● Hard — ad-platform integrations |
+| F8 | **Single-use auto-applying promo codes** — unique code auto-applies at checkout, cutting attribution leakage & friction | impact.com (roadmap) | Solves the coupon-leakage problem; concrete and high-ROI | ✅ Easy — code table + checkout hook |
+| F9 | **Compliance-in-payout** — W-9/W-8, TIN validation, 1099/1042-S filing, OFAC/AML/PEP screening, VAT/GST/DAC7 at point of payment | Lumanu, TaxBandits, Gigapay | Legally required at scale; **commoditized via API — integrate, don't build** | ◐ Med — vendor API in payout flow |
+
+**On-demand payout** ("Anytime Withdrawal," instant PayPal/Venmo) is a lighter
+F9-adjacent win. Note the **OBBBA (July 2025)** raised US 1099-NEC/MISC reporting
+thresholds — the payout engine must track this.
+
+### Verified NOT real — do not build on these
+The sweep specifically **refuted** (majority-refute vote) three widely-repeated
+claims — treat as marketing, not fact:
+- Howl "Superlinks" real-time issuance + **dynamic sales-impact compensation** (0-3)
+- Partnerize **VPFCS fractional-commission standard** with AAM certification (1-2)
+- Lumanu **"merchant of record" ERP payout** consolidation model (0-3)
+
+### Evidence caveats
+Several flagship features are **announced, not proven GA**: impact.com's
+Recruitment Agent is closed beta; Single-Use Promo Codes & Venmo withdrawal are
+roadmap. Five findings lean on impact.com's June-2026 iPX release (widely
+syndicated, single vendor). Traction metrics (Howl's $1.1B, Everflow's "<10 min")
+are self-reported. CJ/Rakuten/Awin/Skimlinks/Honey surfaced no *verified* novel
+capability this round — an evidence gap, not proof they lack innovation
+(cashback/coupon + browser-extension checkout-layer attribution are the obvious
+next research target, and directly adjacent to SmartKong).
+
 ## Recommended build order (phases)
 
 - **Phase 1 — Partner Program MVP** ✅ *shipped* (profiles, approval, universal links, attribution, dashboard, admin queue).
-- **Phase 2 — Commission & payout engine**: fixed/tiered/recurring/lifetime rules, refund reversal, payout wallet (reuse `creator_withdrawals`; PayPal/Wise/Stripe/crypto, multi-currency), automated monthly payouts, tax forms.
-- **Phase 3 — Best-commission routing + AI**: route each product to the highest-value merchant, forecast earnings pre-publish, auto-swap on out-of-stock.
-- **Phase 4 — Creator storefronts**: per-partner shoppable shop pages, curated multi-store collections, brand invitations.
-- **Phase 5 — Fraud & attribution hardening**: dup-click/bot/VPN detection, S2S postbacks, cookie-less + cross-device.
-- **Phase 6 — Coupons & cashback**: coupon vault, shopper cashback wallet, seasonal commission windows.
+- **Phase 2 — Commission & payout engine**: fixed/tiered/recurring/lifetime rules, refund reversal, payout wallet (reuse `creator_withdrawals`; PayPal/Wise/Stripe/crypto, multi-currency), automated monthly payouts + on-demand withdrawal. **Integrate F9 compliance-in-payout via a vendor API** (tax forms, TIN, 1099/DAC7, OFAC/AML) rather than building it.
+- **Phase 3 — Best-commission routing + AI**: route each product to the highest-value merchant, forecast earnings pre-publish, auto-swap on out-of-stock. **Fold in F1 agentic partner ops** (recruit/audit agent, task copilot over partner data) and **F2 own-your-AI data access** (OpenAPI + prompt recipes) — both play to SmartKong's AI-first strength.
+- **Phase 4 — Creator storefronts** *(bumped — research confirms F4 is category-defining)*: persistent per-partner shoppable shop pages over the unified catalog, curated multi-store collections, brand invitations, **F6 brand→creator campaign distribution**.
+- **Phase 5 — Fraud & attribution hardening**: dup-click/bot/VPN detection, S2S postbacks, cookie-less + cross-device, and a first exploration of **F3 zero-click / journey-reconstruction attribution** (SmartKong's logged-in + unified-catalog first-party graph is a real edge).
+- **Phase 6 — Coupons & cashback**: coupon vault, **F8 single-use auto-applying promo codes** (quick win, cuts attribution leakage), shopper cashback wallet, seasonal commission windows. *(Also the next research target: browser-extension checkout-layer attribution à la Honey/Rakuten.)*
 - **Phase 7 — Public API + connectors**: REST API with keys/scopes, webhooks, Zapier/Shopify/Woo.
-- **Phase 8 — Partner CRM + org accounts + influencer matching**.
+- **Phase 8 — Social & influencer layer**: partner CRM + org accounts, influencer matching, **F5 video-first social discovery** and **F7 in-platform social amplification** (the heaviest lifts, last).
 
 Each phase is independently shippable and builds on Phase 1's attribution spine.
+Quick wins to pull forward regardless of phase: **F8 single-use promo codes** and
+**on-demand withdrawal**.
