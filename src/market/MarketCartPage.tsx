@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import Seo from '@/components/Seo';
 import MarketLayout from './MarketLayout';
 import { Reveal, Magnetic } from './motion';
-import { ShoppingCart, Trash2, Lock, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
+import { toast } from 'sonner';
+import { ShoppingCart, Trash2, Lock, ArrowRight, ShieldCheck, Sparkles, Tag, Check } from 'lucide-react';
 
 // SmartKong cart — the "one cart, every store" promise made real, in the
 // light Meridian brand. Routed only in market mode (the WANKONG CartPage is
@@ -12,6 +14,20 @@ import { ShoppingCart, Trash2, Lock, ArrowRight, ShieldCheck, Sparkles } from 'l
 export default function MarketCartPage() {
   const { items, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart();
   const navigate = useNavigate();
+  const [promo, setPromo] = useState('');
+  const [applied, setApplied] = useState<{ code: string; discount: number } | null>(null);
+
+  const applyPromo = async () => {
+    const code = promo.trim();
+    if (!code) return;
+    const { data } = await supabase.rpc('apply_promo_code', { p_code: code });
+    const row = Array.isArray(data) ? data[0] : data;
+    if (!row) { toast.error('That code isn’t valid.'); return; }
+    // Store the creator code so the sale is attributed at order confirmation.
+    try { localStorage.setItem('sk_promo', code.toUpperCase()); } catch { /* ignore */ }
+    setApplied({ code: code.toUpperCase(), discount: row.discount_bps ?? 0 });
+    toast.success(`Code applied — supporting ${row.partner_code}`);
+  };
 
   if (items.length === 0) {
     return (
@@ -76,6 +92,25 @@ export default function MarketCartPage() {
           {/* Summary */}
           <div className="lg:sticky lg:top-32 rounded-2xl border border-gray-200 bg-white p-6">
             <h3 className="text-gray-900 font-bold mb-4">Order summary</h3>
+
+            {/* Creator / promo code — carries attribution */}
+            {applied ? (
+              <div className="flex items-center gap-2 rounded-xl bg-emerald-50 border border-emerald-100 px-3 py-2.5 mb-4">
+                <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span className="text-sm text-emerald-700 font-semibold">{applied.code}</span>
+                {applied.discount > 0 && <span className="text-xs text-emerald-600">{(applied.discount / 100).toFixed(0)}% off applied at checkout</span>}
+                <button onClick={() => { setApplied(null); try { localStorage.removeItem('sk_promo'); } catch { /* ignore */ } }} className="ml-auto text-emerald-600/60 hover:text-emerald-700 text-xs">Remove</button>
+              </div>
+            ) : (
+              <div className="flex gap-2 mb-4">
+                <div className="relative flex-1">
+                  <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input value={promo} onChange={e => setPromo(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyPromo()} placeholder="Creator or promo code" className="w-full border border-gray-300 rounded-xl pl-9 pr-3 py-2.5 text-sm uppercase placeholder:normal-case focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+                <button onClick={applyPromo} className="px-4 py-2.5 rounded-xl border border-gray-300 hover:border-blue-500 hover:text-blue-600 text-gray-700 text-sm font-semibold transition-colors">Apply</button>
+              </div>
+            )}
+
             <div className="space-y-2.5 text-sm mb-5">
               <div className="flex justify-between text-gray-500"><span>Subtotal</span><span className="text-gray-900 font-medium">${cartTotal.toFixed(2)}</span></div>
               <div className="flex justify-between text-gray-500"><span>Stores combined</span><span className="text-gray-900 font-medium">{storeCount}</span></div>

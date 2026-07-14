@@ -29,6 +29,12 @@ export default function MarketPartnerPage() {
   const [applying, setApplying] = useState(false);
   const [target, setTarget] = useState('');
   const [copied, setCopied] = useState('');
+  const [balance, setBalance] = useState(0);
+  const [promos, setPromos] = useState<any[]>([]);
+  const [payouts, setPayouts] = useState<any[]>([]);
+  const [newCode, setNewCode] = useState('');
+  const [newDisc, setNewDisc] = useState('10');
+  const [busy, setBusy] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -36,11 +42,37 @@ export default function MarketPartnerPage() {
     const row = Array.isArray(data) ? data[0] : data;
     setPartner(row ?? null);
     if (row?.status === 'approved') {
-      const { data: s } = await supabase.rpc('my_partner_stats');
-      setStats((Array.isArray(s) ? s[0] : s) ?? null);
+      const [s, b, pc, po] = await Promise.all([
+        supabase.rpc('my_partner_stats'),
+        supabase.rpc('partner_balance'),
+        supabase.rpc('my_promo_codes'),
+        supabase.rpc('my_payouts'),
+      ]);
+      setStats((Array.isArray(s.data) ? s.data[0] : s.data) ?? null);
+      setBalance(typeof b.data === 'number' ? b.data : 0);
+      setPromos(pc.data ?? []);
+      setPayouts(po.data ?? []);
     }
     setLoading(false);
   }, []);
+
+  const createCode = async () => {
+    if (newCode.trim().length < 3) { toast.error('Code must be at least 3 characters'); return; }
+    setBusy(true);
+    const { error } = await supabase.rpc('create_promo_code', { p_code: newCode.trim(), p_discount_bps: Math.round(Number(newDisc || 0) * 100) });
+    setBusy(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success('Promo code created'); setNewCode(''); load();
+  };
+
+  const withdraw = async () => {
+    if (balance <= 0) { toast.info('No balance to withdraw yet.'); return; }
+    setBusy(true);
+    const { error } = await supabase.rpc('request_payout', { p_method: 'wallet' });
+    setBusy(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success('Withdrawal requested'); load();
+  };
 
   useEffect(() => { if (user) load(); else if (!authLoading) setLoading(false); }, [user, authLoading, load]);
 
@@ -179,6 +211,59 @@ export default function MarketPartnerPage() {
         <div className="mt-4 flex items-center gap-2 text-xs text-gray-400">
           <span>Your storefront link:</span>
           <button onClick={() => copy(baseLink, 'base')} className="inline-flex items-center gap-1 text-blue-600 font-medium">{copied === 'base' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />} {baseLink}</button>
+        </div>
+      </div>
+
+      <div className="mt-6 grid lg:grid-cols-2 gap-6">
+        {/* Promo codes */}
+        <div className="rounded-2xl border border-gray-200 bg-white p-6">
+          <p className="font-bold text-gray-900 mb-1">Creator promo codes</p>
+          <p className="text-xs text-gray-400 mb-4">A code attributes the sale to you even if the click cookie is lost.</p>
+          <div className="flex flex-col sm:flex-row gap-2 mb-4">
+            <input value={newCode} onChange={e => setNewCode(e.target.value.toUpperCase())} placeholder="YOURCODE" className="flex-1 border border-gray-300 rounded-xl px-3 py-2.5 text-sm uppercase focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <div className="flex items-center gap-1 border border-gray-300 rounded-xl px-3">
+              <input value={newDisc} onChange={e => setNewDisc(e.target.value)} type="number" min="0" max="90" className="w-14 py-2.5 text-sm focus:outline-none" /><span className="text-sm text-gray-400">% off</span>
+            </div>
+            <button onClick={createCode} disabled={busy} className="px-4 py-2.5 rounded-xl text-white text-sm font-semibold disabled:opacity-50" style={{ background: 'var(--sk-aurora)' }}>Create</button>
+          </div>
+          {promos.length === 0 ? (
+            <p className="text-xs text-gray-400">No codes yet.</p>
+          ) : (
+            <div className="space-y-2">
+              {promos.map(c => (
+                <div key={c.id} className="flex items-center gap-2 rounded-xl bg-[var(--sk-mist)] px-3 py-2">
+                  <code className="text-sm font-bold text-gray-900">{c.code}</code>
+                  <span className="text-xs text-gray-400">{(c.discount_bps / 100).toFixed(0)}% off · {c.uses} use{c.uses === 1 ? '' : 's'}{c.max_uses ? ` / ${c.max_uses}` : ''}</span>
+                  <button onClick={() => copy(c.code, 'c' + c.id)} className="ml-auto text-blue-600">{copied === 'c' + c.id ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}</button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Balance / withdraw */}
+        <div className="rounded-2xl border border-gray-200 bg-white p-6">
+          <p className="font-bold text-gray-900 mb-1">Balance</p>
+          <p className="text-xs text-gray-400 mb-4">Withdraw your earned commission on demand.</p>
+          <div className="rounded-2xl bg-[var(--sk-mist)] p-5 flex items-center justify-between mb-4">
+            <div>
+              <p className="text-xs text-gray-400">Available</p>
+              <p className="text-3xl font-black tracking-tight text-gray-900">{money(balance)}</p>
+            </div>
+            <button onClick={withdraw} disabled={busy || balance <= 0} className="flex items-center gap-2 px-5 py-3 rounded-xl text-white font-bold shadow-lg shadow-violet-500/25 disabled:opacity-40" style={{ background: 'var(--sk-aurora)' }}>
+              <Wallet className="w-4 h-4" /> Withdraw
+            </button>
+          </div>
+          {payouts.length > 0 && (
+            <div className="space-y-2">
+              {payouts.slice(0, 4).map(p => (
+                <div key={p.id} className="flex items-center justify-between text-sm">
+                  <span className="text-gray-500">{p.created_at?.slice(0, 10)} · {p.method}</span>
+                  <span className="flex items-center gap-2"><b className="text-gray-900">{money(p.amount_cents)}</b><span className={`text-[10px] font-bold uppercase px-1.5 py-0.5 rounded ${p.status === 'paid' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>{p.status}</span></span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

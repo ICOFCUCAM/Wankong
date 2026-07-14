@@ -22,10 +22,17 @@ export default function OrderConfirmation() {
   // is idempotent per order; we clear the ref so it isn't reused on later buys.
   useEffect(() => {
     if (!orderId) return;
+    let promo: string | null = null;
+    try { promo = localStorage.getItem('sk_promo'); } catch { /* ignore */ }
     const ref = currentRef();
-    if (!ref) return;
-    supabase.rpc('record_partner_conversion', { p_code: ref, p_order_id: orderId })
-      .then(() => { try { localStorage.removeItem('sk_ref'); } catch { /* ignore */ } });
+    if (!promo && !ref) return;
+    // A promo code takes precedence (explicit shopper action) over a link cookie.
+    const rpc = promo
+      ? supabase.rpc('record_conversion_by_promo', { p_code: promo, p_order_id: orderId })
+      : supabase.rpc('record_partner_conversion', { p_code: ref, p_order_id: orderId });
+    rpc.then(() => {
+      try { localStorage.removeItem('sk_promo'); localStorage.removeItem('sk_ref'); } catch { /* ignore */ }
+    });
   }, [orderId]);
 
   // Fulfillment happens server-side via payment webhooks, so it can lag the
