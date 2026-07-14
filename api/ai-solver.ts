@@ -36,6 +36,7 @@ interface CandidateProduct {
   price: number;
   is_affiliate: boolean;
   vendor: string | null;
+  upc: string | null;
   rating_avg: number | null;
   rating_count: number | null;
   tags: string[] | null;
@@ -203,7 +204,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const c = analysis.constraints;
     let query = supabase
       .from('ecom_products')
-      .select('id, title, handle, description, product_type, genre, cover_url, price, compare_at_price, is_affiliate, affiliate_url, vendor, rating_avg, rating_count, tags, problem_tags, solves_problems')
+      .select('id, title, handle, description, product_type, genre, cover_url, price, compare_at_price, is_affiliate, affiliate_url, vendor, upc, rating_avg, rating_count, tags, problem_tags, solves_problems')
       .eq('status', 'active');
 
     if (c.maxPriceUsd != null) query = query.lte('price', c.maxPriceUsd * 100);
@@ -223,6 +224,41 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (scored.length === 0 && candidates && candidates.length > 0) {
       scored = (candidates as CandidateProduct[]).slice(0, 6).map(product => ({ product, score: 1 }));
     }
+
+    // Collapse duplicate merchant listings of the same product into one entry
+    // (keep the best-scored representative), so the AI doesn't show the same
+    // GPU five times — the shopping layer speaks with one voice per product.
+    const groupKey = (p: CandidateProduct) =>
+      (p.upc && p.upc.trim()) || (p.title ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+    const seenGroups = new Set<string>();
+    scored = scored.filter(x => {
+      const k = groupKey(x.product);
+      if (!k || seenGroups.has(k)) return false;
+      seenGroups.add(k);
+      return true;
+    });
+
+    // Commerce Score routing: for each recommendation, find every merchant that
+    // carries it and route to the best-value offer. Attaches a routing summary
+    // (stores, best merchant, potential saving) — commission is never exposed.
+    const routingByGroup = await Promise.all(
+      scored.map(async x => {
+        const group = groupKey(x.product);
+        if (!group) return null;
+        const { data } = await supabase.rpc('best_offer_for', { p_group: group, p_pref: 'balanced' });
+        const offers = (data ?? []) as Array<{
+          product_id: string; merchant: string; price_cents: number; is_pick: boolean;
+        }>;
+        if (offers.length < 2) return null;
+        const pick = offers.find(o => o.is_pick) ?? offers[0];
+        const prices = offers.map(o => o.price_cents);
+        return {
+          stores:     offers.length,
+          pick:       { productId: pick.product_id, merchant: pick.merchant, priceCents: pick.price_cents },
+          saveCents:  Math.max(...prices) - Math.min(...prices),
+        };
+      }),
+    );
 
     // 3. Explain why each product helps (single batched call)
     let reasons: Record<string, string> = {};
@@ -252,10 +288,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       analysis,
       constraints: analysis.constraints,
       confidence,
-      recommendations: scored.map(x => ({
+      recommendations: scored.map((x, i) => ({
         ...x.product,
-        score:  x.score,
-        reason: reasons[x.product.id] ?? null,
+        score:   x.score,
+        reason:  reasons[x.product.id] ?? null,
+        routing: routingByGroup[i] ?? null,
       })),
     });
   } catch (err: any) {

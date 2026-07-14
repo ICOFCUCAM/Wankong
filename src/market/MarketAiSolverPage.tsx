@@ -6,7 +6,7 @@ import MarketLayout from './MarketLayout';
 import MarketProductCard from './MarketProductCard';
 import { Reveal } from './motion';
 import type { MarketProduct } from './useMarketCatalog';
-import { Sparkles, Search, Loader2 } from 'lucide-react';
+import { Sparkles, Search, Loader2, Gauge } from 'lucide-react';
 
 const EXAMPLES = [
   'My car battery keeps dying in cold weather',
@@ -16,9 +16,16 @@ const EXAMPLES = [
   'I want durable equipment for a small farm',
 ];
 
+interface Routing {
+  stores: number;
+  pick: { productId: string; merchant: string; priceCents: number };
+  saveCents: number;
+}
+
 interface Result extends MarketProduct {
   score: number;
   reason: string | null;
+  routing: Routing | null;
 }
 
 // SmartKong AI Problem Solver — light-theme port of the original
@@ -167,6 +174,16 @@ export default function MarketAiSolverPage() {
                 {results.map((r, i) => (
                   <Reveal key={r.id} delay={i * 55}>
                     <MarketProductCard product={r} />
+                    {r.routing && r.routing.stores > 1 && (
+                      <p className="mt-2 px-1 text-[11px] font-medium text-emerald-700 flex items-center gap-1 leading-snug">
+                        <Gauge className="w-3 h-3 shrink-0" />
+                        <span>
+                          Found at {r.routing.stores} stores — routed to{' '}
+                          <span className="capitalize font-semibold">{r.routing.pick.merchant}</span>
+                          {r.routing.saveCents > 0 && <> · save up to ${(r.routing.saveCents / 100).toFixed(2)}</>}
+                        </span>
+                      </p>
+                    )}
                     {reasons[r.id] && (
                       <p className="mt-2 px-1 text-xs text-gray-500 leading-relaxed">
                         <Sparkles className="w-3 h-3 text-blue-500 inline mr-1" />
