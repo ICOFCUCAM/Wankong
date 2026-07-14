@@ -53,11 +53,13 @@ one search) already exists in SmartKong, so every capability below can operate
 | Capability | Status | Where |
 |---|---|---|
 | Percentage commission | ✅ | `default_commission_bps` |
-| Fixed amount | ○ | add `commission_type`/`flat_cents` |
-| Tiered rewards (volume breakpoints) | ○ | `commission_tiers` table |
-| Lifetime / recurring commission (subscriptions) | ○ | recurring order linkage |
-| Performance bonuses / spiffs | ○ | rules engine |
-| Per-category / per-merchant overrides | ○ | rules table keyed by category/vendor |
+| Fixed amount | ✅ | `commission_type='flat'` + `flat_cents` |
+| Tiered rewards (volume breakpoints) | ✅ | `commission_tiers` + `partner_rate()` |
+| Per-category rates (beauty 20% vs GPU 3%) | ✅ | `category_commission`, resolved per line-item by `commission_for_order()` |
+| Recurring commission (subscriptions) | ✅ | `event_type='recurring'` + `record_recurring_commission()` — mechanism ready, wire to a renewal source |
+| Lead / CPA (insurance/finance) | ✅ | `event_type='lead'` + `lead_bounties` + `record_partner_lead()` |
+| Performance bonuses / spiffs | ○ | rules engine (future) |
+| Per-merchant overrides | ◐ | category done; per-vendor is the next axis |
 
 ## 4. Tracking & attribution (Everflow, TUNE)
 
