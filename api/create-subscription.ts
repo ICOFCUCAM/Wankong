@@ -24,7 +24,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     tierId, priceId, priceAmount, priceCurrency = 'usd',
     userEmail, userId,
     successUrl, cancelUrl,
-    creatorId, tierName,
+    creatorId, tierName, partnerRef,
   } = req.body as {
     tierId:        string;
     priceId?:      string;
@@ -36,6 +36,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     cancelUrl:     string;
     creatorId:     string;
     tierName:      string;
+    partnerRef?:   string;   // partner ref/promo code (sk_ref) — enables recurring commission
   };
 
   try {
@@ -89,7 +90,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       line_items:           [{ price: stripePriceId, quantity: 1 }],
       success_url:          successUrl,
       cancel_url:           cancelUrl,
-      subscription_data:    { metadata: { tierId, creatorId, userId } },
+      subscription_data:    {
+        // partner_ref lets the invoice.payment_succeeded webhook attribute
+        // recurring commission on each renewal to the referring partner.
+        metadata: { tierId, creatorId, userId, ...(partnerRef ? { partner_ref: partnerRef } : {}) },
+      },
     });
 
     res.json({ url: session.url });

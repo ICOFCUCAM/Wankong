@@ -77,6 +77,27 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       break;
     }
 
+    case 'invoice.payment_succeeded': {
+      // Recurring partner commission on subscription RENEWALS (not the first
+      // cycle). The subscription must carry metadata.partner_ref (set when it
+      // was created via a partner link/code).
+      const inv = event.data.object as Stripe.Invoice;
+      const subRef = (inv as any).subscription;
+      if (inv.billing_reason === 'subscription_cycle' && subRef && inv.amount_paid > 0) {
+        try {
+          const subId = typeof subRef === 'string' ? subRef : subRef.id;
+          const sub = await stripe.subscriptions.retrieve(subId);
+          const ref = sub.metadata?.partner_ref;
+          if (ref) {
+            await supabase.rpc('record_recurring_commission', {
+              p_code: ref, p_ref: inv.id, p_amount_cents: inv.amount_paid,
+            });
+          }
+        } catch (e: any) { console.error('[recurring commission]', e?.message); }
+      }
+      break;
+    }
+
     case 'customer.subscription.created':
     case 'customer.subscription.updated': {
       const sub = event.data.object as Stripe.Subscription;

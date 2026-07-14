@@ -133,10 +133,13 @@ export default function ArtistPublicPage() {
     if (!currentUserId) { navigate('/auth/login'); return; }
     setSubscribing(tierId);
     try {
+      // A partner referral (sk_ref, 30-day) earns recurring commission on renewals.
+      let partnerRef: string | undefined;
+      try { partnerRef = localStorage.getItem('sk_ref') || localStorage.getItem('sk_promo') || undefined; } catch { /* ignore */ }
       const res = await fetch('/api/create-subscription', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ tierId, userId: currentUserId }),
+        body:    JSON.stringify({ tierId, userId: currentUserId, ...(partnerRef ? { partnerRef } : {}) }),
       });
       if (res.ok) {
         const { url } = await res.json();
