@@ -233,8 +233,9 @@ export default function MarketAffiliateAdminPage() {
           })}
         </section>
 
-        {/* Per-industry commission rates */}
+        {/* Per-industry commission rates + CPA/lead bounties */}
         <CategoryRatesPanel />
+        <LeadBountiesPanel />
         {/* Partner program — approve external affiliates + process payouts */}
         <PartnersPanel />
         <PayoutsPanel />
@@ -859,6 +860,51 @@ function CategoryRatesPanel() {
           <div key={r.category} className={`flex items-center gap-3 px-4 py-3 ${i > 0 ? 'border-t border-gray-100' : ''}`}>
             <span className="flex-1 text-sm font-semibold text-gray-900">{r.label || r.category}</span>
             <button onClick={() => edit(r)} className="px-3 py-1.5 text-sm font-bold rounded-lg border border-gray-200 hover:border-blue-400 text-blue-700 transition-colors">{(r.bps / 100).toFixed(r.bps % 100 ? 1 : 0)}%</button>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ── CPA / lead bounties (insurance, finance, SaaS demos — pay per action) ────────
+interface Bounty { event: string; payout_cents: number; label: string | null }
+
+function LeadBountiesPanel() {
+  const [rows, setRows] = useState<Bounty[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    const { data } = await supabase.from('lead_bounties').select('event, payout_cents, label').order('payout_cents', { ascending: false });
+    setRows((data ?? []) as Bounty[]);
+    setLoading(false);
+  }, []);
+  useEffect(() => { load(); }, [load]);
+
+  const edit = async (r: Bounty) => {
+    const input = window.prompt(`Bounty for "${r.label || r.event}" — flat amount per lead (e.g. $50)`, (r.payout_cents / 100).toString());
+    if (input == null) return;
+    const num = parseFloat(input.replace(/[^0-9.]/g, ''));
+    if (isNaN(num)) { toast.error('Enter a number'); return; }
+    const { error } = await supabase.rpc('set_lead_bounty', { p_event: r.event, p_payout_cents: Math.round(num * 100), p_label: r.label });
+    if (error) { toast.error(error.message); return; }
+    toast.success('Bounty updated'); load();
+  };
+
+  return (
+    <section className="mt-10">
+      <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-1">Lead / CPA bounties</h2>
+      <p className="text-xs text-gray-400 mb-3">Pay a fixed amount per qualified action instead of per sale — insurance quotes, finance signups, SaaS demos.</p>
+      <div className="rounded-2xl border border-gray-200 overflow-hidden">
+        {loading ? (
+          <p className="text-sm text-gray-400 p-6 text-center">Loading…</p>
+        ) : rows.length === 0 ? (
+          <p className="text-sm text-gray-400 p-6 text-center">No CPA bounties configured.</p>
+        ) : rows.map((r, i) => (
+          <div key={r.event} className={`flex items-center gap-3 px-4 py-3 ${i > 0 ? 'border-t border-gray-100' : ''}`}>
+            <span className="flex-1 text-sm font-semibold text-gray-900">{r.label || r.event}</span>
+            <button onClick={() => edit(r)} className="px-3 py-1.5 text-sm font-bold rounded-lg border border-gray-200 hover:border-blue-400 text-blue-700 transition-colors">${(r.payout_cents / 100).toFixed(0)}</button>
           </div>
         ))}
       </div>
