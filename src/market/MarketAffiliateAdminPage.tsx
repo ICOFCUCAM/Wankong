@@ -233,8 +233,9 @@ export default function MarketAffiliateAdminPage() {
           })}
         </section>
 
-        {/* Partner program — approve external affiliates */}
+        {/* Partner program — approve external affiliates + process payouts */}
         <PartnersPanel />
+        <PayoutsPanel />
       </div>
 
       {connecting && (
@@ -711,6 +712,22 @@ function PartnersPanel() {
     load();
   };
 
+  const editRate = async (r: PartnerRow) => {
+    const input = window.prompt(`Commission for ${r.email} — enter a percentage (e.g. 7) or a flat amount like "$5"`, (r.default_commission_bps / 100).toString());
+    if (input == null) return;
+    const flat = input.trim().startsWith('$');
+    const num = parseFloat(input.replace(/[^0-9.]/g, ''));
+    if (isNaN(num)) { toast.error('Enter a number'); return; }
+    const { error } = await supabase.rpc('set_partner_commission', {
+      p_partner_id: r.id,
+      p_type: flat ? 'flat' : 'percentage',
+      p_bps: flat ? null : Math.round(num * 100),
+      p_flat_cents: flat ? Math.round(num * 100) : null,
+    });
+    if (error) { toast.error(error.message); return; }
+    toast.success('Commission updated'); load();
+  };
+
   const badge = (s: string) =>
     s === 'approved' ? 'bg-emerald-50 text-emerald-700'
     : s === 'pending' ? 'bg-amber-50 text-amber-700'
@@ -730,6 +747,7 @@ function PartnersPanel() {
               <p className="text-sm font-semibold text-gray-900 truncate">{r.display_name || r.email}</p>
               <p className="text-xs text-gray-400">{r.code} · {(r.default_commission_bps / 100).toFixed(0)}% · {r.clicks} clicks · {r.conversions} sales · ${(r.earnings_cents / 100).toFixed(2)}</p>
             </div>
+            <button onClick={() => editRate(r)} title="Edit commission" className="text-[10px] font-semibold px-2 py-1 rounded-lg border border-gray-200 hover:border-blue-400 text-gray-600 transition-colors">{(r.default_commission_bps / 100).toFixed(0)}%</button>
             <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-full ${badge(r.status)}`}>{r.status}</span>
             {r.status !== 'approved' && (
               <button onClick={() => setStatus(r.id, 'approved')} className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors">Approve</button>
@@ -739,6 +757,60 @@ function PartnersPanel() {
             )}
             {r.status === 'approved' && (
               <button onClick={() => setStatus(r.id, 'suspended')} className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 hover:bg-gray-50 text-gray-600 transition-colors">Suspend</button>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ── Payout processing: approve / mark paid partner withdrawal requests ───────────
+interface PayoutRow { id: string; email: string; amount_cents: number; method: string; status: string; created_at: string }
+
+function PayoutsPanel() {
+  const [rows, setRows] = useState<PayoutRow[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    const { data, error } = await supabase.rpc('list_payouts');
+    setLoading(false);
+    if (error) return;
+    setRows((data ?? []) as PayoutRow[]);
+  }, []);
+  useEffect(() => { load(); }, [load]);
+
+  const setStatus = async (id: string, status: string) => {
+    const { error } = await supabase.rpc('set_payout_status', { p_payout_id: id, p_status: status });
+    if (error) { toast.error(error.message); return; }
+    toast.success(`Payout ${status}`);
+    load();
+  };
+  const badge = (s: string) =>
+    s === 'paid' ? 'bg-emerald-50 text-emerald-700' : s === 'rejected' ? 'bg-gray-100 text-gray-500' : 'bg-amber-50 text-amber-700';
+
+  return (
+    <section className="mt-10">
+      <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">Payout requests ({rows.length})</h2>
+      <div className="rounded-2xl border border-gray-200 overflow-hidden">
+        {loading ? (
+          <p className="text-sm text-gray-400 p-6 text-center">Loading…</p>
+        ) : rows.length === 0 ? (
+          <p className="text-sm text-gray-400 p-6 text-center">No payout requests.</p>
+        ) : rows.map((r, i) => (
+          <div key={r.id} className={`flex items-center gap-3 px-4 py-3.5 ${i > 0 ? 'border-t border-gray-100' : ''}`}>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-gray-900 truncate">{r.email}</p>
+              <p className="text-xs text-gray-400">{r.created_at?.slice(0, 10)} · {r.method}</p>
+            </div>
+            <span className="font-extrabold text-gray-900">${(r.amount_cents / 100).toFixed(2)}</span>
+            <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-full ${badge(r.status)}`}>{r.status}</span>
+            {r.status === 'requested' && (
+              <>
+                <button onClick={() => setStatus(r.id, 'paid')} className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-colors">Mark paid</button>
+                <button onClick={() => setStatus(r.id, 'rejected')} className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 hover:bg-gray-50 text-gray-600 transition-colors">Reject</button>
+              </>
             )}
           </div>
         ))}

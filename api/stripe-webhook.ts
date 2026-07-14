@@ -65,6 +65,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       break;
     }
 
+    case 'charge.refunded': {
+      // Reverse any partner commission attributed to a refunded order.
+      const charge = event.data.object as Stripe.Charge;
+      const orderId = (charge.metadata?.orderId) ||
+        (typeof charge.payment_intent === 'string' ? undefined : charge.payment_intent?.metadata?.orderId);
+      if (orderId) {
+        await supabase.from('ecom_orders').update({ fulfillment_status: 'refunded' }).eq('id', orderId);
+        await supabase.rpc('reverse_conversion', { p_order_id: orderId });
+      }
+      break;
+    }
+
     case 'customer.subscription.created':
     case 'customer.subscription.updated': {
       const sub = event.data.object as Stripe.Subscription;
