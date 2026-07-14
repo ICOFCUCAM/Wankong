@@ -9,9 +9,11 @@ import { toast } from 'sonner';
 import {
   Link2, MousePointerClick, TrendingUp, Wallet, Copy, Check, Loader2,
   Sparkles, Globe, ShieldCheck, Clock, ArrowRight, Award, Users, Gift,
+  Store, Trash2, ExternalLink,
 } from 'lucide-react';
 
-interface Partner { id: string; code: string; display_name: string | null; payout_email: string | null; status: string; default_commission_bps: number }
+interface Partner { id: string; code: string; display_name: string | null; payout_email: string | null; status: string; default_commission_bps: number; tagline?: string | null; bio?: string | null; accent?: string | null; avatar_url?: string | null }
+interface StoreItem { item_id: string; product_id: string; title: string; handle: string | null; price: number; cover_url: string | null }
 interface Stats { clicks: number; conversions: number; earnings_cents: number; pending_cents: number }
 interface LevelInfo {
   level: string; label: string | null; revenue_share_bps: number | null; commission_basis: string;
@@ -46,6 +48,12 @@ export default function MarketPartnerPage() {
   const [recruits, setRecruits] = useState<Recruits | null>(null);
   const [searchParams] = useSearchParams();
   const referrerCode = searchParams.get('ref') ?? '';
+  const [storeItems, setStoreItems] = useState<StoreItem[]>([]);
+  const [sfTagline, setSfTagline] = useState('');
+  const [sfBio, setSfBio] = useState('');
+  const [sfAccent, setSfAccent] = useState('');
+  const [sfHandle, setSfHandle] = useState('');
+  const [savingSf, setSavingSf] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -53,13 +61,15 @@ export default function MarketPartnerPage() {
     const row = Array.isArray(data) ? data[0] : data;
     setPartner(row ?? null);
     if (row?.status === 'approved') {
-      const [s, b, pc, po, li, rc] = await Promise.all([
+      setSfTagline(row.tagline ?? ''); setSfBio(row.bio ?? ''); setSfAccent(row.accent ?? '');
+      const [s, b, pc, po, li, rc, si] = await Promise.all([
         supabase.rpc('my_partner_stats'),
         supabase.rpc('partner_balance'),
         supabase.rpc('my_promo_codes'),
         supabase.rpc('my_payouts'),
         supabase.rpc('my_level_info'),
         supabase.rpc('my_recruits'),
+        supabase.rpc('my_storefront_items'),
       ]);
       setStats((Array.isArray(s.data) ? s.data[0] : s.data) ?? null);
       setBalance(typeof b.data === 'number' ? b.data : 0);
@@ -67,6 +77,7 @@ export default function MarketPartnerPage() {
       setPayouts(po.data ?? []);
       setLevel((li.data as LevelInfo) ?? null);
       setRecruits((rc.data as Recruits) ?? null);
+      setStoreItems((si.data ?? []) as StoreItem[]);
     }
     setLoading(false);
   }, []);
@@ -87,6 +98,34 @@ export default function MarketPartnerPage() {
     setBusy(false);
     if (error) { toast.error(error.message); return; }
     toast.success('Withdrawal requested'); load();
+  };
+
+  const saveStorefront = async () => {
+    setSavingSf(true);
+    const { error } = await supabase.rpc('update_my_storefront', {
+      p_tagline: sfTagline || null, p_bio: sfBio || null,
+      p_accent: sfAccent || null, p_avatar_url: null,
+    });
+    setSavingSf(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success('Storefront updated'); load();
+  };
+
+  const addStoreItem = async () => {
+    const handle = sfHandle.trim().replace(/^.*\/products\//, '').replace(/^\//, '');
+    if (!handle) return;
+    const { data: prod } = await supabase.from('ecom_products')
+      .select('id').eq('status', 'active').or(`handle.eq.${handle},id.eq.${handle}`).maybeSingle();
+    if (!prod) { toast.error('Product not found'); return; }
+    const { error } = await supabase.rpc('add_storefront_item', { p_product_id: prod.id });
+    if (error) { toast.error(error.message); return; }
+    setSfHandle(''); toast.success('Added to your storefront'); load();
+  };
+
+  const removeStoreItem = async (itemId: string) => {
+    const { error } = await supabase.rpc('remove_storefront_item', { p_item_id: itemId });
+    if (error) { toast.error(error.message); return; }
+    load();
   };
 
   useEffect(() => { if (user) load(); else if (!authLoading) setLoading(false); }, [user, authLoading, load]);
@@ -363,6 +402,46 @@ export default function MarketPartnerPage() {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Storefront — a shareable branded shop page that attributes purchases */}
+      <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-6">
+        <div className="flex items-center justify-between mb-1">
+          <p className="flex items-center gap-2 font-bold text-gray-900"><Store className="w-4 h-4 text-violet-600" /> Your storefront</p>
+          <a href={`/s/${partner.code}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600">View <ExternalLink className="w-3.5 h-3.5" /></a>
+        </div>
+        <p className="text-xs text-gray-400 mb-4">A branded shop page at <b className="text-gray-600">{origin()}/s/{partner.code}</b> — every purchase made after landing there is attributed to you for 30 days.</p>
+
+        <div className="grid sm:grid-cols-2 gap-3 mb-3">
+          <input value={sfTagline} onChange={e => setSfTagline(e.target.value)} placeholder="Tagline — e.g. Gear I actually use" maxLength={80} className="border border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <div className="flex items-center gap-2 border border-gray-300 rounded-xl px-3">
+            <span className="text-xs text-gray-400">Accent</span>
+            <input value={sfAccent} onChange={e => setSfAccent(e.target.value)} placeholder="#6366f1" maxLength={7} className="flex-1 py-2.5 text-sm focus:outline-none" />
+            <span className="w-5 h-5 rounded-full border border-gray-200" style={{ background: /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(sfAccent) ? sfAccent : '#e5e7eb' }} />
+          </div>
+        </div>
+        <textarea value={sfBio} onChange={e => setSfBio(e.target.value)} placeholder="Short bio for your storefront header" rows={2} maxLength={240} className="w-full border border-gray-300 rounded-xl px-3 py-2.5 text-sm mb-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <button onClick={saveStorefront} disabled={savingSf} className="px-4 py-2 rounded-xl text-white text-sm font-semibold disabled:opacity-50 mb-5" style={{ background: 'var(--sk-aurora)' }}>{savingSf ? 'Saving…' : 'Save storefront'}</button>
+
+        <p className="text-xs font-semibold text-gray-500 mb-2">Featured products ({storeItems.length})</p>
+        <div className="flex flex-col sm:flex-row gap-2 mb-3">
+          <input value={sfHandle} onChange={e => setSfHandle(e.target.value)} placeholder="Product handle or /products/… URL to feature" className="flex-1 border border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <button onClick={addStoreItem} className="px-4 py-2.5 rounded-xl border border-gray-300 hover:border-blue-500 hover:text-blue-600 text-sm font-semibold text-gray-700 transition-colors">Add product</button>
+        </div>
+        {storeItems.length === 0 ? (
+          <p className="text-xs text-gray-400">No products featured yet — add some to fill your storefront.</p>
+        ) : (
+          <div className="space-y-2">
+            {storeItems.map(it => (
+              <div key={it.item_id} className="flex items-center gap-3 rounded-xl bg-[var(--sk-mist)] px-3 py-2">
+                <img src={it.cover_url ?? `https://api.dicebear.com/7.x/shapes/svg?seed=${it.product_id}`} alt="" className="w-8 h-8 rounded-lg object-cover shrink-0" />
+                <span className="flex-1 text-sm text-gray-800 truncate">{it.title}</span>
+                <span className="text-sm font-semibold text-gray-500">{money(it.price)}</span>
+                <button onClick={() => removeStoreItem(it.item_id)} className="text-gray-400 hover:text-red-500 transition-colors"><Trash2 className="w-4 h-4" /></button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <p className="mt-6 text-sm text-gray-400 flex items-center gap-1.5">
