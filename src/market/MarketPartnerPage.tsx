@@ -29,6 +29,7 @@ export default function MarketPartnerPage() {
   const [applying, setApplying] = useState(false);
   const [target, setTarget] = useState('');
   const [copied, setCopied] = useState('');
+  const [forecast, setForecast] = useState<{ title: string; price: number } | null>(null);
   const [balance, setBalance] = useState(0);
   const [promos, setPromos] = useState<any[]>([]);
   const [payouts, setPayouts] = useState<any[]>([]);
@@ -75,6 +76,18 @@ export default function MarketPartnerPage() {
   };
 
   useEffect(() => { if (user) load(); else if (!authLoading) setLoading(false); }, [user, authLoading, load]);
+
+  // Commission forecast: resolve the target product and estimate earnings per sale.
+  useEffect(() => {
+    const handle = target.trim().replace(/^.*\/products\//, '').replace(/^\//, '');
+    if (!handle || /^https?:/i.test(target.trim())) { setForecast(null); return; }
+    const t = setTimeout(async () => {
+      const { data } = await supabase.from('ecom_products')
+        .select('title, price').eq('status', 'active').eq('handle', handle).maybeSingle();
+      setForecast(data ? { title: data.title, price: (data.price ?? 0) / 100 } : null);
+    }, 350);
+    return () => clearTimeout(t);
+  }, [target]);
 
   const apply = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -208,6 +221,16 @@ export default function MarketPartnerPage() {
         <div className="mt-3 flex items-center gap-2 rounded-xl bg-[var(--sk-mist)] px-3 py-2.5">
           <code className="flex-1 text-xs text-gray-600 truncate">{genLink}</code>
         </div>
+        {forecast && (
+          <div className="mt-3 flex items-center gap-2.5 rounded-xl bg-emerald-50 border border-emerald-100 px-3.5 py-2.5">
+            <TrendingUp className="w-4 h-4 text-emerald-600 shrink-0" />
+            <p className="text-sm text-emerald-800">
+              <b>{forecast.title.length > 40 ? forecast.title.slice(0, 40) + '…' : forecast.title}</b> — est. you earn{' '}
+              <b>${(forecast.price * partner.default_commission_bps / 10000).toFixed(2)}</b> per sale
+              <span className="text-emerald-600/80"> ({rate}% of ${forecast.price.toFixed(2)})</span>
+            </p>
+          </div>
+        )}
         <div className="mt-4 flex items-center gap-2 text-xs text-gray-400">
           <span>Your storefront link:</span>
           <button onClick={() => copy(baseLink, 'base')} className="inline-flex items-center gap-1 text-blue-600 font-medium">{copied === 'base' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />} {baseLink}</button>
